@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Inicio - Manuales</title>
+        <title>SQLx - Manuales</title>
 
 
         <!-- Custom HTML head -->
@@ -12,33 +12,33 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="favicon-de23e50b.svg">
-        <link rel="shortcut icon" href="favicon-8114d1fc.png">
-        <link rel="stylesheet" href="css/variables-8adf115d.css">
-        <link rel="stylesheet" href="css/general-2459343d.css">
-        <link rel="stylesheet" href="css/chrome-ae938929.css">
-        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
-        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
-        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
 
         <!-- Custom theme stylesheets -->
 
 
         <!-- Provide site root and default themes to javascript -->
         <script>
-            const path_to_root = "";
+            const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-10f1fd62.js";
+            window.path_to_searchindex_js = "../searchindex-10f1fd62.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-ec9a2a27.js"></script>
+        <script src="../toc-ec9a2a27.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -105,7 +105,7 @@
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
-                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
             </noscript>
             <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -140,7 +140,7 @@
                     <h1 class="menu-title">Manuales</h1>
 
                     <div class="right-buttons">
-                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
                             <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
                         </a>
 
@@ -174,31 +174,290 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="bienvenido-a-los-manuales"><a class="header" href="#bienvenido-a-los-manuales">Bienvenido a los Manuales</a></h1>
-<p>Mis manuales</p>
+                        <h1 id="1-instalar-sqlx-cli"><a class="header" href="#1-instalar-sqlx-cli">1. Instalar SQLx CLI</a></h1>
+<pre><code class="language-bash">cargo install sqlx-cli --no-default-features --features postgres
+</code></pre>
+<p>Esto instalará el binario <code>sqlx</code> en:</p>
+<pre><code>~/.cargo/bin/sqlx
+</code></pre>
+<p>Verifica:</p>
+<pre><code class="language-bash">sqlx --version
+</code></pre>
 <hr>
-<h2 id="contenidos"><a class="header" href="#contenidos">Contenidos</a></h2>
+<h1 id="2-si-sigue-sin-funcionar"><a class="header" href="#2-si-sigue-sin-funcionar">2. Si sigue sin funcionar</a></h1>
+<p>Asegúrate de que <strong>Cargo esté en tu PATH</strong>.</p>
+<p>Comprueba:</p>
+<pre><code class="language-bash">echo $PATH
+</code></pre>
+<p>Debe incluir:</p>
+<pre><code>$HOME/.cargo/bin
+</code></pre>
+<p>Si no está, añade esto a <code>~/.bashrc</code> o <code>~/.zshrc</code>:</p>
+<pre><code class="language-bash">export PATH="$HOME/.cargo/bin:$PATH"
+</code></pre>
+<p>Luego recarga:</p>
+<pre><code class="language-bash">source ~/.bashrc
+</code></pre>
+<p>o</p>
+<pre><code class="language-bash">source ~/.zshrc
+</code></pre>
+<hr>
+<h1 id="manual-de-sqlx-con-rust-migraciones-y-uso-básico"><a class="header" href="#manual-de-sqlx-con-rust-migraciones-y-uso-básico">Manual de SQLx con Rust (Migraciones y uso básico)</a></h1>
+<h2 id="1-qué-es-sqlx"><a class="header" href="#1-qué-es-sqlx">1. ¿Qué es SQLx?</a></h2>
+<p>SQLx es un <strong>cliente SQL asíncrono para Rust</strong> que permite interactuar con bases de datos <strong>sin ORM</strong>, usando <strong>consultas SQL reales</strong> con verificación en tiempo de compilación.</p>
+<p>Bases soportadas:</p>
 <ul>
-<li>
-<p><a href="./docs/01-axum-techcomponents.html">Backend con Axum (techcomponents)</a></p>
-</li>
-<li>
-<p><a href="./docs/02-axum-rasflow.html">Backend con Axum (rasflow)</a></p>
-</li>
-<li>
-<p><a href="./docs/03-sqlx.html">SQLx</a></p>
-</li>
-<li>
-<p><a href="./docs/04-redis.html">Redis</a></p>
-</li>
+<li>PostgreSQL</li>
+<li>MySQL</li>
+<li>SQLite</li>
+<li>MSSQL (limitado)</li>
 </ul>
+<p>Características principales:</p>
+<ul>
+<li>Async (usa Tokio o async-std)</li>
+<li>Verificación de queries en compilación</li>
+<li>Migraciones integradas</li>
+<li>Sin ORM pesado</li>
+</ul>
+<hr>
+<h1 id="2-instalación"><a class="header" href="#2-instalación">2. Instalación</a></h1>
+<h2 id="instalar-cli-de-sqlx"><a class="header" href="#instalar-cli-de-sqlx">Instalar CLI de SQLx</a></h2>
+<p>Necesitas el CLI para migraciones.</p>
+<pre><code class="language-bash">cargo install sqlx-cli
+</code></pre>
+<p>Con soporte para tu base de datos:</p>
+<h3 id="postgresql"><a class="header" href="#postgresql">PostgreSQL</a></h3>
+<pre><code class="language-bash">cargo install sqlx-cli --no-default-features --features postgres
+</code></pre>
+<h3 id="mysql"><a class="header" href="#mysql">MySQL</a></h3>
+<pre><code class="language-bash">cargo install sqlx-cli --no-default-features --features mysql
+</code></pre>
+<h3 id="sqlite"><a class="header" href="#sqlite">SQLite</a></h3>
+<pre><code class="language-bash">cargo install sqlx-cli --no-default-features --features sqlite
+</code></pre>
+<hr>
+<h1 id="3-crear-proyecto-rust"><a class="header" href="#3-crear-proyecto-rust">3. Crear proyecto Rust</a></h1>
+<pre><code class="language-bash">cargo new api_rust
+cd api_rust
+</code></pre>
+<hr>
+<h1 id="4-dependencias-en-cargotoml"><a class="header" href="#4-dependencias-en-cargotoml">4. Dependencias en Cargo.toml</a></h1>
+<p>Ejemplo con <strong>PostgreSQL + Tokio</strong></p>
+<pre><code class="language-toml">[dependencies]
+tokio = { version = "1", features = ["full"] }
+
+sqlx = { version = "0.7", features = [
+  "runtime-tokio",
+  "postgres",
+  "macros",
+  "migrate",
+  "uuid",
+  "chrono"
+] }
+
+dotenvy = "0.15"
+</code></pre>
+<hr>
+<h1 id="5-variables-de-entorno"><a class="header" href="#5-variables-de-entorno">5. Variables de entorno</a></h1>
+<p>Crea un archivo <code>.env</code></p>
+<pre><code>DATABASE_URL=postgres://user:password@localhost:5432/mydb
+</code></pre>
+<p>SQLx lo usa para:</p>
+<ul>
+<li>validar queries</li>
+<li>correr migraciones</li>
+</ul>
+<hr>
+<h1 id="6-crear-migraciones"><a class="header" href="#6-crear-migraciones">6. Crear migraciones</a></h1>
+<p>Inicializa migraciones:</p>
+<pre><code class="language-bash">sqlx migrate add create_users
+</code></pre>
+<p>Esto genera:</p>
+<pre><code>migrations/
+  20240310120000_create_users.sql
+</code></pre>
+<hr>
+<h1 id="7-escribir-migración"><a class="header" href="#7-escribir-migración">7. Escribir migración</a></h1>
+<p>Ejemplo:</p>
+<pre><code class="language-sql">CREATE TABLE users (
+    id UUID PRIMARY KEY,
+    name TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+</code></pre>
+<p>Puedes agregar también <code>DOWN</code> usando:</p>
+<pre><code class="language-sql">-- Add migration script here
+
+CREATE TABLE users (
+    id UUID PRIMARY KEY,
+    name TEXT NOT NULL
+);
+
+-- Add down migration
+DROP TABLE users;
+</code></pre>
+<hr>
+<h1 id="8-ejecutar-migraciones"><a class="header" href="#8-ejecutar-migraciones">8. Ejecutar migraciones</a></h1>
+<pre><code class="language-bash">sqlx migrate run
+</code></pre>
+<p>Esto:</p>
+<ul>
+<li>crea tabla <code>_sqlx_migrations</code></li>
+<li>aplica migraciones pendientes</li>
+</ul>
+<hr>
+<h1 id="9-revertir-migración"><a class="header" href="#9-revertir-migración">9. Revertir migración</a></h1>
+<pre><code class="language-bash">sqlx migrate revert
+</code></pre>
+<p>Revierte la última migración.</p>
+<hr>
+<h1 id="10-conexión-a-la-base-de-datos"><a class="header" href="#10-conexión-a-la-base-de-datos">10. Conexión a la base de datos</a></h1>
+<p>Ejemplo básico en Rust:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use sqlx::postgres::PgPoolOptions;
+use sqlx::PgPool;
+
+async fn connect_db() -&gt; PgPool {
+    PgPoolOptions::new()
+        .max_connections(5)
+        .connect("postgres://user:password@localhost/mydb")
+        .await
+        .unwrap()
+}
+<span class="boring">}</span></code></pre>
+<hr>
+<h1 id="11-usar-migraciones-desde-rust"><a class="header" href="#11-usar-migraciones-desde-rust">11. Usar migraciones desde Rust</a></h1>
+<p>Puedes ejecutar migraciones automáticamente al iniciar.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use sqlx::PgPool;
+
+async fn run_migrations(pool: &amp;PgPool) {
+    sqlx::migrate!("./migrations")
+        .run(pool)
+        .await
+        .unwrap();
+}
+<span class="boring">}</span></code></pre>
+<p>Ejemplo en <code>main</code>:</p>
+<pre class="playground"><code class="language-rust">#[tokio::main]
+async fn main() {
+    let pool = connect_db().await;
+
+    run_migrations(&amp;pool).await;
+}</code></pre>
+<hr>
+<h1 id="12-insertar-datos"><a class="header" href="#12-insertar-datos">12. Insertar datos</a></h1>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use uuid::Uuid;
+
+sqlx::query!(
+    "INSERT INTO users (id, name, email) VALUES ($1, $2, $3)",
+    Uuid::new_v4(),
+    "Juan",
+    "juan@email.com"
+)
+.execute(&amp;pool)
+.await?;
+<span class="boring">}</span></code></pre>
+<hr>
+<h1 id="13-obtener-datos"><a class="header" href="#13-obtener-datos">13. Obtener datos</a></h1>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let users = sqlx::query!(
+    "SELECT id, name, email FROM users"
+)
+.fetch_all(&amp;pool)
+.await?;
+<span class="boring">}</span></code></pre>
+<hr>
+<h1 id="14-usar-structs"><a class="header" href="#14-usar-structs">14. Usar structs</a></h1>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use sqlx::FromRow;
+use uuid::Uuid;
+
+#[derive(FromRow)]
+struct User {
+    id: Uuid,
+    name: String,
+    email: String,
+}
+<span class="boring">}</span></code></pre>
+<p>Query:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let users: Vec&lt;User&gt; = sqlx::query_as::&lt;_, User&gt;(
+    "SELECT id, name, email FROM users"
+)
+.fetch_all(&amp;pool)
+.await?;
+<span class="boring">}</span></code></pre>
+<hr>
+<h1 id="15-verificación-de-queries-en-compilación"><a class="header" href="#15-verificación-de-queries-en-compilación">15. Verificación de queries en compilación</a></h1>
+<p>SQLx puede validar queries.</p>
+<p>Primero:</p>
+<pre><code class="language-bash">cargo install sqlx-cli
+</code></pre>
+<p>Luego:</p>
+<pre><code class="language-bash">cargo sqlx prepare
+</code></pre>
+<p>Esto genera:</p>
+<pre><code>.sqlx/
+</code></pre>
+<p>Y permite compilar sin acceso a DB.</p>
+<hr>
+<h1 id="16-comandos-importantes-de-sqlx-cli"><a class="header" href="#16-comandos-importantes-de-sqlx-cli">16. Comandos importantes de SQLx CLI</a></h1>
+<p>Crear migración:</p>
+<pre><code class="language-bash">sqlx migrate add nombre_migracion
+</code></pre>
+<p>Correr migraciones:</p>
+<pre><code class="language-bash">sqlx migrate run
+</code></pre>
+<p>Revertir:</p>
+<pre><code class="language-bash">sqlx migrate revert
+</code></pre>
+<p>Ver estado:</p>
+<pre><code class="language-bash">sqlx migrate info
+</code></pre>
+<p>Preparar queries:</p>
+<pre><code class="language-bash">cargo sqlx prepare
+</code></pre>
+<hr>
+<h1 id="17-estructura-típica-del-proyecto"><a class="header" href="#17-estructura-típica-del-proyecto">17. Estructura típica del proyecto</a></h1>
+<pre><code>project/
+│
+├─ migrations/
+│   ├─ 20240310120000_create_users.sql
+│
+├─ src/
+│   ├─ main.rs
+│   ├─ db.rs
+│   ├─ models.rs
+│
+├─ .env
+├─ Cargo.toml
+</code></pre>
+<hr>
+<h1 id="18-buenas-prácticas"><a class="header" href="#18-buenas-prácticas">18. Buenas prácticas</a></h1>
+<p>✔ Usar <strong>PgPool</strong> o <strong>MySqlPool</strong>
+✔ Separar <strong>queries en repositorios</strong>
+✔ Ejecutar migraciones en startup
+✔ Usar <code>query!</code> para validación compile-time
+✔ Mantener migraciones pequeñas</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../docs/02-axum-rasflow.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
 
-                            <a rel="next prefetch" href="docs/01-axum-techcomponents.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../docs/04-redis.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -208,8 +467,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../docs/02-axum-rasflow.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
 
-                    <a rel="next prefetch" href="docs/01-axum-techcomponents.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../docs/04-redis.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>
@@ -245,13 +507,13 @@
         </script>
 
 
-        <script src="elasticlunr-ef4e11c1.min.js"></script>
-        <script src="mark-09e88c2c.min.js"></script>
-        <script src="searcher-c2a407aa.js"></script>
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
 
-        <script src="clipboard-1626706a.min.js"></script>
-        <script src="highlight-abc7f01d.js"></script>
-        <script src="book-a0b12cfe.js"></script>
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
 
         <!-- Custom JS scripts -->
 

@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>SQLx - Manuales</title>
+        <title>Redis - Manuales</title>
 
 
         <!-- Custom HTML head -->
@@ -35,10 +35,10 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-66450e27.js";
+            window.path_to_searchindex_js = "../searchindex-10f1fd62.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc-c9258e82.js"></script>
+        <script src="../toc-ec9a2a27.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -174,286 +174,361 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="1-instalar-sqlx-cli"><a class="header" href="#1-instalar-sqlx-cli">1. Instalar SQLx CLI</a></h1>
-<pre><code class="language-bash">cargo install sqlx-cli --no-default-features --features postgres
-</code></pre>
-<p>Esto instalará el binario <code>sqlx</code> en:</p>
-<pre><code>~/.cargo/bin/sqlx
-</code></pre>
-<p>Verifica:</p>
-<pre><code class="language-bash">sqlx --version
-</code></pre>
+                        <h2 id="manual-completo-de-redis-instalación--uso-avanzado"><a class="header" href="#manual-completo-de-redis-instalación--uso-avanzado">Manual Completo de Redis (Instalación → Uso Avanzado)</a></h2>
+<p>Redis es una base de datos en memoria orientada a estructuras de datos. Se utiliza principalmente para caché, colas, sesiones y sistemas de alta velocidad.</p>
 <hr>
-<h1 id="2-si-sigue-sin-funcionar"><a class="header" href="#2-si-sigue-sin-funcionar">2. Si sigue sin funcionar</a></h1>
-<p>Asegúrate de que <strong>Cargo esté en tu PATH</strong>.</p>
-<p>Comprueba:</p>
-<pre><code class="language-bash">echo $PATH
-</code></pre>
-<p>Debe incluir:</p>
-<pre><code>$HOME/.cargo/bin
-</code></pre>
-<p>Si no está, añade esto a <code>~/.bashrc</code> o <code>~/.zshrc</code>:</p>
-<pre><code class="language-bash">export PATH="$HOME/.cargo/bin:$PATH"
-</code></pre>
-<p>Luego recarga:</p>
-<pre><code class="language-bash">source ~/.bashrc
-</code></pre>
-<p>o</p>
-<pre><code class="language-bash">source ~/.zshrc
-</code></pre>
-<hr>
-<h1 id="manual-de-sqlx-con-rust-migraciones-y-uso-básico"><a class="header" href="#manual-de-sqlx-con-rust-migraciones-y-uso-básico">Manual de SQLx con Rust (Migraciones y uso básico)</a></h1>
-<h2 id="1-qué-es-sqlx"><a class="header" href="#1-qué-es-sqlx">1. ¿Qué es SQLx?</a></h2>
-<p>SQLx es un <strong>cliente SQL asíncrono para Rust</strong> que permite interactuar con bases de datos <strong>sin ORM</strong>, usando <strong>consultas SQL reales</strong> con verificación en tiempo de compilación.</p>
-<p>Bases soportadas:</p>
+<h1 id="1-qué-es-redis"><a class="header" href="#1-qué-es-redis">1. ¿Qué es Redis?</a></h1>
+<p>Redis (Remote Dictionary Server) es:</p>
 <ul>
-<li>PostgreSQL</li>
-<li>MySQL</li>
-<li>SQLite</li>
-<li>MSSQL (limitado)</li>
+<li>Base de datos en memoria (RAM)</li>
+<li>Modelo key-value</li>
+<li>No relacional</li>
+<li>Extremadamente rápida (latencias en microsegundos)</li>
+<li>Soporta múltiples estructuras de datos</li>
 </ul>
-<p>Características principales:</p>
+<p>Casos de uso:</p>
 <ul>
-<li>Async (usa Tokio o async-std)</li>
-<li>Verificación de queries en compilación</li>
-<li>Migraciones integradas</li>
-<li>Sin ORM pesado</li>
+<li>Caché</li>
+<li>Sesiones de usuario</li>
+<li>Rate limiting</li>
+<li>Sistemas de colas</li>
+<li>Leaderboards</li>
 </ul>
 <hr>
 <h1 id="2-instalación"><a class="header" href="#2-instalación">2. Instalación</a></h1>
-<h2 id="instalar-cli-de-sqlx"><a class="header" href="#instalar-cli-de-sqlx">Instalar CLI de SQLx</a></h2>
-<p>Necesitas el CLI para migraciones.</p>
-<pre><code class="language-bash">cargo install sqlx-cli
+<h2 id="linux-ubuntudebian"><a class="header" href="#linux-ubuntudebian">Linux (Ubuntu/Debian)</a></h2>
+<pre><code class="language-bash">sudo apt update
+sudo apt install redis-server -y
 </code></pre>
-<p>Con soporte para tu base de datos:</p>
-<h3 id="postgresql"><a class="header" href="#postgresql">PostgreSQL</a></h3>
-<pre><code class="language-bash">cargo install sqlx-cli --no-default-features --features postgres
+<p>Verificar instalación:</p>
+<pre><code class="language-bash">redis-server --version
+redis-cli ping
 </code></pre>
-<h3 id="mysql"><a class="header" href="#mysql">MySQL</a></h3>
-<pre><code class="language-bash">cargo install sqlx-cli --no-default-features --features mysql
-</code></pre>
-<h3 id="sqlite"><a class="header" href="#sqlite">SQLite</a></h3>
-<pre><code class="language-bash">cargo install sqlx-cli --no-default-features --features sqlite
+<p>Respuesta esperada:</p>
+<pre><code class="language-bash">PONG
 </code></pre>
 <hr>
-<h1 id="3-crear-proyecto-rust"><a class="header" href="#3-crear-proyecto-rust">3. Crear proyecto Rust</a></h1>
-<pre><code class="language-bash">cargo new api_rust
-cd api_rust
+<h2 id="macos"><a class="header" href="#macos">macOS</a></h2>
+<pre><code class="language-bash">brew install redis
+brew services start redis
 </code></pre>
 <hr>
-<h1 id="4-dependencias-en-cargotoml"><a class="header" href="#4-dependencias-en-cargotoml">4. Dependencias en Cargo.toml</a></h1>
-<p>Ejemplo con <strong>PostgreSQL + Tokio</strong></p>
-<pre><code class="language-toml">[dependencies]
-tokio = { version = "1", features = ["full"] }
-
-sqlx = { version = "0.7", features = [
-  "runtime-tokio",
-  "postgres",
-  "macros",
-  "migrate",
-  "uuid",
-  "chrono"
-] }
-
-dotenvy = "0.15"
-</code></pre>
-<hr>
-<h1 id="5-variables-de-entorno"><a class="header" href="#5-variables-de-entorno">5. Variables de entorno</a></h1>
-<p>Crea un archivo <code>.env</code></p>
-<pre><code>DATABASE_URL=postgres://user:password@localhost:5432/mydb
-</code></pre>
-<p>SQLx lo usa para:</p>
+<h2 id="windows"><a class="header" href="#windows">Windows</a></h2>
+<p>Opciones:</p>
 <ul>
-<li>validar queries</li>
-<li>correr migraciones</li>
+<li>WSL (recomendado)</li>
+<li>Docker:</li>
 </ul>
-<hr>
-<h1 id="6-crear-migraciones"><a class="header" href="#6-crear-migraciones">6. Crear migraciones</a></h1>
-<p>Inicializa migraciones:</p>
-<pre><code class="language-bash">sqlx migrate add create_users
-</code></pre>
-<p>Esto genera:</p>
-<pre><code>migrations/
-  20240310120000_create_users.sql
+<pre><code class="language-bash">docker run -d -p 6379:6379 redis
 </code></pre>
 <hr>
-<h1 id="7-escribir-migración"><a class="header" href="#7-escribir-migración">7. Escribir migración</a></h1>
+<h2 id="cloud-railway-u-otros"><a class="header" href="#cloud-railway-u-otros">Cloud (Railway u otros)</a></h2>
+<ul>
+<li>Crear instancia Redis</li>
+<li>Conectarse vía:</li>
+</ul>
+<pre><code class="language-bash">redis-cli -u &lt;URL&gt;
+</code></pre>
+<hr>
+<h1 id="3-uso-básico-con-redis-cli"><a class="header" href="#3-uso-básico-con-redis-cli">3. Uso básico con redis-cli</a></h1>
+<p>Abrir consola:</p>
+<pre><code class="language-bash">redis-cli
+</code></pre>
 <p>Ejemplo:</p>
-<pre><code class="language-sql">CREATE TABLE users (
-    id UUID PRIMARY KEY,
-    name TEXT NOT NULL,
-    email TEXT UNIQUE NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT NOW()
-);
-</code></pre>
-<p>Puedes agregar también <code>DOWN</code> usando:</p>
-<pre><code class="language-sql">-- Add migration script here
-
-CREATE TABLE users (
-    id UUID PRIMARY KEY,
-    name TEXT NOT NULL
-);
-
--- Add down migration
-DROP TABLE users;
+<pre><code class="language-bash">SET nombre "Orlando"
+GET nombre
 </code></pre>
 <hr>
-<h1 id="8-ejecutar-migraciones"><a class="header" href="#8-ejecutar-migraciones">8. Ejecutar migraciones</a></h1>
-<pre><code class="language-bash">sqlx migrate run
+<h1 id="4-tipos-de-datos"><a class="header" href="#4-tipos-de-datos">4. Tipos de datos</a></h1>
+<h2 id="strings"><a class="header" href="#strings">Strings</a></h2>
+<pre><code class="language-bash">SET user:1 "Orlando"
+GET user:1
 </code></pre>
-<p>Esto:</p>
+<p>Con expiración:</p>
+<pre><code class="language-bash">SETEX user:1 60 "Orlando"
+</code></pre>
+<hr>
+<h2 id="lists"><a class="header" href="#lists">Lists</a></h2>
+<pre><code class="language-bash">LPUSH tareas "task1"
+LPUSH tareas "task2"
+LRANGE tareas 0 -1
+</code></pre>
+<hr>
+<h2 id="hashes"><a class="header" href="#hashes">Hashes</a></h2>
+<pre><code class="language-bash">HSET user:1 nombre "Orlando" edad 25
+HGETALL user:1
+</code></pre>
+<hr>
+<h2 id="sets"><a class="header" href="#sets">Sets</a></h2>
+<pre><code class="language-bash">SADD tags "rust"
+SADD tags "redis"
+SMEMBERS tags
+</code></pre>
+<hr>
+<h2 id="sorted-sets"><a class="header" href="#sorted-sets">Sorted Sets</a></h2>
+<pre><code class="language-bash">ZADD ranking 100 "user1"
+ZADD ranking 200 "user2"
+ZRANGE ranking 0 -1 WITHSCORES
+</code></pre>
+<hr>
+<h1 id="5-comandos-esenciales"><a class="header" href="#5-comandos-esenciales">5. Comandos esenciales</a></h1>
+<h2 id="exploración"><a class="header" href="#exploración">Exploración</a></h2>
+<pre><code class="language-bash">KEYS *
+EXISTS key
+TYPE key
+TTL key
+</code></pre>
+<p>Nota: evitar <code>KEYS *</code> en producción.</p>
+<hr>
+<h2 id="alternativa-scan"><a class="header" href="#alternativa-scan">Alternativa: SCAN</a></h2>
+<pre><code class="language-bash">SCAN 0 MATCH projects:* COUNT 10
+</code></pre>
+<hr>
+<h2 id="lectura-y-escritura"><a class="header" href="#lectura-y-escritura">Lectura y escritura</a></h2>
+<pre><code class="language-bash">SET key value
+GET key
+DEL key
+</code></pre>
+<hr>
+<h2 id="expiración-ttl"><a class="header" href="#expiración-ttl">Expiración (TTL)</a></h2>
+<pre><code class="language-bash">EXPIRE key 60
+TTL key
+</code></pre>
+<p>Estados:</p>
 <ul>
-<li>crea tabla <code>_sqlx_migrations</code></li>
-<li>aplica migraciones pendientes</li>
+<li>
+<blockquote>
+<p>0: segundos restantes</p>
+</blockquote>
+</li>
+<li>-1: sin expiración</li>
+<li>-2: no existe</li>
 </ul>
 <hr>
-<h1 id="9-revertir-migración"><a class="header" href="#9-revertir-migración">9. Revertir migración</a></h1>
-<pre><code class="language-bash">sqlx migrate revert
+<h2 id="borrado-masivo"><a class="header" href="#borrado-masivo">Borrado masivo</a></h2>
+<pre><code class="language-bash">FLUSHALL
 </code></pre>
-<p>Revierte la última migración.</p>
 <hr>
-<h1 id="10-conexión-a-la-base-de-datos"><a class="header" href="#10-conexión-a-la-base-de-datos">10. Conexión a la base de datos</a></h1>
-<p>Ejemplo básico en Rust:</p>
+<h1 id="6-monitoreo"><a class="header" href="#6-monitoreo">6. Monitoreo</a></h1>
+<pre><code class="language-bash">MONITOR
+</code></pre>
+<p>Muestra todos los comandos en tiempo real.</p>
+<hr>
+<h1 id="7-patrón-cache-aside"><a class="header" href="#7-patrón-cache-aside">7. Patrón Cache-Aside</a></h1>
+<pre><code class="language-mermaid">flowchart TD
+    A[Request] --&gt; B[GET Redis]
+    B --&gt;|Hit| C[Return Data]
+    B --&gt;|Miss| D[Query PostgreSQL]
+    D --&gt; E[SETEX Redis]
+    E --&gt; C
+</code></pre>
+<p>Flujo:</p>
+<ol>
+<li>Construcción de clave</li>
+<li>Consulta en Redis</li>
+<li>Si no existe, consulta a base de datos</li>
+<li>Guarda en Redis</li>
+<li>Devuelve resultado</li>
+</ol>
+<hr>
+<h1 id="8-ejemplo-de-clave"><a class="header" href="#8-ejemplo-de-clave">8. Ejemplo de clave</a></h1>
+<pre><code class="language-bash">projects:user:1:page:1
+</code></pre>
+<p>Buenas prácticas:</p>
+<ul>
+<li>Usar nombres jerárquicos</li>
+<li>Evitar claves largas</li>
+<li>Mantener consistencia</li>
+</ul>
+<hr>
+<h1 id="9-invalidación-de-caché"><a class="header" href="#9-invalidación-de-caché">9. Invalidación de caché</a></h1>
+<pre><code class="language-bash">DEL projects:user:1:page:1
+</code></pre>
+<p>Para múltiples claves:</p>
+<pre><code class="language-bash">SCAN 0 MATCH projects:user:1:* 
+</code></pre>
+<hr>
+<h1 id="10-integración-con-rust"><a class="header" href="#10-integración-con-rust">10. Integración con Rust</a></h1>
+<p>Redis no entiende structs, se debe serializar:</p>
 <pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>use sqlx::postgres::PgPoolOptions;
-use sqlx::PgPool;
+</span>let json = serde_json::to_string(&amp;data)?;
+redis.set_ex(key, json, 60)?;
+<span class="boring">}</span></code></pre>
+<hr>
+<h1 id="11-persistencia"><a class="header" href="#11-persistencia">11. Persistencia</a></h1>
+<h2 id="rdb"><a class="header" href="#rdb">RDB</a></h2>
+<ul>
+<li>Snapshots periódicos</li>
+<li>Bajo consumo</li>
+</ul>
+<h2 id="aof"><a class="header" href="#aof">AOF</a></h2>
+<ul>
+<li>Log de operaciones</li>
+<li>Mayor seguridad</li>
+</ul>
+<p>Configuración en:</p>
+<pre><code class="language-bash">redis.conf
+</code></pre>
+<hr>
+<h1 id="12-configuración-importante"><a class="header" href="#12-configuración-importante">12. Configuración importante</a></h1>
+<p>Ejemplos:</p>
+<pre><code class="language-bash">maxmemory 256mb
+maxmemory-policy allkeys-lru
+</code></pre>
+<p>Políticas comunes:</p>
+<ul>
+<li>noeviction</li>
+<li>allkeys-lru</li>
+<li>volatile-lru</li>
+</ul>
+<hr>
+<h1 id="13-performance"><a class="header" href="#13-performance">13. Performance</a></h1>
+<p>Buenas prácticas:</p>
+<ul>
+<li>Usar TTL en caché</li>
+<li>Evitar objetos grandes</li>
+<li>Reducir serialización pesada</li>
+<li>Evitar KEYS en producción</li>
+<li>Usar SCAN</li>
+</ul>
+<hr>
+<h1 id="14-errores-comunes"><a class="header" href="#14-errores-comunes">14. Errores comunes</a></h1>
+<ul>
+<li>Usar Redis como base principal sin persistencia</li>
+<li>No invalidar caché</li>
+<li>Claves mal diseñadas</li>
+<li>Uso excesivo de memoria</li>
+</ul>
+<hr>
+<h1 id="15-comandos-avanzados"><a class="header" href="#15-comandos-avanzados">15. Comandos avanzados</a></h1>
+<pre><code class="language-bash">INCR contador
+DECR contador
+MGET key1 key2
+MSET k1 v1 k2 v2
+APPEND key "texto"
+</code></pre>
+<hr>
+<h1 id="16-ejemplo-completo"><a class="header" href="#16-ejemplo-completo">16. Ejemplo completo</a></h1>
+<pre><code class="language-bash">GET projects:user:1:page:1
+# nil
 
-async fn connect_db() -&gt; PgPool {
-    PgPoolOptions::new()
-        .max_connections(5)
-        .connect("postgres://user:password@localhost/mydb")
-        .await
-        .unwrap()
-}
-<span class="boring">}</span></code></pre>
-<hr>
-<h1 id="11-usar-migraciones-desde-rust"><a class="header" href="#11-usar-migraciones-desde-rust">11. Usar migraciones desde Rust</a></h1>
-<p>Puedes ejecutar migraciones automáticamente al iniciar.</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>use sqlx::PgPool;
+SETEX projects:user:1:page:1 60 "{json}"
 
-async fn run_migrations(pool: &amp;PgPool) {
-    sqlx::migrate!("./migrations")
-        .run(pool)
-        .await
-        .unwrap();
-}
-<span class="boring">}</span></code></pre>
-<p>Ejemplo en <code>main</code>:</p>
-<pre class="playground"><code class="language-rust">#[tokio::main]
-async fn main() {
-    let pool = connect_db().await;
+GET projects:user:1:page:1
+# hit
 
-    run_migrations(&amp;pool).await;
-}</code></pre>
-<hr>
-<h1 id="12-insertar-datos"><a class="header" href="#12-insertar-datos">12. Insertar datos</a></h1>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>use uuid::Uuid;
+TTL projects:user:1:page:1
 
-sqlx::query!(
-    "INSERT INTO users (id, name, email) VALUES ($1, $2, $3)",
-    Uuid::new_v4(),
-    "Juan",
-    "juan@email.com"
-)
-.execute(&amp;pool)
-.await?;
-<span class="boring">}</span></code></pre>
+DEL projects:user:1:page:1
+</code></pre>
 <hr>
-<h1 id="13-obtener-datos"><a class="header" href="#13-obtener-datos">13. Obtener datos</a></h1>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>let users = sqlx::query!(
-    "SELECT id, name, email FROM users"
-)
-.fetch_all(&amp;pool)
-.await?;
-<span class="boring">}</span></code></pre>
+<h1 id="17-arquitectura-típica"><a class="header" href="#17-arquitectura-típica">17. Arquitectura típica</a></h1>
+<pre><code class="language-mermaid">flowchart LR
+    A[Client] --&gt; B[Backend Rust]
+    B --&gt; C[Redis Cache]
+    B --&gt; D[PostgreSQL]
+    C --&gt; B
+    D --&gt; B
+</code></pre>
 <hr>
-<h1 id="14-usar-structs"><a class="header" href="#14-usar-structs">14. Usar structs</a></h1>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>use sqlx::FromRow;
-use uuid::Uuid;
+<h1 id="18-cuándo-usar-redis"><a class="header" href="#18-cuándo-usar-redis">18. Cuándo usar Redis</a></h1>
+<p>Usar:</p>
+<ul>
+<li>Caché</li>
+<li>Sesiones</li>
+<li>Datos temporales</li>
+<li>Sistemas de alta velocidad</li>
+</ul>
+<p>No usar:</p>
+<ul>
+<li>Relaciones complejas</li>
+<li>Datos críticos sin persistencia</li>
+</ul>
+<hr>
+<h1 id="19-conceptos-fundamentales"><a class="header" href="#19-conceptos-fundamentales">19. Conceptos Fundamentales</a></h1>
+<ul>
+<li><strong>Key-Value Store:</strong> Redis guarda datos como un diccionario. A una <strong>Llave</strong> única le corresponde un <strong>Valor</strong>.</li>
+<li><strong>TTL (Time To Live):</strong> Es el tiempo de vida de un dato. Cuando el contador llega a cero, Redis elimina el dato automáticamente.</li>
+<li><strong>In-Memory:</strong> Los datos viven en la RAM. Si el servidor de Redis se reinicia sin persistencia configurada, los datos desaparecen (por eso solo lo usamos para caché y no como base de datos principal).</li>
+</ul>
+<hr>
+<h1 id="20-comandos-esenciales-cli"><a class="header" href="#20-comandos-esenciales-cli">20. Comandos Esenciales (CLI)</a></h1>
+<p>Para ejecutar estos comandos, abre tu terminal y escribe <code>redis-cli</code>. Si estás en Railway, usa la pestaña <strong>CLI</strong> en tu servicio de Redis.</p>
+<h4 id="a-exploración"><a class="header" href="#a-exploración">A. Exploración</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Comando</th><th>Descripción</th><th>Ejemplo</th></tr>
+</thead>
+<tbody>
+<tr><td><code>KEYS *</code></td><td>Lista todas las llaves activas.</td><td><code>KEYS "projects:*"</code></td></tr>
+<tr><td><code>EXISTS [key]</code></td><td>Verifica si una llave existe (1 = sí, 0 = no).</td><td><code>EXISTS projects:user:1</code></td></tr>
+<tr><td><code>TTL [key]</code></td><td>Consulta cuánto tiempo le queda a la llave.</td><td><code>TTL projects:user:1</code></td></tr>
+<tr><td><code>TYPE [key]</code></td><td>Te dice qué tipo de dato es (string, list, hash).</td><td><code>TYPE projects:user:1</code></td></tr>
+</tbody>
+</table>
+</div>
+<h4 id="b-gestión-de-datos"><a class="header" href="#b-gestión-de-datos">B. Gestión de Datos</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Comando</th><th>Descripción</th><th>Ejemplo</th></tr>
+</thead>
+<tbody>
+<tr><td><code>GET [key]</code></td><td>Obtiene el valor (el JSON) de la llave.</td><td><code>GET projects:user:1:page:1</code></td></tr>
+<tr><td><code>SET [key] [val]</code></td><td>Guarda un valor sin tiempo de expiración.</td><td><code>SET nombre "Orlando"</code></td></tr>
+<tr><td><code>SETEX [key] [s] [val]</code></td><td>Guarda un valor con TTL en segundos.</td><td><code>SETEX temp 60 "dato"</code></td></tr>
+<tr><td><code>DEL [key]</code></td><td>Borra una llave manualmente.</td><td><code>DEL projects:user:1</code></td></tr>
+<tr><td><code>FLUSHALL</code></td><td><strong>¡Peligro!</strong> Borra absolutamente todo.</td><td><code>FLUSHALL</code></td></tr>
+</tbody>
+</table>
+</div>
+<h4 id="c-monitoreo-en-tiempo-real"><a class="header" href="#c-monitoreo-en-tiempo-real">C. Monitoreo en Tiempo Real</a></h4>
+<p>Si quieres ver qué está haciendo tu código de Rust en vivo, ejecuta:</p>
+<pre><code class="language-bash">MONITOR
 
-#[derive(FromRow)]
-struct User {
-    id: Uuid,
-    name: String,
-    email: String,
-}
-<span class="boring">}</span></code></pre>
-<p>Query:</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>let users: Vec&lt;User&gt; = sqlx::query_as::&lt;_, User&gt;(
-    "SELECT id, name, email FROM users"
-)
-.fetch_all(&amp;pool)
-.await?;
-<span class="boring">}</span></code></pre>
+</code></pre>
+<p><em>Cada vez que refresques tu página de proyectos, verás los comandos <code>GET</code> y <code>SET</code> pasar por la pantalla.</em></p>
 <hr>
-<h1 id="15-verificación-de-queries-en-compilación"><a class="header" href="#15-verificación-de-queries-en-compilación">15. Verificación de queries en compilación</a></h1>
-<p>SQLx puede validar queries.</p>
-<p>Primero:</p>
-<pre><code class="language-bash">cargo install sqlx-cli
-</code></pre>
-<p>Luego:</p>
-<pre><code class="language-bash">cargo sqlx prepare
-</code></pre>
-<p>Esto genera:</p>
-<pre><code>.sqlx/
-</code></pre>
-<p>Y permite compilar sin acceso a DB.</p>
+<h3 id="3-el-ciclo-de-vida-en-tu-app-workflow"><a class="header" href="#3-el-ciclo-de-vida-en-tu-app-workflow">3. El Ciclo de Vida en tu App (Workflow)</a></h3>
+<p>Tu implementación sigue el patrón <strong>Cache-Aside</strong>. Así es como se mueven los datos:</p>
+<ol>
+<li><strong>Construcción de Key:</strong> Creas un identificador único basado en variables: <code>projects:user:{user_id}:page:{page}</code>.</li>
+<li><strong>Consulta:</strong> <code>GET key</code>. Si Redis responde, saltas directamente al final.</li>
+<li><strong>Fallback:</strong> Si Redis no tiene el dato, haces <code>SELECT</code> en PostgreSQL.</li>
+<li><strong>Hidratación:</strong> Guardas el resultado en Redis con <code>SETEX</code> para que la próxima vez sea rápido.</li>
+<li><strong>Invalidación:</strong> Cuando haces un <code>UPDATE</code> o <code>DELETE</code> de un proyecto, usas <code>DEL</code> o <code>KEYS + DEL</code> para borrar el caché viejo y evitar que el usuario vea datos desactualizados.</li>
+</ol>
 <hr>
-<h1 id="16-comandos-importantes-de-sqlx-cli"><a class="header" href="#16-comandos-importantes-de-sqlx-cli">16. Comandos importantes de SQLx CLI</a></h1>
-<p>Crear migración:</p>
-<pre><code class="language-bash">sqlx migrate add nombre_migracion
-</code></pre>
-<p>Correr migraciones:</p>
-<pre><code class="language-bash">sqlx migrate run
-</code></pre>
-<p>Revertir:</p>
-<pre><code class="language-bash">sqlx migrate revert
-</code></pre>
-<p>Ver estado:</p>
-<pre><code class="language-bash">sqlx migrate info
-</code></pre>
-<p>Preparar queries:</p>
-<pre><code class="language-bash">cargo sqlx prepare
-</code></pre>
+<h3 id="4-tips-para-producción"><a class="header" href="#4-tips-para-producción">4. Tips para Producción</a></h3>
+<ul>
+<li><strong>Evita <code>KEYS *</code> en producción:</strong> Si tienes miles de usuarios, este comando puede bloquear Redis por unos milisegundos. Es mejor usar <code>SCAN</code> si necesitas listar llaves en apps muy grandes.</li>
+<li><strong>El tamaño de la llave importa:</strong> Intenta que tus llaves sean descriptivas pero no excesivamente largas para ahorrar unos bytes de RAM.</li>
+<li><strong>Serialización:</strong> Recuerda que Redis no entiende tus “Structs” de Rust. Siempre debes convertir a JSON (como ya haces con <code>serde_json</code>) antes de guardar.</li>
+</ul>
 <hr>
-<h1 id="17-estructura-típica-del-proyecto"><a class="header" href="#17-estructura-típica-del-proyecto">17. Estructura típica del proyecto</a></h1>
-<pre><code>project/
-│
-├─ migrations/
-│   ├─ 20240310120000_create_users.sql
-│
-├─ src/
-│   ├─ main.rs
-│   ├─ db.rs
-│   ├─ models.rs
-│
-├─ .env
-├─ Cargo.toml
-</code></pre>
-<hr>
-<h1 id="18-buenas-prácticas"><a class="header" href="#18-buenas-prácticas">18. Buenas prácticas</a></h1>
-<p>✔ Usar <strong>PgPool</strong> o <strong>MySqlPool</strong>
-✔ Separar <strong>queries en repositorios</strong>
-✔ Ejecutar migraciones en startup
-✔ Usar <code>query!</code> para validación compile-time
-✔ Mantener migraciones pequeñas</p>
+<h3 id="5-resumen-de-estados-del-ttl"><a class="header" href="#5-resumen-de-estados-del-ttl">5. Resumen de Estados del TTL</a></h3>
+<p>Cuando consultes el TTL de una llave (<code>TTL llave</code>), recibirás estos códigos:</p>
+<ul>
+<li><strong>Número positivo:</strong> Segundos restantes.</li>
+<li><strong>-1:</strong> La llave existe pero no tiene tiempo de expiración (es eterna).</li>
+<li><strong>-2:</strong> La llave no existe (ya expiró o nunca se creó).</li>
+</ul>
+<h1 id="21-resumen"><a class="header" href="#21-resumen">21. Resumen</a></h1>
+<p>Redis es una herramienta clave para mejorar rendimiento:</p>
+<ul>
+<li>Acceso en memoria</li>
+<li>Soporte de múltiples estructuras</li>
+<li>Integración simple con backend</li>
+<li>Ideal como capa de caché</li>
+</ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../docs/01-axum.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../docs/03-sqlx.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
@@ -464,7 +539,7 @@ struct User {
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../docs/01-axum.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../docs/03-sqlx.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
