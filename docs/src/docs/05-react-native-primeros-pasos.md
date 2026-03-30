@@ -228,8 +228,8 @@ export default function RootLayout() {
     </Stack>
   );
 }
-
 ```
+{% endraw %}
 
 **Concepto clave**: Un `Stack` es como una pila de tarjetas. Cuando navegas a una nueva pantalla, se apila encima. Cuando presionas "atrás", se remove.
 
@@ -277,9 +277,8 @@ export default function TabLayout() {
     </Tabs>
   );
 }
-
-
 ```
+{% endraw %}
 
 **Concepto clave**: Un `Tabs` Navigator muestra una barra inferior con iconos. Cada ícono representa una pantalla diferente.
 
