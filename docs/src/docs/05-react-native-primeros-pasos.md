@@ -185,6 +185,7 @@ Este archivo configura la aplicación Expo:
 
 ### 5.2 app/_layout.tsx (Layout Raíz)
 
+{% raw %}
 ```ts
 import { Stack } from 'expo-router';
 
@@ -208,7 +209,9 @@ export default function RootLayout() {
   return (
     <Stack
       screenOptions={{
+        headerStyle: { backgroundColor: '#000' },
         headerTintColor: '#fff',
+        contentStyle: { backgroundColor: '#000' },
       }}
     >
       {ROOT_STACK.map((route) => (
@@ -232,6 +235,7 @@ export default function RootLayout() {
 
 ### 5.3 app/(tabs)/_layout.tsx (Layout de Pestañas)
 
+{% raw %}
 ```ts
 import { Tabs } from "expo-router";
 import { Book, User } from "lucide-react-native";

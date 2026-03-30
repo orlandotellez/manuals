@@ -35,7 +35,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-627f8a8d.js";
+            window.path_to_searchindex_js = "../searchindex-9f8a484f.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-6498215c.js"></script>
@@ -312,6 +312,7 @@ pnpm start --clear
 }
 </code></pre>
 <h3 id="52-app_layouttsx-layout-raíz"><a class="header" href="#52-app_layouttsx-layout-raíz">5.2 app/_layout.tsx (Layout Raíz)</a></h3>
+<p>{% raw %}</p>
 <pre><code class="language-ts">import { Stack } from 'expo-router';
 
 type RootRoutes = "(tabs)";
@@ -334,7 +335,9 @@ export default function RootLayout() {
   return (
     &lt;Stack
       screenOptions={{
+        headerStyle: { backgroundColor: '#000' },
         headerTintColor: '#fff',
+        contentStyle: { backgroundColor: '#000' },
       }}
     &gt;
       {ROOT_STACK.map((route) =&gt; (
@@ -355,6 +358,7 @@ export default function RootLayout() {
 </code></pre>
 <p><strong>Concepto clave</strong>: Un <code>Stack</code> es como una pila de tarjetas. Cuando navegas a una nueva pantalla, se apila encima. Cuando presionas “atrás”, se remove.</p>
 <h3 id="53-apptabs_layouttsx-layout-de-pestañas"><a class="header" href="#53-apptabs_layouttsx-layout-de-pestañas">5.3 app/(tabs)/_layout.tsx (Layout de Pestañas)</a></h3>
+<p>{% raw %}</p>
 <pre><code class="language-ts">import { Tabs } from "expo-router";
 import { Book, User } from "lucide-react-native";
 
