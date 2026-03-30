@@ -13,6 +13,7 @@
 ## Base de datos
 - [SQLx](./docs/03-sqlx.md)
 - [Redis](./docs/04-redis.md)
+- [Prisma](./docs/06-prisma.md)
 
 ## React Native
 - [React Native Primeros Pasos](./docs/05-react-native-primeros-pasos.md)

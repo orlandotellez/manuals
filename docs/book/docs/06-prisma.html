@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>SQLx - Manuales</title>
+        <title>Prisma - Manuales</title>
 
 
         <!-- Custom HTML head -->
@@ -174,290 +174,275 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="1-instalar-sqlx-cli"><a class="header" href="#1-instalar-sqlx-cli">1. Instalar SQLx CLI</a></h1>
-<pre><code class="language-bash">cargo install sqlx-cli --no-default-features --features postgres
-</code></pre>
-<p>Esto instalará el binario <code>sqlx</code> en:</p>
-<pre><code>~/.cargo/bin/sqlx
-</code></pre>
-<p>Verifica:</p>
-<pre><code class="language-bash">sqlx --version
-</code></pre>
+                        <h1 id="guía-completa-de-prisma-6"><a class="header" href="#guía-completa-de-prisma-6">Guía completa de Prisma 6</a></h1>
+<h2 id="qué-es-prisma"><a class="header" href="#qué-es-prisma">¿Qué es Prisma?</a></h2>
+<p>Prisma es un <strong>ORM (Object-Relational Mapper)</strong> que te permite trabajar con bases de datos de forma тип safe y con una sintaxis más limpia que SQL puro. En lugar de escribir consultas SQL, trabajas con objetos JavaScript/TypeScript.</p>
 <hr>
-<h1 id="2-si-sigue-sin-funcionar"><a class="header" href="#2-si-sigue-sin-funcionar">2. Si sigue sin funcionar</a></h1>
-<p>Asegúrate de que <strong>Cargo esté en tu PATH</strong>.</p>
-<p>Comprueba:</p>
-<pre><code class="language-bash">echo $PATH
+<h2 id="instalación-inicial-desde-0"><a class="header" href="#instalación-inicial-desde-0">Instalación inicial (desde 0)</a></h2>
+<h3 id="resetear-las-migraciones"><a class="header" href="#resetear-las-migraciones">Resetear las migraciones:</a></h3>
+<pre><code class="language-bash">pnpm prisma migrate reset
 </code></pre>
-<p>Debe incluir:</p>
-<pre><code>$HOME/.cargo/bin
+<h3 id="1-instalar-las-dependencias"><a class="header" href="#1-instalar-las-dependencias">1. Instalar las dependencias</a></h3>
+<pre><code class="language-bash">pnpm add prisma @prisma/client
+pnpm add -D prisma
 </code></pre>
-<p>Si no está, añade esto a <code>~/.bashrc</code> o <code>~/.zshrc</code>:</p>
-<pre><code class="language-bash">export PATH="$HOME/.cargo/bin:$PATH"
+<h3 id="2-inicializar-prisma"><a class="header" href="#2-inicializar-prisma">2. Inicializar Prisma</a></h3>
+<pre><code class="language-bash">pnpm prisma init
 </code></pre>
-<p>Luego recarga:</p>
-<pre><code class="language-bash">source ~/.bashrc
-</code></pre>
-<p>o</p>
-<pre><code class="language-bash">source ~/.zshrc
-</code></pre>
-<hr>
-<h1 id="manual-de-sqlx-con-rust-migraciones-y-uso-básico"><a class="header" href="#manual-de-sqlx-con-rust-migraciones-y-uso-básico">Manual de SQLx con Rust (Migraciones y uso básico)</a></h1>
-<h2 id="1-qué-es-sqlx"><a class="header" href="#1-qué-es-sqlx">1. ¿Qué es SQLx?</a></h2>
-<p>SQLx es un <strong>cliente SQL asíncrono para Rust</strong> que permite interactuar con bases de datos <strong>sin ORM</strong>, usando <strong>consultas SQL reales</strong> con verificación en tiempo de compilación.</p>
-<p>Bases soportadas:</p>
+<p>Esto crea:</p>
 <ul>
-<li>PostgreSQL</li>
-<li>MySQL</li>
-<li>SQLite</li>
-<li>MSSQL (limitado)</li>
+<li><code>prisma/schema.prisma</code> - Donde defines tu modelo de datos</li>
+<li><code>.env</code> - Donde configuras la conexión a la DB</li>
 </ul>
-<p>Características principales:</p>
-<ul>
-<li>Async (usa Tokio o async-std)</li>
-<li>Verificación de queries en compilación</li>
-<li>Migraciones integradas</li>
-<li>Sin ORM pesado</li>
-</ul>
-<hr>
-<h1 id="2-instalación"><a class="header" href="#2-instalación">2. Instalación</a></h1>
-<h2 id="instalar-cli-de-sqlx"><a class="header" href="#instalar-cli-de-sqlx">Instalar CLI de SQLx</a></h2>
-<p>Necesitas el CLI para migraciones.</p>
-<pre><code class="language-bash">cargo install sqlx-cli
-</code></pre>
-<p>Con soporte para tu base de datos:</p>
-<h3 id="postgresql"><a class="header" href="#postgresql">PostgreSQL</a></h3>
-<pre><code class="language-bash">cargo install sqlx-cli --no-default-features --features postgres
-</code></pre>
-<h3 id="mysql"><a class="header" href="#mysql">MySQL</a></h3>
-<pre><code class="language-bash">cargo install sqlx-cli --no-default-features --features mysql
-</code></pre>
-<h3 id="sqlite"><a class="header" href="#sqlite">SQLite</a></h3>
-<pre><code class="language-bash">cargo install sqlx-cli --no-default-features --features sqlite
-</code></pre>
-<hr>
-<h1 id="3-crear-proyecto-rust"><a class="header" href="#3-crear-proyecto-rust">3. Crear proyecto Rust</a></h1>
-<pre><code class="language-bash">cargo new api_rust
-cd api_rust
-</code></pre>
-<hr>
-<h1 id="4-dependencias-en-cargotoml"><a class="header" href="#4-dependencias-en-cargotoml">4. Dependencias en Cargo.toml</a></h1>
-<p>Ejemplo con <strong>PostgreSQL + Tokio</strong></p>
-<pre><code class="language-toml">[dependencies]
-tokio = { version = "1", features = ["full"] }
-
-sqlx = { version = "0.7", features = [
-  "runtime-tokio",
-  "postgres",
-  "macros",
-  "migrate",
-  "uuid",
-  "chrono"
-] }
-
-dotenvy = "0.15"
-</code></pre>
-<hr>
-<h1 id="5-variables-de-entorno"><a class="header" href="#5-variables-de-entorno">5. Variables de entorno</a></h1>
-<p>Crea un archivo <code>.env</code></p>
-<pre><code>DATABASE_URL=postgres://user:password@localhost:5432/mydb
-</code></pre>
-<p>SQLx lo usa para:</p>
-<ul>
-<li>validar queries</li>
-<li>correr migraciones</li>
-</ul>
-<hr>
-<h1 id="6-crear-migraciones"><a class="header" href="#6-crear-migraciones">6. Crear migraciones</a></h1>
-<p>Inicializa migraciones:</p>
-<pre><code class="language-bash">sqlx migrate add create_users
-</code></pre>
-<p>Esto genera:</p>
-<pre><code>migrations/
-  20240310120000_create_users.sql
-</code></pre>
-<hr>
-<h1 id="7-escribir-migración"><a class="header" href="#7-escribir-migración">7. Escribir migración</a></h1>
-<p>Ejemplo:</p>
-<pre><code class="language-sql">CREATE TABLE users (
-    id UUID PRIMARY KEY,
-    name TEXT NOT NULL,
-    email TEXT UNIQUE NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT NOW()
-);
-</code></pre>
-<p>Puedes agregar también <code>DOWN</code> usando:</p>
-<pre><code class="language-sql">-- Add migration script here
-
-CREATE TABLE users (
-    id UUID PRIMARY KEY,
-    name TEXT NOT NULL
-);
-
--- Add down migration
-DROP TABLE users;
-</code></pre>
-<hr>
-<h1 id="8-ejecutar-migraciones"><a class="header" href="#8-ejecutar-migraciones">8. Ejecutar migraciones</a></h1>
-<pre><code class="language-bash">sqlx migrate run
-</code></pre>
-<p>Esto:</p>
-<ul>
-<li>crea tabla <code>_sqlx_migrations</code></li>
-<li>aplica migraciones pendientes</li>
-</ul>
-<hr>
-<h1 id="9-revertir-migración"><a class="header" href="#9-revertir-migración">9. Revertir migración</a></h1>
-<pre><code class="language-bash">sqlx migrate revert
-</code></pre>
-<p>Revierte la última migración.</p>
-<hr>
-<h1 id="10-conexión-a-la-base-de-datos"><a class="header" href="#10-conexión-a-la-base-de-datos">10. Conexión a la base de datos</a></h1>
-<p>Ejemplo básico en Rust:</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>use sqlx::postgres::PgPoolOptions;
-use sqlx::PgPool;
-
-async fn connect_db() -&gt; PgPool {
-    PgPoolOptions::new()
-        .max_connections(5)
-        .connect("postgres://user:password@localhost/mydb")
-        .await
-        .unwrap()
+<h3 id="3-configurar-el-schema-prismaschemaprisma"><a class="header" href="#3-configurar-el-schema-prismaschemaprisma">3. Configurar el schema (<code>prisma/schema.prisma</code>)</a></h3>
+<pre><code class="language-prisma">datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
-<span class="boring">}</span></code></pre>
-<hr>
-<h1 id="11-usar-migraciones-desde-rust"><a class="header" href="#11-usar-migraciones-desde-rust">11. Usar migraciones desde Rust</a></h1>
-<p>Puedes ejecutar migraciones automáticamente al iniciar.</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>use sqlx::PgPool;
 
-async fn run_migrations(pool: &amp;PgPool) {
-    sqlx::migrate!("./migrations")
-        .run(pool)
-        .await
-        .unwrap();
+generator client {
+  provider = "prisma-client-js"
 }
-<span class="boring">}</span></code></pre>
-<p>Ejemplo en <code>main</code>:</p>
-<pre class="playground"><code class="language-rust">#[tokio::main]
-async fn main() {
-    let pool = connect_db().await;
 
-    run_migrations(&amp;pool).await;
-}</code></pre>
-<hr>
-<h1 id="12-insertar-datos"><a class="header" href="#12-insertar-datos">12. Insertar datos</a></h1>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>use uuid::Uuid;
-
-sqlx::query!(
-    "INSERT INTO users (id, name, email) VALUES ($1, $2, $3)",
-    Uuid::new_v4(),
-    "Juan",
-    "juan@email.com"
-)
-.execute(&amp;pool)
-.await?;
-<span class="boring">}</span></code></pre>
-<hr>
-<h1 id="13-obtener-datos"><a class="header" href="#13-obtener-datos">13. Obtener datos</a></h1>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>let users = sqlx::query!(
-    "SELECT id, name, email FROM users"
-)
-.fetch_all(&amp;pool)
-.await?;
-<span class="boring">}</span></code></pre>
-<hr>
-<h1 id="14-usar-structs"><a class="header" href="#14-usar-structs">14. Usar structs</a></h1>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>use sqlx::FromRow;
-use uuid::Uuid;
-
-#[derive(FromRow)]
-struct User {
-    id: Uuid,
-    name: String,
-    email: String,
+// Aquí defines tus modelos/tablas
+model User {
+  id    String @id @default(uuid())
+  email String @unique
+  name  String?
 }
-<span class="boring">}</span></code></pre>
-<p>Query:</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>let users: Vec&lt;User&gt; = sqlx::query_as::&lt;_, User&gt;(
-    "SELECT id, name, email FROM users"
-)
-.fetch_all(&amp;pool)
-.await?;
-<span class="boring">}</span></code></pre>
-<hr>
-<h1 id="15-verificación-de-queries-en-compilación"><a class="header" href="#15-verificación-de-queries-en-compilación">15. Verificación de queries en compilación</a></h1>
-<p>SQLx puede validar queries.</p>
-<p>Primero:</p>
-<pre><code class="language-bash">cargo install sqlx-cli
 </code></pre>
-<p>Luego:</p>
-<pre><code class="language-bash">cargo sqlx prepare
+<h3 id="4-configurar-el-env"><a class="header" href="#4-configurar-el-env">4. Configurar el .env</a></h3>
+<pre><code class="language-env">DATABASE_URL="postgresql://usuario:password@localhost:5432/mibase?schema=public"
 </code></pre>
-<p>Esto genera:</p>
-<pre><code>.sqlx/
+<h3 id="5-generar-el-cliente-de-prisma"><a class="header" href="#5-generar-el-cliente-de-prisma">5. Generar el cliente de Prisma</a></h3>
+<pre><code class="language-bash">pnpm prisma generate
 </code></pre>
-<p>Y permite compilar sin acceso a DB.</p>
-<hr>
-<h1 id="16-comandos-importantes-de-sqlx-cli"><a class="header" href="#16-comandos-importantes-de-sqlx-cli">16. Comandos importantes de SQLx CLI</a></h1>
-<p>Crear migración:</p>
-<pre><code class="language-bash">sqlx migrate add nombre_migracion
-</code></pre>
-<p>Correr migraciones:</p>
-<pre><code class="language-bash">sqlx migrate run
-</code></pre>
-<p>Revertir:</p>
-<pre><code class="language-bash">sqlx migrate revert
-</code></pre>
-<p>Ver estado:</p>
-<pre><code class="language-bash">sqlx migrate info
-</code></pre>
-<p>Preparar queries:</p>
-<pre><code class="language-bash">cargo sqlx prepare
+<p>Esto genera el código que te permite hacer queries a la DB desde tu app.</p>
+<h3 id="6-usar-prisma-en-tu-código"><a class="header" href="#6-usar-prisma-en-tu-código">6. Usar Prisma en tu código</a></h3>
+<pre><code class="language-typescript">// prisma.ts (instancia única)
+import { PrismaClient } from "@prisma/client";
+
+export const dbPrisma = new PrismaClient();
+
+// Usar en tu código
+const users = await dbPrisma.user.findMany();
 </code></pre>
 <hr>
-<h1 id="17-estructura-típica-del-proyecto"><a class="header" href="#17-estructura-típica-del-proyecto">17. Estructura típica del proyecto</a></h1>
-<pre><code>project/
-│
-├─ migrations/
-│   ├─ 20240310120000_create_users.sql
-│
-├─ src/
-│   ├─ main.rs
-│   ├─ db.rs
-│   ├─ models.rs
-│
-├─ .env
-├─ Cargo.toml
+<h2 id="flujo-de-trabajo-típico"><a class="header" href="#flujo-de-trabajo-típico">Flujo de trabajo típico</a></h2>
+<h3 id="paso-1-definir-o-modificar-el-modelo"><a class="header" href="#paso-1-definir-o-modificar-el-modelo">Paso 1: Definir o modificar el modelo</a></h3>
+<p>Editás <code>prisma/schema.prisma</code> agregando/modificando modelos.</p>
+<pre><code class="language-prisma">model Book {
+  id        String   @id @default(uuid())
+  title     String
+  author    String?
+  pages     Int
+  createdAt DateTime @default(now())
+}
+</code></pre>
+<h3 id="paso-2-sincronizar-con-la-base-de-datos"><a class="header" href="#paso-2-sincronizar-con-la-base-de-datos">Paso 2: Sincronizar con la base de datos</a></h3>
+<p>Acá hay DOS comandos principales, y es donde siempre me confundo:</p>
+<h4 id="opción-a-prisma-db-push-rápido-para-desarrollo"><a class="header" href="#opción-a-prisma-db-push-rápido-para-desarrollo">Opción A: <code>prisma db push</code> (rápido, para desarrollo)</a></h4>
+<pre><code class="language-bash">pnpm prisma db push
+</code></pre>
+<ul>
+<li>Sincroniza el schema de Prisma con la DB</li>
+<li><strong>NO crea migraciones</strong> (no guarda historial)</li>
+<li>Es ideal para desarrollo rápido o prototipos</li>
+<li>Puede advertencia sobre pérdida de datos</li>
+</ul>
+<h4 id="opción-b-prisma-migrate-dev-para-producción"><a class="header" href="#opción-b-prisma-migrate-dev-para-producción">Opción B: <code>prisma migrate dev</code> (para producción)</a></h4>
+<pre><code class="language-bash">pnpm prisma migrate dev --name nombre_de_la_migracion
+</code></pre>
+<ul>
+<li>Crea un archivo de migración en <code>prisma/migrations/</code></li>
+<li>Guarda historial de cambios</li>
+<li><strong>Sí preserve data</strong> (más seguro)</li>
+<li>Ideal para equipos y producción</li>
+</ul>
+<h3 id="paso-3-regenerar-el-cliente"><a class="header" href="#paso-3-regenerar-el-cliente">Paso 3: Regenerar el cliente</a></h3>
+<p>Después de cada cambio en el schema:</p>
+<pre><code class="language-bash">pnpm prisma generate
+</code></pre>
+<p>Esto actualiza el código TypeScript que usás en tu app.</p>
+<hr>
+<h2 id="comandos-esenciales-de-prisma"><a class="header" href="#comandos-esenciales-de-prisma">Comandos esenciales de Prisma</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Comando</th><th>Para qué sirve</th></tr>
+</thead>
+<tbody>
+<tr><td><code>pnpm prisma init</code></td><td>Inicializar Prisma desde cero</td></tr>
+<tr><td><code>pnpm prisma generate</code></td><td>Generar el cliente (NECESARIO después de cambios)</td></tr>
+<tr><td><code>pnpm prisma db push</code></td><td>Sincronizar schema con DB (sin migraciones)</td></tr>
+<tr><td><code>pnpm prisma migrate dev</code></td><td>Crear y aplicar migración (con historial)</td></tr>
+<tr><td><code>pnpm prisma migrate deploy</code></td><td>Aplicar migraciones en producción</td></tr>
+<tr><td><code>pnpm prisma studio</code></td><td>UI visual para explorar la DB</td></tr>
+<tr><td><code>pnpm prisma db execute</code></td><td>Ejecutar SQL directamente</td></tr>
+<tr><td><code>pnpm prisma format</code></td><td>Formatear el schema.prisma</td></tr>
+<tr><td><code>pnpm prisma migrate reset</code></td><td>Eliminar las migraciones y empezar desde 0</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="el-error-común-cannot-read-properties-of-undefined"><a class="header" href="#el-error-común-cannot-read-properties-of-undefined">El error común: “Cannot read properties of undefined”</a></h2>
+<p>Este error ocurre cuando:</p>
+<ol>
+<li><strong>El servidor está corriendo con el cliente viejo</strong> - Solución: reiniciar el servidor</li>
+<li><strong>No ejecutaste <code>pnpm prisma generate</code></strong> - El cliente no tiene el modelo</li>
+<li><strong>El modelo no está en el schema.prisma</strong> - No existe la tabla定义</li>
+<li><strong>El schema no está sincronizado con la DB</strong> - Falta <code>db push</code> o <code>migrate</code></li>
+</ol>
+<h3 id="cómo-diagnosticarlo"><a class="header" href="#cómo-diagnosticarlo">Cómo diagnosticarlo:</a></h3>
+<pre><code class="language-bash"># 1. Verificar que el schema tiene el modelo
+cat prisma/schema.prisma | grep -A5 "model NombreDelModelo"
+
+# 2. Verificar que el cliente lo tiene
+grep "NombreDelModelo" node_modules/.prisma/client/index.d.ts
+
+# 3. Regenerar cliente
+pnpm prisma generate
+
+# 4. Verificar que se generó correctamente
+grep "NombreDelModelo" node_modules/.prisma/client/index.d.ts
 </code></pre>
 <hr>
-<h1 id="18-buenas-prácticas"><a class="header" href="#18-buenas-prácticas">18. Buenas prácticas</a></h1>
-<p>✔ Usar <strong>PgPool</strong> o <strong>MySqlPool</strong>
-✔ Separar <strong>queries en repositorios</strong>
-✔ Ejecutar migraciones en startup
-✔ Usar <code>query!</code> para validación compile-time
-✔ Mantener migraciones pequeñas</p>
+<h2 id="crud-básico-con-prisma"><a class="header" href="#crud-básico-con-prisma">CRUD básico con Prisma</a></h2>
+<h3 id="create-insert"><a class="header" href="#create-insert">Create (INSERT)</a></h3>
+<pre><code class="language-typescript">// Crear un registro
+const book = await dbPrisma.book.create({
+  data: {
+    title: "Cien años de soledad",
+    author: "Gabriel García Márquez",
+    pages: 417,
+  },
+});
+</code></pre>
+<h3 id="read-select"><a class="header" href="#read-select">Read (SELECT)</a></h3>
+<pre><code class="language-typescript">// Obtener todos
+const books = await dbPrisma.book.findMany();
+
+// Obtener uno por ID
+const book = await dbPrisma.book.findUnique({
+  where: { id: "uuid-del-libro" },
+});
+
+// Filtrar
+const garciaBooks = await dbPrisma.book.findMany({
+  where: { author: { contains: "García" } },
+});
+</code></pre>
+<h3 id="update-update"><a class="header" href="#update-update">Update (UPDATE)</a></h3>
+<pre><code class="language-typescript">const updatedBook = await dbPrisma.book.update({
+  where: { id: "uuid-del-libro" },
+  data: {
+    title: "Nuevo título",
+  },
+});
+</code></pre>
+<h3 id="delete-delete"><a class="header" href="#delete-delete">Delete (DELETE)</a></h3>
+<pre><code class="language-typescript">await dbPrisma.book.delete({
+  where: { id: "uuid-del-libro" },
+});
+</code></pre>
+<hr>
+<h2 id="relaciones-entre-modelos"><a class="header" href="#relaciones-entre-modelos">Relaciones entre modelos</a></h2>
+<pre><code class="language-prisma">model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  posts     Post[]   // Relación uno a muchos
+}
+
+model Post {
+  id        String   @id @default(uuid())
+  title     String
+  content   String?
+  authorId  String   // Foreign key
+  author    User     @relation(fields: [authorId], references: [id]) // Relación
+}
+</code></pre>
+<h3 id="queries-con-relaciones"><a class="header" href="#queries-con-relaciones">Queries con relaciones:</a></h3>
+<pre><code class="language-typescript">// Obtener usuario con sus posts
+const userWithPosts = await dbPrisma.user.findUnique({
+  where: { id: "uuid" },
+  include: {
+    posts: true,
+  },
+});
+</code></pre>
+<hr>
+<h2 id="casos-especiales"><a class="header" href="#casos-especiales">Casos especiales</a></h2>
+<h3 id="crear-tabla-sin-migraciones-para-desarrollo-rápido"><a class="header" href="#crear-tabla-sin-migraciones-para-desarrollo-rápido">Crear tabla sin migraciones (para desarrollo rápido)</a></h3>
+<pre><code class="language-bash">pnpm prisma db execute --stdin &lt;&lt;&lt; "CREATE TABLE IF NOT EXISTS \"MiTabla\" (id TEXT PRIMARY KEY);"
+</code></pre>
+<h3 id="agregar-columna-sin-migraciones"><a class="header" href="#agregar-columna-sin-migraciones">Agregar columna sin migraciones</a></h3>
+<pre><code class="language-bash">pnpm prisma db execute --stdin &lt;&lt;&lt; "ALTER TABLE \"Book\" ADD COLUMN IF NOT EXISTS \"nuevaColumna\" TEXT;"
+</code></pre>
+<h3 id="ver-la-db-visualmente"><a class="header" href="#ver-la-db-visualmente">Ver la DB visualmente</a></h3>
+<pre><code class="language-bash">pnpm prisma studio
+</code></pre>
+<p>Esto abre una UI en <code>http://localhost:5555</code> para ver y editar datos.</p>
+<hr>
+<h2 id="troubleshooting-común"><a class="header" href="#troubleshooting-común">Troubleshooting común</a></h2>
+<h3 id="drift-detected-la-db-no-coincide-con-las-migraciones"><a class="header" href="#drift-detected-la-db-no-coincide-con-las-migraciones">“Drift detected” (la DB no coincide con las migraciones)</a></h3>
+<p>Esto pasa cuando la DB se modificó manualmente o con <code>db push</code> pero las migraciones no están actualizadas.</p>
+<p><strong>Solución:</strong></p>
+<pre><code class="language-bash"># Opción 1: Resetear la DB (pierdes datos)
+pnpm prisma migrate reset
+
+# Opción 2: Aceptar el estado actual y crear una migración
+pnpm prisma migrate dev --name sync_current_state
+</code></pre>
+<h3 id="table-does-not-exist"><a class="header" href="#table-does-not-exist">“Table does not exist”</a></h3>
+<ol>
+<li>Verificar que el modelo está en <code>schema.prisma</code></li>
+<li>Ejecutar <code>pnpm prisma db push</code> o <code>migrate</code></li>
+<li>Ejecutar <code>pnpm prisma generate</code></li>
+</ol>
+<h3 id="el-servidor-no-reconoce-el-nuevo-modelo"><a class="header" href="#el-servidor-no-reconoce-el-nuevo-modelo">El servidor no reconoce el nuevo modelo</a></h3>
+<p><strong>Reiniciar el servidor</strong> - El cliente se carga al inicio, no se actualiza en caliente.</p>
+<hr>
+<h2 id="buenas-prácticas"><a class="header" href="#buenas-prácticas">Buenas prácticas</a></h2>
+<ol>
+<li><strong>Siempre ejecutar <code>prisma generate</code></strong> después de cambiar el schema</li>
+<li><strong>Reiniciar el servidor</strong> después de generate</li>
+<li><strong>Usar migraciones</strong> (<code>migrate dev</code>) en vez de <code>db push</code> para proyectos en equipo</li>
+<li><strong>No editar las migraciones a mano</strong> - crear nuevas en su lugar</li>
+<li><strong>Hacer backup</strong> antes de migraciones destructivas</li>
+</ol>
+<hr>
+<h2 id="estructura-de-archivos"><a class="header" href="#estructura-de-archivos">Estructura de archivos</a></h2>
+<pre><code>proyecto/
+├── prisma/
+│   ├── schema.prisma        ← Tus modelos
+│   └── migrations/          ← Historial de cambios
+│       └── 20240101_init/
+│           └── migration.sql
+├── node_modules/
+│   └── .prisma/             ← Cliente generado (NO editar)
+└── src/
+    └── tu-codigo.ts
+</code></pre>
+<hr>
+<h2 id="resumen-del-flujo-de-desarrollo"><a class="header" href="#resumen-del-flujo-de-desarrollo">Resumen del flujo de desarrollo</a></h2>
+<pre><code>1. Editás schema.prisma
+2. Ejecutás pnpm prisma generate
+3. Ejecutás pnpm prisma db push (dev) o migrate (prod)
+4. Reiniciás el servidor
+5. Usás dbPrisma.modelo.metodo() en tu código
+</code></pre>
+<p>¡Con esto ya sabés lo básico de Prisma para trabajar! 🚀</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../docs/02-axum-rasflow.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../docs/04-redis.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="../docs/04-redis.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../docs/05-react-native-primeros-pasos.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -467,11 +452,11 @@ struct User {
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../docs/02-axum-rasflow.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../docs/04-redis.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="../docs/04-redis.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../docs/05-react-native-primeros-pasos.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>
