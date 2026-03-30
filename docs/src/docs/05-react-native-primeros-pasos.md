@@ -185,7 +185,7 @@ Este archivo configura la aplicación Expo:
 
 ### 5.2 app/_layout.tsx (Layout Raíz)
 
-```tsx
+```ts
 import { Stack } from 'expo-router';
 
 type RootRoutes = "(tabs)";
@@ -234,7 +234,7 @@ export default function RootLayout() {
 
 ### 5.3 app/(tabs)/_layout.tsx (Layout de Pestañas)
 
-```tsx
+```ts
 import { Tabs } from "expo-router";
 import { Book, User } from "lucide-react-native";
 
@@ -302,7 +302,7 @@ export default function TabLayout() {
 
 1. Crea un nuevo archivo en `app/(tabs)/`, por ejemplo `settings.tsx`:
 
-```tsx
+```ts
 import { View, Text } from "react-native";
 
 export default function SettingsScreen() {
@@ -316,7 +316,7 @@ export default function SettingsScreen() {
 
 2. Actualiza `app/(tabs)/_layout.tsx` para incluir la nueva pestaña:
 
-```tsx
+```ts
 import { Settings } from "lucide-react-native"; // Importa el icono
 
 const TABS = [
@@ -330,7 +330,7 @@ const TABS = [
 
 1. Crea `app/nueva-pantalla.tsx`:
 
-```tsx
+```ts
 import { View, Text, Button } from "react-native";
 import { useRouter } from "expo-router";
 
@@ -348,7 +348,7 @@ export default function NuevaPantalla() {
 
 2. Navega desde cualquier lugar:
 
-```tsx
+```ts
 import { Button } from "react-native";
 import { useRouter } from "expo-router";
 
@@ -397,7 +397,7 @@ A diferencia de React para web (donde usas `<div>`, `<span>`, etc.), en React Na
 
 No se usa CSS. En su lugar, usas un objeto de estilo similar a CSS-in-JS:
 
-```tsx
+```ts
 import { StyleSheet, View, Text } from "react-native";
 
 export default function MiComponente() {
@@ -426,7 +426,7 @@ const styles = StyleSheet.create({
 
 expo-router maneja la navegación automáticamente basándose en la estructura de archivos. Usa el hook `useRouter` para programar navegaciones:
 
-```tsx
+```ts
 import { useRouter } from "expo-router";
 
 export default function Componente() {
@@ -447,7 +447,7 @@ export default function Componente() {
 
 Al igual que en React, los componentes pueden recibir props y tener estado:
 
-```tsx
+```ts
 import { useState } from "react";
 import { View, Text, Button } from "react-native";
 
@@ -507,7 +507,7 @@ mobile-app/
 
 Siempre tipa tus componentes y funciones:
 
-```tsx
+```ts
 // ✅ Bien
 interface BookCardProps {
   title: string;

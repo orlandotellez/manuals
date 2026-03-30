@@ -312,7 +312,7 @@ pnpm start --clear
 }
 </code></pre>
 <h3 id="52-app_layouttsx-layout-raíz"><a class="header" href="#52-app_layouttsx-layout-raíz">5.2 app/_layout.tsx (Layout Raíz)</a></h3>
-<pre><code class="language-tsx">import { Stack } from 'expo-router';
+<pre><code class="language-ts">import { Stack } from 'expo-router';
 
 type RootRoutes = "(tabs)";
 
@@ -357,7 +357,7 @@ export default function RootLayout() {
 </code></pre>
 <p><strong>Concepto clave</strong>: Un <code>Stack</code> es como una pila de tarjetas. Cuando navegas a una nueva pantalla, se apila encima. Cuando presionas “atrás”, se remove.</p>
 <h3 id="53-apptabs_layouttsx-layout-de-pestañas"><a class="header" href="#53-apptabs_layouttsx-layout-de-pestañas">5.3 app/(tabs)/_layout.tsx (Layout de Pestañas)</a></h3>
-<pre><code class="language-tsx">import { Tabs } from "expo-router";
+<pre><code class="language-ts">import { Tabs } from "expo-router";
 import { Book, User } from "lucide-react-native";
 
 type TabRoutes = "index" | "profile";
@@ -417,7 +417,7 @@ export default function TabLayout() {
 <ol>
 <li>Crea un nuevo archivo en <code>app/(tabs)/</code>, por ejemplo <code>settings.tsx</code>:</li>
 </ol>
-<pre><code class="language-tsx">import { View, Text } from "react-native";
+<pre><code class="language-ts">import { View, Text } from "react-native";
 
 export default function SettingsScreen() {
   return (
@@ -430,7 +430,7 @@ export default function SettingsScreen() {
 <ol start="2">
 <li>Actualiza <code>app/(tabs)/_layout.tsx</code> para incluir la nueva pestaña:</li>
 </ol>
-<pre><code class="language-tsx">import { Settings } from "lucide-react-native"; // Importa el icono
+<pre><code class="language-ts">import { Settings } from "lucide-react-native"; // Importa el icono
 
 const TABS = [
   { name: "index", title: "Librería", icon: Book },
@@ -442,7 +442,7 @@ const TABS = [
 <ol>
 <li>Crea <code>app/nueva-pantalla.tsx</code>:</li>
 </ol>
-<pre><code class="language-tsx">import { View, Text, Button } from "react-native";
+<pre><code class="language-ts">import { View, Text, Button } from "react-native";
 import { useRouter } from "expo-router";
 
 export default function NuevaPantalla() {
@@ -459,7 +459,7 @@ export default function NuevaPantalla() {
 <ol start="2">
 <li>Navega desde cualquier lugar:</li>
 </ol>
-<pre><code class="language-tsx">import { Button } from "react-native";
+<pre><code class="language-ts">import { Button } from "react-native";
 import { useRouter } from "expo-router";
 
 export default function MiComponente() {
@@ -502,7 +502,7 @@ pnpm expo install react-native-reanimated
 </div>
 <h3 id="72-estilos-en-react-native"><a class="header" href="#72-estilos-en-react-native">7.2 Estilos en React Native</a></h3>
 <p>No se usa CSS. En su lugar, usas un objeto de estilo similar a CSS-in-JS:</p>
-<pre><code class="language-tsx">import { StyleSheet, View, Text } from "react-native";
+<pre><code class="language-ts">import { StyleSheet, View, Text } from "react-native";
 
 export default function MiComponente() {
   return (
@@ -527,7 +527,7 @@ const styles = StyleSheet.create({
 </code></pre>
 <h3 id="73-navegación-con-expo-router"><a class="header" href="#73-navegación-con-expo-router">7.3 Navegación con expo-router</a></h3>
 <p>expo-router maneja la navegación automáticamente basándose en la estructura de archivos. Usa el hook <code>useRouter</code> para programar navegaciones:</p>
-<pre><code class="language-tsx">import { useRouter } from "expo-router";
+<pre><code class="language-ts">import { useRouter } from "expo-router";
 
 export default function Componente() {
   const router = useRouter();
@@ -544,7 +544,7 @@ export default function Componente() {
 </code></pre>
 <h3 id="74-props-y-estado"><a class="header" href="#74-props-y-estado">7.4 Props y Estado</a></h3>
 <p>Al igual que en React, los componentes pueden recibir props y tener estado:</p>
-<pre><code class="language-tsx">import { useState } from "react";
+<pre><code class="language-ts">import { useState } from "react";
 import { View, Text, Button } from "react-native";
 
 interface Props {
@@ -590,7 +590,7 @@ export default function Contador({ nombre }: Props) {
 </code></pre>
 <h3 id="83-tipado-con-typescript"><a class="header" href="#83-tipado-con-typescript">8.3 Tipado con TypeScript</a></h3>
 <p>Siempre tipa tus componentes y funciones:</p>
-<pre><code class="language-tsx">// ✅ Bien
+<pre><code class="language-ts">// ✅ Bien
 interface BookCardProps {
   title: string;
   author: string;
@@ -657,22 +657,6 @@ npx expo build:ios
         <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
         <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
         <script>
