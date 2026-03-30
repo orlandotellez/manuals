@@ -36,10 +36,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-10f1fd62.js";
+            window.path_to_searchindex_js = "searchindex-b48b5357.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-ec9a2a27.js"></script>
+        <script src="toc-6498215c.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -179,19 +179,19 @@
 <p>Mis manuales</p>
 <hr>
 <h2 id="contenidos"><a class="header" href="#contenidos">Contenidos</a></h2>
+<h2 id="rust"><a class="header" href="#rust">Rust</a></h2>
 <ul>
-<li>
-<p><a href="#manual-de-usuario-backend-rust-con-axum">Backend con Axum (techcomponents)</a></p>
-</li>
-<li>
-<p><a href="#manual-completo-backend-rasflow---rust--axum">Backend con Axum (rasflow)</a></p>
-</li>
-<li>
-<p><a href="#1-instalar-sqlx-cli">SQLx</a></p>
-</li>
-<li>
-<p><a href="#redis">Redis</a></p>
-</li>
+<li><a href="#manual-de-usuario-backend-rust-con-axum">Backend con Axum (techcomponents)</a></li>
+<li><a href="#manual-completo-backend-rasflow---rust--axum">Backend con Axum (rasflow)</a></li>
+</ul>
+<h2 id="base-de-datos"><a class="header" href="#base-de-datos">Base de datos</a></h2>
+<ul>
+<li><a href="#1-instalar-sqlx-cli">SQLx</a></li>
+<li><a href="#redis">Redis</a></li>
+</ul>
+<h2 id="react-native"><a class="header" href="#react-native">React Native</a></h2>
+<ul>
+<li><a href="#primeros-pasos---react-native">React Native Primeros Pasos</a></li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="manual-de-usuario-backend-rust-con-axum"><a class="header" href="#manual-de-usuario-backend-rust-con-axum">Manual de Usuario: Backend Rust con Axum</a></h1>
@@ -3841,6 +3841,460 @@ DEL projects:user:1:page:1
 <li>Integración simple con backend</li>
 <li>Ideal como capa de caché</li>
 </ul>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="primeros-pasos---react-native"><a class="header" href="#primeros-pasos---react-native">Primeros pasos - React Native</a></h1>
+<p>Este manual te guiará paso a paso para entender y desarrollar una aplicación de React Native desde 0. Usamos <strong>Expo</strong> con <strong>expo-router</strong>, que es la forma más moderna y recomendada de crear apps con React Native.</p>
+<hr>
+<h2 id="1-requisitos-previos-1"><a class="header" href="#1-requisitos-previos-1">1. Requisitos Previos</a></h2>
+<p>Antes de comenzar, necesitas tener instalado en tu computadora:</p>
+<h3 id="11-nodejs-versión-18-o-superior"><a class="header" href="#11-nodejs-versión-18-o-superior">1.1 Node.js (versión 18 o superior)</a></h3>
+<pre><code class="language-bash"># Verificar si tienes Node instalado
+node --version
+
+# Si no lo tienes, instálalo desde https://nodejs.org
+# O usa nvm (recomendado)
+nvm install 20
+nvm use 20
+</code></pre>
+<hr>
+<h2 id="2-instalación-del-proyecto"><a class="header" href="#2-instalación-del-proyecto">2. Instalación del Proyecto</a></h2>
+<h3 id="21-instalar-react-native"><a class="header" href="#21-instalar-react-native">2.1 Instalar react native</a></h3>
+<p>Con esto lo creamos desde 0 sin ninguna plantilla inicial</p>
+<pre><code class="language-bash">pnpx create-expo-app@latest nombre_proyecto --template blank
+cd nombre_proyect0
+</code></pre>
+<p>Con esto instalamos ya con una estructura predefinica y con typescript</p>
+<pre><code class="language-bash">pnpx create-expo-app@latest
+</code></pre>
+<h3 id="22-instalar-dependencias"><a class="header" href="#22-instalar-dependencias">2.2 Instalar dependencias</a></h3>
+<pre><code class="language-bash"># Usando pnpm (importante: no uses npm install)
+pnpm add @expo/metro-runtime@~6.1.2 expo@~54.0.33 expo-constants@~18.0.13 expo-linking@~8.0.11 expo-router@~6.0.23 expo-status-bar@~3.0.9 lucide-react-native@^1.7.0 react@19.1.0 react-dom@19.1.0 react-native@0.81.5 react-native-safe-area-context@~5.6.2 react-native-screens@~4.16.0 react-native-web@^0.21.2 &amp;&amp; pnpm add -D @types/react@~19.1.17 typescript@~5.9.3
+</code></pre>
+<p>Esto leerá el archivo <code>package.json</code> e instalará todas las dependencias listadas:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Paquete</th><th>Versión</th><th>Propósito</th></tr>
+</thead>
+<tbody>
+<tr><td>expo</td><td>~54.0.33</td><td>Framework principal</td></tr>
+<tr><td>expo-router</td><td>~6.0.23</td><td>Sistema de navegación basado en archivos</td></tr>
+<tr><td>react-native</td><td>0.81.5</td><td>Núcleo de React Native</td></tr>
+<tr><td>react</td><td>19.1.0</td><td>Biblioteca de UI</td></tr>
+<tr><td>lucide-react-native</td><td>^1.7.0</td><td>Iconos</td></tr>
+<tr><td>react-native-safe-area-context</td><td>~5.6.2</td><td>Manejo de áreas seguras (notch, etc.)</td></tr>
+<tr><td>react-native-screens</td><td>~4.16.0</td><td>Optimización de navegación</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="23-configurar-variables-de-entorno-si-es-necesario"><a class="header" href="#23-configurar-variables-de-entorno-si-es-necesario">2.3 Configurar variables de entorno (si es necesario)</a></h3>
+<p>Crea un archivo <code>.env</code> en la raíz del proyecto:</p>
+<pre><code class="language-bash"># Ejemplo de variables
+API_URL=http://localhost:3000
+</code></pre>
+<hr>
+<h2 id="3-ejecutar-la-aplicación"><a class="header" href="#3-ejecutar-la-aplicación">3. Ejecutar la Aplicación</a></h2>
+<h3 id="31-modo-desarrollo-con-expo"><a class="header" href="#31-modo-desarrollo-con-expo">3.1 Modo desarrollo con Expo</a></h3>
+<pre><code class="language-bash"># Iniciar el servidor de desarrollo
+pnpm start
+
+# O simplemente
+pnpm start --clear
+</code></pre>
+<p>Esto abrirá una interfaz en tu terminal con un código QR.</p>
+<h1 id="resetear-cache"><a class="header" href="#resetear-cache">Resetear cache</a></h1>
+<pre><code class="language-bash">pnpm expo start -c
+</code></pre>
+<h3 id="32-ejecutar-en-un-dispositivo-físico"><a class="header" href="#32-ejecutar-en-un-dispositivo-físico">3.2 Ejecutar en un dispositivo físico</a></h3>
+<ol>
+<li>Instala <strong>Expo Go</strong> en tu teléfono (disponible en App Store y Play Store)</li>
+<li>Escanea el código QR que aparece en la terminal</li>
+<li>La app se cargará automáticamente</li>
+</ol>
+<h3 id="33-ejecutar-en-android"><a class="header" href="#33-ejecutar-en-android">3.3 Ejecutar en Android</a></h3>
+<pre><code class="language-bash">pnpm android
+</code></pre>
+<p>Esto abrirá el emulador de Android (si está configurado) o te dará instrucciones.</p>
+<h3 id="34-ejecutar-en-ios-solo-macos"><a class="header" href="#34-ejecutar-en-ios-solo-macos">3.4 Ejecutar en iOS (solo macOS)</a></h3>
+<pre><code class="language-bash">pnpm ios
+</code></pre>
+<p>Requiere tener Xcode instalado y configurado.</p>
+<h3 id="35-ejecutar-en-web"><a class="header" href="#35-ejecutar-en-web">3.5 Ejecutar en Web</a></h3>
+<pre><code class="language-bash">pnpm web
+</code></pre>
+<p>La app se abrirá en tu navegador (funcionalidad limitada, no todas las APIs nativas funcionan).</p>
+<hr>
+<h2 id="4-estructura-del-proyecto"><a class="header" href="#4-estructura-del-proyecto">4. Estructura del Proyecto</a></h2>
+<p>Este proyecto sigue la <strong>File-based Routing</strong> (enrutamiento basado en archivos) de expo-router. La estructura es fundamental entenderla:</p>
+<pre><code>mobile-app/
+├── app/                      # Directorio de rutas (expo-router)
+│   ├── _layout.tsx           # Layout raíz (Stack Navigator)
+│   └── (tabs)/               # Grupo de pestañas
+│       ├── _layout.tsx       # Layout de pestañas (Tab Navigator)
+│       ├── index.tsx         # Pantalla "Librería"
+│       └── profile.tsx       # Pantalla "Perfil"
+├── assets/                   # Imágenes, fuentes, iconos
+│   ├── icon.png
+│   ├── splash-icon.png
+│   └── adaptive-icon.png
+├── app.json                  # Configuración de Expo
+├── package.json              # Dependencias y scripts
+├── tsconfig.json             # Configuración de TypeScript
+└── pnpm-lock.yaml            # Lockfile de dependencias
+</code></pre>
+<h3 id="41-anatomía-de-una-ruta"><a class="header" href="#41-anatomía-de-una-ruta">4.1 Anatomía de una ruta</a></h3>
+<p>Cada archivo <code>.tsx</code> en la carpeta <code>app/</code> representa una ruta:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Archivo</th><th>Ruta</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><code>app/_layout.tsx</code></td><td><code>/</code></td><td>Layout raíz,envuelve toda la app</td></tr>
+<tr><td><code>app/(tabs)/_layout.tsx</code></td><td><code>/</code></td><td>Layout de pestañas</td></tr>
+<tr><td><code>app/(tabs)/index.tsx</code></td><td><code>/</code></td><td>Pantalla principal (Librería)</td></tr>
+<tr><td><code>app/(tabs)/profile.tsx</code></td><td><code>/profile</code></td><td>Pantalla de perfil</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Nota</strong>: Los paréntesis en <code>(tabs)</code> son solo para agrupar lógicamente, no afectan la URL.</p>
+<hr>
+<h2 id="5-explicación-de-los-archivos-clave"><a class="header" href="#5-explicación-de-los-archivos-clave">5. Explicación de los Archivos Clave</a></h2>
+<h3 id="51-appjson"><a class="header" href="#51-appjson">5.1 app.json</a></h3>
+<p>Este archivo configura la aplicación Expo:</p>
+<pre><code class="language-json">{
+  "expo": {
+    "name": "mobile-app",
+    "slug": "mobile-app",
+    "version": "1.0.0",
+    "orientation": "portrait",      // Solo vertical
+    "icon": "./assets/icon.png",    // Icono de la app
+    "scheme": "bookteka-app",       // URL scheme para deep links
+    "userInterfaceStyle": "light",  // Tema claro
+    "newArchEnabled": true,         // Nueva arquitectura de React Native
+    "splash": { ... },              // Pantalla de carga
+    "ios": { ... },                 // Configuración iOS
+    "android": { ... },             // Configuración Android
+    "plugins": ["expo-router"]      // Plugin de navegación
+  }
+}
+</code></pre>
+<h3 id="52-app_layouttsx-layout-raíz"><a class="header" href="#52-app_layouttsx-layout-raíz">5.2 app/_layout.tsx (Layout Raíz)</a></h3>
+<pre><code class="language-tsx">import { Stack } from 'expo-router';
+
+type RootRoutes = "(tabs)";
+
+interface StackConfig {
+  name: RootRoutes;
+  headerShown: boolean;
+  title?: string;
+  presentation?: 'modal' | 'card' | 'fullScreenModal';
+}
+
+const ROOT_STACK: StackConfig[] = [
+  {
+    name: "(tabs)",
+    headerShown: false
+  },
+];
+
+export default function RootLayout() {
+  return (
+    &lt;Stack
+      screenOptions={{
+        headerStyle: { backgroundColor: '#000' },
+        headerTintColor: '#fff',
+        contentStyle: { backgroundColor: '#000' },
+      }}
+    &gt;
+      {ROOT_STACK.map((route) =&gt; (
+        &lt;Stack.Screen
+          key={route.name}
+          name={route.name}
+          options={{
+            headerShown: route.headerShown,
+            title: route.title,
+            presentation: route.presentation,
+          }}
+        /&gt;
+      ))}
+    &lt;/Stack&gt;
+  );
+}
+
+</code></pre>
+<p><strong>Concepto clave</strong>: Un <code>Stack</code> es como una pila de tarjetas. Cuando navegas a una nueva pantalla, se apila encima. Cuando presionas “atrás”, se remove.</p>
+<h3 id="53-apptabs_layouttsx-layout-de-pestañas"><a class="header" href="#53-apptabs_layouttsx-layout-de-pestañas">5.3 app/(tabs)/_layout.tsx (Layout de Pestañas)</a></h3>
+<pre><code class="language-tsx">import { Tabs } from "expo-router";
+import { Book, User } from "lucide-react-native";
+
+type TabRoutes = "index" | "profile";
+
+interface TabConfig {
+  name: TabRoutes;
+  title: string;
+  icon: typeof Book;
+}
+
+const TABS: TabConfig[] = [
+  { name: "index", title: "Librería", icon: Book },
+  { name: "profile", title: "Perfil", icon: User },
+];
+
+export default function TabLayout() {
+  return (
+    &lt;Tabs
+      screenOptions={{
+        headerShown: true,
+        tabBarStyle: { backgroundColor: '#000' },
+        tabBarActiveTintColor: '#fff',
+      }}
+    &gt;
+      {TABS.map((tab) =&gt; (
+        &lt;Tabs.Screen
+          key={tab.name}
+          name={tab.name}
+          options={{
+            title: tab.title,
+            tabBarIcon: ({ color, size }) =&gt; (
+              &lt;tab.icon color={color} size={size} /&gt;
+            ),
+          }}
+        /&gt;
+      ))}
+    &lt;/Tabs&gt;
+  );
+}
+
+
+</code></pre>
+<p><strong>Concepto clave</strong>: Un <code>Tabs</code> Navigator muestra una barra inferior con iconos. Cada ícono representa una pantalla diferente.</p>
+<h3 id="54-packagejson---scripts-disponibles"><a class="header" href="#54-packagejson---scripts-disponibles">5.4 package.json - Scripts disponibles</a></h3>
+<pre><code class="language-json">{
+  "scripts": {
+    "start": "expo start",          // Iniciar servidor dev
+    "android": "expo start --Android", // Ejecutar en Android
+    "ios": "expo start --ios",      // Ejecutar en iOS
+    "web": "expo start --web"       // Ejecutar en web
+  }
+}
+</code></pre>
+<hr>
+<h2 id="6-cómo-agregar-nuevas-funcionalidades"><a class="header" href="#6-cómo-agregar-nuevas-funcionalidades">6. Cómo Agregar Nuevas Funcionalidades</a></h2>
+<h3 id="61-agregar-una-nueva-pestaña"><a class="header" href="#61-agregar-una-nueva-pestaña">6.1 Agregar una nueva pestaña</a></h3>
+<ol>
+<li>Crea un nuevo archivo en <code>app/(tabs)/</code>, por ejemplo <code>settings.tsx</code>:</li>
+</ol>
+<pre><code class="language-tsx">import { View, Text } from "react-native";
+
+export default function SettingsScreen() {
+  return (
+    &lt;View&gt;
+      &lt;Text&gt;Configuración&lt;/Text&gt;
+    &lt;/View&gt;
+  );
+}
+</code></pre>
+<ol start="2">
+<li>Actualiza <code>app/(tabs)/_layout.tsx</code> para incluir la nueva pestaña:</li>
+</ol>
+<pre><code class="language-tsx">import { Settings } from "lucide-react-native"; // Importa el icono
+
+const TABS = [
+  { name: "index", title: "Librería", icon: Book },
+  { name: "profile", title: "Perfil", icon: User },
+  { name: "settings", title: "Ajustes", icon: Settings }, // Nueva pestaña
+];
+</code></pre>
+<h3 id="62-agregar-una-nueva-pantalla-no-tabs"><a class="header" href="#62-agregar-una-nueva-pantalla-no-tabs">6.2 Agregar una nueva pantalla (no tabs)</a></h3>
+<ol>
+<li>Crea <code>app/nueva-pantalla.tsx</code>:</li>
+</ol>
+<pre><code class="language-tsx">import { View, Text, Button } from "react-native";
+import { useRouter } from "expo-router";
+
+export default function NuevaPantalla() {
+  const router = useRouter();
+
+  return (
+    &lt;View&gt;
+      &lt;Text&gt;¡Hola desde una nueva pantalla!&lt;/Text&gt;
+      &lt;Button title="Volver" onPress={() =&gt; router.back()} /&gt;
+    &lt;/View&gt;
+  );
+}
+</code></pre>
+<ol start="2">
+<li>Navega desde cualquier lugar:</li>
+</ol>
+<pre><code class="language-tsx">import { Button } from "react-native";
+import { useRouter } from "expo-router";
+
+export default function MiComponente() {
+  const router = useRouter();
+
+  return (
+    &lt;Button 
+      title="Ir a nueva pantalla" 
+      onPress={() =&gt; router.push("/nueva-pantalla")} 
+    /&gt;
+  );
+}
+</code></pre>
+<h3 id="63-instalar-nuevas-dependencias"><a class="header" href="#63-instalar-nuevas-dependencias">6.3 Instalar nuevas dependencias</a></h3>
+<pre><code class="language-bash"># Instalar un paquete compatible con Expo
+pnpm expo install nombre-del-paquete
+
+# Por ejemplo, para agregar animations
+pnpm expo install react-native-reanimated
+</code></pre>
+<p><strong>Importante</strong>: Siempre usa <code>pnpm expo install</code> en lugar de <code>pnpm install</code> directamente. Esto asegura que la versión sea compatible con tu SDK de Expo.</p>
+<hr>
+<h2 id="7-conceptos-fundamentales-que-debes-dominar"><a class="header" href="#7-conceptos-fundamentales-que-debes-dominar">7. Conceptos Fundamentales que Debes Dominar</a></h2>
+<h3 id="71-componentes-de-react-native"><a class="header" href="#71-componentes-de-react-native">7.1 Componentes de React Native</a></h3>
+<p>A diferencia de React para web (donde usas <code>&lt;div&gt;</code>, <code>&lt;span&gt;</code>, etc.), en React Native usas componentes específicos:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>React Web</th><th>React Native</th><th>Uso</th></tr>
+</thead>
+<tbody>
+<tr><td><code>&lt;div&gt;</code></td><td><code>&lt;View&gt;</code></td><td>Contenedor</td></tr>
+<tr><td><code>&lt;span&gt;</code> / <code>&lt;p&gt;</code></td><td><code>&lt;Text&gt;</code></td><td>Texto</td></tr>
+<tr><td><code>&lt;button&gt;</code></td><td><code>&lt;Button&gt;</code></td><td>Botón básico</td></tr>
+<tr><td><code>&lt;img&gt;</code></td><td><code>&lt;Image&gt;</code></td><td>Imágenes</td></tr>
+<tr><td><code>&lt;input&gt;</code></td><td><code>&lt;TextInput&gt;</code></td><td>Campos de texto</td></tr>
+<tr><td><code>&lt;a&gt;</code></td><td><code>&lt;Link&gt;</code> (de expo-router)</td><td>Enlaces</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="72-estilos-en-react-native"><a class="header" href="#72-estilos-en-react-native">7.2 Estilos en React Native</a></h3>
+<p>No se usa CSS. En su lugar, usas un objeto de estilo similar a CSS-in-JS:</p>
+<pre><code class="language-tsx">import { StyleSheet, View, Text } from "react-native";
+
+export default function MiComponente() {
+  return (
+    &lt;View style={styles.contenedor}&gt;
+      &lt;Text style={styles.titulo}&gt;Hola&lt;/Text&gt;
+    &lt;/View&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  contenedor: {
+    flex: 1,
+    backgroundColor: "#fff",
+    padding: 16,
+  },
+  titulo: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#000",
+  },
+});
+</code></pre>
+<h3 id="73-navegación-con-expo-router"><a class="header" href="#73-navegación-con-expo-router">7.3 Navegación con expo-router</a></h3>
+<p>expo-router maneja la navegación automáticamente basándose en la estructura de archivos. Usa el hook <code>useRouter</code> para programar navegaciones:</p>
+<pre><code class="language-tsx">import { useRouter } from "expo-router";
+
+export default function Componente() {
+  const router = useRouter();
+
+  // Navegar a una ruta
+  router.push("/ruta");
+  
+  // Navegar con parámetros
+  router.push("/libro/123");
+  
+  // Volver atrás
+  router.back();
+}
+</code></pre>
+<h3 id="74-props-y-estado"><a class="header" href="#74-props-y-estado">7.4 Props y Estado</a></h3>
+<p>Al igual que en React, los componentes pueden recibir props y tener estado:</p>
+<pre><code class="language-tsx">import { useState } from "react";
+import { View, Text, Button } from "react-native";
+
+interface Props {
+  nombre: string;
+}
+
+export default function Contador({ nombre }: Props) {
+  const [contador, setContador] = useState(0);
+
+  return (
+    &lt;View&gt;
+      &lt;Text&gt;{nombre}: {contador}&lt;/Text&gt;
+      &lt;Button title="Incrementar" onPress={() =&gt; setContador(c =&gt; c + 1)} /&gt;
+    &lt;/View&gt;
+  );
+}
+</code></pre>
+<hr>
+<h2 id="8-buenas-prácticas"><a class="header" href="#8-buenas-prácticas">8. Buenas Prácticas</a></h2>
+<h3 id="81-estructura-recomendada-para-una-app-más-grande"><a class="header" href="#81-estructura-recomendada-para-una-app-más-grande">8.1 Estructura recomendada para una app más grande</a></h3>
+<p>A medida que el proyecto crece, organiza tu código así:</p>
+<pre><code>app/
+├── (tabs)/              # Rutas de pestañas
+│   ├── _layout.tsx
+│   ├── index.tsx
+│   └── profile.tsx
+├── (stack)/             # Rutas apiladas (modal, etc.)
+│   ├── _layout.tsx
+│   ├── detalle-libro.tsx
+│   └── editar-perfil.tsx
+├── _layout.tsx          # Layout raíz
+└── +not-found.tsx      # Pantalla 404
+</code></pre>
+<h3 id="82-componentes-reutilizables"><a class="header" href="#82-componentes-reutilizables">8.2 Componentes reutilizables</a></h3>
+<p>Crea una carpeta <code>components/</code> fuera de <code>app/</code>:</p>
+<pre><code>mobile-app/
+├── app/
+├── components/
+│   ├── Button.tsx
+│   ├── Card.tsx
+│   └── Input.tsx
+└── ...
+</code></pre>
+<h3 id="83-tipado-con-typescript"><a class="header" href="#83-tipado-con-typescript">8.3 Tipado con TypeScript</a></h3>
+<p>Siempre tipa tus componentes y funciones:</p>
+<pre><code class="language-tsx">// ✅ Bien
+interface BookCardProps {
+  title: string;
+  author: string;
+  coverUrl?: string;
+}
+
+export function BookCard({ title, author, coverUrl }: BookCardProps) {
+  // ...
+}
+
+// ❌ Evitar
+export function BookCard(props) {
+  // ...
+}
+</code></pre>
+<h3 id="84-no-modifiques-node_modules"><a class="header" href="#84-no-modifiques-node_modules">8.4 No modifiques node_modules</a></h3>
+<p>Nunca edites archivos dentro de <code>node_modules</code>. Si necesitas personalizar algo, haz un componente propio o ejectua el proyecto.</p>
+<hr>
+<h2 id="9-comandos-útiles"><a class="header" href="#9-comandos-útiles">9. Comandos Útiles</a></h2>
+<pre><code class="language-bash"># Limpiar cache y reinstallar
+pnpm start --clear
+
+pnpm expo start -c
+
+# Ver información del proyecto Expo
+npx expo info
+
+# Actualizar Expo a la última versión
+pnpm expo upgrade
+
+# Generar build de producción (Android)
+npx expo build:android
+
+# Generar build de producción (iOS)
+npx expo build:ios
+</code></pre>
 
                     </main>
 
@@ -3865,22 +4319,6 @@ DEL projects:user:1:page:1
         <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
         <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
         <script>
