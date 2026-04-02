@@ -92,6 +92,71 @@ services:
 
 ---
 
+## 5.1 Homeserver.yaml 
+
+El homeserver.yaml se encuentra dentro de la carpeta ./data, es la configuración para el servidor de synapse
+
+```yaml
+server_name: "local.local"
+
+pid_file: /data/homeserver.pid
+
+listeners:
+  - port: 8008
+    resources:
+    - compress: false
+      names:
+      - client
+      - federation
+    tls: false
+    type: http
+    x_forwarded: true
+
+# Configuración de la base de datos Postgres
+database:
+  name: psycopg2
+  args:
+    user: synapse
+    password: synapse
+    database: synapse
+    host: db
+    port: 5432
+    cp_min: 5
+    cp_max: 10
+
+log_config: "/data/local.local.log.config"
+media_store_path: /data/media_store
+registration_shared_secret: "agzZr3A@K:QLY;w&NgHSkFd=ta#Gh.cWGjFUxwNlxTn:GE*U1L"
+report_stats: false
+macaroon_secret_key: "Cq~_UyzI-@BC~W94@SuXoeX=U3P+MP:n+VQW79xsPzOb8MXp6s"
+form_secret: "UaN@OxK04RT@QMeiRWO87jA^dLvt2@PgO2B8PoM:4bOu+a~dVz"
+signing_key_path: "/data/local.local.signing.key"
+trusted_key_servers:
+  - server_name: "local.local"
+
+# config extra
+enable_registration: true # en producción poner en false
+enable_registration_without_verification: true # en producción poner en false
+
+## todo estos valores son para las pruebas, en producción modificar cada valor
+rc_login:
+ address:
+    per_second: 1000
+    burst_count: 1000
+ account:
+    per_second: 1000
+    burst_count: 1000
+ failed_attempts:
+    per_second: 1000
+    burst_count: 1000
+
+## sirve para activar la busqueda de usuarios que hay en el servidor
+user_directory:
+    enabled: true
+    search_all_users: true
+user_directory_search_enabled: true
+```
+
 ## 6. Levantar los servicios
 
 ```bash
