@@ -3,8 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Page not found - Manuales</title>
-        <base href="/">
+        <title>Matrix Synapse - Manuales</title>
 
 
         <!-- Custom HTML head -->
@@ -13,33 +12,33 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="favicon-de23e50b.svg">
-        <link rel="shortcut icon" href="favicon-8114d1fc.png">
-        <link rel="stylesheet" href="css/variables-8adf115d.css">
-        <link rel="stylesheet" href="css/general-2459343d.css">
-        <link rel="stylesheet" href="css/chrome-ae938929.css">
-        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
-        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
-        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
 
         <!-- Custom theme stylesheets -->
 
 
         <!-- Provide site root and default themes to javascript -->
         <script>
-            const path_to_root = "";
+            const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-0442915f.js";
+            window.path_to_searchindex_js = "../searchindex-0442915f.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-476bf6d3.js"></script>
+        <script src="../toc-476bf6d3.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -106,7 +105,7 @@
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
-                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
             </noscript>
             <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -141,7 +140,7 @@
                     <h1 class="menu-title">Manuales</h1>
 
                     <div class="right-buttons">
-                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
                             <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
                         </a>
 
@@ -175,13 +174,286 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="document-not-found-404"><a class="header" href="#document-not-found-404">Document not found (404)</a></h1>
-<p>This URL is invalid, sorry. Please use the navigation bar or search to continue.</p>
+                        <h1 id="guía-completa-instalación-y-configuración-de-matrix-synapse-con-docker"><a class="header" href="#guía-completa-instalación-y-configuración-de-matrix-synapse-con-docker">Guía Completa: Instalación y Configuración de Matrix Synapse con Docker</a></h1>
+<h2 id="1-requisitos-previos"><a class="header" href="#1-requisitos-previos">1. Requisitos previos</a></h2>
+<ul>
+<li>Sistema basado en Linux (Ubuntu recomendado)</li>
+<li>Acceso con privilegios <code>sudo</code></li>
+<li>Conexión a internet</li>
+<li>Un dominio o IP pública/local (ej: <code>example.com</code> o <code>192.168.0.9</code>)</li>
+</ul>
+<hr>
+<h2 id="2-instalación-de-docker-y-docker-compose"><a class="header" href="#2-instalación-de-docker-y-docker-compose">2. Instalación de Docker y Docker Compose</a></h2>
+<p>Actualizar el sistema e instalar Docker:</p>
+<pre><code class="language-bash">sudo apt update &amp;&amp; sudo apt upgrade -y
+sudo apt install docker.io docker-compose -y
+sudo systemctl enable docker --now
+</code></pre>
+<p>Verificar instalación:</p>
+<pre><code class="language-bash">docker --version
+docker compose version
+</code></pre>
+<hr>
+<h2 id="3-crear-el-proyecto"><a class="header" href="#3-crear-el-proyecto">3. Crear el proyecto</a></h2>
+<pre><code class="language-bash">mkdir -p ~/matrix-synapse
+cd ~/matrix-synapse
+</code></pre>
+<hr>
+<h2 id="4-generar-configuración-inicial-de-synapse"><a class="header" href="#4-generar-configuración-inicial-de-synapse">4. Generar configuración inicial de Synapse</a></h2>
+<p>Crear la configuración base en la carpeta <code>data</code>:</p>
+<pre><code class="language-bash">sudo docker run -it --rm \
+  -v $(pwd)/data:/data \
+  -e SYNAPSE_SERVER_NAME=example.com \
+  -e SYNAPSE_REPORT_STATS=no \
+  matrixdotorg/synapse:latest generate
+</code></pre>
+<p>Notas importantes:</p>
+<ul>
+<li><code>SYNAPSE_SERVER_NAME</code> debe ser tu dominio o IP (ej: <code>192.168.0.9</code>).</li>
+<li>Este valor será el identificador del servidor Matrix.</li>
+<li>Todos los usuarios tendrán formato: <code>@usuario:dominio</code>.</li>
+</ul>
+<hr>
+<h2 id="5-configurar-docker-compose"><a class="header" href="#5-configurar-docker-compose">5. Configurar Docker Compose</a></h2>
+<p>Crear archivo <code>docker-compose.yml</code>:</p>
+<pre><code class="language-yaml">services:
+  db:
+    image: postgres:15
+    container_name: synapse_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: synapse
+      POSTGRES_PASSWORD: synapse
+      POSTGRES_DB: synapse
+      POSTGRES_INITDB_ARGS: "--locale=C --encoding=UTF8"
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+
+  synapse:
+    image: matrixdotorg/synapse:latest
+    container_name: synapse
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - "8008:8008"
+    volumes:
+      - ./data:/data
+    environment:
+      SYNAPSE_SERVER_NAME: example.com
+      SYNAPSE_REPORT_STATS: "no"
+</code></pre>
+<hr>
+<h2 id="6-levantar-los-servicios"><a class="header" href="#6-levantar-los-servicios">6. Levantar los servicios</a></h2>
+<pre><code class="language-bash">docker compose up -d
+</code></pre>
+<p>Ver logs en caso de errores:</p>
+<pre><code class="language-bash">sudo docker logs synapse
+</code></pre>
+<hr>
+<h2 id="7-permisos-de-archivos"><a class="header" href="#7-permisos-de-archivos">7. Permisos de archivos</a></h2>
+<p>Si el servidor no inicia correctamente:</p>
+<pre><code class="language-bash">sudo chown -R 991:991 ./data
+</code></pre>
+<p>Para edición manual (uso no recomendado en producción):</p>
+<pre><code class="language-bash">sudo chmod -R 777 ./data
+</code></pre>
+<h3 id="explicación"><a class="header" href="#explicación">Explicación:</a></h3>
+<ul>
+<li><code>chown</code>: cambia propietario</li>
+<li><code>-R</code>: recursivo</li>
+<li><code>991:991</code>: UID/GID usado por Synapse</li>
+</ul>
+<hr>
+<h2 id="8-gestión-de-usuarios"><a class="header" href="#8-gestión-de-usuarios">8. Gestión de usuarios</a></h2>
+<h3 id="crear-usuario-administrador"><a class="header" href="#crear-usuario-administrador">Crear usuario administrador</a></h3>
+<pre><code class="language-bash">sudo docker exec -it synapse register_new_matrix_user http://example.com:8008 \
+  -c /data/homeserver.yaml \
+  --user admin \
+  --password admin1234 \
+  --admin
+</code></pre>
+<h3 id="crear-usuario-normal"><a class="header" href="#crear-usuario-normal">Crear usuario normal</a></h3>
+<pre><code class="language-bash">docker exec -it synapse register_new_matrix_user http://example.com:8008 \
+  -c /data/homeserver.yaml
+</code></pre>
+<hr>
+<h2 id="9-api-de-matrix"><a class="header" href="#9-api-de-matrix">9. API de Matrix</a></h2>
+<h3 id="registro-de-usuario"><a class="header" href="#registro-de-usuario">Registro de usuario</a></h3>
+<p>Endpoint:</p>
+<pre><code>POST /_matrix/client/r0/register
+</code></pre>
+<p>Ejemplo:</p>
+<pre><code class="language-json">{
+  "username": "user",
+  "password": "MiContraseñaSegura123",
+  "auth": {
+    "type": "m.login.dummy"
+  }
+}
+</code></pre>
+<p>Respuesta:</p>
+<pre><code class="language-json">{
+  "user_id": "@user:example.com",
+  "home_server": "example.com",
+  "access_token": "TOKEN",
+  "device_id": "DEVICE_ID"
+}
+</code></pre>
+<hr>
+<h3 id="buscar-usuarios"><a class="header" href="#buscar-usuarios">Buscar usuarios</a></h3>
+<pre><code class="language-bash">curl -X POST \
+  -H "Authorization: Bearer &lt;ACCESS_TOKEN&gt;" \
+  -H "Content-Type: application/json" \
+  -d '{"search_term": "user"}' \
+  http://example.com:8008/_matrix/client/v3/user_directory/search
+</code></pre>
+<hr>
+<h3 id="login"><a class="header" href="#login">Login</a></h3>
+<pre><code class="language-bash">curl -XPOST -d '{
+  "type":"m.login.password",
+  "user":"@user:example.com",
+  "password":"MiContraseñaSegura123"
+}' "http://example.com:8008/_matrix/client/v3/login"
+</code></pre>
+<hr>
+<h2 id="10-media-archivos"><a class="header" href="#10-media-archivos">10. Media (archivos)</a></h2>
+<p>Matrix utiliza el esquema <strong>MXC</strong>:</p>
+<pre><code>mxc://&lt;servidor&gt;/&lt;media_id&gt;
+</code></pre>
+<p>Ejemplo:</p>
+<pre><code>mxc://10.0.29.5/sVHEUTqLjstMoeAtAVAYqpSV
+</code></pre>
+<hr>
+<h3 id="subida-de-archivos"><a class="header" href="#subida-de-archivos">Subida de archivos</a></h3>
+<pre><code class="language-bash">curl -XPOST "http://example.com:8008/_matrix/media/v3/upload?filename=prueba.jpg" \
+  -H "Authorization: Bearer &lt;ACCESS_TOKEN&gt;" \
+  -H "Content-Type: image/jpeg" \
+  --data-binary "@prueba.jpg"
+</code></pre>
+<hr>
+<h3 id="descarga-de-archivos"><a class="header" href="#descarga-de-archivos">Descarga de archivos</a></h3>
+<p>Se usa el endpoint v1:</p>
+<pre><code class="language-bash">curl -H "Authorization: Bearer &lt;ACCESS_TOKEN&gt;" \
+"http://example.com:8008/_matrix/client/v1/media/download/example.com/jKcbjjsJIJWclQOzNrPq" \
+-o file.jpg
+</code></pre>
+<p>El <code>media_id</code> corresponde al identificador almacenado en disco en:</p>
+<pre><code>data/media_store/local_content/
+</code></pre>
+<hr>
+<h2 id="11-estructura-de-almacenamiento"><a class="header" href="#11-estructura-de-almacenamiento">11. Estructura de almacenamiento</a></h2>
+<p>Ejemplo:</p>
+<pre><code>data/
+ ┣ media_store/
+ ┃ ┗ local_content/
+ ┃   ┣ ER/
+ ┃   ┃ ┗ iF/
+ ┃   ┃   ┗ archivo_id
+ ┃   ┗ Wz/
+ ┃     ┗ vO/
+ ┃       ┗ otro_archivo_id
+ ┣ homeserver.yaml
+ ┣ signing.key
+ ┗ logs
+</code></pre>
+<hr>
+<h2 id="12-relación-entre-base-de-datos-y-archivos"><a class="header" href="#12-relación-entre-base-de-datos-y-archivos">12. Relación entre base de datos y archivos</a></h2>
+<ul>
+<li>La base de datos almacena <strong>metadatos</strong></li>
+<li>El disco almacena los <strong>archivos reales</strong></li>
+<li>El campo <code>media_id</code> conecta ambos</li>
+</ul>
+<p>Consultar media:</p>
+<pre><code class="language-bash">sudo docker exec -it synapse_db psql -U synapse -d synapse -c "SELECT * FROM local_media_repository;"
+</code></pre>
+<hr>
+<h3 id="ejemplo-de-consulta-de-usuarios"><a class="header" href="#ejemplo-de-consulta-de-usuarios">Ejemplo de consulta de usuarios</a></h3>
+<pre><code class="language-bash">sudo docker exec -it synapse_db psql -U synapse -d synapse -c "SELECT name, admin FROM users;"
+</code></pre>
+<hr>
+<h3 id="fecha-de-creación-de-usuarios"><a class="header" href="#fecha-de-creación-de-usuarios">Fecha de creación de usuarios</a></h3>
+<pre><code class="language-bash">sudo docker exec -it synapse_db psql -U synapse -d synapse -c "
+SELECT
+  name,
+  to_timestamp(creation_ts) AT TIME ZONE 'America/Managua' AS creation_date
+FROM users;"
+</code></pre>
+<hr>
+<h2 id="13-reconfigurar-base-de-datos"><a class="header" href="#13-reconfigurar-base-de-datos">13. Reconfigurar base de datos</a></h2>
+<p>Eliminar y recrear:</p>
+<pre><code class="language-sql">DROP DATABASE IF EXISTS synapse;
+
+CREATE DATABASE synapse
+WITH OWNER = synapse
+ENCODING = 'UTF8'
+LC_COLLATE = 'C'
+LC_CTYPE = 'C'
+TEMPLATE = template0;
+</code></pre>
+<p>Reiniciar servicios:</p>
+<pre><code class="language-bash">docker compose down
+docker compose up -d
+</code></pre>
+<hr>
+<h2 id="14-problemas-comunes"><a class="header" href="#14-problemas-comunes">14. Problemas comunes</a></h2>
+<h3 id="error-de-permisos-en-media"><a class="header" href="#error-de-permisos-en-media">Error de permisos en media</a></h3>
+<p>Solución:</p>
+<pre><code class="language-bash">sudo docker exec -it synapse_db psql -U synapse -d synapse -c "
+UPDATE local_media_repository
+SET safe_from_quarantine = true;"
+</code></pre>
+<hr>
+<h2 id="15-generar-access-token"><a class="header" href="#15-generar-access-token">15. Generar access token</a></h2>
+<pre><code class="language-bash">curl -XPOST "http://example.com:8008/_matrix/client/v3/login" \
+-H "Content-Type: application/json" \
+-d '{
+  "type": "m.login.password",
+  "user": "user",
+  "password": "MiContraseñaSegura123"
+}'
+</code></pre>
+<p>Uso en requests:</p>
+<pre><code>Authorization: Bearer &lt;ACCESS_TOKEN&gt;
+</code></pre>
+<hr>
+<h2 id="16-consultar-información-de-usuario-admin"><a class="header" href="#16-consultar-información-de-usuario-admin">16. Consultar información de usuario (admin)</a></h2>
+<pre><code class="language-bash">curl -H "Authorization: Bearer &lt;ACCESS_TOKEN&gt;" \
+http://example.com:8008/_synapse/admin/v1/whois/@user:example.com
+</code></pre>
+<hr>
+<h2 id="17-listar-archivos-en-una-room"><a class="header" href="#17-listar-archivos-en-una-room">17. Listar archivos en una room</a></h2>
+<pre><code class="language-bash">curl -X GET "http://example.com:8008/_synapse/admin/v1/room/!ROOM_ID:example.com/media?access_token=&lt;ACCESS_TOKEN&gt;"
+</code></pre>
+<hr>
+<h1 id="notas-finales"><a class="header" href="#notas-finales">Notas finales</a></h1>
+<ul>
+<li>
+<p>Usa siempre el mismo <code>SYNAPSE_SERVER_NAME</code> en toda la configuración.</p>
+</li>
+<li>
+<p>Ese valor define:</p>
+<ul>
+<li>Identidad del servidor</li>
+<li>Dominio Matrix</li>
+<li>Namespace de usuarios</li>
+</ul>
+</li>
+<li>
+<p>El almacenamiento de media depende directamente de ese nombre.</p>
+</li>
+<li>
+<p>La base de datos solo referencia los archivos, no los contiene.</p>
+</li>
+</ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../docs/05-react-native-primeros-pasos.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
 
 
                         <div style="clear: both"></div>
@@ -190,6 +462,9 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../docs/05-react-native-primeros-pasos.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
 
             </nav>
 
@@ -208,13 +483,13 @@
         </script>
 
 
-        <script src="elasticlunr-ef4e11c1.min.js"></script>
-        <script src="mark-09e88c2c.min.js"></script>
-        <script src="searcher-c2a407aa.js"></script>
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
 
-        <script src="clipboard-1626706a.min.js"></script>
-        <script src="highlight-abc7f01d.js"></script>
-        <script src="book-a0b12cfe.js"></script>
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
 
         <!-- Custom JS scripts -->
 

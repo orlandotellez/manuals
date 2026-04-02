@@ -17,3 +17,6 @@
 
 ## React Native
 - [React Native Primeros Pasos](./docs/05-react-native-primeros-pasos.md)
+
+## Matrix Synapse
+- [Matrix Synapse](./docs/07-matrix-synapse.md)
