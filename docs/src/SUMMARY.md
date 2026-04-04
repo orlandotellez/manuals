@@ -20,3 +20,4 @@
 
 ## Matrix Synapse
 - [Matrix Synapse](./docs/07-matrix-synapse.md)
+- [Matrix TypeScript implementation](./docs/08-matrix-typescript-implementation.md)

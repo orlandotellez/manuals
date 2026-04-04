@@ -36,10 +36,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-cc62e1c6.js";
+            window.path_to_searchindex_js = "searchindex-5caa8d17.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-476bf6d3.js"></script>
+        <script src="toc-a00d3c07.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -197,6 +197,7 @@
 <h2 id="matrix-synapse"><a class="header" href="#matrix-synapse">Matrix Synapse</a></h2>
 <ul>
 <li><a href="#guía-completa-instalación-y-configuración-de-matrix-synapse-con-docker">Matrix Synapse</a></li>
+<li><a href="#manual-de-matrix---implementación-custom">Matrix TypeScript implementation</a></li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="manual-de-usuario-backend-rust-con-axum"><a class="header" href="#manual-de-usuario-backend-rust-con-axum">Manual de Usuario: Backend Rust con Axum</a></h1>
@@ -4896,6 +4897,1579 @@ http://example.com:8008/_synapse/admin/v1/whois/@user:example.com
 <li>
 <p>La base de datos solo referencia los archivos, no los contiene.</p>
 </li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="manual-de-matrix---implementación-custom"><a class="header" href="#manual-de-matrix---implementación-custom">MANUAL DE MATRIX - Implementación Custom</a></h1>
+<p>Este documento explica cómo funciona la integración con Matrix en esta app, sin usar el SDK oficial (matrix-js-sdk). Se usa la <strong>REST API</strong> directamente.</p>
+<hr>
+<h2 id="1-arquitectura-general"><a class="header" href="#1-arquitectura-general">1. ARQUITECTURA GENERAL</a></h2>
+<p>La app se conecta a un servidor <strong>Matrix Synapse</strong> usando la REST API v3. No hay conexión directa WebSocket - el tiempo real se maneja mediante <strong>long polling</strong> al endpoint <code>/sync</code>.</p>
+<h3 id="componentes-principales"><a class="header" href="#componentes-principales">Componentes principales:</a></h3>
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│                      app/ (Pantallas)                       │
+│  [Login] [Chats List] [Chat Screen] [Contacts]             │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    features/ (Context &amp; Hooks)              │
+│  ChatContext  │  AuthContext  │  useRoomMessages          │
+│  useSyncLoop                                                │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    services/matrix/ (API)                   │
+│  auth.ts  │  rooms.ts  │  messages.ts  │  sync.ts         │
+│  profile.ts  │  users.ts  │  timeline.ts                   │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    shared/types/ (TypeScript)               │
+│  matrixEvent.ts  │  matrixSync.ts  │  matrixRoom.d.ts    │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    Matrix Synapse Server                    │
+│              http://192.168.0.8:8008                        │
+└─────────────────────────────────────────────────────────────┘
+</code></pre>
+<hr>
+<h2 id="2-tipos-de-datos-types"><a class="header" href="#2-tipos-de-datos-types">2. TIPOS DE DATOS (Types)</a></h2>
+<h3 id="21-matrixsession-matrixsessiondts"><a class="header" href="#21-matrixsession-matrixsessiondts">2.1 MatrixSession (<code>matrixSession.d.ts</code>)</a></h3>
+<pre><code class="language-typescript">interface MatrixSession {
+  access_token: string;  // Token de acceso para autenticación
+  user_id: string;      // UserID del usuario (ej: @usuario:server.com)
+  device_id: string;    // ID del dispositivo
+  home_server: string;  // Servidor Matrix (ej: local.local)
+}
+</code></pre>
+<p>Esta estructura se obtiene cuando el usuario hace <strong>login</strong> exitosamente. El <code>access_token</code> es requerido en TODAS las peticiones a la API.</p>
+<h3 id="22-matrixevent-matrixeventts"><a class="header" href="#22-matrixevent-matrixeventts">2.2 MatrixEvent (<code>matrixEvent.ts</code>)</a></h3>
+<pre><code class="language-typescript">interface MatrixEvent {
+  type: string;                    // Tipo de evento (m.room.message, m.room.member, etc.)
+  sender: string;                  // UserID de quien envió el evento
+  content: Record&lt;string, unknown&gt;; // Contenido del evento (body, msgtype, etc.)
+  event_id: string;                // ID único del evento
+  room_id?: string;                // ID de la sala (room) donde ocurrió el evento
+  origin_server_ts?: number;      // Timestamp del servidor (unix epoch ms)
+  unsigned?: Record&lt;string, unknown&gt;; // Datos adicionales
+  redacts?: string;               // Si es una eliminación, ID del evento eliminado
+  ["m.relates_to"]?: {            // Para ediciones de mensajes
+    rel_type?: string;             // "m.replace" = edición
+    event_id?: string;             // ID del mensaje original
+  };
+}
+</code></pre>
+<p><strong>Tipos de eventos importantes:</strong></p>
+<ul>
+<li><code>m.room.message</code> - Mensaje de chat</li>
+<li><code>m.room.member</code> - Cambio de membresía (un usuario entra/sale)</li>
+<li><code>m.room.redaction</code> - Eliminación de mensaje</li>
+<li><code>m.room.name</code> - Nombre de la sala</li>
+<li><code>m.room.avatar</code> - Avatar de la sala</li>
+</ul>
+<h3 id="23-syncresponse-matrixsyncts"><a class="header" href="#23-syncresponse-matrixsyncts">2.3 SyncResponse (<code>matrixSync.ts</code>)</a></h3>
+<pre><code class="language-typescript">interface SyncResponse {
+  next_batch: string;              // Token para la siguiente llamada (crucial!)
+  rooms?: {
+    join?: Record&lt;string, RoomData&gt;;    // Salas donde el usuario está unido
+    invite?: Record&lt;string, InvitedRoomData&gt;; // Salas donde hay invitación pendiente
+    leave?: Record&lt;string, RoomData&gt;;   // Salas que el usuario abandonó
+  };
+  presence?: Record&lt;string, unknown&gt;;
+  account_data?: Record&lt;string, unknown&gt;;
+  to_device?: Record&lt;string, unknown&gt;;
+  device_list?: Record&lt;string, unknown&gt;;
+}
+
+interface RoomData {
+  timeline?: {
+    limited?: boolean;             // Si hay más eventos disponibles
+    events: MatrixEvent[];         // Eventos del timeline (mensajes nuevos)
+  };
+  state?: {
+    events: MatrixEvent[];        // Estado actual de la sala
+  };
+  ephemeral?: {
+    events: MatrixEvent[];        // Eventos efímeros (typing, receipts)
+  };
+  unread_notification_count?: number;
+}
+</code></pre>
+<h3 id="24-chatroom-matrixroomdts"><a class="header" href="#24-chatroom-matrixroomdts">2.4 ChatRoom (<code>matrixRoom.d.ts</code>)</a></h3>
+<pre><code class="language-typescript">interface ChatRoom {
+  room_id: string;
+  name?: string;                   // Nombre de la sala (para grupos)
+  avatar?: string;
+  members: RoomMember[];         // Miembros de la sala
+  isDirect: boolean;             // true = chat directo, false = grupo
+  otherUser?: {                  // Para DMs, información del otro usuario
+    user_id: string;
+    displayname: string;
+  };
+  isInvite?: boolean;            // true = invitación pendiente
+}
+
+interface InvitedRoom {
+  room_id: string;
+  inviter_user_id?: string;       // UserID de quien invitó
+  inviter_name?: string;          // Display name del que invitó
+}
+</code></pre>
+<hr>
+<h2 id="3-servicios-api-rest"><a class="header" href="#3-servicios-api-rest">3. SERVICIOS (API REST)</a></h2>
+<h3 id="31-autenticación-authts"><a class="header" href="#31-autenticación-authts">3.1 Autenticación (<code>auth.ts</code>)</a></h3>
+<h4 id="registeruserusername-password"><a class="header" href="#registeruserusername-password"><code>registerUser(username, password)</code></a></h4>
+<p><strong>Endpoint:</strong> <code>POST /_matrix/client/v3/register</code></p>
+<p><strong>Propósito:</strong> Crear un nuevo usuario en el servidor Matrix.</p>
+<p><strong>Código:</strong></p>
+<pre><code class="language-typescript">import { ENV } from "../../shared/constants/env";
+import { MatrixSession } from "../../shared/types/matrix";
+
+export const registerUser = async (username: string, password: string): Promise&lt;MatrixSession&gt; =&gt; {
+  try {
+    const resMatrix = await fetch(`${ENV.MATRIX_URL}/_matrix/client/v3/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username,
+        password,
+        auth: {
+          type: "m.login.dummy",
+        },
+      }),
+    });
+
+    const session = await resMatrix.json();
+    return session;
+  } catch (err) {
+    console.error("registerUser error:", err);
+    throw err;
+  }
+};
+</code></pre>
+<p><strong>Observaciones:</strong> Requiere que el servidor permita registro público o esté configurado para ello.</p>
+<hr>
+<h4 id="loginuserusername-password"><a class="header" href="#loginuserusername-password"><code>loginUser(username, password)</code></a></h4>
+<p><strong>Endpoint:</strong> <code>POST /_matrix/client/v3/login</code></p>
+<p><strong>Propósito:</strong> Iniciar sesión y obtener token de acceso.</p>
+<p><strong>Código:</strong></p>
+<pre><code class="language-typescript">export const loginUser = async (username: string, password: string) =&gt; {
+  try {
+    const res = await fetch(`${ENV.MATRIX_URL}/_matrix/client/v3/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        type: "m.login.password",
+        identifier: {
+          type: "m.id.user",
+          user: username,
+        },
+        password,
+      }),
+    });
+
+    const session = await res.json();
+
+    if (!res.ok) {
+      throw new Error(session.error || "Error al iniciar sesión");
+    }
+
+    return session;
+  } catch (err) {
+    console.error("loginUser error:", err);
+    throw err;
+  }
+};
+</code></pre>
+<p><strong>Respuesta:</strong> <code>MatrixSession</code> con <code>access_token</code>, <code>user_id</code>, <code>device_id</code>, <code>home_server</code></p>
+<hr>
+<h3 id="32-salasroom-roomsts"><a class="header" href="#32-salasroom-roomsts">3.2 Salas/Room (<code>rooms.ts</code>)</a></h3>
+<h4 id="createdirectchatuserid-token"><a class="header" href="#createdirectchatuserid-token"><code>createDirectChat(userId, token)</code></a></h4>
+<p><strong>Endpoint:</strong> <code>POST /_matrix/client/v3/createRoom</code></p>
+<p><strong>Propósito:</strong> Crear un chat directo (DM) con otro usuario.</p>
+<p><strong>Código:</strong></p>
+<pre><code class="language-typescript">export const createDirectChat = async (
+  userId: string,
+  token: string
+): Promise&lt;string&gt; =&gt; {
+  try {
+    const res = await fetch(
+      `${ENV.MATRIX_URL}/_matrix/client/v3/createRoom`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          invite: [userId],
+          is_direct: true,
+          preset: "trusted_private_chat",
+        }),
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "Error creando chat directo");
+    }
+
+    return data.room_id;
+  } catch (err) {
+    console.error("createDirectChat error:", err);
+    throw err;
+  }
+};
+</code></pre>
+<hr>
+<h4 id="getjoinedroomstoken"><a class="header" href="#getjoinedroomstoken"><code>getJoinedRooms(token)</code></a></h4>
+<p><strong>Endpoint:</strong> <code>GET /_matrix/client/v3/joined_rooms</code></p>
+<p><strong>Propósito:</strong> Obtener lista de salas donde el usuario está unido.</p>
+<p><strong>Código:</strong></p>
+<pre><code class="language-typescript">export const getJoinedRooms = async (token: string) =&gt; {
+  try {
+    const res = await fetch(
+      `${ENV.MATRIX_URL}/_matrix/client/v3/joined_rooms`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "Error obteniendo salas");
+    }
+
+    return data.joined_rooms || [];
+  } catch (err) {
+    console.error("getJoinedRooms error:", err);
+    throw err;
+  }
+};
+</code></pre>
+<hr>
+<h4 id="getinvitedroomstoken-since"><a class="header" href="#getinvitedroomstoken-since"><code>getInvitedRooms(token, since?)</code></a></h4>
+<p><strong>Endpoint:</strong> <code>GET /_matrix/client/v3/sync</code></p>
+<p><strong>Propósito:</strong> Obtener salas donde el usuario tiene invitación pendiente.</p>
+<p><strong>Código:</strong></p>
+<pre><code class="language-typescript">export const getInvitedRooms = async (token: string, since?: string): Promise&lt;InvitedRoom[]&gt; =&gt; {
+  try {
+    const url = new URL(`${ENV.MATRIX_URL}/_matrix/client/v3/sync`);
+
+    // timeout=0 → respuesta inmediata (sin long polling)
+    url.searchParams.set('timeout', '0');
+
+    // since → permite obtener solo cambios desde la última sync
+    if (since) {
+      url.searchParams.set('since', since);
+    }
+
+    // filter → pedimos SOLO las invitaciones (no toda la data de rooms)
+    url.searchParams.set('filter', JSON.stringify({
+      rooms: {
+        invite: true
+      }
+    }));
+
+    const res = await fetch(url.toString(), {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      console.error("getInvitedRooms error:", data);
+      return [];
+    }
+
+    const invitedRooms: InvitedRoom[] = [];
+
+    if (data.rooms?.invite) {
+      for (const [roomId, roomData] of Object.entries(data.rooms.invite)) {
+        const inviteState = (roomData as any).invite_state;
+        const events = inviteState?.events || [];
+
+        // Buscar evento de invitación
+        const memberEvent = events.find((e: any) =&gt;
+          e.type === 'm.room.member' &amp;&amp; e.content?.membership === 'invite'
+        );
+
+        const inviterUserId = memberEvent?.sender;
+
+        // Buscar evento del invitador unido a la sala
+        const inviterMemberEvent = events.find((e: any) =&gt;
+          e.type === 'm.room.member' &amp;&amp;
+          e.content?.membership === 'join' &amp;&amp;
+          e.state_key === inviterUserId
+        );
+
+        const inviterName =
+          inviterMemberEvent?.content?.displayname || inviterUserId || null;
+
+        invitedRooms.push({
+          room_id: roomId,
+          inviter_user_id: inviterUserId,
+          inviter_name: inviterName,
+        });
+      }
+    }
+
+    return invitedRooms;
+  } catch (err) {
+    console.error("getInvitedRooms error:", err);
+    return [];
+  }
+};
+</code></pre>
+<hr>
+<h4 id="getroommembersroomid-token"><a class="header" href="#getroommembersroomid-token"><code>getRoomMembers(roomId, token)</code></a></h4>
+<p><strong>Endpoint:</strong> <code>GET /_matrix/client/v3/rooms/{roomId}/members</code></p>
+<p><strong>Propósito:</strong> Obtener todos los miembros de una sala.</p>
+<p><strong>Código:</strong></p>
+<pre><code class="language-typescript">export const getRoomMembers = async (roomId: string, token: string) =&gt; {
+  try {
+    const res = await fetch(
+      `${ENV.MATRIX_URL}/_matrix/client/v3/rooms/${encodeURIComponent(roomId)}/members`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "Error obteniendo miembros");
+    }
+
+    return data.chunk || [];
+  } catch (err) {
+    console.error("getRoomMembers error:", err);
+    throw err;
+  }
+};
+</code></pre>
+<hr>
+<h4 id="getroomnameroomid-token"><a class="header" href="#getroomnameroomid-token"><code>getRoomName(roomId, token)</code></a></h4>
+<p><strong>Endpoint:</strong> <code>GET /_matrix/client/v3/rooms/{roomId}/state/m.room.name</code></p>
+<p><strong>Propósito:</strong> Obtener el nombre de una sala.</p>
+<p><strong>Código:</strong></p>
+<pre><code class="language-typescript">export const getRoomName = async (roomId: string, token: string) =&gt; {
+  try {
+    const res = await fetch(
+      `${ENV.MATRIX_URL}/_matrix/client/v3/rooms/${encodeURIComponent(roomId)}/state/m.room.name`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      return null; // The room may not have a name
+    }
+
+    return data.name || null;
+  } catch (err) {
+    console.error("getRoomName error:", err);
+    return null;
+  }
+};
+</code></pre>
+<hr>
+<h4 id="joinroomroomid-token"><a class="header" href="#joinroomroomid-token"><code>joinRoom(roomId, token)</code></a></h4>
+<p><strong>Endpoint:</strong> <code>POST /_matrix/client/v3/rooms/{roomId}/join</code></p>
+<p><strong>Propósito:</strong> Unirse a una sala (aceptar invitación).</p>
+<p><strong>Código:</strong></p>
+<pre><code class="language-typescript">export const joinRoom = async (roomId: string, token: string) =&gt; {
+  try {
+    const res = await fetch(
+      `${ENV.MATRIX_URL}/_matrix/client/v3/rooms/${encodeURIComponent(roomId)}/join`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({}),
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "Error uniéndose a la sala");
+    }
+
+    return data.room_id;
+  } catch (err) {
+    console.error("joinRoom error:", err);
+    throw err;
+  }
+};
+</code></pre>
+<hr>
+<h4 id="leaveroomroomid-token"><a class="header" href="#leaveroomroomid-token"><code>leaveRoom(roomId, token)</code></a></h4>
+<p><strong>Endpoint:</strong> <code>POST /_matrix/client/v3/rooms/{roomId}/leave</code></p>
+<p><strong>Propósito:</strong> Abandonar una sala.</p>
+<p><strong>Código:</strong></p>
+<pre><code class="language-typescript">export const leaveRoom = async (roomId: string, token: string) =&gt; {
+  try {
+    const res = await fetch(
+      `${ENV.MATRIX_URL}/_matrix/client/v3/rooms/${encodeURIComponent(roomId)}/leave`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({}),
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "Error abandonando la sala");
+    }
+
+    return true;
+  } catch (err) {
+    console.error("leaveRoom error:", err);
+    throw err;
+  }
+};
+</code></pre>
+<hr>
+<h4 id="rejectinviteroomid-token"><a class="header" href="#rejectinviteroomid-token"><code>rejectInvite(roomId, token)</code></a></h4>
+<p><strong>Endpoint:</strong> <code>POST /_matrix/client/v3/rooms/{roomId}/leave</code></p>
+<p><strong>Propósito:</strong> Rechazar una invitación.</p>
+<p><strong>Código:</strong></p>
+<pre><code class="language-typescript">export const rejectInvite = async (roomId: string, token: string) =&gt; {
+  try {
+    const res = await fetch(
+      `${ENV.MATRIX_URL}/_matrix/client/v3/rooms/${encodeURIComponent(roomId)}/leave`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          reason: "Rejected invitation",
+        }),
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "Error rechazando la invitación");
+    }
+
+    return true;
+  } catch (err) {
+    console.error("rejectInvite error:", err);
+    throw err;
+  }
+};
+</code></pre>
+<hr>
+<h3 id="33-mensajes-messagests"><a class="header" href="#33-mensajes-messagests">3.3 Mensajes (<code>messages.ts</code>)</a></h3>
+<h4 id="sendroommessageroomid-token-body-msgtype"><a class="header" href="#sendroommessageroomid-token-body-msgtype"><code>sendRoomMessage(roomId, token, body, msgtype)</code></a></h4>
+<p><strong>Endpoint:</strong> <code>PUT /_matrix/client/v3/rooms/{roomId}/send/m.room.message/{txnId}</code></p>
+<p><strong>Propósito:</strong> Enviar un mensaje a una sala.</p>
+<p><strong>Código:</strong></p>
+<pre><code class="language-typescript">export const sendRoomMessage = async (
+  roomId: string,
+  token: string,
+  body: string,
+  msgtype: string = "m.text"
+): Promise&lt;string | null&gt; =&gt; {
+  try {
+    // Generar transaction ID único para evitar duplicados
+    const txnId = `m${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+    const res = await fetch(
+      `${ENV.MATRIX_URL}/_matrix/client/v3/rooms/${encodeURIComponent(roomId)}/send/m.room.message/${txnId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          msgtype,
+          body,
+        }),
+      }
+    );
+
+    if (!res.ok) {
+      const error = await res.json();
+      console.error("[sendRoomMessage] Error:", error);
+      return null;
+    }
+
+    const data = await res.json();
+    return data.event_id;
+  } catch (err) {
+    console.error("[sendRoomMessage] Network error:", err);
+    return null;
+  }
+};
+</code></pre>
+<hr>
+<h4 id="getroommessagesroomid-token-direction-from-limit"><a class="header" href="#getroommessagesroomid-token-direction-from-limit"><code>getRoomMessages(roomId, token, direction, from, limit)</code></a></h4>
+<p><strong>Endpoint:</strong> <code>GET /_matrix/client/v3/rooms/{roomId}/messages</code></p>
+<p><strong>Propósito:</strong> Obtener historial de mensajes de una sala con paginación.</p>
+<p><strong>Código:</strong></p>
+<pre><code class="language-typescript">export const getRoomMessages = async (
+  roomId: string,
+  token: string,
+  direction: "b" | "f" = "b",
+  from?: string,
+  limit: number = 20
+): Promise&lt;{
+  messages: MatrixEvent[];
+  endCursor: string | null;
+  hasMore: boolean;
+}&gt; =&gt; {
+  try {
+    const url = new URL(
+      `${ENV.MATRIX_URL}/_matrix/client/v3/rooms/${encodeURIComponent(roomId)}/messages`
+    );
+
+    url.searchParams.set("dir", direction);
+    url.searchParams.set("limit", String(limit));
+
+    if (from) {
+      url.searchParams.set("from", from);
+    }
+
+    const res = await fetch(url.toString(), {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      const error = await res.json();
+      console.error("[getRoomMessages] Error:", error);
+      return { messages: [], endCursor: null, hasMore: false };
+    }
+
+    const data = await res.json();
+
+    return {
+      messages: data.chunk || [],
+      endCursor: data.end || null,
+      hasMore: data.chunk?.length === limit,
+    };
+  } catch (err) {
+    console.error("[getRoomMessages] Network error:", err);
+    return { messages: [], endCursor: null, hasMore: false };
+  }
+};
+</code></pre>
+<hr>
+<h4 id="redactmessageroomid-eventid-token-reason"><a class="header" href="#redactmessageroomid-eventid-token-reason"><code>redactMessage(roomId, eventId, token, reason?)</code></a></h4>
+<p><strong>Endpoint:</strong> <code>PUT /_matrix/client/v3/rooms/{roomId}/redact/{eventId}</code></p>
+<p><strong>Propósito:</strong> Eliminar/ocultar un mensaje.</p>
+<p><strong>Código:</strong></p>
+<pre><code class="language-typescript">export const redactMessage = async (
+  roomId: string,
+  eventId: string,
+  token: string,
+  reason?: string
+): Promise&lt;boolean&gt; =&gt; {
+  try {
+    const res = await fetch(
+      `${ENV.MATRIX_URL}/_matrix/client/v3/rooms/${encodeURIComponent(roomId)}/redact/${encodeURIComponent(eventId)}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          reason,
+        }),
+      }
+    );
+
+    if (!res.ok) {
+      const error = await res.json();
+      console.error("[redactMessage] Error:", error);
+      return false;
+    }
+
+    return true;
+  } catch (err) {
+    console.error("[redactMessage] Network error:", err);
+    return false;
+  }
+};
+</code></pre>
+<hr>
+<h3 id="34-sync--tiempo-real-syncts"><a class="header" href="#34-sync--tiempo-real-syncts">3.4 Sync / Tiempo Real (<code>sync.ts</code>)</a></h3>
+<h4 id="matrixsyncoptions"><a class="header" href="#matrixsyncoptions"><code>matrixSync(options)</code></a></h4>
+<p><strong>Endpoint:</strong> <code>GET /_matrix/client/v3/sync</code></p>
+<p><strong>Propósito:</strong> El endpoint principal para tiempo real. Implementa <strong>long polling</strong>.</p>
+<p><strong>Código:</strong></p>
+<pre><code class="language-typescript">const DEFAULT_TIMEOUT = 30000;
+const DEFAULT_FILTER = {
+  room: {
+    timeline: {
+      limit: 50,
+      lazy_load_members: true,
+    },
+    state: {
+      lazy_load_members: true,
+    },
+  },
+  presence: {
+    send: [],
+  },
+};
+
+export const matrixSync = async (options: SyncOptions): Promise&lt;SyncResponse | null&gt; =&gt; {
+  const { token, since, timeout = DEFAULT_TIMEOUT, setPresence = "online" } = options;
+
+  try {
+    const url = new URL(`${ENV.MATRIX_URL}/_matrix/client/v3/sync`);
+
+    url.searchParams.set("timeout", String(timeout));
+
+    if (since) {
+      url.searchParams.set("since", since);
+    }
+
+    url.searchParams.set("filter", JSON.stringify(DEFAULT_FILTER));
+    url.searchParams.set("set_presence", setPresence);
+
+    const res = await fetch(url.toString(), {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      const error = await res.json();
+      console.error("[matrixSync] Error response:", error);
+      return null;
+    }
+
+    const data = await res.json();
+    return data as SyncResponse;
+  } catch (err) {
+    console.error("[matrixSync] Network error:", err);
+    return null;
+  }
+};
+</code></pre>
+<p><strong>Cómo funciona el long polling:</strong></p>
+<ol>
+<li>Llamamos con <code>timeout=30000</code> (30 segundos)</li>
+<li>El servidor espera hasta 30 segundos si no hay eventos nuevos</li>
+<li>Cuando hay eventos (o timeout), devuelve la respuesta</li>
+<li>Inmediatamente hacemos otra llamada con <code>since={next_batch}</code></li>
+<li>Este ciclo continuo permite tiempo real sin WebSockets</li>
+</ol>
+<hr>
+<h4 id="processsyncresponsesyncdata-currentuserid"><a class="header" href="#processsyncresponsesyncdata-currentuserid"><code>processSyncResponse(syncData, currentUserId)</code></a></h4>
+<p><strong>Propósito:</strong> Procesar la respuesta del sync y extraer información útil.</p>
+<p><strong>Código:</strong></p>
+<pre><code class="language-typescript">export const processSyncResponse = (
+  syncData: SyncResponse,
+  currentUserId: string
+): {
+  newMessages: Map&lt;string, MatrixEvent[]&gt;;
+  newInvites: string[];
+  joinedRooms: string[];
+  leftRooms: string[];
+} =&gt; {
+  const newMessages = new Map&lt;string, MatrixEvent[]&gt;();
+  const newInvites: string[] = [];
+  const joinedRooms: string[] = [];
+  const leftRooms: string[] = [];
+
+  if (syncData.rooms?.join) {
+    for (const [roomId, roomData] of Object.entries(syncData.rooms.join)) {
+      const timelineEvents = roomData.timeline?.events || [];
+      const messageEvents = timelineEvents.filter(
+        (e) =&gt;
+          e.type === "m.room.message" &amp;&amp;
+          e.sender !== currentUserId
+      );
+
+      if (messageEvents.length &gt; 0) {
+        newMessages.set(roomId, messageEvents);
+      }
+
+      joinedRooms.push(roomId);
+    }
+  }
+
+  if (syncData.rooms?.invite) {
+    for (const roomId of Object.keys(syncData.rooms.invite)) {
+      newInvites.push(roomId);
+    }
+  }
+
+  if (syncData.rooms?.leave) {
+    for (const roomId of Object.keys(syncData.rooms.leave)) {
+      leftRooms.push(roomId);
+    }
+  }
+
+  return {
+    newMessages,
+    newInvites,
+    joinedRooms,
+    leftRooms,
+  };
+};
+</code></pre>
+<hr>
+<h3 id="35-perfil-profilets"><a class="header" href="#35-perfil-profilets">3.5 Perfil (<code>profile.ts</code>)</a></h3>
+<h4 id="getprofileuserid-token"><a class="header" href="#getprofileuserid-token"><code>getProfile(userId, token)</code></a></h4>
+<p><strong>Endpoint:</strong> <code>GET /_matrix/client/v3/profile/{userId}</code></p>
+<p><strong>Código:</strong></p>
+<pre><code class="language-typescript">export const getProfile = async (userId: string, token: string) =&gt; {
+  try {
+    const res = await fetch(
+      `${ENV.MATRIX_URL}/_matrix/client/v3/profile/${encodeURIComponent(userId)}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "Error obteniendo perfil");
+    }
+
+    return {
+      displayName: data.displayname || "",
+      avatarUrl: data.avatar_url || "",
+    };
+  } catch (err) {
+    console.error("getProfile error:", err);
+    throw err;
+  }
+};
+</code></pre>
+<hr>
+<h4 id="setdisplaynameuserid-token-displayname"><a class="header" href="#setdisplaynameuserid-token-displayname"><code>setDisplayName(userId, token, displayName)</code></a></h4>
+<p><strong>Endpoint:</strong> <code>PUT /_matrix/client/v3/profile/{userId}/displayname</code></p>
+<p><strong>Código:</strong></p>
+<pre><code class="language-typescript">export const setDisplayName = async (
+  userId: string,
+  token: string,
+  displayName: string
+): Promise&lt;IUserProfile&gt; =&gt; {
+  try {
+    const res = await fetch(
+      `${ENV.MATRIX_URL}/_matrix/client/v3/profile/${encodeURIComponent(userId)}/displayname`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          displayname: displayName,
+        }),
+      }
+    );
+
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.error || "Error al guardar nombre");
+    }
+    const profile = await res.json();
+
+    return profile;
+  } catch (err) {
+    console.error("setDisplayName error:", err);
+    throw err;
+  }
+};
+</code></pre>
+<hr>
+<h4 id="uploadavatarfile-token"><a class="header" href="#uploadavatarfile-token"><code>uploadAvatar(file, token)</code></a></h4>
+<p><strong>Endpoint:</strong> <code>POST /_matrix/media/v3/upload</code></p>
+<p><strong>Código:</strong></p>
+<pre><code class="language-typescript">export const uploadAvatar = async (
+  file: Blob,
+  token: string
+): Promise&lt;string&gt; =&gt; {
+  try {
+    const res = await fetch(`${ENV.MATRIX_URL}/_matrix/media/v3/upload`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "image/jpeg",
+      },
+      body: file,
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "Error subiendo imagen");
+    }
+
+    return data.content_uri;
+  } catch (err) {
+    console.error("uploadAvatar error:", err);
+    throw err;
+  }
+};
+</code></pre>
+<hr>
+<h4 id="setavataruserid-token-avatarurl"><a class="header" href="#setavataruserid-token-avatarurl"><code>setAvatar(userId, token, avatarUrl)</code></a></h4>
+<p><strong>Endpoint:</strong> <code>PUT /_matrix/client/v3/profile/{userId}/avatar_url</code></p>
+<p><strong>Código:</strong></p>
+<pre><code class="language-typescript">export const setAvatar = async (
+  userId: string,
+  token: string,
+  avatarUrl: string
+) =&gt; {
+  try {
+    const res = await fetch(
+      `${ENV.MATRIX_URL}/_matrix/client/v3/profile/${encodeURIComponent(userId)}/avatar_url`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          avatar_url: avatarUrl,
+        }),
+      }
+    );
+
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.error || "Error seteando avatar");
+    }
+  } catch (err) {
+    console.error("setAvatar error:", err);
+    throw err;
+  }
+};
+</code></pre>
+<hr>
+<h3 id="36-búsqueda-de-usuarios-usersts"><a class="header" href="#36-búsqueda-de-usuarios-usersts">3.6 Búsqueda de Usuarios (<code>users.ts</code>)</a></h3>
+<h4 id="searchuserssearchterm-token"><a class="header" href="#searchuserssearchterm-token"><code>searchUsers(searchTerm, token)</code></a></h4>
+<p><strong>Endpoint:</strong> <code>POST /_matrix/client/v3/user_directory/search</code></p>
+<p><strong>Código:</strong></p>
+<pre><code class="language-typescript">export const searchUsers = async (searchTerm: string, token: string) =&gt; {
+  try {
+    const res = await fetch(
+      `${ENV.MATRIX_URL}/_matrix/client/v3/user_directory/search`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          search_term: searchTerm,
+          limit: 20,
+        }),
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "Error buscando usuarios");
+    }
+
+    return data.results || [];
+  } catch (err) {
+    console.error("searchUsers error:", err);
+    throw err;
+  }
+};
+</code></pre>
+<hr>
+<h3 id="37-timeline-timelinets"><a class="header" href="#37-timeline-timelinets">3.7 Timeline (<code>timeline.ts</code>)</a></h3>
+<h4 id="processtimelineeventevent-currentuserid"><a class="header" href="#processtimelineeventevent-currentuserid"><code>processTimelineEvent(event, currentUserId)</code></a></h4>
+<p><strong>Propósito:</strong> Procesar un evento de timeline y normalizarlo.</p>
+<p><strong>Código:</strong></p>
+<pre><code class="language-typescript">export const processTimelineEvent = (
+  event: MatrixEvent,
+  currentUserId: string
+): {
+  type: "message" | "redaction" | "member" | "call" | "other";
+  data: MatrixTimeline;
+} | null =&gt; {
+  const { type, sender, content, event_id, roomId, origin_server_ts } = event;
+
+  if (type === "m.room.message") {
+    return {
+      type: "message",
+      data: {
+        eventId: event_id,
+        roomId,
+        sender,
+        body: (content.body as string) || "",
+        msgtype: content.msgtype as string,
+        timestamp: origin_server_ts || Date.now(),
+      },
+    };
+  }
+
+  if (type === "m.room.redaction") {
+    return {
+      type: "redaction",
+      data: {
+        eventId: event_id,
+        roomId,
+        sender,
+        body: "",
+        timestamp: origin_server_ts || Date.now(),
+        redacts: event.redacts,
+      },
+    };
+  }
+
+  if (type === "m.room.member") {
+    const newMember = {
+      userId: (content as any).state_key || sender,
+      membership: (content as any).membership || "join",
+      displayname: (content as any).displayname,
+    };
+
+    return {
+      type: "member",
+      data: {
+        eventId: event_id,
+        roomId,
+        sender,
+        body: "",
+        timestamp: origin_server_ts || Date.now(),
+        newMember,
+      },
+    };
+  }
+
+  if (type.startsWith("m.call.")) {
+    return {
+      type: "call",
+      data: {
+        eventId: event_id,
+        roomId,
+        sender,
+        body: "",
+        timestamp: origin_server_ts || Date.now(),
+      },
+    };
+  }
+
+  return {
+    type: "other",
+    data: {
+      eventId: event_id,
+      roomId,
+      sender,
+      body: "",
+      timestamp: origin_server_ts || Date.now(),
+    },
+  };
+};
+</code></pre>
+<hr>
+<h2 id="4-hooks-personalizados"><a class="header" href="#4-hooks-personalizados">4. HOOKS PERSONALIZADOS</a></h2>
+<h3 id="41-usesyncloop-srchooksusesyncloopts"><a class="header" href="#41-usesyncloop-srchooksusesyncloopts">4.1 <code>useSyncLoop</code> (<code>src/hooks/useSyncLoop.ts</code>)</a></h3>
+<p><strong>Propósito:</strong> Manejar el loop de sincronización con long polling de manera eficiente.</p>
+<p><strong>Código completo:</strong></p>
+<pre><code class="language-typescript">import { useState, useRef, useCallback, useEffect } from 'react';
+import { AppState } from 'react-native';
+import { matrixSync, processSyncResponse } from '@/src/services/matrix/sync';
+import { MatrixEvent } from '@/src/shared/types/matrixEvent';
+import { authStorage } from '../storage/auth-storage';
+
+interface UseSyncLoopOptions {
+  onMessages?: (roomId: string, messages: MatrixEvent[]) =&gt; void;
+  onInvite?: (roomId: string) =&gt; void;
+  onJoin?: (roomId: string) =&gt; void;
+  onLeave?: (roomId: string) =&gt; void;
+  onError?: (error: Error) =&gt; void;
+  enabled?: boolean;
+}
+
+interface UseSyncLoopReturn {
+  startSync: () =&gt; void;
+  stopSync: () =&gt; void;
+  isRunning: boolean;
+  lastSyncTime: number | null;
+}
+
+const MAX_RETRIES = 5;
+const BASE_RETRY_DELAY = 1000;
+const ACTIVE_POLL_TIMEOUT = 30000;   // 30s cuando la app está activa
+const BACKGROUND_POLL_TIMEOUT = 5000; // 5s cuando está en background
+
+export const useSyncLoop = (options: UseSyncLoopOptions = {}): UseSyncLoopReturn =&gt; {
+  const { onMessages, onInvite, onJoin, onLeave, onError, enabled = true } = options;
+
+  const [isRunning, setIsRunning] = useState(false);
+  const [lastSyncTime, setLastSyncTime] = useState&lt;number | null&gt;(null);
+
+  const shouldStopRef = useRef(false);
+  const nextBatchRef = useRef&lt;string | undefined&gt;(undefined);
+  const retryCountRef = useRef(0);
+  const appStateRef = useRef&lt;'active' | 'background'&gt;('active');
+  const isRunningRef = useRef(false);
+  const loopIdRef = useRef(0);
+
+  // El loop principal de sync
+  const syncLoop = useCallback(async (loopId: number) =&gt; {
+    while (!shouldStopRef.current &amp;&amp; loopIdRef.current === loopId) {
+      try {
+        const session = await authStorage.getSession();
+        
+        if (!session?.access_token) {
+          console.log('[useSyncLoop] No session, stopping');
+          break;
+        }
+
+        // Cambiar timeout según estado de la app
+        const currentTimeout = appStateRef.current === 'active' 
+          ? ACTIVE_POLL_TIMEOUT 
+          : BACKGROUND_POLL_TIMEOUT;
+
+        const syncData = await matrixSync({
+          token: session.access_token,
+          since: nextBatchRef.current,
+          timeout: currentTimeout,
+        });
+
+        // Verificar si este loop aún es el activo
+        if (loopIdRef.current !== loopId) {
+          break;
+        }
+
+        if (!syncData) {
+          retryCountRef.current += 1;
+          
+          if (retryCountRef.current &gt;= MAX_RETRIES) {
+            console.error('[useSyncLoop] Max retries reached, stopping');
+            break;
+          }
+
+          // Retry exponencial: 1s, 2s, 4s, 8s, 16s
+          const delay = BASE_RETRY_DELAY * Math.pow(2, retryCountRef.current - 1);
+          console.log(`[useSyncLoop] Retry ${retryCountRef.current} after ${delay}ms`);
+          await new Promise(resolve =&gt; setTimeout(resolve, delay));
+          continue;
+        }
+
+        retryCountRef.current = 0;
+        nextBatchRef.current = syncData.next_batch;
+        setLastSyncTime(Date.now());
+
+        // Procesar respuesta
+        const { newMessages, newInvites, joinedRooms, leftRooms } = processSyncResponse(
+          syncData,
+          session.user_id
+        );
+
+        // Notificar eventos
+        if (newInvites.length &gt; 0) {
+          newInvites.forEach(roomId =&gt; onInvite?.(roomId));
+        }
+        if (joinedRooms.length &gt; 0) {
+          joinedRooms.forEach(roomId =&gt; onJoin?.(roomId));
+        }
+        if (leftRooms.length &gt; 0) {
+          leftRooms.forEach(roomId =&gt; onLeave?.(roomId));
+        }
+        newMessages.forEach((events, roomId) =&gt; {
+          if (events.length &gt; 0) {
+            onMessages?.(roomId, events);
+          }
+        });
+
+      } catch (error) {
+        console.error('[useSyncLoop] Error in loop:', error);
+        
+        if (error instanceof Error) {
+          onError?.(error);
+        }
+
+        retryCountRef.current += 1;
+
+        if (retryCountRef.current &gt;= MAX_RETRIES) {
+          console.error('[useSyncLoop] Max retries reached, stopping');
+          break;
+        }
+
+        const delay = BASE_RETRY_DELAY * Math.pow(2, retryCountRef.current - 1);
+        await new Promise(resolve =&gt; setTimeout(resolve, delay));
+      }
+    }
+
+    isRunningRef.current = false;
+    setIsRunning(false);
+    console.log('[useSyncLoop] Loop stopped');
+  }, [onMessages, onInvite, onJoin, onLeave, onError]);
+
+  // Iniciar sync
+  const startSync = useCallback(() =&gt; {
+    if (isRunningRef.current) return;
+
+    console.log('[useSyncLoop] Starting sync loop');
+    shouldStopRef.current = false;
+    retryCountRef.current = 0;
+    isRunningRef.current = true;
+    setIsRunning(true);
+    
+    loopIdRef.current += 1;
+    syncLoop(loopIdRef.current);
+  }, [syncLoop]);
+
+  // Detener sync
+  const stopSync = useCallback(() =&gt; {
+    console.log('[useSyncLoop] Stopping sync loop');
+    shouldStopRef.current = true;
+  }, []);
+
+  // Manejar cambios de AppState
+  useEffect(() =&gt; {
+    const handleAppStateChange = (nextAppState: string) =&gt; {
+      const previousState = appStateRef.current;
+      appStateRef.current = nextAppState as 'active' | 'background';
+
+      // Cuando la app vuelve a foreground, iniciar sync
+      if (nextAppState === 'active' &amp;&amp; previousState !== 'active') {
+        if (!isRunningRef.current &amp;&amp; enabled) {
+          startSync();
+        }
+      }
+    };
+
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
+
+    if (enabled) {
+      startSync();
+    }
+
+    return () =&gt; {
+      subscription.remove();
+      stopSync();
+    };
+  }, [enabled, startSync, stopSync]);
+
+  return {
+    startSync,
+    stopSync,
+    isRunning,
+    lastSyncTime,
+  };
+};
+</code></pre>
+<hr>
+<h3 id="42-useroommessages-srchooksuseroommessagests"><a class="header" href="#42-useroommessages-srchooksuseroommessagests">4.2 <code>useRoomMessages</code> (<code>src/hooks/useRoomMessages.ts</code>)</a></h3>
+<p><strong>Propósito:</strong> Abstraer toda la lógica de mensajes de un room específico.</p>
+<p><strong>Código completo:</strong></p>
+<pre><code class="language-typescript">import { useCallback, useEffect, useRef, useState } from "react";
+import { getRoomMessages, sendRoomMessage } from "../services/matrix";
+import { MatrixEvent } from "../shared/types/matrixEvent";
+import { useSyncLoop } from "./useSyncLoop";
+import { authStorage } from "../storage/auth-storage";
+import { Message } from "../shared/types/matrixMessage";
+
+interface UseRoomMessagesOptions {
+  roomId: string;
+  initialLimit?: number;
+  onNewMessage?: (message: Message) =&gt; void;
+  enabled?: boolean;
+}
+
+interface UseRoomMessagesReturn {
+  messages: Message[];
+  isLoading: boolean;
+  hasMore: boolean;
+  loadMore: () =&gt; Promise&lt;void&gt;;
+  sendMessage: (body: string) =&gt; Promise&lt;boolean&gt;;
+  isSending: boolean;
+  refresh: () =&gt; Promise&lt;void&gt;;
+}
+
+export const useRoomMessages = (options: UseRoomMessagesOptions): UseRoomMessagesReturn =&gt; {
+  const { roomId, initialLimit = 50, onNewMessage, enabled = true } = options;
+
+  const [messages, setMessages] = useState&lt;Message[]&gt;([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [isSending, setIsSending] = useState(false);
+
+  const cursorRef = useRef&lt;string | null&gt;(null);
+  const initializedRef = useRef(false);
+
+  // Convertir MatrixEvent a Message
+  const processEventToMessage = useCallback((event: MatrixEvent, msgRoomId: string): Message =&gt; {
+    return {
+      id: event.event_id,
+      roomId: event.room_id || msgRoomId,
+      sender: event.sender,
+      body: (event.content?.body as string) || '',
+      timestamp: event.origin_server_ts || Date.now(),
+      type: event.type,
+      msgtype: event.content?.msgtype as string,
+    };
+  }, []);
+
+  // Cargar mensajes iniciales
+  const loadInitialMessages = useCallback(async () =&gt; {
+    if (!enabled || !roomId) return;
+
+    const session = await authStorage.getSession();
+    if (!session?.access_token) return;
+
+    setIsLoading(true);
+
+    try {
+      const result = await getRoomMessages(
+        roomId,
+        session.access_token,
+        'b',  // backward = más antiguos
+        undefined,
+        initialLimit
+      );
+
+      const msgs = result.messages
+        .filter(e =&gt; e.type === 'm.room.message')
+        .map(e =&gt; processEventToMessage(e, roomId))
+        .sort((a, b) =&gt; a.timestamp - b.timestamp);
+
+      setMessages(msgs);
+      cursorRef.current = result.endCursor;
+      setHasMore(result.hasMore);
+      initializedRef.current = true;
+    } catch (error) {
+      console.error('[useRoomMessages] Error loading initial:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [roomId, initialLimit, enabled, processEventToMessage]);
+
+  // Cargar más mensajes (paginación)
+  const loadMore = useCallback(async () =&gt; {
+    if (!enabled || !roomId || isLoading || !hasMore) return;
+
+    const session = await authStorage.getSession();
+    if (!session?.access_token) return;
+
+    setIsLoading(true);
+
+    try {
+      const result = await getRoomMessages(
+        roomId,
+        session.access_token,
+        'b',
+        cursorRef.current || undefined,
+        initialLimit
+      );
+
+      const newMessages = result.messages
+        .filter(e =&gt; e.type === 'm.room.message')
+        .map(e =&gt; processEventToMessage(e, roomId))
+        .sort((a, b) =&gt; a.timestamp - b.timestamp);
+
+      // Filtrar duplicados
+      const existingIds = new Set(messages.map(m =&gt; m.id));
+      const uniqueNew = newMessages.filter(m =&gt; !existingIds.has(m.id));
+
+      setMessages(prev =&gt; [...prev, ...uniqueNew]);
+      cursorRef.current = result.endCursor;
+      setHasMore(result.hasMore);
+    } catch (error) {
+      console.error('[useRoomMessages] Error loading more:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [roomId, initialLimit, enabled, isLoading, hasMore, messages, processEventToMessage]);
+
+  // Enviar mensaje
+  const sendMessage = useCallback(async (body: string): Promise&lt;boolean&gt; =&gt; {
+    if (!roomId || !body.trim()) return false;
+
+    const session = await authStorage.getSession();
+    if (!session?.access_token) return false;
+
+    setIsSending(true);
+
+    try {
+      const eventId = await sendRoomMessage(roomId, session.access_token, body.trim());
+
+      if (eventId) {
+        // Agregar mensaje localmente (optimistic update)
+        const tempMessage: Message = {
+          id: eventId,
+          roomId,
+          sender: session.user_id,
+          body: body.trim(),
+          timestamp: Date.now(),
+          type: 'm.room.message',
+          msgtype: 'm.text',
+        };
+
+        setMessages(prev =&gt; [...prev, tempMessage]);
+        onNewMessage?.(tempMessage);
+        return true;
+      }
+
+      return false;
+    } catch (error) {
+      console.error('[useRoomMessages] Error sending:', error);
+      return false;
+    } finally {
+      setIsSending(false);
+    }
+  }, [roomId, onNewMessage]);
+
+  // Refresh completo
+  const refresh = useCallback(async () =&gt; {
+    cursorRef.current = null;
+    setMessages([]);
+    setHasMore(true);
+    initializedRef.current = false;
+    await loadInitialMessages();
+  }, [loadInitialMessages]);
+
+  // Manejar nuevos mensajes del sync
+  const handleNewMessages = useCallback((eventRoomId: string, events: MatrixEvent[]) =&gt; {
+    if (eventRoomId !== roomId) return;
+
+    const newMessages = events
+      .filter(e =&gt; e.type === 'm.room.message')
+      .map(e =&gt; processEventToMessage(e, roomId));
+
+    if (newMessages.length &gt; 0) {
+      setMessages(prev =&gt; {
+        // Filtrar duplicados
+        const existingIds = new Set(prev.map(m =&gt; m.id));
+        const uniqueNew = newMessages.filter(m =&gt; !existingIds.has(m.id));
+        
+        if (uniqueNew.length === 0) return prev;
+        
+        return [...prev, ...uniqueNew];
+      });
+      newMessages.forEach(msg =&gt; onNewMessage?.(msg));
+    }
+  }, [roomId, onNewMessage, processEventToMessage]);
+
+  // Iniciar sync loop
+  const syncLoop = useSyncLoop({
+    onMessages: handleNewMessages,
+    enabled: enabled,
+  });
+
+  // Efecto principal
+  useEffect(() =&gt; {
+    if (!enabled || !roomId) return;
+
+    if (!syncLoop.isRunning) {
+      syncLoop.startSync();
+    }
+
+    if (!initializedRef.current) {
+      loadInitialMessages();
+    }
+
+    return () =&gt; {
+      syncLoop.stopSync();
+    };
+  }, [roomId, enabled, loadInitialMessages]);
+
+  return {
+    messages,
+    isLoading,
+    hasMore,
+    loadMore,
+    sendMessage,
+    isSending,
+    refresh,
+  };
+};
+</code></pre>
+<hr>
+<h2 id="5-flujo-completo-de-un-chat"><a class="header" href="#5-flujo-completo-de-un-chat">5. FLUJO COMPLETO DE UN CHAT</a></h2>
+<h3 id="51-inicio-de-sesión"><a class="header" href="#51-inicio-de-sesión">5.1 Inicio de sesión</a></h3>
+<pre><code>loginUser(username, password)
+    │
+    ▼
+Obtiene MatrixSession (access_token, user_id)
+    │
+    ▼
+authStorage.setSession(session)  // Guarda en SecureStore
+</code></pre>
+<h3 id="52-carga-de-lista-de-chats"><a class="header" href="#52-carga-de-lista-de-chats">5.2 Carga de lista de chats</a></h3>
+<pre><code>loadChats() en ChatContext
+    │
+    ├─► getJoinedRooms()          // Salas unidas
+    │       │
+    │       ▼
+    │   [roomId1, roomId2, ...]
+    │
+    └─► getInvitedRooms()         // Salas invitadas
+            │
+            ▼
+        [InvitedRoom, ...]
+
+Para cada sala:
+    │
+    ├─► getRoomMembers(roomId)   // Miembros
+    ├─► getRoomName(roomId)       // Nombre
+    │
+    ▼
+[ChatRoom, ChatRoom, ...]
+</code></pre>
+<h3 id="53-entrar-a-un-chat"><a class="header" href="#53-entrar-a-un-chat">5.3 Entrar a un chat</a></h3>
+<pre><code>useRoomMessages(roomId)
+    │
+    ├─► getRoomMessages(roomId, limit=50)
+    │       │
+    │       ▼
+    │   [Message, Message, ...]
+    │
+    └─► useSyncLoop()
+            │
+            ▼
+        matrixSync(timeout=30000)
+                │
+                │ (30 segundos de espera)
+                ▼
+            { next_batch, rooms: {...} }
+                │
+                ▼
+            processSyncResponse()
+                │
+                ▼
+            onMessages(roomId, events)
+                │
+                ▼
+            setMessages([...prev, ...new])
+</code></pre>
+<h3 id="54-enviar-mensaje"><a class="header" href="#54-enviar-mensaje">5.4 Enviar mensaje</a></h3>
+<pre><code>Input.onSendMessage("Hola!")
+    │
+    ▼
+sendRoomMessage(roomId, token, "Hola!")
+    │
+    ▼
+PUT /_matrix/client/v3/rooms/{roomId}/send/m.room.message/{txnId}
+    │
+    ▼
+{ event_id: "$..." }
+    │
+    ▼
+Agregar mensaje a la lista localmente (optimistic)
+    │
+    ▼
+El sync loop eventualmente recibe el mensaje (del servidor)
+    │
+    ▼
+Pero lo ignora porque sender === currentUserId
+</code></pre>
+<hr>
+<h2 id="6-endpoints-de-matrix-api-usados"><a class="header" href="#6-endpoints-de-matrix-api-usados">6. ENDPOINTS DE MATRIX API USADOS</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>Endpoint</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td>POST</td><td><code>/_matrix/client/v3/register</code></td><td>Registrar usuario</td></tr>
+<tr><td>POST</td><td><code>/_matrix/client/v3/login</code></td><td>Iniciar sesión</td></tr>
+<tr><td>POST</td><td><code>/_matrix/client/v3/createRoom</code></td><td>Crear sala</td></tr>
+<tr><td>GET</td><td><code>/_matrix/client/v3/joined_rooms</code></td><td>Listar salas unidas</td></tr>
+<tr><td>GET</td><td><code>/_matrix/client/v3/sync</code></td><td>Sincronización (tiempo real)</td></tr>
+<tr><td>GET</td><td><code>/_matrix/client/v3/rooms/{id}/messages</code></td><td>Historial de mensajes</td></tr>
+<tr><td>PUT</td><td><code>/_matrix/client/v3/rooms/{id}/send/m.room.message/{txnId}</code></td><td>Enviar mensaje</td></tr>
+<tr><td>PUT</td><td><code>/_matrix/client/v3/rooms/{id}/redact/{eventId}</code></td><td>Eliminar mensaje</td></tr>
+<tr><td>GET</td><td><code>/_matrix/client/v3/rooms/{id}/members</code></td><td>Miembros de sala</td></tr>
+<tr><td>GET</td><td><code>/_matrix/client/v3/rooms/{id}/state/m.room.name</code></td><td>Nombre de sala</td></tr>
+<tr><td>POST</td><td><code>/_matrix/client/v3/rooms/{id}/join</code></td><td>Unirse a sala</td></tr>
+<tr><td>POST</td><td><code>/_matrix/client/v3/rooms/{id}/leave</code></td><td>Abandonar/rechazar sala</td></tr>
+<tr><td>GET</td><td><code>/_matrix/client/v3/profile/{userId}</code></td><td>Perfil de usuario</td></tr>
+<tr><td>PUT</td><td><code>/_matrix/client/v3/profile/{userId}/displayname</code></td><td>Cambiar nombre</td></tr>
+<tr><td>PUT</td><td><code>/_matrix/client/v3/profile/{userId}/avatar_url</code></td><td>Cambiar avatar</td></tr>
+<tr><td>POST</td><td><code>/_matrix/media/v3/upload</code></td><td>Subir archivo</td></tr>
+<tr><td>POST</td><td><code>/_matrix/client/v3/user_directory/search</code></td><td>Buscar usuarios</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="7-consideraciones-importantes"><a class="header" href="#7-consideraciones-importantes">7. CONSIDERACIONES IMPORTANTES</a></h2>
+<h3 id="71-autenticación"><a class="header" href="#71-autenticación">7.1 Autenticación</a></h3>
+<ul>
+<li>El <code>access_token</code> expira. Si una llamada devuelve error 401, hay que re-autenticar.</li>
+<li>El token se guarda en <code>SecureStore</code> (expo-secure-store) por seguridad.</li>
+</ul>
+<h3 id="72-rate-limiting"><a class="header" href="#72-rate-limiting">7.2 Rate Limiting</a></h3>
+<ul>
+<li>Matrix tiene límites de rate. Si se excede, el servidor devuelve error 429.</li>
+<li>El código actual NO maneja rate limiting - sería una mejora futura.</li>
+</ul>
+<h3 id="73-tiempo-real-vs-polling"><a class="header" href="#73-tiempo-real-vs-polling">7.3 Tiempo Real vs Polling</a></h3>
+<ul>
+<li>Esta implementación usa <strong>long polling</strong> (no WebSockets).</li>
+<li>El servidor debe soportar el endpoint <code>/sync</code> (todos los servidores Matrix lo soportan).</li>
+<li>Delay típico: 0-30 segundos (según el timeout configurado).</li>
+</ul>
+<h3 id="74-edge-cases-no-manejados"><a class="header" href="#74-edge-cases-no-manejados">7.4 Edge Cases No Manejados</a></h3>
+<ul>
+<li><strong>Ediciones de mensajes</strong>: El servidor puede recibir <code>m.relates_to</code> con <code>rel_type: "m.replace"</code>.</li>
+<li><strong>Reacciones</strong>: Tipos de eventos como <code>m.reaction</code>.</li>
+<li><strong>Typing indicators</strong>: Eventos en <code>ephemeral</code>.</li>
+<li><strong>Read receipts</strong>: Para marcar mensajes como leídos.</li>
+<li><strong>Encryption (E2E)</strong>: Esta implementación NO soporta encriptación de extremo a extremo.</li>
+</ul>
+<h3 id="75-mejoras-futuras-posibles"><a class="header" href="#75-mejoras-futuras-posibles">7.5 Mejoras Futuras Posibles</a></h3>
+<ul>
+<li>WebSockets para tiempo real verdadero (actualmente solo long polling)</li>
+<li>SQLite local para cache de mensajes</li>
+<li>Soporte para encryption (E2E)</li>
+<li>Notificaciones push (expo-notifications)</li>
+<li>Typing indicators</li>
+<li>Read receipts</li>
+<li>Reacciones a mensajes</li>
 </ul>
 
                     </main>
