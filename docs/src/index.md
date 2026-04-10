@@ -23,4 +23,4 @@ Mis manuales
 - [Matrix TypeScript implementation](./docs/08-matrix-typescript-implementation.md)
 ## Redes 
 - [Redes](./docs/09-redes.md)
-
+- [Redes ejercicios](./docs/10-redes-ejercicio-analisis-ipv4.md)
