@@ -9,6 +9,7 @@
 ## Rust
 - [Backend con Axum (techcomponents)](./docs/01-axum-techcomponents.md)
 - [Backend con Axum (rasflow)](./docs/02-axum-rasflow.md)
+- [Restix](./docs/12-restix.md)
 
 ## Base de datos
 - [SQLx](./docs/03-sqlx.md)

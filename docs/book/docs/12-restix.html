@@ -1,0 +1,1252 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Restix - Manuales</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-300aa36d.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-0c4239c7.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Manuales</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="restix---manual-de-desarrollo-paso-a-paso"><a class="header" href="#restix---manual-de-desarrollo-paso-a-paso">Restix - Manual de Desarrollo Paso a Paso</a></h1>
+<p>Este manual te permite replicar el proyecto Restix desde cero. Restix es un cliente TUI (Terminal User Interface) para Redis construido con Rust y la librería ratatui.</p>
+<h2 id="requisitos-previos"><a class="header" href="#requisitos-previos">Requisitos Previos</a></h2>
+<ul>
+<li>Rust instalado (https://rustup.rs)</li>
+<li>Acceso a una instancia de Redis (local o remota)</li>
+</ul>
+<hr>
+<h2 id="paso-1-crear-el-proyecto"><a class="header" href="#paso-1-crear-el-proyecto">Paso 1: Crear el Proyecto</a></h2>
+<pre><code class="language-bash">cargo new restix
+cd restix
+</code></pre>
+<hr>
+<h2 id="paso-2-configurar-cargotoml"><a class="header" href="#paso-2-configurar-cargotoml">Paso 2: Configurar Cargo.toml</a></h2>
+<p>El archivo <code>Cargo.toml</code> define las dependencias del proyecto. Reemplaza el contenido completo:</p>
+<pre><code class="language-toml">[package]
+name = "restix"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+ratatui = "0.30.0"
+redis = "0.25"        
+tokio = { version = "1", features = ["full"] } 
+crossterm = "0.27"    
+serde = { version = "1", features = ["derive"] } 
+serde_json = "1"      
+anyhow = "1"          
+thiserror = "1"       
+chrono = "0.4"        
+</code></pre>
+<p><strong>Dependencias explicadas:</strong></p>
+<ul>
+<li><code>ratatui</code>: Librería para crear interfaces de terminal en Rust</li>
+<li><code>redis</code>: Cliente para conectar a Redis</li>
+<li><code>tokio</code>: Runtime asíncrono para Rust</li>
+<li><code>crossterm</code>: Manejo de terminal cruzado (permite capturar teclas individuales)</li>
+<li><code>serde</code>/<code>serde_json</code>: Serialización de datos (para formatear JSON)</li>
+<li><code>anyhow</code>: Manejo de errores simplificado</li>
+<li><code>thiserror</code>: Definición de errores personalizados</li>
+<li><code>chrono</code>: Manejo de fechas y tiempos</li>
+</ul>
+<hr>
+<h2 id="paso-3-estructura-de-archivos"><a class="header" href="#paso-3-estructura-de-archivos">Paso 3: Estructura de Archivos</a></h2>
+<p>Crea la siguiente estructura de directorios en <code>src/</code>:</p>
+<pre><code>src/
+├── main.rs
+├── controllers/
+│   ├── mod.rs
+│   └── keyboard.rs
+├── models/
+│   ├── mod.rs
+│   └── redis_model.rs
+├── services/
+│   ├── mod.rs
+│   └── redis_service.rs
+├── utils/
+│   ├── mod.rs
+│   └── formatting.rs
+└── views/
+    ├── mod.rs
+    ├── layout.rs
+    ├── keys_list_view.rs
+    ├── key_info_view.rs
+    ├── value_view.rs
+    └── status_view.rs
+</code></pre>
+<hr>
+<h2 id="paso-4-módulos-del-proyecto"><a class="header" href="#paso-4-módulos-del-proyecto">Paso 4: Módulos del Proyecto</a></h2>
+<h3 id="41-controllersmodrs"><a class="header" href="#41-controllersmodrs">4.1 controllers/mod.rs</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod keyboard;
+<span class="boring">}</span></code></pre>
+<p><strong>Propósito:</strong> Define el módulo de controladores. Por ahora solo contiene el controlador de teclado.</p>
+<hr>
+<h3 id="42-controllerskeyboardrs"><a class="header" href="#42-controllerskeyboardrs">4.2 controllers/keyboard.rs</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use crossterm::event::{KeyCode, KeyEvent};
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum NavigationAction {
+    Quit,
+    None,
+}
+
+pub struct KeyboardController;
+
+impl KeyboardController {
+    pub fn map_key_event(event: KeyEvent) -&gt; NavigationAction {
+        match event.code {
+            KeyCode::Char('q') =&gt; NavigationAction::Quit,
+            _ =&gt; NavigationAction::None,
+        }
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><strong>Propósito:</strong> Maneja los eventos del teclado. Define acciones de navegación:</p>
+<ul>
+<li><code>Quit</code>: Salir de la aplicación (cuando se presiona ‘q’)</li>
+<li><code>None</code>: Ninguna acción (tecla no reconocida)</li>
+</ul>
+<p>Usa <code>crossterm::event</code> para capturar teclas. Crucial: Necesitas habilitar modo raw en main.rs para que esto funcione.</p>
+<hr>
+<h3 id="43-modelsmodrs"><a class="header" href="#43-modelsmodrs">4.3 models/mod.rs</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod redis_model;
+<span class="boring">}</span></code></pre>
+<p><strong>Propósito:</strong> Define el módulo de modelos de datos.</p>
+<hr>
+<h3 id="44-modelsredis_modelrs"><a class="header" href="#44-modelsredis_modelrs">4.4 models/redis_model.rs</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RedisData {
+    pub keys: Vec&lt;KeyInfo&gt;,
+    pub total_memory: u64,
+    pub connected: bool,
+    pub error: Option&lt;String&gt;,
+}
+
+impl Default for RedisData {
+    fn default() -&gt; Self {
+        Self {
+            keys: Vec::new(),
+            total_memory: 0,
+            connected: false,
+            error: None,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct KeyInfo {
+    pub name: String,
+    pub key_type: String,
+    pub ttl: i64,
+    pub memory_bytes: u64,
+    pub value_preview: String,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum TtlStatus {
+    NoExpiration,
+    Expired,
+    Urgent(i64),
+    Warning(i64),
+    Normal(i64),
+}
+
+impl TtlStatus {
+    pub fn from_ttl(ttl: i64) -&gt; Self {
+        match ttl {
+            -1 =&gt; TtlStatus::NoExpiration,
+            ttl if ttl &lt; 60 =&gt; TtlStatus::Urgent(ttl),
+            ttl if ttl &lt; 3600 =&gt; TtlStatus::Warning(ttl),
+            _ =&gt; TtlStatus::Normal(ttl),
+        }
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><strong>Propósito:</strong> Define las estructuras de datos para representar la información de Redis:</p>
+<ul>
+<li><code>RedisData</code>: Estructura principal que contiene todas las keys, memoria total, estado de conexión y errores</li>
+<li><code>KeyInfo</code>: Información individual de cada key (nombre, tipo, TTL, memoria, vista previa del valor)</li>
+<li><code>TtlStatus</code>: Enum que clasifica el TTL en niveles de urgencia para mostrar visualmente</li>
+</ul>
+<p>Usa <code>serde</code> para permitir serialización/deserialización (útil si quieres exportar datos a JSON).</p>
+<hr>
+<h3 id="45-servicesmodrs"><a class="header" href="#45-servicesmodrs">4.5 services/mod.rs</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod redis_service;
+<span class="boring">}</span></code></pre>
+<p><strong>Propósito:</strong> Define el módulo de servicios.</p>
+<hr>
+<h3 id="46-servicesredis_servicers"><a class="header" href="#46-servicesredis_servicers">4.6 services/redis_service.rs</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use crate::{
+    models::redis_model::{KeyInfo, RedisData},
+    utils::formatting::try_format_as_json,
+};
+use anyhow::{Context, Result};
+use redis::{Client, Commands, Connection};
+
+pub struct RedisService {
+    client: Client,
+    connection: Option&lt;Connection&gt;,
+    pub total_memory: u64,
+}
+
+impl RedisService {
+    pub fn new(url: &amp;str) -&gt; Result&lt;Self&gt; {
+        let client = Client::open(url).context("Failed to create Redis client")?;
+        Ok(Self {
+            client,
+            connection: None,
+            total_memory: 0,
+        })
+    }
+
+    pub fn connect(&amp;mut self) -&gt; Result&lt;()&gt; {
+        self.connection = Some(
+            self.client
+                .get_connection()
+                .context("Failed to connect to Redis")?,
+        );
+        Ok(())
+    }
+
+    pub fn is_connected(&amp;self) -&gt; bool {
+        self.connection.is_some()
+    }
+
+    pub fn fetch_keys(&amp;mut self) -&gt; Result&lt;RedisData&gt; {
+        let conn = self.connection.as_mut().context("Not connected to Redis")?;
+
+        let keys: Vec&lt;String&gt; = conn.keys("*")?;
+        let mut key_infos = Vec::new();
+        let mut total_memory = 0u64;
+
+        for key_name in keys.iter().take(1000) {
+            let key_type: String = redis::cmd("TYPE").arg(key_name).query(conn)?;
+
+            let ttl: i64 = conn.ttl(key_name)?;
+
+            let memory: u64 = redis::cmd("MEMORY")
+                .arg("USAGE")
+                .arg(key_name)
+                .query(conn)
+                .unwrap_or(0);
+
+            let value_preview = match key_type.as_str() {
+                "string" =&gt; {
+                    let val: String = conn.get(key_name).unwrap_or_default();
+                    if val.len() &gt; 50 {
+                        format!("{}...", &amp;val[..47.min(val.len())])
+                    } else {
+                        val
+                    }
+                }
+                "list" =&gt; {
+                    let len: usize = conn.llen(key_name).unwrap_or(0);
+                    format!("[{} items]", len)
+                }
+                "hash" =&gt; {
+                    let len: usize = conn.hlen(key_name).unwrap_or(0);
+                    format!("{{{} fields}}", len)
+                }
+                "set" =&gt; {
+                    let len: usize = conn.scard(key_name).unwrap_or(0);
+                    format!("[{} items]", len)
+                }
+                _ =&gt; "[binary data]".to_string(),
+            };
+
+            total_memory += memory;
+            key_infos.push(KeyInfo {
+                name: key_name.clone(),
+                key_type,
+                ttl,
+                memory_bytes: memory,
+                value_preview,
+            });
+        }
+
+        self.total_memory = total_memory;
+
+        Ok(RedisData {
+            keys: key_infos,
+            total_memory,
+            connected: true,
+            error: None,
+        })
+    }
+
+    /// Get the full value of a key (not just preview)
+    pub fn get_full_value(&amp;mut self, key_name: &amp;str, key_type: &amp;str) -&gt; Result&lt;String&gt; {
+        let conn = self.connection.as_mut().context("Not connected to Redis")?;
+
+        let value = match key_type {
+            "string" =&gt; {
+                let val: String = conn.get(key_name).unwrap_or_default();
+                if val.is_empty() {
+                    "(empty string)".to_string()
+                } else {
+                    // Try to format as JSON if it looks like JSON
+                    try_format_as_json(&amp;val)
+                }
+            }
+            "list" =&gt; {
+                let items: Vec&lt;String&gt; = conn.lrange(key_name, 0, -1).unwrap_or_default();
+                if items.is_empty() {
+                    "(empty list)".to_string()
+                } else {
+                    // Format each item, try to parse as JSON
+                    items
+                        .iter()
+                        .enumerate()
+                        .map(|(i, v)| {
+                            let formatted = try_format_as_json(v);
+                            if formatted.contains('\n') {
+                                // If it has newlines after formatting, indent it
+                                let indented: Vec&lt;String&gt; = formatted
+                                    .lines()
+                                    .map(|line| format!("    {}", line))
+                                    .collect();
+                                format!("[{}]\n{}", i, indented.join("\n"))
+                            } else {
+                                format!("[{}] {}", i, formatted)
+                            }
+                        })
+                        .collect::&lt;Vec&lt;_&gt;&gt;()
+                        .join("\n")
+                }
+            }
+            "hash" =&gt; {
+                let fields: Vec&lt;(String, String)&gt; = conn.hgetall(key_name).unwrap_or_default();
+                if fields.is_empty() {
+                    "(empty hash)".to_string()
+                } else {
+                    fields
+                        .iter()
+                        .map(|(k, v)| {
+                            let formatted = try_format_as_json(v);
+                            if formatted.contains('\n') {
+                                // If value is JSON/object, pretty print it
+                                format!("{}:\n{}", k, formatted)
+                            } else {
+                                format!("{}: {}", k, formatted)
+                            }
+                        })
+                        .collect::&lt;Vec&lt;_&gt;&gt;()
+                        .join("\n")
+                }
+            }
+            "set" =&gt; {
+                let members: Vec&lt;String&gt; = conn.smembers(key_name).unwrap_or_default();
+                if members.is_empty() {
+                    "(empty set)".to_string()
+                } else {
+                    members
+                        .iter()
+                        .enumerate()
+                        .map(|(i, m)| {
+                            let formatted = try_format_as_json(m);
+                            if formatted.contains('\n') {
+                                format!("[{}]\n{}", i, formatted)
+                            } else {
+                                format!("[{}] {}", i, formatted)
+                            }
+                        })
+                        .collect::&lt;Vec&lt;_&gt;&gt;()
+                        .join("\n")
+                }
+            }
+            "zset" =&gt; {
+                let members: Vec&lt;(String, f64)&gt; =
+                    conn.zrange_withscores(key_name, 0, -1).unwrap_or_default();
+                if members.is_empty() {
+                    "(empty sorted set)".to_string()
+                } else {
+                    members
+                        .iter()
+                        .map(|(m, s)| {
+                            let formatted = try_format_as_json(m);
+                            if formatted.contains('\n') {
+                                format!("{} (score: {})\n{}", formatted, s, formatted)
+                            } else {
+                                format!("{} (score: {})", formatted, s)
+                            }
+                        })
+                        .collect::&lt;Vec&lt;_&gt;&gt;()
+                        .join("\n")
+                }
+            }
+            _ =&gt; "(unsupported type)".to_string(),
+        };
+
+        Ok(value)
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><strong>Propósito:</strong> Servicio para conectar y comunicarse con Redis:</p>
+<ul>
+<li><code>RedisService</code>: Struct principal que maneja la conexión</li>
+<li><code>new(url)</code>: Crea un nuevo cliente Redis desde una URL (ej: “redis://127.0.0.1:6379”)</li>
+<li><code>connect()</code>: Establece la conexión física a Redis</li>
+<li><code>is_connected()</code>: Verifica si hay conexión activa</li>
+<li><code>fetch_keys()</code>: Obtiene todas las keys de Redis (máximo 1000). Para cada key obtiene:
+<ul>
+<li>Tipo (string, list, hash, set, zset)</li>
+<li>TTL (tiempo de expiración)</li>
+<li>Memoria usada</li>
+<li>Vista previa del valor</li>
+</ul>
+</li>
+<li><code>get_full_value()</code>: Obtiene el valor completo de una key por su nombre y tipo. Soporta todos los tipos de datos de Redis y intenta formatear como JSON cuando es posible.</li>
+</ul>
+<p>Usa el comando <code>redis::cmd()</code> para ejecutar comandos Redis crudos cuando el cliente no tiene método directo.</p>
+<hr>
+<h3 id="47-utilsmodrs"><a class="header" href="#47-utilsmodrs">4.7 utils/mod.rs</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod formatting;
+<span class="boring">}</span></code></pre>
+<p><strong>Propósito:</strong> Define el módulo de utilidades.</p>
+<hr>
+<h3 id="48-utilsformattingrs"><a class="header" href="#48-utilsformattingrs">4.8 utils/formatting.rs</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// Format JSON with indentation for readability
+pub fn format_json(value: &amp;str) -&gt; String {
+    // Try to parse as JSON and pretty print
+    if let Ok(json) = serde_json::from_str::&lt;serde_json::Value&gt;(value) {
+        serde_json::to_string_pretty(&amp;json).unwrap_or_else(|_| value.to_string())
+    } else {
+        value.to_string()
+    }
+}
+
+/// Try to format value as JSON if it looks like JSON
+pub fn try_format_as_json(value: &amp;str) -&gt; String {
+    // Check if it looks like JSON (starts with { or [)
+    let trimmed = value.trim();
+    if (trimmed.starts_with('{') &amp;&amp; trimmed.ends_with('}'))
+        || (trimmed.starts_with('[') &amp;&amp; trimmed.ends_with(']'))
+    {
+        format_json(value)
+    } else {
+        value.to_string()
+    }
+}
+
+pub fn format_bytes(bytes: u64) -&gt; String {
+    const KB: u64 = 1024;
+    const MB: u64 = KB * 1024;
+    const GB: u64 = MB * 1024;
+
+    if bytes &gt;= GB {
+        format!("{:.2} GB", bytes as f64 / GB as f64)
+    } else if bytes &gt;= MB {
+        format!("{:.2} MB", bytes as f64 / MB as f64)
+    } else if bytes &gt;= KB {
+        format!("{:.2} KB", bytes as f64 / KB as f64)
+    } else {
+        format!("{} B", bytes)
+    }
+}
+
+pub fn format_ttl(ttl: i64) -&gt; String {
+    if ttl == -1 {
+        "No expiration".to_string()
+    } else if ttl &lt; 0 {
+        "Expired".to_string()
+    } else if ttl &lt; 60 {
+        format!("{}s", ttl)
+    } else if ttl &lt; 3600 {
+        format!("{}m {}s", ttl / 60, ttl % 60)
+    } else {
+        format!("{}h {}m", ttl / 3600, (ttl % 3600) / 60)
+    }
+}
+
+pub fn get_type_badge(key_type: &amp;str) -&gt; &amp;'static str {
+    match key_type.to_lowercase().as_str() {
+        "string" =&gt; "S",
+        "list" =&gt; "L",
+        "hash" =&gt; "H",
+        "set" =&gt; "U",
+        "zset" =&gt; "Z",
+        _ =&gt; "?",
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><strong>Propósito:</strong> Funciones de utilidad para formatear datos:</p>
+<ul>
+<li><code>format_json()</code>: Convierte JSON minificado a formato legible con indentación</li>
+<li><code>try_format_as_json()</code>: Detecta si un string parece JSON (comienza con <code>{</code> o <code>[</code>) y lo formatea</li>
+<li><code>format_bytes()</code>: Convierte bytes a formato legible (B, KB, MB, GB)</li>
+<li><code>format_ttl()</code>: Convierte TTL de segundos a formato legible (s, m, h)</li>
+<li><code>get_type_badge()</code>: Retorna una letra representativa del tipo de dato Redis (S=string, L=list, H=hash, U=set, Z=zset)</li>
+</ul>
+<hr>
+<h3 id="49-viewsmodrs"><a class="header" href="#49-viewsmodrs">4.9 views/mod.rs</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod key_info_view;
+pub mod keys_list_view;
+pub mod layout;
+pub mod status_view;
+pub mod value_view;
+<span class="boring">}</span></code></pre>
+<p><strong>Propósito:</strong> Define el módulo de vistas. Cada archivo es una vista diferente de la interfaz.</p>
+<hr>
+<h3 id="410-viewslayoutrs"><a class="header" href="#410-viewslayoutrs">4.10 views/layout.rs</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use ratatui::layout::{Constraint, Direction, Layout, Rect};
+
+#[derive(Debug)]
+pub struct MainLayout {
+    pub main_content: Rect,
+    pub footer: Rect,
+}
+
+impl MainLayout {
+    // Crea el layout principal de la app(arriba el contenido y abajo el footer con los comandos)
+    pub fn new(area: Rect) -&gt; Self {
+        let chunks = Layout::default()
+            .direction(Direction::Vertical)
+            .constraints([Constraint::Min(0), Constraint::Length(3)])
+            .split(area);
+
+        Self {
+            main_content: chunks[0],
+            footer: chunks[1],
+        }
+    }
+
+    // Separa el contenido que tendra la app en 2, parte izquierda y derecha(cada parte tendra sus
+    // paneles)
+    pub fn split_content(&amp;self, area: Rect) -&gt; (Rect, Rect) {
+        let chunks = Layout::default()
+            .direction(Direction::Horizontal)
+            .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
+            .split(area);
+
+        (chunks[0], chunks[1])
+    }
+
+    // Reorganiza el contenido, en la parte derecha se divide en 2
+    pub fn split_panels(&amp;self, area: Rect) -&gt; (Rect, Rect, Rect) {
+        let (content_left, content_right) = self.split_content(area);
+
+        let right_panels = Layout::default()
+            .direction(Direction::Vertical)
+            .constraints([Constraint::Percentage(25), Constraint::Percentage(75)])
+            .split(content_right);
+
+        (content_left, right_panels[0], right_panels[1])
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><strong>Propósito:</strong> Define el layout principal de la aplicación usando ratatui:</p>
+<ul>
+<li><code>MainLayout</code>: Estructura que contiene las áreas (rectángulos) de la interfaz</li>
+<li><code>new()</code>: Crea el layout principal dividiendo la terminal en contenido principal (arriba) y footer (abajo, 3 líneas de alto)</li>
+<li><code>split_content()</code>: Divide el contenido en dos partes iguales (izquierda y derecha, 50% cada una)</li>
+<li><code>split_panels()</code>: Divide el contenido en 3 paneles: uno izquierdo (lista de keys) ydos derechos (info arriba 25%, valor abajo 75%)</li>
+</ul>
+<p>Usa <code>Constraint</code> de ratatui para definir proporciones. El layout final queda así:</p>
+<pre><code>┌────────────────┬────────────────┐
+│                │   Key Info     │
+│  Keys List     │   (25%)       │
+│   (50%)        ├────────────────┤
+│                │               │
+│                │  Value View   │
+│                │   (75%)       │
+├────────────────┴────────────────┤
+│         Status / Footer          │
+└───────────────────────────────┘
+</code></pre>
+<hr>
+<h3 id="411-viewskeys_list_viewrs"><a class="header" href="#411-viewskeys_list_viewrs">4.11 views/keys_list_view.rs</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use ratatui::{
+    Frame,
+    layout::{Constraint, Rect},
+    style::{Style, Stylize},
+    widgets::{Block, Borders, Cell, Row, Table},
+};
+
+use crate::{
+    models::redis_model::KeyInfo,
+    utils::formatting::{format_bytes, format_ttl, get_type_badge},
+};
+
+pub struct KeysListView {
+    pub state: ratatui::widgets::ListState,
+    pub items: Vec&lt;KeyInfo&gt;,
+    pub focused: bool, // true cuando este panel tiene el foco
+}
+
+impl KeysListView {
+    pub fn new() -&gt; Self {
+        Self {
+            state: ratatui::widgets::ListState::default(),
+            items: Vec::new(),
+            focused: false,
+        }
+    }
+
+    // Activa o desactiva el foco del componente
+    pub fn set_focus(&amp;mut self, focused: bool) {
+        self.focused = focused
+    }
+
+    // Actualizar datos
+    pub fn update(&amp;mut self, items: Vec&lt;KeyInfo&gt;) {
+        self.items = items;
+
+        if let Some(selected) = self.state.selected() {
+            if selected &gt;= self.items.len() {
+                self.state.select(Some(self.items.len().saturating_sub(1)));
+            }
+        }
+    }
+
+    pub fn next(&amp;mut self) {
+        let i = match self.state.selected() {
+            Some(i) =&gt; {
+                if i &gt;= self.items.len() - 1 {
+                    0
+                } else {
+                    i + 1
+                }
+            }
+            None =&gt; 0,
+        };
+        self.state.select(Some(i));
+    }
+
+    pub fn previous(&amp;mut self) {
+        let i = match self.state.selected() {
+            Some(i) =&gt; {
+                if i == 0 {
+                    self.items.len().saturating_sub(1)
+                } else {
+                    i - 1
+                }
+            }
+            None =&gt; 0,
+        };
+        self.state.select(Some(i));
+    }
+
+    pub fn render(&amp;self, frame: &amp;mut Frame, area: Rect) {
+        let rows: Vec&lt;Row&gt; = self
+            .items
+            .iter()
+            .enumerate()
+            .map(|(idx, key)| {
+                let is_selected = self.state.selected() == Some(idx);
+
+                // Estilo base depende de si está enfocado y seleccionado
+                let row_style = if self.focused &amp;&amp; is_selected {
+                    Style::default()
+                        .bg(ratatui::style::Color::Blue)
+                        .fg(ratatui::style::Color::White)
+                } else if is_selected {
+                    Style::default().bg(ratatui::style::Color::DarkGray)
+                } else if self.focused {
+                    Style::default()
+                } else {
+                    Style::default().dim()
+                };
+
+                Row::new([
+                    Cell::from(format!("{}", idx + 1)).style(row_style),
+                    Cell::from({
+                        let name = &amp;key.name;
+                        if name.len() &gt; 30 {
+                            format!("{}...", &amp;name[..27.min(name.len())])
+                        } else {
+                            name.clone()
+                        }
+                    })
+                    .style(row_style),
+                    Cell::from(get_type_badge(&amp;key.key_type)).style(row_style),
+                    Cell::from(format_ttl(key.ttl)).style(row_style),
+                    Cell::from(format_bytes(key.memory_bytes)).style(row_style),
+                ])
+            })
+            .collect();
+
+        let widths = [
+            Constraint::Percentage(5),
+            Constraint::Percentage(45),
+            Constraint::Percentage(10),
+            Constraint::Percentage(20),
+            Constraint::Percentage(20),
+        ];
+
+        // Borde más grueso cuando está enfocado
+        let borders = if self.focused {
+            Borders::ALL
+        } else {
+            Borders::ALL
+        };
+
+        let title = if self.focused {
+            "Redis Keys ◄"
+        } else {
+            "Redis Keys"
+        };
+
+        // Background diferente cuando está enfocado
+        let block = if self.focused {
+            Block::default()
+                .borders(borders)
+                .title(title)
+                .border_style(Style::default().fg(ratatui::style::Color::Blue))
+        } else {
+            Block::default()
+                .borders(borders)
+                .title(title)
+                .border_style(Style::default().dim())
+        };
+
+        let table = Table::new(rows, widths)
+            .block(block)
+            .style(if self.focused {
+                Style::default()
+            } else {
+                Style::default().dim()
+            });
+
+        frame.render_widget(table, area);
+    }
+}
+
+impl Default for KeysListView {
+    fn default() -&gt; Self {
+        Self::new()
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><strong>Propósito:</strong> Vista que muestra la lista de keys de Redis en una tabla:</p>
+<ul>
+<li><code>KeysListView</code>: Componente principal querenderiza la lista</li>
+<li><code>state</code>: Mantiene el estado de selección (ítem seleccionada)</li>
+<li><code>items</code>: Vector de KeyInfo a mostrar</li>
+<li><code>focused</code>: Indica si el panel tiene el foco (para resaltar)</li>
+<li><code>set_focus()</code>: Activa/desactiva el foco visual</li>
+<li><code>update()</code>: Actualiza los datos de la lista</li>
+<li><code>next()</code> / <code>previous()</code>: Navegación entre items (con wrapping)</li>
+<li><code>render()</code>: Dibuja la tabla con las columns: #, Nombre, Tipo, TTL, Memoria</li>
+</ul>
+<p>La tabla muestra cada key con su número, nombre (truncado a 30 caracteres), tipo (badge), TTL formateado, y memoria. El estilo cambia según si está enfocada y seleccionada:</p>
+<ul>
+<li>Enfocada + seleccionada: fondo azul, texto blanco</li>
+<li>Solo seleccionada: fondo gris oscuro</li>
+<li>Solo enfocada: estilo normal</li>
+<li>Ninguna: estilo tenue (dim)</li>
+</ul>
+<hr>
+<h3 id="412-viewskey_info_viewrs"><a class="header" href="#412-viewskey_info_viewrs">4.12 views/key_info_view.rs</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use ratatui::{Frame, layout::Rect, style::Style, widgets::Block};
+
+pub struct KeyInfoView {
+    pub state: ratatui::widgets::ListState,
+}
+
+impl KeyInfoView {
+    pub fn new() -&gt; Self {
+        Self {
+            state: ratatui::widgets::ListState::default(),
+        }
+    }
+
+    pub fn render(&amp;self, frame: &amp;mut Frame, area: Rect) {
+        let block = Block::default().style(Style::default().bg(ratatui::style::Color::Green));
+
+        frame.render_widget(block, area);
+    }
+}
+
+impl Default for KeyInfoView {
+    fn default() -&gt; Self {
+        Self::new()
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><strong>Propósito:</strong> Vista de información de la key seleccionada (panel superior derecho). Por ahora solo muestra un bloque con fondo verde como placeholder. Este panel está diseñado para mostrar metadatos de la key seleccionada.</p>
+<hr>
+<h3 id="413-viewsvalue_viewrs"><a class="header" href="#413-viewsvalue_viewrs">4.13 views/value_view.rs</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use ratatui::{Frame, layout::Rect, style::Style, widgets::Block};
+
+pub struct ValueView {
+    pub state: ratatui::widgets::ListState,
+}
+
+impl ValueView {
+    pub fn new() -&gt; Self {
+        Self {
+            state: ratatui::widgets::ListState::default(),
+        }
+    }
+
+    pub fn render(&amp;self, frame: &amp;mut Frame, area: Rect) {
+        let block = Block::default().style(Style::default().bg(ratatui::style::Color::Magenta));
+
+        frame.render_widget(block, area);
+    }
+}
+
+impl Default for ValueView {
+    fn default() -&gt; Self {
+        Self::new()
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><strong>Propósito:</strong> Vista del valor de la key seleccionada (panel inferior derecho). Por ahora solo muestra un bloque con fondo magenta como placeholder. Este panel está diseñado para mostrar el valor completo de la key.</p>
+<hr>
+<h3 id="414-viewsstatus_viewrs"><a class="header" href="#414-viewsstatus_viewrs">4.14 views/status_view.rs</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use ratatui::{Frame, layout::Rect, style::Style, widgets::Block};
+
+pub struct StatusView {
+    pub state: ratatui::widgets::ListState,
+}
+
+impl StatusView {
+    pub fn new() -&gt; Self {
+        Self {
+            state: ratatui::widgets::ListState::default(),
+        }
+    }
+
+    pub fn render(&amp;self, frame: &amp;mut Frame, area: Rect) {
+        let block = Block::default().style(Style::default().bg(ratatui::style::Color::Yellow));
+
+        frame.render_widget(block, area);
+    }
+}
+
+impl Default for StatusView {
+    fn default() -&gt; Self {
+        Self::new()
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><strong>Propósito:</strong> Vista de estado/footer de la aplicación. Por ahora solo muestra un bloque con fondo amarillo como placeholder. Este panel está diseñado para mostrar comandos disponibles y estado de conexión.</p>
+<hr>
+<h3 id="415-mainrs"><a class="header" href="#415-mainrs">4.15 main.rs</a></h3>
+<pre class="playground"><code class="language-rust">mod controllers;
+mod models;
+mod services;
+mod utils;
+mod views;
+
+use std::io::{self, Stdout};
+
+use anyhow::Result;
+use crossterm::{
+    event::{self, DisableMouseCapture, EnableMouseCapture, Event, KeyEventKind},
+    execute,
+    terminal::{EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode, enable_raw_mode},
+};
+use ratatui::{Terminal, prelude::CrosstermBackend};
+
+use crate::{
+    controllers::keyboard::{KeyboardController, NavigationAction},
+    views::{
+        key_info_view::KeyInfoView, keys_list_view::KeysListView, layout::MainLayout,
+        status_view::StatusView, value_view::ValueView,
+    },
+};
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum FocusPanel {
+    KeysList,
+    Details,
+    Value,
+}
+
+pub struct App {
+    pub terminal: Terminal&lt;CrosstermBackend&lt;Stdout&gt;&gt;,
+
+    // Views
+    pub keys_list_view: KeysListView,
+    pub key_info_view: KeyInfoView,
+    pub value_view: ValueView,
+    pub status_view: StatusView,
+
+    pub last_key_name: String,
+    pub auto_refresh: bool,
+    pub last_refresh_time: std::time::Instant,
+}
+
+impl App {
+    pub fn new() -&gt; Result&lt;Self&gt; {
+        Ok(Self {
+            terminal: Terminal::new(CrosstermBackend::new(io::stdout()))?,
+            keys_list_view: KeysListView::new(),
+            key_info_view: KeyInfoView::new(),
+            value_view: ValueView::new(),
+            status_view: StatusView::new(),
+            last_key_name: String::new(),
+            auto_refresh: true,
+            last_refresh_time: std::time::Instant::now(),
+        })
+    }
+
+    pub fn run(&amp;mut self) -&gt; Result&lt;()&gt; {
+        // habilitamos modo raw(significa capturar teclas individuales)
+        enable_raw_mode()?;
+
+        // crear una pantalla nueva, no modificar la terminal actual
+        let mut stdout: Stdout = io::stdout();
+
+        execute!(stdout, EnterAlternateScreen, EnableMouseCapture)?;
+
+        let backend = CrosstermBackend::new(stdout);
+        let mut terminal = Terminal::new(backend)?;
+
+        loop {
+            terminal.draw(|frame| {
+                let area = frame.area();
+                let layout = MainLayout::new(area);
+
+                let (keys_list_area, key_info_area, value_area) =
+                    layout.split_panels(layout.main_content);
+                let status_area = layout.footer;
+
+                self.keys_list_view.render(frame, keys_list_area);
+                self.key_info_view.render(frame, key_info_area);
+                self.value_view.render(frame, value_area);
+                self.status_view.render(frame, status_area);
+            });
+
+            if event::poll(std::time::Duration::from_millis(100))? {
+                if let Event::Key(key) = event::read()? {
+                    if key.kind == KeyEventKind::Press {
+                        let action = KeyboardController::map_key_event(key);
+
+                        match action {
+                            NavigationAction::Quit =&gt; break,
+                            _ =&gt; {}
+                        }
+                    }
+                }
+            }
+        }
+
+        disable_raw_mode()?;
+
+        execute!(
+            terminal.backend_mut(),
+            LeaveAlternateScreen,
+            DisableMouseCapture
+        )?;
+        Ok(())
+    }
+}
+
+fn main() -&gt; Result&lt;()&gt; {
+    let mut app = App::new()?;
+    app.run()?;
+
+    Ok(())
+}</code></pre>
+<p><strong>Propósito:</strong> Punto de entrada principal de la aplicación:</p>
+<ul>
+<li>Define los módulos a usar (<code>mod controllers</code>, <code>mod models</code>, etc.)</li>
+<li>Enum <code>FocusPanel</code>: Define qué panel tiene el foco actualmente (KeysList, Details, Value)</li>
+<li>Struct <code>App</code>: Struct principal que contiene todas las vistas y estado de la aplicación</li>
+<li><code>App::new()</code>: Constructor que inicializa la terminal y todas las vistas</li>
+<li><code>App::run()</code>: Loop principal de la aplicación:
+<ol>
+<li>Habilita modo raw (captura teclas sin esperar Enter)
+2.Entra en pantalla alterna (pantalla nueva, no modifica la actual)</li>
+<li>Loop infinito que:
+<ul>
+<li>Dibuja todas las vistas en sus áreas correspondientes</li>
+<li>Espera eventos de teclado (timeout 100ms)</li>
+<li>Procesa las teclas y ejecuta acciones</li>
+</ul>
+</li>
+<li>Sale del loop al presionar ‘q’</li>
+<li>Restaura la terminal al estado original</li>
+</ol>
+</li>
+</ul>
+<p>El flujo de renderizado usa <code>MainLayout</code> para calcular las áreas:</p>
+<ul>
+<li>keys_list_area: Panel izquierdo (lista de keys)</li>
+<li>key_info_area: Panel derecho superior (info de key)</li>
+<li>value_area: Panel derecho inferior (valor)</li>
+<li>status_area: Footer (barra inferior)</li>
+</ul>
+<p>Para salir de la aplicación, el usuario presiona ‘q’. La aplicación maneja el evento KeyEventKind::Press para evitar repeticiones.</p>
+<hr>
+<h2 id="paso-5-compilar-y-ejecutar"><a class="header" href="#paso-5-compilar-y-ejecutar">Paso 5: Compilar y Ejecutar</a></h2>
+<pre><code class="language-bash">cargo build
+cargo run
+</code></pre>
+<p>Opcionalmente, especifica la variable de entorno para Redis:</p>
+<pre><code class="language-bash">REDIS_URL=redis://tu-servidor:6379 cargo run
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../docs/02-axum-rasflow.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../docs/03-sqlx.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../docs/02-axum-rasflow.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../docs/03-sqlx.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

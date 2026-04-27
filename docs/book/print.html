@@ -36,10 +36,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-774fe236.js";
+            window.path_to_searchindex_js = "searchindex-300aa36d.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-b1a78b85.js"></script>
+        <script src="toc-0c4239c7.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -183,6 +183,7 @@
 <ul>
 <li><a href="#manual-de-usuario-backend-rust-con-axum">Backend con Axum (techcomponents)</a></li>
 <li><a href="#manual-completo-backend-rasflow---rust--axum">Backend con Axum (rasflow)</a></li>
+<li><a href="#restix---manual-de-desarrollo-paso-a-paso">Restix</a></li>
 </ul>
 <h2 id="base-de-datos"><a class="header" href="#base-de-datos">Base de datos</a></h2>
 <ul>
@@ -3227,6 +3228,1009 @@ use crate::{
 </tbody>
 </table>
 </div>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="restix---manual-de-desarrollo-paso-a-paso"><a class="header" href="#restix---manual-de-desarrollo-paso-a-paso">Restix - Manual de Desarrollo Paso a Paso</a></h1>
+<p>Este manual te permite replicar el proyecto Restix desde cero. Restix es un cliente TUI (Terminal User Interface) para Redis construido con Rust y la librería ratatui.</p>
+<h2 id="requisitos-previos"><a class="header" href="#requisitos-previos">Requisitos Previos</a></h2>
+<ul>
+<li>Rust instalado (https://rustup.rs)</li>
+<li>Acceso a una instancia de Redis (local o remota)</li>
+</ul>
+<hr>
+<h2 id="paso-1-crear-el-proyecto"><a class="header" href="#paso-1-crear-el-proyecto">Paso 1: Crear el Proyecto</a></h2>
+<pre><code class="language-bash">cargo new restix
+cd restix
+</code></pre>
+<hr>
+<h2 id="paso-2-configurar-cargotoml"><a class="header" href="#paso-2-configurar-cargotoml">Paso 2: Configurar Cargo.toml</a></h2>
+<p>El archivo <code>Cargo.toml</code> define las dependencias del proyecto. Reemplaza el contenido completo:</p>
+<pre><code class="language-toml">[package]
+name = "restix"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+ratatui = "0.30.0"
+redis = "0.25"        
+tokio = { version = "1", features = ["full"] } 
+crossterm = "0.27"    
+serde = { version = "1", features = ["derive"] } 
+serde_json = "1"      
+anyhow = "1"          
+thiserror = "1"       
+chrono = "0.4"        
+</code></pre>
+<p><strong>Dependencias explicadas:</strong></p>
+<ul>
+<li><code>ratatui</code>: Librería para crear interfaces de terminal en Rust</li>
+<li><code>redis</code>: Cliente para conectar a Redis</li>
+<li><code>tokio</code>: Runtime asíncrono para Rust</li>
+<li><code>crossterm</code>: Manejo de terminal cruzado (permite capturar teclas individuales)</li>
+<li><code>serde</code>/<code>serde_json</code>: Serialización de datos (para formatear JSON)</li>
+<li><code>anyhow</code>: Manejo de errores simplificado</li>
+<li><code>thiserror</code>: Definición de errores personalizados</li>
+<li><code>chrono</code>: Manejo de fechas y tiempos</li>
+</ul>
+<hr>
+<h2 id="paso-3-estructura-de-archivos"><a class="header" href="#paso-3-estructura-de-archivos">Paso 3: Estructura de Archivos</a></h2>
+<p>Crea la siguiente estructura de directorios en <code>src/</code>:</p>
+<pre><code>src/
+├── main.rs
+├── controllers/
+│   ├── mod.rs
+│   └── keyboard.rs
+├── models/
+│   ├── mod.rs
+│   └── redis_model.rs
+├── services/
+│   ├── mod.rs
+│   └── redis_service.rs
+├── utils/
+│   ├── mod.rs
+│   └── formatting.rs
+└── views/
+    ├── mod.rs
+    ├── layout.rs
+    ├── keys_list_view.rs
+    ├── key_info_view.rs
+    ├── value_view.rs
+    └── status_view.rs
+</code></pre>
+<hr>
+<h2 id="paso-4-módulos-del-proyecto"><a class="header" href="#paso-4-módulos-del-proyecto">Paso 4: Módulos del Proyecto</a></h2>
+<h3 id="41-controllersmodrs"><a class="header" href="#41-controllersmodrs">4.1 controllers/mod.rs</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod keyboard;
+<span class="boring">}</span></code></pre>
+<p><strong>Propósito:</strong> Define el módulo de controladores. Por ahora solo contiene el controlador de teclado.</p>
+<hr>
+<h3 id="42-controllerskeyboardrs"><a class="header" href="#42-controllerskeyboardrs">4.2 controllers/keyboard.rs</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use crossterm::event::{KeyCode, KeyEvent};
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum NavigationAction {
+    Quit,
+    None,
+}
+
+pub struct KeyboardController;
+
+impl KeyboardController {
+    pub fn map_key_event(event: KeyEvent) -&gt; NavigationAction {
+        match event.code {
+            KeyCode::Char('q') =&gt; NavigationAction::Quit,
+            _ =&gt; NavigationAction::None,
+        }
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><strong>Propósito:</strong> Maneja los eventos del teclado. Define acciones de navegación:</p>
+<ul>
+<li><code>Quit</code>: Salir de la aplicación (cuando se presiona ‘q’)</li>
+<li><code>None</code>: Ninguna acción (tecla no reconocida)</li>
+</ul>
+<p>Usa <code>crossterm::event</code> para capturar teclas. Crucial: Necesitas habilitar modo raw en main.rs para que esto funcione.</p>
+<hr>
+<h3 id="43-modelsmodrs"><a class="header" href="#43-modelsmodrs">4.3 models/mod.rs</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod redis_model;
+<span class="boring">}</span></code></pre>
+<p><strong>Propósito:</strong> Define el módulo de modelos de datos.</p>
+<hr>
+<h3 id="44-modelsredis_modelrs"><a class="header" href="#44-modelsredis_modelrs">4.4 models/redis_model.rs</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RedisData {
+    pub keys: Vec&lt;KeyInfo&gt;,
+    pub total_memory: u64,
+    pub connected: bool,
+    pub error: Option&lt;String&gt;,
+}
+
+impl Default for RedisData {
+    fn default() -&gt; Self {
+        Self {
+            keys: Vec::new(),
+            total_memory: 0,
+            connected: false,
+            error: None,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct KeyInfo {
+    pub name: String,
+    pub key_type: String,
+    pub ttl: i64,
+    pub memory_bytes: u64,
+    pub value_preview: String,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum TtlStatus {
+    NoExpiration,
+    Expired,
+    Urgent(i64),
+    Warning(i64),
+    Normal(i64),
+}
+
+impl TtlStatus {
+    pub fn from_ttl(ttl: i64) -&gt; Self {
+        match ttl {
+            -1 =&gt; TtlStatus::NoExpiration,
+            ttl if ttl &lt; 60 =&gt; TtlStatus::Urgent(ttl),
+            ttl if ttl &lt; 3600 =&gt; TtlStatus::Warning(ttl),
+            _ =&gt; TtlStatus::Normal(ttl),
+        }
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><strong>Propósito:</strong> Define las estructuras de datos para representar la información de Redis:</p>
+<ul>
+<li><code>RedisData</code>: Estructura principal que contiene todas las keys, memoria total, estado de conexión y errores</li>
+<li><code>KeyInfo</code>: Información individual de cada key (nombre, tipo, TTL, memoria, vista previa del valor)</li>
+<li><code>TtlStatus</code>: Enum que clasifica el TTL en niveles de urgencia para mostrar visualmente</li>
+</ul>
+<p>Usa <code>serde</code> para permitir serialización/deserialización (útil si quieres exportar datos a JSON).</p>
+<hr>
+<h3 id="45-servicesmodrs"><a class="header" href="#45-servicesmodrs">4.5 services/mod.rs</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod redis_service;
+<span class="boring">}</span></code></pre>
+<p><strong>Propósito:</strong> Define el módulo de servicios.</p>
+<hr>
+<h3 id="46-servicesredis_servicers"><a class="header" href="#46-servicesredis_servicers">4.6 services/redis_service.rs</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use crate::{
+    models::redis_model::{KeyInfo, RedisData},
+    utils::formatting::try_format_as_json,
+};
+use anyhow::{Context, Result};
+use redis::{Client, Commands, Connection};
+
+pub struct RedisService {
+    client: Client,
+    connection: Option&lt;Connection&gt;,
+    pub total_memory: u64,
+}
+
+impl RedisService {
+    pub fn new(url: &amp;str) -&gt; Result&lt;Self&gt; {
+        let client = Client::open(url).context("Failed to create Redis client")?;
+        Ok(Self {
+            client,
+            connection: None,
+            total_memory: 0,
+        })
+    }
+
+    pub fn connect(&amp;mut self) -&gt; Result&lt;()&gt; {
+        self.connection = Some(
+            self.client
+                .get_connection()
+                .context("Failed to connect to Redis")?,
+        );
+        Ok(())
+    }
+
+    pub fn is_connected(&amp;self) -&gt; bool {
+        self.connection.is_some()
+    }
+
+    pub fn fetch_keys(&amp;mut self) -&gt; Result&lt;RedisData&gt; {
+        let conn = self.connection.as_mut().context("Not connected to Redis")?;
+
+        let keys: Vec&lt;String&gt; = conn.keys("*")?;
+        let mut key_infos = Vec::new();
+        let mut total_memory = 0u64;
+
+        for key_name in keys.iter().take(1000) {
+            let key_type: String = redis::cmd("TYPE").arg(key_name).query(conn)?;
+
+            let ttl: i64 = conn.ttl(key_name)?;
+
+            let memory: u64 = redis::cmd("MEMORY")
+                .arg("USAGE")
+                .arg(key_name)
+                .query(conn)
+                .unwrap_or(0);
+
+            let value_preview = match key_type.as_str() {
+                "string" =&gt; {
+                    let val: String = conn.get(key_name).unwrap_or_default();
+                    if val.len() &gt; 50 {
+                        format!("{}...", &amp;val[..47.min(val.len())])
+                    } else {
+                        val
+                    }
+                }
+                "list" =&gt; {
+                    let len: usize = conn.llen(key_name).unwrap_or(0);
+                    format!("[{} items]", len)
+                }
+                "hash" =&gt; {
+                    let len: usize = conn.hlen(key_name).unwrap_or(0);
+                    format!("{{{} fields}}", len)
+                }
+                "set" =&gt; {
+                    let len: usize = conn.scard(key_name).unwrap_or(0);
+                    format!("[{} items]", len)
+                }
+                _ =&gt; "[binary data]".to_string(),
+            };
+
+            total_memory += memory;
+            key_infos.push(KeyInfo {
+                name: key_name.clone(),
+                key_type,
+                ttl,
+                memory_bytes: memory,
+                value_preview,
+            });
+        }
+
+        self.total_memory = total_memory;
+
+        Ok(RedisData {
+            keys: key_infos,
+            total_memory,
+            connected: true,
+            error: None,
+        })
+    }
+
+    /// Get the full value of a key (not just preview)
+    pub fn get_full_value(&amp;mut self, key_name: &amp;str, key_type: &amp;str) -&gt; Result&lt;String&gt; {
+        let conn = self.connection.as_mut().context("Not connected to Redis")?;
+
+        let value = match key_type {
+            "string" =&gt; {
+                let val: String = conn.get(key_name).unwrap_or_default();
+                if val.is_empty() {
+                    "(empty string)".to_string()
+                } else {
+                    // Try to format as JSON if it looks like JSON
+                    try_format_as_json(&amp;val)
+                }
+            }
+            "list" =&gt; {
+                let items: Vec&lt;String&gt; = conn.lrange(key_name, 0, -1).unwrap_or_default();
+                if items.is_empty() {
+                    "(empty list)".to_string()
+                } else {
+                    // Format each item, try to parse as JSON
+                    items
+                        .iter()
+                        .enumerate()
+                        .map(|(i, v)| {
+                            let formatted = try_format_as_json(v);
+                            if formatted.contains('\n') {
+                                // If it has newlines after formatting, indent it
+                                let indented: Vec&lt;String&gt; = formatted
+                                    .lines()
+                                    .map(|line| format!("    {}", line))
+                                    .collect();
+                                format!("[{}]\n{}", i, indented.join("\n"))
+                            } else {
+                                format!("[{}] {}", i, formatted)
+                            }
+                        })
+                        .collect::&lt;Vec&lt;_&gt;&gt;()
+                        .join("\n")
+                }
+            }
+            "hash" =&gt; {
+                let fields: Vec&lt;(String, String)&gt; = conn.hgetall(key_name).unwrap_or_default();
+                if fields.is_empty() {
+                    "(empty hash)".to_string()
+                } else {
+                    fields
+                        .iter()
+                        .map(|(k, v)| {
+                            let formatted = try_format_as_json(v);
+                            if formatted.contains('\n') {
+                                // If value is JSON/object, pretty print it
+                                format!("{}:\n{}", k, formatted)
+                            } else {
+                                format!("{}: {}", k, formatted)
+                            }
+                        })
+                        .collect::&lt;Vec&lt;_&gt;&gt;()
+                        .join("\n")
+                }
+            }
+            "set" =&gt; {
+                let members: Vec&lt;String&gt; = conn.smembers(key_name).unwrap_or_default();
+                if members.is_empty() {
+                    "(empty set)".to_string()
+                } else {
+                    members
+                        .iter()
+                        .enumerate()
+                        .map(|(i, m)| {
+                            let formatted = try_format_as_json(m);
+                            if formatted.contains('\n') {
+                                format!("[{}]\n{}", i, formatted)
+                            } else {
+                                format!("[{}] {}", i, formatted)
+                            }
+                        })
+                        .collect::&lt;Vec&lt;_&gt;&gt;()
+                        .join("\n")
+                }
+            }
+            "zset" =&gt; {
+                let members: Vec&lt;(String, f64)&gt; =
+                    conn.zrange_withscores(key_name, 0, -1).unwrap_or_default();
+                if members.is_empty() {
+                    "(empty sorted set)".to_string()
+                } else {
+                    members
+                        .iter()
+                        .map(|(m, s)| {
+                            let formatted = try_format_as_json(m);
+                            if formatted.contains('\n') {
+                                format!("{} (score: {})\n{}", formatted, s, formatted)
+                            } else {
+                                format!("{} (score: {})", formatted, s)
+                            }
+                        })
+                        .collect::&lt;Vec&lt;_&gt;&gt;()
+                        .join("\n")
+                }
+            }
+            _ =&gt; "(unsupported type)".to_string(),
+        };
+
+        Ok(value)
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><strong>Propósito:</strong> Servicio para conectar y comunicarse con Redis:</p>
+<ul>
+<li><code>RedisService</code>: Struct principal que maneja la conexión</li>
+<li><code>new(url)</code>: Crea un nuevo cliente Redis desde una URL (ej: “redis://127.0.0.1:6379”)</li>
+<li><code>connect()</code>: Establece la conexión física a Redis</li>
+<li><code>is_connected()</code>: Verifica si hay conexión activa</li>
+<li><code>fetch_keys()</code>: Obtiene todas las keys de Redis (máximo 1000). Para cada key obtiene:
+<ul>
+<li>Tipo (string, list, hash, set, zset)</li>
+<li>TTL (tiempo de expiración)</li>
+<li>Memoria usada</li>
+<li>Vista previa del valor</li>
+</ul>
+</li>
+<li><code>get_full_value()</code>: Obtiene el valor completo de una key por su nombre y tipo. Soporta todos los tipos de datos de Redis y intenta formatear como JSON cuando es posible.</li>
+</ul>
+<p>Usa el comando <code>redis::cmd()</code> para ejecutar comandos Redis crudos cuando el cliente no tiene método directo.</p>
+<hr>
+<h3 id="47-utilsmodrs"><a class="header" href="#47-utilsmodrs">4.7 utils/mod.rs</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod formatting;
+<span class="boring">}</span></code></pre>
+<p><strong>Propósito:</strong> Define el módulo de utilidades.</p>
+<hr>
+<h3 id="48-utilsformattingrs"><a class="header" href="#48-utilsformattingrs">4.8 utils/formatting.rs</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// Format JSON with indentation for readability
+pub fn format_json(value: &amp;str) -&gt; String {
+    // Try to parse as JSON and pretty print
+    if let Ok(json) = serde_json::from_str::&lt;serde_json::Value&gt;(value) {
+        serde_json::to_string_pretty(&amp;json).unwrap_or_else(|_| value.to_string())
+    } else {
+        value.to_string()
+    }
+}
+
+/// Try to format value as JSON if it looks like JSON
+pub fn try_format_as_json(value: &amp;str) -&gt; String {
+    // Check if it looks like JSON (starts with { or [)
+    let trimmed = value.trim();
+    if (trimmed.starts_with('{') &amp;&amp; trimmed.ends_with('}'))
+        || (trimmed.starts_with('[') &amp;&amp; trimmed.ends_with(']'))
+    {
+        format_json(value)
+    } else {
+        value.to_string()
+    }
+}
+
+pub fn format_bytes(bytes: u64) -&gt; String {
+    const KB: u64 = 1024;
+    const MB: u64 = KB * 1024;
+    const GB: u64 = MB * 1024;
+
+    if bytes &gt;= GB {
+        format!("{:.2} GB", bytes as f64 / GB as f64)
+    } else if bytes &gt;= MB {
+        format!("{:.2} MB", bytes as f64 / MB as f64)
+    } else if bytes &gt;= KB {
+        format!("{:.2} KB", bytes as f64 / KB as f64)
+    } else {
+        format!("{} B", bytes)
+    }
+}
+
+pub fn format_ttl(ttl: i64) -&gt; String {
+    if ttl == -1 {
+        "No expiration".to_string()
+    } else if ttl &lt; 0 {
+        "Expired".to_string()
+    } else if ttl &lt; 60 {
+        format!("{}s", ttl)
+    } else if ttl &lt; 3600 {
+        format!("{}m {}s", ttl / 60, ttl % 60)
+    } else {
+        format!("{}h {}m", ttl / 3600, (ttl % 3600) / 60)
+    }
+}
+
+pub fn get_type_badge(key_type: &amp;str) -&gt; &amp;'static str {
+    match key_type.to_lowercase().as_str() {
+        "string" =&gt; "S",
+        "list" =&gt; "L",
+        "hash" =&gt; "H",
+        "set" =&gt; "U",
+        "zset" =&gt; "Z",
+        _ =&gt; "?",
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><strong>Propósito:</strong> Funciones de utilidad para formatear datos:</p>
+<ul>
+<li><code>format_json()</code>: Convierte JSON minificado a formato legible con indentación</li>
+<li><code>try_format_as_json()</code>: Detecta si un string parece JSON (comienza con <code>{</code> o <code>[</code>) y lo formatea</li>
+<li><code>format_bytes()</code>: Convierte bytes a formato legible (B, KB, MB, GB)</li>
+<li><code>format_ttl()</code>: Convierte TTL de segundos a formato legible (s, m, h)</li>
+<li><code>get_type_badge()</code>: Retorna una letra representativa del tipo de dato Redis (S=string, L=list, H=hash, U=set, Z=zset)</li>
+</ul>
+<hr>
+<h3 id="49-viewsmodrs"><a class="header" href="#49-viewsmodrs">4.9 views/mod.rs</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod key_info_view;
+pub mod keys_list_view;
+pub mod layout;
+pub mod status_view;
+pub mod value_view;
+<span class="boring">}</span></code></pre>
+<p><strong>Propósito:</strong> Define el módulo de vistas. Cada archivo es una vista diferente de la interfaz.</p>
+<hr>
+<h3 id="410-viewslayoutrs"><a class="header" href="#410-viewslayoutrs">4.10 views/layout.rs</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use ratatui::layout::{Constraint, Direction, Layout, Rect};
+
+#[derive(Debug)]
+pub struct MainLayout {
+    pub main_content: Rect,
+    pub footer: Rect,
+}
+
+impl MainLayout {
+    // Crea el layout principal de la app(arriba el contenido y abajo el footer con los comandos)
+    pub fn new(area: Rect) -&gt; Self {
+        let chunks = Layout::default()
+            .direction(Direction::Vertical)
+            .constraints([Constraint::Min(0), Constraint::Length(3)])
+            .split(area);
+
+        Self {
+            main_content: chunks[0],
+            footer: chunks[1],
+        }
+    }
+
+    // Separa el contenido que tendra la app en 2, parte izquierda y derecha(cada parte tendra sus
+    // paneles)
+    pub fn split_content(&amp;self, area: Rect) -&gt; (Rect, Rect) {
+        let chunks = Layout::default()
+            .direction(Direction::Horizontal)
+            .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
+            .split(area);
+
+        (chunks[0], chunks[1])
+    }
+
+    // Reorganiza el contenido, en la parte derecha se divide en 2
+    pub fn split_panels(&amp;self, area: Rect) -&gt; (Rect, Rect, Rect) {
+        let (content_left, content_right) = self.split_content(area);
+
+        let right_panels = Layout::default()
+            .direction(Direction::Vertical)
+            .constraints([Constraint::Percentage(25), Constraint::Percentage(75)])
+            .split(content_right);
+
+        (content_left, right_panels[0], right_panels[1])
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><strong>Propósito:</strong> Define el layout principal de la aplicación usando ratatui:</p>
+<ul>
+<li><code>MainLayout</code>: Estructura que contiene las áreas (rectángulos) de la interfaz</li>
+<li><code>new()</code>: Crea el layout principal dividiendo la terminal en contenido principal (arriba) y footer (abajo, 3 líneas de alto)</li>
+<li><code>split_content()</code>: Divide el contenido en dos partes iguales (izquierda y derecha, 50% cada una)</li>
+<li><code>split_panels()</code>: Divide el contenido en 3 paneles: uno izquierdo (lista de keys) ydos derechos (info arriba 25%, valor abajo 75%)</li>
+</ul>
+<p>Usa <code>Constraint</code> de ratatui para definir proporciones. El layout final queda así:</p>
+<pre><code>┌────────────────┬────────────────┐
+│                │   Key Info     │
+│  Keys List     │   (25%)       │
+│   (50%)        ├────────────────┤
+│                │               │
+│                │  Value View   │
+│                │   (75%)       │
+├────────────────┴────────────────┤
+│         Status / Footer          │
+└───────────────────────────────┘
+</code></pre>
+<hr>
+<h3 id="411-viewskeys_list_viewrs"><a class="header" href="#411-viewskeys_list_viewrs">4.11 views/keys_list_view.rs</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use ratatui::{
+    Frame,
+    layout::{Constraint, Rect},
+    style::{Style, Stylize},
+    widgets::{Block, Borders, Cell, Row, Table},
+};
+
+use crate::{
+    models::redis_model::KeyInfo,
+    utils::formatting::{format_bytes, format_ttl, get_type_badge},
+};
+
+pub struct KeysListView {
+    pub state: ratatui::widgets::ListState,
+    pub items: Vec&lt;KeyInfo&gt;,
+    pub focused: bool, // true cuando este panel tiene el foco
+}
+
+impl KeysListView {
+    pub fn new() -&gt; Self {
+        Self {
+            state: ratatui::widgets::ListState::default(),
+            items: Vec::new(),
+            focused: false,
+        }
+    }
+
+    // Activa o desactiva el foco del componente
+    pub fn set_focus(&amp;mut self, focused: bool) {
+        self.focused = focused
+    }
+
+    // Actualizar datos
+    pub fn update(&amp;mut self, items: Vec&lt;KeyInfo&gt;) {
+        self.items = items;
+
+        if let Some(selected) = self.state.selected() {
+            if selected &gt;= self.items.len() {
+                self.state.select(Some(self.items.len().saturating_sub(1)));
+            }
+        }
+    }
+
+    pub fn next(&amp;mut self) {
+        let i = match self.state.selected() {
+            Some(i) =&gt; {
+                if i &gt;= self.items.len() - 1 {
+                    0
+                } else {
+                    i + 1
+                }
+            }
+            None =&gt; 0,
+        };
+        self.state.select(Some(i));
+    }
+
+    pub fn previous(&amp;mut self) {
+        let i = match self.state.selected() {
+            Some(i) =&gt; {
+                if i == 0 {
+                    self.items.len().saturating_sub(1)
+                } else {
+                    i - 1
+                }
+            }
+            None =&gt; 0,
+        };
+        self.state.select(Some(i));
+    }
+
+    pub fn render(&amp;self, frame: &amp;mut Frame, area: Rect) {
+        let rows: Vec&lt;Row&gt; = self
+            .items
+            .iter()
+            .enumerate()
+            .map(|(idx, key)| {
+                let is_selected = self.state.selected() == Some(idx);
+
+                // Estilo base depende de si está enfocado y seleccionado
+                let row_style = if self.focused &amp;&amp; is_selected {
+                    Style::default()
+                        .bg(ratatui::style::Color::Blue)
+                        .fg(ratatui::style::Color::White)
+                } else if is_selected {
+                    Style::default().bg(ratatui::style::Color::DarkGray)
+                } else if self.focused {
+                    Style::default()
+                } else {
+                    Style::default().dim()
+                };
+
+                Row::new([
+                    Cell::from(format!("{}", idx + 1)).style(row_style),
+                    Cell::from({
+                        let name = &amp;key.name;
+                        if name.len() &gt; 30 {
+                            format!("{}...", &amp;name[..27.min(name.len())])
+                        } else {
+                            name.clone()
+                        }
+                    })
+                    .style(row_style),
+                    Cell::from(get_type_badge(&amp;key.key_type)).style(row_style),
+                    Cell::from(format_ttl(key.ttl)).style(row_style),
+                    Cell::from(format_bytes(key.memory_bytes)).style(row_style),
+                ])
+            })
+            .collect();
+
+        let widths = [
+            Constraint::Percentage(5),
+            Constraint::Percentage(45),
+            Constraint::Percentage(10),
+            Constraint::Percentage(20),
+            Constraint::Percentage(20),
+        ];
+
+        // Borde más grueso cuando está enfocado
+        let borders = if self.focused {
+            Borders::ALL
+        } else {
+            Borders::ALL
+        };
+
+        let title = if self.focused {
+            "Redis Keys ◄"
+        } else {
+            "Redis Keys"
+        };
+
+        // Background diferente cuando está enfocado
+        let block = if self.focused {
+            Block::default()
+                .borders(borders)
+                .title(title)
+                .border_style(Style::default().fg(ratatui::style::Color::Blue))
+        } else {
+            Block::default()
+                .borders(borders)
+                .title(title)
+                .border_style(Style::default().dim())
+        };
+
+        let table = Table::new(rows, widths)
+            .block(block)
+            .style(if self.focused {
+                Style::default()
+            } else {
+                Style::default().dim()
+            });
+
+        frame.render_widget(table, area);
+    }
+}
+
+impl Default for KeysListView {
+    fn default() -&gt; Self {
+        Self::new()
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><strong>Propósito:</strong> Vista que muestra la lista de keys de Redis en una tabla:</p>
+<ul>
+<li><code>KeysListView</code>: Componente principal querenderiza la lista</li>
+<li><code>state</code>: Mantiene el estado de selección (ítem seleccionada)</li>
+<li><code>items</code>: Vector de KeyInfo a mostrar</li>
+<li><code>focused</code>: Indica si el panel tiene el foco (para resaltar)</li>
+<li><code>set_focus()</code>: Activa/desactiva el foco visual</li>
+<li><code>update()</code>: Actualiza los datos de la lista</li>
+<li><code>next()</code> / <code>previous()</code>: Navegación entre items (con wrapping)</li>
+<li><code>render()</code>: Dibuja la tabla con las columns: #, Nombre, Tipo, TTL, Memoria</li>
+</ul>
+<p>La tabla muestra cada key con su número, nombre (truncado a 30 caracteres), tipo (badge), TTL formateado, y memoria. El estilo cambia según si está enfocada y seleccionada:</p>
+<ul>
+<li>Enfocada + seleccionada: fondo azul, texto blanco</li>
+<li>Solo seleccionada: fondo gris oscuro</li>
+<li>Solo enfocada: estilo normal</li>
+<li>Ninguna: estilo tenue (dim)</li>
+</ul>
+<hr>
+<h3 id="412-viewskey_info_viewrs"><a class="header" href="#412-viewskey_info_viewrs">4.12 views/key_info_view.rs</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use ratatui::{Frame, layout::Rect, style::Style, widgets::Block};
+
+pub struct KeyInfoView {
+    pub state: ratatui::widgets::ListState,
+}
+
+impl KeyInfoView {
+    pub fn new() -&gt; Self {
+        Self {
+            state: ratatui::widgets::ListState::default(),
+        }
+    }
+
+    pub fn render(&amp;self, frame: &amp;mut Frame, area: Rect) {
+        let block = Block::default().style(Style::default().bg(ratatui::style::Color::Green));
+
+        frame.render_widget(block, area);
+    }
+}
+
+impl Default for KeyInfoView {
+    fn default() -&gt; Self {
+        Self::new()
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><strong>Propósito:</strong> Vista de información de la key seleccionada (panel superior derecho). Por ahora solo muestra un bloque con fondo verde como placeholder. Este panel está diseñado para mostrar metadatos de la key seleccionada.</p>
+<hr>
+<h3 id="413-viewsvalue_viewrs"><a class="header" href="#413-viewsvalue_viewrs">4.13 views/value_view.rs</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use ratatui::{Frame, layout::Rect, style::Style, widgets::Block};
+
+pub struct ValueView {
+    pub state: ratatui::widgets::ListState,
+}
+
+impl ValueView {
+    pub fn new() -&gt; Self {
+        Self {
+            state: ratatui::widgets::ListState::default(),
+        }
+    }
+
+    pub fn render(&amp;self, frame: &amp;mut Frame, area: Rect) {
+        let block = Block::default().style(Style::default().bg(ratatui::style::Color::Magenta));
+
+        frame.render_widget(block, area);
+    }
+}
+
+impl Default for ValueView {
+    fn default() -&gt; Self {
+        Self::new()
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><strong>Propósito:</strong> Vista del valor de la key seleccionada (panel inferior derecho). Por ahora solo muestra un bloque con fondo magenta como placeholder. Este panel está diseñado para mostrar el valor completo de la key.</p>
+<hr>
+<h3 id="414-viewsstatus_viewrs"><a class="header" href="#414-viewsstatus_viewrs">4.14 views/status_view.rs</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use ratatui::{Frame, layout::Rect, style::Style, widgets::Block};
+
+pub struct StatusView {
+    pub state: ratatui::widgets::ListState,
+}
+
+impl StatusView {
+    pub fn new() -&gt; Self {
+        Self {
+            state: ratatui::widgets::ListState::default(),
+        }
+    }
+
+    pub fn render(&amp;self, frame: &amp;mut Frame, area: Rect) {
+        let block = Block::default().style(Style::default().bg(ratatui::style::Color::Yellow));
+
+        frame.render_widget(block, area);
+    }
+}
+
+impl Default for StatusView {
+    fn default() -&gt; Self {
+        Self::new()
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><strong>Propósito:</strong> Vista de estado/footer de la aplicación. Por ahora solo muestra un bloque con fondo amarillo como placeholder. Este panel está diseñado para mostrar comandos disponibles y estado de conexión.</p>
+<hr>
+<h3 id="415-mainrs"><a class="header" href="#415-mainrs">4.15 main.rs</a></h3>
+<pre class="playground"><code class="language-rust">mod controllers;
+mod models;
+mod services;
+mod utils;
+mod views;
+
+use std::io::{self, Stdout};
+
+use anyhow::Result;
+use crossterm::{
+    event::{self, DisableMouseCapture, EnableMouseCapture, Event, KeyEventKind},
+    execute,
+    terminal::{EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode, enable_raw_mode},
+};
+use ratatui::{Terminal, prelude::CrosstermBackend};
+
+use crate::{
+    controllers::keyboard::{KeyboardController, NavigationAction},
+    views::{
+        key_info_view::KeyInfoView, keys_list_view::KeysListView, layout::MainLayout,
+        status_view::StatusView, value_view::ValueView,
+    },
+};
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum FocusPanel {
+    KeysList,
+    Details,
+    Value,
+}
+
+pub struct App {
+    pub terminal: Terminal&lt;CrosstermBackend&lt;Stdout&gt;&gt;,
+
+    // Views
+    pub keys_list_view: KeysListView,
+    pub key_info_view: KeyInfoView,
+    pub value_view: ValueView,
+    pub status_view: StatusView,
+
+    pub last_key_name: String,
+    pub auto_refresh: bool,
+    pub last_refresh_time: std::time::Instant,
+}
+
+impl App {
+    pub fn new() -&gt; Result&lt;Self&gt; {
+        Ok(Self {
+            terminal: Terminal::new(CrosstermBackend::new(io::stdout()))?,
+            keys_list_view: KeysListView::new(),
+            key_info_view: KeyInfoView::new(),
+            value_view: ValueView::new(),
+            status_view: StatusView::new(),
+            last_key_name: String::new(),
+            auto_refresh: true,
+            last_refresh_time: std::time::Instant::now(),
+        })
+    }
+
+    pub fn run(&amp;mut self) -&gt; Result&lt;()&gt; {
+        // habilitamos modo raw(significa capturar teclas individuales)
+        enable_raw_mode()?;
+
+        // crear una pantalla nueva, no modificar la terminal actual
+        let mut stdout: Stdout = io::stdout();
+
+        execute!(stdout, EnterAlternateScreen, EnableMouseCapture)?;
+
+        let backend = CrosstermBackend::new(stdout);
+        let mut terminal = Terminal::new(backend)?;
+
+        loop {
+            terminal.draw(|frame| {
+                let area = frame.area();
+                let layout = MainLayout::new(area);
+
+                let (keys_list_area, key_info_area, value_area) =
+                    layout.split_panels(layout.main_content);
+                let status_area = layout.footer;
+
+                self.keys_list_view.render(frame, keys_list_area);
+                self.key_info_view.render(frame, key_info_area);
+                self.value_view.render(frame, value_area);
+                self.status_view.render(frame, status_area);
+            });
+
+            if event::poll(std::time::Duration::from_millis(100))? {
+                if let Event::Key(key) = event::read()? {
+                    if key.kind == KeyEventKind::Press {
+                        let action = KeyboardController::map_key_event(key);
+
+                        match action {
+                            NavigationAction::Quit =&gt; break,
+                            _ =&gt; {}
+                        }
+                    }
+                }
+            }
+        }
+
+        disable_raw_mode()?;
+
+        execute!(
+            terminal.backend_mut(),
+            LeaveAlternateScreen,
+            DisableMouseCapture
+        )?;
+        Ok(())
+    }
+}
+
+fn main() -&gt; Result&lt;()&gt; {
+    let mut app = App::new()?;
+    app.run()?;
+
+    Ok(())
+}</code></pre>
+<p><strong>Propósito:</strong> Punto de entrada principal de la aplicación:</p>
+<ul>
+<li>Define los módulos a usar (<code>mod controllers</code>, <code>mod models</code>, etc.)</li>
+<li>Enum <code>FocusPanel</code>: Define qué panel tiene el foco actualmente (KeysList, Details, Value)</li>
+<li>Struct <code>App</code>: Struct principal que contiene todas las vistas y estado de la aplicación</li>
+<li><code>App::new()</code>: Constructor que inicializa la terminal y todas las vistas</li>
+<li><code>App::run()</code>: Loop principal de la aplicación:
+<ol>
+<li>Habilita modo raw (captura teclas sin esperar Enter)
+2.Entra en pantalla alterna (pantalla nueva, no modifica la actual)</li>
+<li>Loop infinito que:
+<ul>
+<li>Dibuja todas las vistas en sus áreas correspondientes</li>
+<li>Espera eventos de teclado (timeout 100ms)</li>
+<li>Procesa las teclas y ejecuta acciones</li>
+</ul>
+</li>
+<li>Sale del loop al presionar ‘q’</li>
+<li>Restaura la terminal al estado original</li>
+</ol>
+</li>
+</ul>
+<p>El flujo de renderizado usa <code>MainLayout</code> para calcular las áreas:</p>
+<ul>
+<li>keys_list_area: Panel izquierdo (lista de keys)</li>
+<li>key_info_area: Panel derecho superior (info de key)</li>
+<li>value_area: Panel derecho inferior (valor)</li>
+<li>status_area: Footer (barra inferior)</li>
+</ul>
+<p>Para salir de la aplicación, el usuario presiona ‘q’. La aplicación maneja el evento KeyEventKind::Press para evitar repeticiones.</p>
+<hr>
+<h2 id="paso-5-compilar-y-ejecutar"><a class="header" href="#paso-5-compilar-y-ejecutar">Paso 5: Compilar y Ejecutar</a></h2>
+<pre><code class="language-bash">cargo build
+cargo run
+</code></pre>
+<p>Opcionalmente, especifica la variable de entorno para Redis:</p>
+<pre><code class="language-bash">REDIS_URL=redis://tu-servidor:6379 cargo run
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="1-instalar-sqlx-cli"><a class="header" href="#1-instalar-sqlx-cli">1. Instalar SQLx CLI</a></h1>
 <pre><code class="language-bash">cargo install sqlx-cli --no-default-features --features postgres
