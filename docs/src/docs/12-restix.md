@@ -210,7 +210,7 @@ pub mod redis_service;
 ---
 
 ### 4.6 services/redis_service.rs
-
+{% raw %}
 ```rust
 use crate::{
     models::redis_model::{KeyInfo, RedisData},
@@ -417,6 +417,7 @@ impl RedisService {
     }
 }
 ```
+{% endraw %}
 
 **Propósito:** Servicio para conectar y comunicarse con Redis:
 
