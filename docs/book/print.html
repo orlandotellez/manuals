@@ -36,10 +36,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-07518dc5.js";
+            window.path_to_searchindex_js = "searchindex-68fe270f.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-0c4239c7.js"></script>
+        <script src="toc-93611208.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -205,6 +205,10 @@
 <li><a href="#redes---direcciones-ip-y-subredes">Redes</a></li>
 <li><a href="#redes---ejercicio-análisis-de-direcciones-ipv4">Redes ejercicios</a></li>
 <li><a href="#nat">NAT</a></li>
+</ul>
+<h2 id="docker"><a class="header" href="#docker">Docker</a></h2>
+<ul>
+<li><a href="#manual-de-docker-en-debian--instalación-desinstalación-y-reinstalación-completa">Docker Instalación</a></li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="manual-de-usuario-backend-rust-con-axum"><a class="header" href="#manual-de-usuario-backend-rust-con-axum">Manual de Usuario: Backend Rust con Axum</a></h1>
@@ -8303,6 +8307,344 @@ Red:      192.168.10.0
 <h3 id="fiabilidad-industrial-con-la-serie-rut"><a class="header" href="#fiabilidad-industrial-con-la-serie-rut">Fiabilidad industrial con la serie RUT</a></h3>
 <p>Los routers de Teltonika están diseñados para gestionar las complejidades de la administración de IP. Con funciones como Auto APN, nuestros routers seleccionan automáticamente la configuración correcta para que te conectes a Internet al instante.</p>
 <p>Si su aplicación requiere estrictamente una conexión pública, funciones como IP Passthrough permiten que el enrutador envíe su IP pública móvil directamente a su servidor interno, manteniendo al mismo tiempo un enlace de administración con RMS.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="manual-de-docker-en-debian--instalación-desinstalación-y-reinstalación-completa"><a class="header" href="#manual-de-docker-en-debian--instalación-desinstalación-y-reinstalación-completa">Manual de Docker en Debian — Instalación, Desinstalación y Reinstalación Completa</a></h1>
+<p>Docker es una plataforma de contenedores que permite empaquetar, distribuir y ejecutar aplicaciones en entornos aislados. Este manual cubre la instalación completa usando el repositorio oficial, la desinstalación limpia sin residuos, y el procedimiento de reinstalación desde cero.</p>
+<hr>
+<h2 id="índice"><a class="header" href="#índice">Índice</a></h2>
+<ol>
+<li><a href="#1-requisitos-previos-3">Requisitos Previos</a></li>
+<li><a href="#2-desinstalación-completa-hacer-primero-si-ya-tienes-docker">Desinstalación Completa</a></li>
+<li><a href="#3-instalación-desde-el-repositorio-oficial">Instalación desde el Repositorio Oficial</a></li>
+<li><a href="#4-verificar-la-instalación">Verificar la Instalación</a></li>
+<li><a href="#5-configuración-post-instalación">Configuración Post-Instalación</a></li>
+<li><a href="#6-comandos-básicos">Comandos Básicos</a></li>
+<li><a href="#7-docker-compose">Docker Compose</a></li>
+<li><a href="#8-solución-de-problemas">Solución de Problemas</a></li>
+</ol>
+<hr>
+<h2 id="1-requisitos-previos-3"><a class="header" href="#1-requisitos-previos-3">1. Requisitos Previos</a></h2>
+<h3 id="sistema-operativo-soportado"><a class="header" href="#sistema-operativo-soportado">Sistema operativo soportado</a></h3>
+<ul>
+<li>Debian Bullseye (11), Bookworm (12) o superior</li>
+<li>Arquitecturas: <code>amd64</code>, <code>armhf</code>, <code>arm64</code>, <code>s390x</code></li>
+<li>Al menos 2 GB de RAM (4 GB recomendado)</li>
+<li>Kernel Linux 3.10 o superior</li>
+<li>Acceso a <code>sudo</code> o root</li>
+</ul>
+<p>Verificar la versión de Debian y la arquitectura:</p>
+<pre><code class="language-bash">cat /etc/debian_version
+dpkg --print-architecture
+</code></pre>
+<hr>
+<h2 id="2-desinstalación-completa-hacer-primero-si-ya-tienes-docker"><a class="header" href="#2-desinstalación-completa-hacer-primero-si-ya-tienes-docker">2. Desinstalación Completa (hacer primero si ya tienes Docker)</a></h2>
+<blockquote>
+<p><strong>Esta sección es el punto de partida si quieres hacer una instalación limpia, corregir una instalación rota, o simplemente eliminar Docker del sistema por completo.</strong> Ejecuta todos los pasos en orden.</p>
+</blockquote>
+<h3 id="paso-1--detener-todos-los-contenedores-y-el-servicio"><a class="header" href="#paso-1--detener-todos-los-contenedores-y-el-servicio">Paso 1 — Detener todos los contenedores y el servicio</a></h3>
+<pre><code class="language-bash"># Detener todos los contenedores en ejecución
+docker stop $(docker ps -aq) 2&gt;/dev/null || true
+
+# Detener el servicio de Docker
+sudo systemctl stop docker
+sudo systemctl stop docker.socket
+sudo systemctl stop containerd
+</code></pre>
+<h3 id="paso-2--eliminar-los-paquetes-de-docker"><a class="header" href="#paso-2--eliminar-los-paquetes-de-docker">Paso 2 — Eliminar los paquetes de Docker</a></h3>
+<pre><code class="language-bash">sudo apt purge -y \
+  docker-ce \
+  docker-ce-cli \
+  containerd.io \
+  docker-buildx-plugin \
+  docker-compose-plugin \
+  docker-ce-rootless-extras
+</code></pre>
+<p>También eliminar paquetes legados si existieran de instalaciones anteriores:</p>
+<pre><code class="language-bash">sudo apt remove -y \
+  docker \
+  docker-engine \
+  docker.io \
+  containerd \
+  runc \
+  2&gt;/dev/null || true
+</code></pre>
+<p>Limpiar dependencias huérfanas:</p>
+<pre><code class="language-bash">sudo apt autoremove -y
+sudo apt autoclean
+</code></pre>
+<h3 id="paso-3--eliminar-todos-los-datos-de-docker"><a class="header" href="#paso-3--eliminar-todos-los-datos-de-docker">Paso 3 — Eliminar todos los datos de Docker</a></h3>
+<blockquote>
+<p>⚠️ <strong>Advertencia:</strong> Estos comandos eliminan permanentemente todas las imágenes, contenedores, volúmenes y redes de Docker. No hay recuperación posible. Si necesitas conservar algo, haz un backup primero con <code>docker export</code> o <code>docker save</code>.</p>
+</blockquote>
+<pre><code class="language-bash"># Eliminar directorios de datos principales
+sudo rm -rf /var/lib/docker
+sudo rm -rf /var/lib/containerd
+
+# Eliminar configuración del demonio
+sudo rm -rf /etc/docker
+
+# Eliminar archivos de socket residuales
+sudo rm -f /var/run/docker.sock
+sudo rm -f /var/run/docker.pid
+sudo rm -f /var/run/containerd/containerd.sock
+</code></pre>
+<h3 id="paso-4--eliminar-el-repositorio-y-la-clave-gpg"><a class="header" href="#paso-4--eliminar-el-repositorio-y-la-clave-gpg">Paso 4 — Eliminar el repositorio y la clave GPG</a></h3>
+<pre><code class="language-bash"># Eliminar la entrada del repositorio de Docker
+sudo rm -f /etc/apt/sources.list.d/docker.list
+
+# Eliminar la clave GPG
+sudo rm -f /etc/apt/keyrings/docker.gpg
+sudo rm -f /usr/share/keyrings/docker-archive-keyring.gpg  # ubicación alternativa antigua
+
+# Actualizar el índice de paquetes
+sudo apt update
+</code></pre>
+<h3 id="paso-5--eliminar-el-grupo-docker-y-los-binarios-residuales"><a class="header" href="#paso-5--eliminar-el-grupo-docker-y-los-binarios-residuales">Paso 5 — Eliminar el grupo docker y los binarios residuales</a></h3>
+<pre><code class="language-bash"># Eliminar el grupo docker
+sudo groupdel docker 2&gt;/dev/null || true
+
+# Eliminar binarios residuales si existieran
+sudo rm -f /usr/local/bin/docker
+sudo rm -f /usr/local/bin/docker-compose
+</code></pre>
+<h3 id="paso-6--deshabilitar-y-eliminar-los-servicios-systemd"><a class="header" href="#paso-6--deshabilitar-y-eliminar-los-servicios-systemd">Paso 6 — Deshabilitar y eliminar los servicios systemd</a></h3>
+<pre><code class="language-bash">sudo systemctl disable docker 2&gt;/dev/null || true
+sudo systemctl disable containerd 2&gt;/dev/null || true
+
+# Recargar systemd para eliminar referencias a los servicios eliminados
+sudo systemctl daemon-reload
+sudo systemctl reset-failed
+</code></pre>
+<h3 id="paso-7--verificar-que-docker-fue-eliminado-completamente"><a class="header" href="#paso-7--verificar-que-docker-fue-eliminado-completamente">Paso 7 — Verificar que Docker fue eliminado completamente</a></h3>
+<pre><code class="language-bash"># Estos comandos deben devolver "command not found" o error
+docker --version 2&gt;/dev/null &amp;&amp; echo "⚠️  Docker todavía está instalado" || echo "✅ Docker eliminado correctamente"
+which docker 2&gt;/dev/null &amp;&amp; echo "⚠️  Binario docker todavía existe" || echo "✅ Binario eliminado"
+
+# Verificar que no quedan servicios activos
+systemctl list-units --type=service | grep docker
+systemctl list-units --type=service | grep containerd
+</code></pre>
+<p>Si todos los checks muestran que Docker fue eliminado, el sistema está limpio y listo para una instalación fresca.</p>
+<hr>
+<h2 id="3-instalación-desde-el-repositorio-oficial"><a class="header" href="#3-instalación-desde-el-repositorio-oficial">3. Instalación desde el Repositorio Oficial</a></h2>
+<h3 id="paso-1--actualizar-el-índice-de-paquetes-e-instalar-dependencias"><a class="header" href="#paso-1--actualizar-el-índice-de-paquetes-e-instalar-dependencias">Paso 1 — Actualizar el índice de paquetes e instalar dependencias</a></h3>
+<pre><code class="language-bash">sudo apt update
+
+sudo apt install -y \
+  ca-certificates \
+  curl \
+  gnupg \
+  lsb-release
+</code></pre>
+<h3 id="paso-2--agregar-la-clave-gpg-oficial-de-docker"><a class="header" href="#paso-2--agregar-la-clave-gpg-oficial-de-docker">Paso 2 — Agregar la clave GPG oficial de Docker</a></h3>
+<pre><code class="language-bash"># Crear el directorio para claves si no existe
+sudo install -m 0755 -d /etc/apt/keyrings
+
+# Descargar y guardar la clave GPG
+curl -fsSL https://download.docker.com/linux/debian/gpg | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+# Establecer permisos de lectura
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+</code></pre>
+<h3 id="paso-3--agregar-el-repositorio-de-docker"><a class="header" href="#paso-3--agregar-el-repositorio-de-docker">Paso 3 — Agregar el repositorio de Docker</a></h3>
+<p>Para <strong>Debian Bookworm (12)</strong>:</p>
+<pre><code class="language-bash">echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+  https://download.docker.com/linux/debian bookworm stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null
+</code></pre>
+<p>Para <strong>Debian Bullseye (11)</strong>, reemplaza <code>bookworm</code> por <code>bullseye</code>:</p>
+<pre><code class="language-bash">echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+  https://download.docker.com/linux/debian bullseye stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null
+</code></pre>
+<h3 id="paso-4--instalar-docker-engine"><a class="header" href="#paso-4--instalar-docker-engine">Paso 4 — Instalar Docker Engine</a></h3>
+<pre><code class="language-bash">sudo apt update
+
+sudo apt install -y \
+  docker-ce \
+  docker-ce-cli \
+  containerd.io \
+  docker-buildx-plugin \
+  docker-compose-plugin
+</code></pre>
+<p>Los componentes instalados:</p>
+<ul>
+<li><code>docker-ce</code> — motor principal de Docker</li>
+<li><code>docker-ce-cli</code> — cliente de línea de comandos</li>
+<li><code>containerd.io</code> — gestor de contenedores de bajo nivel (cumple la especificación OCI)</li>
+<li><code>docker-buildx-plugin</code> — construcción avanzada de imágenes</li>
+<li><code>docker-compose-plugin</code> — soporte para aplicaciones multi-contenedor</li>
+</ul>
+<hr>
+<h2 id="4-verificar-la-instalación"><a class="header" href="#4-verificar-la-instalación">4. Verificar la Instalación</a></h2>
+<h3 id="verificar-el-servicio"><a class="header" href="#verificar-el-servicio">Verificar el servicio</a></h3>
+<pre><code class="language-bash">sudo systemctl status docker
+</code></pre>
+<p>Si el servicio no está activo, iniciarlo y habilitarlo:</p>
+<pre><code class="language-bash">sudo systemctl start docker
+sudo systemctl enable docker
+</code></pre>
+<h3 id="ejecutar-el-contenedor-de-prueba"><a class="header" href="#ejecutar-el-contenedor-de-prueba">Ejecutar el contenedor de prueba</a></h3>
+<pre><code class="language-bash">sudo docker run hello-world
+</code></pre>
+<p>La salida debe incluir:</p>
+<pre><code>Hello from Docker!
+This message shows that your installation appears to be working correctly.
+</code></pre>
+<h3 id="verificar-versiones-instaladas"><a class="header" href="#verificar-versiones-instaladas">Verificar versiones instaladas</a></h3>
+<pre><code class="language-bash">docker --version
+docker version
+docker compose version
+</code></pre>
+<hr>
+<h2 id="5-configuración-post-instalación"><a class="header" href="#5-configuración-post-instalación">5. Configuración Post-Instalación</a></h2>
+<h3 id="ejecutar-docker-sin-sudo"><a class="header" href="#ejecutar-docker-sin-sudo">Ejecutar Docker sin sudo</a></h3>
+<p>Por defecto, el comando <code>docker</code> requiere <code>sudo</code>. Para evitarlo, agregar el usuario al grupo <code>docker</code>:</p>
+<pre><code class="language-bash">sudo usermod -aG docker $USER
+</code></pre>
+<p>Aplicar el cambio sin cerrar sesión:</p>
+<pre><code class="language-bash">newgrp docker
+</code></pre>
+<p>Verificar que el grupo está asignado:</p>
+<pre><code class="language-bash">groups
+</code></pre>
+<blockquote>
+<p><strong>Nota de seguridad:</strong> Los usuarios del grupo <code>docker</code> tienen privilegios equivalentes a root. No agregar usuarios no administradores a este grupo.</p>
+</blockquote>
+<h3 id="configurar-el-demonio-de-docker"><a class="header" href="#configurar-el-demonio-de-docker">Configurar el demonio de Docker</a></h3>
+<p>Crear o editar el archivo de configuración del demonio:</p>
+<pre><code class="language-bash">sudo nano /etc/docker/daemon.json
+</code></pre>
+<p>Configuración recomendada con rotación de logs y storage driver óptimo:</p>
+<pre><code class="language-json">{
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "10m",
+    "max-file": "3"
+  },
+  "storage-driver": "overlay2"
+}
+</code></pre>
+<p>Aplicar los cambios:</p>
+<pre><code class="language-bash">sudo systemctl restart docker
+</code></pre>
+<h3 id="política-de-reinicio-para-contenedores"><a class="header" href="#política-de-reinicio-para-contenedores">Política de reinicio para contenedores</a></h3>
+<p>Para que un contenedor se inicie automáticamente con Docker:</p>
+<pre><code class="language-bash">docker run -d --restart=unless-stopped nombre_imagen
+</code></pre>
+<p>Opciones disponibles:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Política</th><th>Comportamiento</th></tr>
+</thead>
+<tbody>
+<tr><td><code>no</code></td><td>No reiniciar (por defecto)</td></tr>
+<tr><td><code>always</code></td><td>Siempre reiniciar</td></tr>
+<tr><td><code>on-failure</code></td><td>Solo si el contenedor falla</td></tr>
+<tr><td><code>unless-stopped</code></td><td>Siempre, excepto si fue detenido manualmente</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="6-comandos-básicos"><a class="header" href="#6-comandos-básicos">6. Comandos Básicos</a></h2>
+<h3 id="contenedores"><a class="header" href="#contenedores">Contenedores</a></h3>
+<pre><code class="language-bash">docker ps                          # Contenedores en ejecución
+docker ps -a                       # Todos los contenedores
+docker stop ID_CONTENEDOR          # Detener un contenedor
+docker start ID_CONTENEDOR         # Iniciar un contenedor detenido
+docker rm ID_CONTENEDOR            # Eliminar un contenedor detenido
+docker logs ID_CONTENEDOR          # Ver logs
+docker exec -it ID_CONTENEDOR bash # Shell interactiva (usar sh en Alpine)
+</code></pre>
+<h3 id="imágenes"><a class="header" href="#imágenes">Imágenes</a></h3>
+<pre><code class="language-bash">docker images                      # Listar imágenes locales
+docker pull nombre_imagen          # Descargar imagen
+docker pull ubuntu:latest          # Ejemplo con tag
+docker rmi nombre_imagen           # Eliminar imagen
+docker build -t nombre:tag .       # Construir desde Dockerfile
+</code></pre>
+<h3 id="redes-y-volúmenes"><a class="header" href="#redes-y-volúmenes">Redes y volúmenes</a></h3>
+<pre><code class="language-bash">docker network ls                  # Listar redes
+docker volume create nombre        # Crear volumen
+docker volume ls                   # Listar volúmenes
+docker volume inspect nombre       # Inspeccionar volumen
+</code></pre>
+<h3 id="limpieza-del-sistema"><a class="header" href="#limpieza-del-sistema">Limpieza del sistema</a></h3>
+<pre><code class="language-bash">docker container prune             # Eliminar contenedores detenidos
+docker image prune                 # Eliminar imágenes sin usar
+docker volume prune                # Eliminar volúmenes huérfanos
+docker network prune               # Eliminar redes sin usar
+docker system prune -a             # Limpieza agresiva de todo lo no utilizado
+</code></pre>
+<hr>
+<h2 id="7-docker-compose"><a class="header" href="#7-docker-compose">7. Docker Compose</a></h2>
+<h3 id="archivo-docker-composeyml-básico"><a class="header" href="#archivo-docker-composeyml-básico">Archivo docker-compose.yml básico</a></h3>
+<pre><code class="language-yaml">version: '3.8'
+
+services:
+  web:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./html:/usr/share/nginx/html
+
+  redis:
+    image: redis:alpine
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data:
+</code></pre>
+<h3 id="comandos-de-compose"><a class="header" href="#comandos-de-compose">Comandos de Compose</a></h3>
+<pre><code class="language-bash">docker compose up -d               # Iniciar servicios en segundo plano
+docker compose down                # Detener y eliminar contenedores
+docker compose ps                  # Estado de los servicios
+docker compose logs                # Ver logs de todos los servicios
+docker compose logs -f nombre      # Seguir logs de un servicio específico
+docker compose up -d --force-recreate  # Recrear contenedores
+</code></pre>
+<hr>
+<h2 id="8-solución-de-problemas"><a class="header" href="#8-solución-de-problemas">8. Solución de Problemas</a></h2>
+<h3 id="permiso-denegado-al-acceder-al-socket"><a class="header" href="#permiso-denegado-al-acceder-al-socket">Permiso denegado al acceder al socket</a></h3>
+<p><strong>Error:</strong> <code>permission denied while trying to connect to the Docker daemon socket</code></p>
+<pre><code class="language-bash">sudo usermod -aG docker $USER
+newgrp docker
+</code></pre>
+<h3 id="docker-no-inicia-después-de-un-reinicio"><a class="header" href="#docker-no-inicia-después-de-un-reinicio">Docker no inicia después de un reinicio</a></h3>
+<p>Verificar el estado e inspeccionar los logs:</p>
+<pre><code class="language-bash">sudo systemctl status docker
+sudo journalctl -u docker --no-pager -n 50
+</code></pre>
+<p>Causa común: configuración inválida en <code>/etc/docker/daemon.json</code>. Verificar la sintaxis JSON antes de reiniciar.</p>
+<h3 id="los-contenedores-no-tienen-acceso-a-internet"><a class="header" href="#los-contenedores-no-tienen-acceso-a-internet">Los contenedores no tienen acceso a internet</a></h3>
+<p>Verificar las redes y reglas de firewall:</p>
+<pre><code class="language-bash">docker network ls
+docker network inspect bridge
+sudo iptables -L -n
+</code></pre>
+<p>Los firewalls como <code>ufw</code> o <code>firewalld</code> pueden interferir con las redes de Docker. Revisar las excepciones correspondientes.</p>
+<h3 id="espacio-en-disco-agotado"><a class="header" href="#espacio-en-disco-agotado">Espacio en disco agotado</a></h3>
+<pre><code class="language-bash"># Ver uso de disco de Docker
+docker system df
+
+# Limpieza selectiva
+docker container prune
+docker image prune
+docker volume prune
+
+# Limpieza completa (elimina todo lo no utilizado)
+docker system prune -a --volumes
+</code></pre>
+<h3 id="instalación-rota-o-corrupta"><a class="header" href="#instalación-rota-o-corrupta">Instalación rota o corrupta</a></h3>
+<p>Si Docker no funciona correctamente y los errores no tienen solución directa, la opción más fiable es hacer una desinstalación completa (ver <strong>Sección 2</strong>) y reinstalar desde cero (ver <strong>Sección 3</strong>). Este procedimiento resuelve la mayoría de los problemas causados por actualizaciones fallidas, conflictos de paquetes o configuraciones corruptas.</p>
+<hr>
+<p><em>Para profundizar en temas avanzados como Docker Swarm, seguridad en contenedores o desarrollo multi-etapa, consultar la <a href="https://docs.docker.com">documentación oficial de Docker</a>.</em></p>
 
                     </main>
 
@@ -8327,6 +8669,22 @@ Red:      192.168.10.0
         <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
         <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
         <script>

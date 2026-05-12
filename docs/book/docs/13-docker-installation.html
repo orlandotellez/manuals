@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Prisma - Manuales</title>
+        <title>Docker Instalación - Manuales</title>
 
 
         <!-- Custom HTML head -->
@@ -174,277 +174,352 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="guía-completa-de-prisma-6"><a class="header" href="#guía-completa-de-prisma-6">Guía completa de Prisma 6</a></h1>
-<h2 id="qué-es-prisma"><a class="header" href="#qué-es-prisma">¿Qué es Prisma?</a></h2>
-<p>Prisma es un <strong>ORM (Object-Relational Mapper)</strong> que te permite trabajar con bases de datos de forma тип safe y con una sintaxis más limpia que SQL puro. En lugar de escribir consultas SQL, trabajas con objetos JavaScript/TypeScript.</p>
+                        <h1 id="manual-de-docker-en-debian--instalación-desinstalación-y-reinstalación-completa"><a class="header" href="#manual-de-docker-en-debian--instalación-desinstalación-y-reinstalación-completa">Manual de Docker en Debian — Instalación, Desinstalación y Reinstalación Completa</a></h1>
+<p>Docker es una plataforma de contenedores que permite empaquetar, distribuir y ejecutar aplicaciones en entornos aislados. Este manual cubre la instalación completa usando el repositorio oficial, la desinstalación limpia sin residuos, y el procedimiento de reinstalación desde cero.</p>
 <hr>
-<h2 id="instalación-inicial-desde-0"><a class="header" href="#instalación-inicial-desde-0">Instalación inicial (desde 0)</a></h2>
-<h3 id="resetear-las-migraciones"><a class="header" href="#resetear-las-migraciones">Resetear las migraciones:</a></h3>
-<pre><code class="language-bash">pnpm prisma migrate reset
-</code></pre>
-<h3 id="1-instalar-las-dependencias"><a class="header" href="#1-instalar-las-dependencias">1. Instalar las dependencias</a></h3>
-<pre><code class="language-bash">pnpm add prisma @prisma/client
-pnpm add -D prisma
-</code></pre>
-<h3 id="2-inicializar-prisma"><a class="header" href="#2-inicializar-prisma">2. Inicializar Prisma</a></h3>
-<pre><code class="language-bash">pnpm prisma init
-</code></pre>
-<p>Esto crea:</p>
+<h2 id="índice"><a class="header" href="#índice">Índice</a></h2>
+<ol>
+<li><a href="#1-requisitos-previos">Requisitos Previos</a></li>
+<li><a href="#2-desinstalación-completa-hacer-primero-si-ya-tienes-docker">Desinstalación Completa</a></li>
+<li><a href="#3-instalación-desde-el-repositorio-oficial">Instalación desde el Repositorio Oficial</a></li>
+<li><a href="#4-verificar-la-instalación">Verificar la Instalación</a></li>
+<li><a href="#5-configuración-post-instalación">Configuración Post-Instalación</a></li>
+<li><a href="#6-comandos-básicos">Comandos Básicos</a></li>
+<li><a href="#7-docker-compose">Docker Compose</a></li>
+<li><a href="#8-solución-de-problemas">Solución de Problemas</a></li>
+</ol>
+<hr>
+<h2 id="1-requisitos-previos"><a class="header" href="#1-requisitos-previos">1. Requisitos Previos</a></h2>
+<h3 id="sistema-operativo-soportado"><a class="header" href="#sistema-operativo-soportado">Sistema operativo soportado</a></h3>
 <ul>
-<li><code>prisma/schema.prisma</code> - Donde defines tu modelo de datos</li>
-<li><code>.env</code> - Donde configuras la conexión a la DB</li>
+<li>Debian Bullseye (11), Bookworm (12) o superior</li>
+<li>Arquitecturas: <code>amd64</code>, <code>armhf</code>, <code>arm64</code>, <code>s390x</code></li>
+<li>Al menos 2 GB de RAM (4 GB recomendado)</li>
+<li>Kernel Linux 3.10 o superior</li>
+<li>Acceso a <code>sudo</code> o root</li>
 </ul>
-<h3 id="3-configurar-el-schema-prismaschemaprisma"><a class="header" href="#3-configurar-el-schema-prismaschemaprisma">3. Configurar el schema (<code>prisma/schema.prisma</code>)</a></h3>
-<pre><code class="language-prisma">datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
-generator client {
-  provider = "prisma-client-js"
-}
-
-// Aquí defines tus modelos/tablas
-model User {
-  id    String @id @default(uuid())
-  email String @unique
-  name  String?
-}
-</code></pre>
-<h3 id="4-configurar-el-env"><a class="header" href="#4-configurar-el-env">4. Configurar el .env</a></h3>
-<pre><code class="language-env">DATABASE_URL="postgresql://usuario:password@localhost:5432/mibase?schema=public"
-</code></pre>
-<h3 id="5-generar-el-cliente-de-prisma"><a class="header" href="#5-generar-el-cliente-de-prisma">5. Generar el cliente de Prisma</a></h3>
-<pre><code class="language-bash">pnpm prisma generate
-</code></pre>
-<p>Esto genera el código que te permite hacer queries a la DB desde tu app.</p>
-<h3 id="6-usar-prisma-en-tu-código"><a class="header" href="#6-usar-prisma-en-tu-código">6. Usar Prisma en tu código</a></h3>
-<pre><code class="language-typescript">// prisma.ts (instancia única)
-import { PrismaClient } from "@prisma/client";
-
-export const dbPrisma = new PrismaClient();
-
-// Usar en tu código
-const users = await dbPrisma.user.findMany();
+<p>Verificar la versión de Debian y la arquitectura:</p>
+<pre><code class="language-bash">cat /etc/debian_version
+dpkg --print-architecture
 </code></pre>
 <hr>
-<h2 id="flujo-de-trabajo-típico"><a class="header" href="#flujo-de-trabajo-típico">Flujo de trabajo típico</a></h2>
-<h3 id="paso-1-definir-o-modificar-el-modelo"><a class="header" href="#paso-1-definir-o-modificar-el-modelo">Paso 1: Definir o modificar el modelo</a></h3>
-<p>Editás <code>prisma/schema.prisma</code> agregando/modificando modelos.</p>
-<pre><code class="language-prisma">model Book {
-  id        String   @id @default(uuid())
-  title     String
-  author    String?
-  pages     Int
-  createdAt DateTime @default(now())
+<h2 id="2-desinstalación-completa-hacer-primero-si-ya-tienes-docker"><a class="header" href="#2-desinstalación-completa-hacer-primero-si-ya-tienes-docker">2. Desinstalación Completa (hacer primero si ya tienes Docker)</a></h2>
+<blockquote>
+<p><strong>Esta sección es el punto de partida si quieres hacer una instalación limpia, corregir una instalación rota, o simplemente eliminar Docker del sistema por completo.</strong> Ejecuta todos los pasos en orden.</p>
+</blockquote>
+<h3 id="paso-1--detener-todos-los-contenedores-y-el-servicio"><a class="header" href="#paso-1--detener-todos-los-contenedores-y-el-servicio">Paso 1 — Detener todos los contenedores y el servicio</a></h3>
+<pre><code class="language-bash"># Detener todos los contenedores en ejecución
+docker stop $(docker ps -aq) 2&gt;/dev/null || true
+
+# Detener el servicio de Docker
+sudo systemctl stop docker
+sudo systemctl stop docker.socket
+sudo systemctl stop containerd
+</code></pre>
+<h3 id="paso-2--eliminar-los-paquetes-de-docker"><a class="header" href="#paso-2--eliminar-los-paquetes-de-docker">Paso 2 — Eliminar los paquetes de Docker</a></h3>
+<pre><code class="language-bash">sudo apt purge -y \
+  docker-ce \
+  docker-ce-cli \
+  containerd.io \
+  docker-buildx-plugin \
+  docker-compose-plugin \
+  docker-ce-rootless-extras
+</code></pre>
+<p>También eliminar paquetes legados si existieran de instalaciones anteriores:</p>
+<pre><code class="language-bash">sudo apt remove -y \
+  docker \
+  docker-engine \
+  docker.io \
+  containerd \
+  runc \
+  2&gt;/dev/null || true
+</code></pre>
+<p>Limpiar dependencias huérfanas:</p>
+<pre><code class="language-bash">sudo apt autoremove -y
+sudo apt autoclean
+</code></pre>
+<h3 id="paso-3--eliminar-todos-los-datos-de-docker"><a class="header" href="#paso-3--eliminar-todos-los-datos-de-docker">Paso 3 — Eliminar todos los datos de Docker</a></h3>
+<blockquote>
+<p>⚠️ <strong>Advertencia:</strong> Estos comandos eliminan permanentemente todas las imágenes, contenedores, volúmenes y redes de Docker. No hay recuperación posible. Si necesitas conservar algo, haz un backup primero con <code>docker export</code> o <code>docker save</code>.</p>
+</blockquote>
+<pre><code class="language-bash"># Eliminar directorios de datos principales
+sudo rm -rf /var/lib/docker
+sudo rm -rf /var/lib/containerd
+
+# Eliminar configuración del demonio
+sudo rm -rf /etc/docker
+
+# Eliminar archivos de socket residuales
+sudo rm -f /var/run/docker.sock
+sudo rm -f /var/run/docker.pid
+sudo rm -f /var/run/containerd/containerd.sock
+</code></pre>
+<h3 id="paso-4--eliminar-el-repositorio-y-la-clave-gpg"><a class="header" href="#paso-4--eliminar-el-repositorio-y-la-clave-gpg">Paso 4 — Eliminar el repositorio y la clave GPG</a></h3>
+<pre><code class="language-bash"># Eliminar la entrada del repositorio de Docker
+sudo rm -f /etc/apt/sources.list.d/docker.list
+
+# Eliminar la clave GPG
+sudo rm -f /etc/apt/keyrings/docker.gpg
+sudo rm -f /usr/share/keyrings/docker-archive-keyring.gpg  # ubicación alternativa antigua
+
+# Actualizar el índice de paquetes
+sudo apt update
+</code></pre>
+<h3 id="paso-5--eliminar-el-grupo-docker-y-los-binarios-residuales"><a class="header" href="#paso-5--eliminar-el-grupo-docker-y-los-binarios-residuales">Paso 5 — Eliminar el grupo docker y los binarios residuales</a></h3>
+<pre><code class="language-bash"># Eliminar el grupo docker
+sudo groupdel docker 2&gt;/dev/null || true
+
+# Eliminar binarios residuales si existieran
+sudo rm -f /usr/local/bin/docker
+sudo rm -f /usr/local/bin/docker-compose
+</code></pre>
+<h3 id="paso-6--deshabilitar-y-eliminar-los-servicios-systemd"><a class="header" href="#paso-6--deshabilitar-y-eliminar-los-servicios-systemd">Paso 6 — Deshabilitar y eliminar los servicios systemd</a></h3>
+<pre><code class="language-bash">sudo systemctl disable docker 2&gt;/dev/null || true
+sudo systemctl disable containerd 2&gt;/dev/null || true
+
+# Recargar systemd para eliminar referencias a los servicios eliminados
+sudo systemctl daemon-reload
+sudo systemctl reset-failed
+</code></pre>
+<h3 id="paso-7--verificar-que-docker-fue-eliminado-completamente"><a class="header" href="#paso-7--verificar-que-docker-fue-eliminado-completamente">Paso 7 — Verificar que Docker fue eliminado completamente</a></h3>
+<pre><code class="language-bash"># Estos comandos deben devolver "command not found" o error
+docker --version 2&gt;/dev/null &amp;&amp; echo "⚠️  Docker todavía está instalado" || echo "✅ Docker eliminado correctamente"
+which docker 2&gt;/dev/null &amp;&amp; echo "⚠️  Binario docker todavía existe" || echo "✅ Binario eliminado"
+
+# Verificar que no quedan servicios activos
+systemctl list-units --type=service | grep docker
+systemctl list-units --type=service | grep containerd
+</code></pre>
+<p>Si todos los checks muestran que Docker fue eliminado, el sistema está limpio y listo para una instalación fresca.</p>
+<hr>
+<h2 id="3-instalación-desde-el-repositorio-oficial"><a class="header" href="#3-instalación-desde-el-repositorio-oficial">3. Instalación desde el Repositorio Oficial</a></h2>
+<h3 id="paso-1--actualizar-el-índice-de-paquetes-e-instalar-dependencias"><a class="header" href="#paso-1--actualizar-el-índice-de-paquetes-e-instalar-dependencias">Paso 1 — Actualizar el índice de paquetes e instalar dependencias</a></h3>
+<pre><code class="language-bash">sudo apt update
+
+sudo apt install -y \
+  ca-certificates \
+  curl \
+  gnupg \
+  lsb-release
+</code></pre>
+<h3 id="paso-2--agregar-la-clave-gpg-oficial-de-docker"><a class="header" href="#paso-2--agregar-la-clave-gpg-oficial-de-docker">Paso 2 — Agregar la clave GPG oficial de Docker</a></h3>
+<pre><code class="language-bash"># Crear el directorio para claves si no existe
+sudo install -m 0755 -d /etc/apt/keyrings
+
+# Descargar y guardar la clave GPG
+curl -fsSL https://download.docker.com/linux/debian/gpg | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+# Establecer permisos de lectura
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+</code></pre>
+<h3 id="paso-3--agregar-el-repositorio-de-docker"><a class="header" href="#paso-3--agregar-el-repositorio-de-docker">Paso 3 — Agregar el repositorio de Docker</a></h3>
+<p>Para <strong>Debian Bookworm (12)</strong>:</p>
+<pre><code class="language-bash">echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+  https://download.docker.com/linux/debian bookworm stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null
+</code></pre>
+<p>Para <strong>Debian Bullseye (11)</strong>, reemplaza <code>bookworm</code> por <code>bullseye</code>:</p>
+<pre><code class="language-bash">echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+  https://download.docker.com/linux/debian bullseye stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null
+</code></pre>
+<h3 id="paso-4--instalar-docker-engine"><a class="header" href="#paso-4--instalar-docker-engine">Paso 4 — Instalar Docker Engine</a></h3>
+<pre><code class="language-bash">sudo apt update
+
+sudo apt install -y \
+  docker-ce \
+  docker-ce-cli \
+  containerd.io \
+  docker-buildx-plugin \
+  docker-compose-plugin
+</code></pre>
+<p>Los componentes instalados:</p>
+<ul>
+<li><code>docker-ce</code> — motor principal de Docker</li>
+<li><code>docker-ce-cli</code> — cliente de línea de comandos</li>
+<li><code>containerd.io</code> — gestor de contenedores de bajo nivel (cumple la especificación OCI)</li>
+<li><code>docker-buildx-plugin</code> — construcción avanzada de imágenes</li>
+<li><code>docker-compose-plugin</code> — soporte para aplicaciones multi-contenedor</li>
+</ul>
+<hr>
+<h2 id="4-verificar-la-instalación"><a class="header" href="#4-verificar-la-instalación">4. Verificar la Instalación</a></h2>
+<h3 id="verificar-el-servicio"><a class="header" href="#verificar-el-servicio">Verificar el servicio</a></h3>
+<pre><code class="language-bash">sudo systemctl status docker
+</code></pre>
+<p>Si el servicio no está activo, iniciarlo y habilitarlo:</p>
+<pre><code class="language-bash">sudo systemctl start docker
+sudo systemctl enable docker
+</code></pre>
+<h3 id="ejecutar-el-contenedor-de-prueba"><a class="header" href="#ejecutar-el-contenedor-de-prueba">Ejecutar el contenedor de prueba</a></h3>
+<pre><code class="language-bash">sudo docker run hello-world
+</code></pre>
+<p>La salida debe incluir:</p>
+<pre><code>Hello from Docker!
+This message shows that your installation appears to be working correctly.
+</code></pre>
+<h3 id="verificar-versiones-instaladas"><a class="header" href="#verificar-versiones-instaladas">Verificar versiones instaladas</a></h3>
+<pre><code class="language-bash">docker --version
+docker version
+docker compose version
+</code></pre>
+<hr>
+<h2 id="5-configuración-post-instalación"><a class="header" href="#5-configuración-post-instalación">5. Configuración Post-Instalación</a></h2>
+<h3 id="ejecutar-docker-sin-sudo"><a class="header" href="#ejecutar-docker-sin-sudo">Ejecutar Docker sin sudo</a></h3>
+<p>Por defecto, el comando <code>docker</code> requiere <code>sudo</code>. Para evitarlo, agregar el usuario al grupo <code>docker</code>:</p>
+<pre><code class="language-bash">sudo usermod -aG docker $USER
+</code></pre>
+<p>Aplicar el cambio sin cerrar sesión:</p>
+<pre><code class="language-bash">newgrp docker
+</code></pre>
+<p>Verificar que el grupo está asignado:</p>
+<pre><code class="language-bash">groups
+</code></pre>
+<blockquote>
+<p><strong>Nota de seguridad:</strong> Los usuarios del grupo <code>docker</code> tienen privilegios equivalentes a root. No agregar usuarios no administradores a este grupo.</p>
+</blockquote>
+<h3 id="configurar-el-demonio-de-docker"><a class="header" href="#configurar-el-demonio-de-docker">Configurar el demonio de Docker</a></h3>
+<p>Crear o editar el archivo de configuración del demonio:</p>
+<pre><code class="language-bash">sudo nano /etc/docker/daemon.json
+</code></pre>
+<p>Configuración recomendada con rotación de logs y storage driver óptimo:</p>
+<pre><code class="language-json">{
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "10m",
+    "max-file": "3"
+  },
+  "storage-driver": "overlay2"
 }
 </code></pre>
-<h3 id="paso-2-sincronizar-con-la-base-de-datos"><a class="header" href="#paso-2-sincronizar-con-la-base-de-datos">Paso 2: Sincronizar con la base de datos</a></h3>
-<p>Acá hay DOS comandos principales, y es donde siempre me confundo:</p>
-<h4 id="opción-a-prisma-db-push-rápido-para-desarrollo"><a class="header" href="#opción-a-prisma-db-push-rápido-para-desarrollo">Opción A: <code>prisma db push</code> (rápido, para desarrollo)</a></h4>
-<pre><code class="language-bash">pnpm prisma db push
+<p>Aplicar los cambios:</p>
+<pre><code class="language-bash">sudo systemctl restart docker
 </code></pre>
-<ul>
-<li>Sincroniza el schema de Prisma con la DB</li>
-<li><strong>NO crea migraciones</strong> (no guarda historial)</li>
-<li>Es ideal para desarrollo rápido o prototipos</li>
-<li>Puede advertencia sobre pérdida de datos</li>
-</ul>
-<h4 id="opción-b-prisma-migrate-dev-para-producción"><a class="header" href="#opción-b-prisma-migrate-dev-para-producción">Opción B: <code>prisma migrate dev</code> (para producción)</a></h4>
-<pre><code class="language-bash">pnpm prisma migrate dev --name nombre_de_la_migracion
+<h3 id="política-de-reinicio-para-contenedores"><a class="header" href="#política-de-reinicio-para-contenedores">Política de reinicio para contenedores</a></h3>
+<p>Para que un contenedor se inicie automáticamente con Docker:</p>
+<pre><code class="language-bash">docker run -d --restart=unless-stopped nombre_imagen
 </code></pre>
-<ul>
-<li>Crea un archivo de migración en <code>prisma/migrations/</code></li>
-<li>Guarda historial de cambios</li>
-<li><strong>Sí preserve data</strong> (más seguro)</li>
-<li>Ideal para equipos y producción</li>
-</ul>
-<h3 id="paso-3-regenerar-el-cliente"><a class="header" href="#paso-3-regenerar-el-cliente">Paso 3: Regenerar el cliente</a></h3>
-<p>Después de cada cambio en el schema:</p>
-<pre><code class="language-bash">pnpm prisma generate
-</code></pre>
-<p>Esto actualiza el código TypeScript que usás en tu app.</p>
-<hr>
-<h2 id="comandos-esenciales-de-prisma"><a class="header" href="#comandos-esenciales-de-prisma">Comandos esenciales de Prisma</a></h2>
+<p>Opciones disponibles:</p>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>Comando</th><th>Para qué sirve</th></tr>
+<tr><th>Política</th><th>Comportamiento</th></tr>
 </thead>
 <tbody>
-<tr><td><code>pnpm prisma init</code></td><td>Inicializar Prisma desde cero</td></tr>
-<tr><td><code>pnpm prisma generate</code></td><td>Generar el cliente (NECESARIO después de cambios)</td></tr>
-<tr><td><code>pnpm prisma db push</code></td><td>Sincronizar schema con DB (sin migraciones)</td></tr>
-<tr><td><code>pnpm prisma migrate dev</code></td><td>Crear y aplicar migración (con historial)</td></tr>
-<tr><td><code>pnpm prisma migrate deploy</code></td><td>Aplicar migraciones en producción</td></tr>
-<tr><td><code>pnpm prisma studio</code></td><td>UI visual para explorar la DB</td></tr>
-<tr><td><code>pnpm prisma db execute</code></td><td>Ejecutar SQL directamente</td></tr>
-<tr><td><code>pnpm prisma format</code></td><td>Formatear el schema.prisma</td></tr>
-<tr><td><code>pnpm prisma migrate reset</code></td><td>Eliminar las migraciones y empezar desde 0</td></tr>
+<tr><td><code>no</code></td><td>No reiniciar (por defecto)</td></tr>
+<tr><td><code>always</code></td><td>Siempre reiniciar</td></tr>
+<tr><td><code>on-failure</code></td><td>Solo si el contenedor falla</td></tr>
+<tr><td><code>unless-stopped</code></td><td>Siempre, excepto si fue detenido manualmente</td></tr>
 </tbody>
 </table>
 </div>
 <hr>
-<h2 id="el-error-común-cannot-read-properties-of-undefined"><a class="header" href="#el-error-común-cannot-read-properties-of-undefined">El error común: “Cannot read properties of undefined”</a></h2>
-<p>Este error ocurre cuando:</p>
-<ol>
-<li><strong>El servidor está corriendo con el cliente viejo</strong> - Solución: reiniciar el servidor</li>
-<li><strong>No ejecutaste <code>pnpm prisma generate</code></strong> - El cliente no tiene el modelo</li>
-<li><strong>El modelo no está en el schema.prisma</strong> - No existe la tabla定义</li>
-<li><strong>El schema no está sincronizado con la DB</strong> - Falta <code>db push</code> o <code>migrate</code></li>
-</ol>
-<h3 id="cómo-diagnosticarlo"><a class="header" href="#cómo-diagnosticarlo">Cómo diagnosticarlo:</a></h3>
-<pre><code class="language-bash"># 1. Verificar que el schema tiene el modelo
-cat prisma/schema.prisma | grep -A5 "model NombreDelModelo"
-
-# 2. Verificar que el cliente lo tiene
-grep "NombreDelModelo" node_modules/.prisma/client/index.d.ts
-
-# 3. Regenerar cliente
-pnpm prisma generate
-
-# 4. Verificar que se generó correctamente
-grep "NombreDelModelo" node_modules/.prisma/client/index.d.ts
+<h2 id="6-comandos-básicos"><a class="header" href="#6-comandos-básicos">6. Comandos Básicos</a></h2>
+<h3 id="contenedores"><a class="header" href="#contenedores">Contenedores</a></h3>
+<pre><code class="language-bash">docker ps                          # Contenedores en ejecución
+docker ps -a                       # Todos los contenedores
+docker stop ID_CONTENEDOR          # Detener un contenedor
+docker start ID_CONTENEDOR         # Iniciar un contenedor detenido
+docker rm ID_CONTENEDOR            # Eliminar un contenedor detenido
+docker logs ID_CONTENEDOR          # Ver logs
+docker exec -it ID_CONTENEDOR bash # Shell interactiva (usar sh en Alpine)
+</code></pre>
+<h3 id="imágenes"><a class="header" href="#imágenes">Imágenes</a></h3>
+<pre><code class="language-bash">docker images                      # Listar imágenes locales
+docker pull nombre_imagen          # Descargar imagen
+docker pull ubuntu:latest          # Ejemplo con tag
+docker rmi nombre_imagen           # Eliminar imagen
+docker build -t nombre:tag .       # Construir desde Dockerfile
+</code></pre>
+<h3 id="redes-y-volúmenes"><a class="header" href="#redes-y-volúmenes">Redes y volúmenes</a></h3>
+<pre><code class="language-bash">docker network ls                  # Listar redes
+docker volume create nombre        # Crear volumen
+docker volume ls                   # Listar volúmenes
+docker volume inspect nombre       # Inspeccionar volumen
+</code></pre>
+<h3 id="limpieza-del-sistema"><a class="header" href="#limpieza-del-sistema">Limpieza del sistema</a></h3>
+<pre><code class="language-bash">docker container prune             # Eliminar contenedores detenidos
+docker image prune                 # Eliminar imágenes sin usar
+docker volume prune                # Eliminar volúmenes huérfanos
+docker network prune               # Eliminar redes sin usar
+docker system prune -a             # Limpieza agresiva de todo lo no utilizado
 </code></pre>
 <hr>
-<h2 id="crud-básico-con-prisma"><a class="header" href="#crud-básico-con-prisma">CRUD básico con Prisma</a></h2>
-<h3 id="create-insert"><a class="header" href="#create-insert">Create (INSERT)</a></h3>
-<pre><code class="language-typescript">// Crear un registro
-const book = await dbPrisma.book.create({
-  data: {
-    title: "Cien años de soledad",
-    author: "Gabriel García Márquez",
-    pages: 417,
-  },
-});
-</code></pre>
-<h3 id="read-select"><a class="header" href="#read-select">Read (SELECT)</a></h3>
-<pre><code class="language-typescript">// Obtener todos
-const books = await dbPrisma.book.findMany();
+<h2 id="7-docker-compose"><a class="header" href="#7-docker-compose">7. Docker Compose</a></h2>
+<h3 id="archivo-docker-composeyml-básico"><a class="header" href="#archivo-docker-composeyml-básico">Archivo docker-compose.yml básico</a></h3>
+<pre><code class="language-yaml">version: '3.8'
 
-// Obtener uno por ID
-const book = await dbPrisma.book.findUnique({
-  where: { id: "uuid-del-libro" },
-});
+services:
+  web:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./html:/usr/share/nginx/html
 
-// Filtrar
-const garciaBooks = await dbPrisma.book.findMany({
-  where: { author: { contains: "García" } },
-});
-</code></pre>
-<h3 id="update-update"><a class="header" href="#update-update">Update (UPDATE)</a></h3>
-<pre><code class="language-typescript">const updatedBook = await dbPrisma.book.update({
-  where: { id: "uuid-del-libro" },
-  data: {
-    title: "Nuevo título",
-  },
-});
-</code></pre>
-<h3 id="delete-delete"><a class="header" href="#delete-delete">Delete (DELETE)</a></h3>
-<pre><code class="language-typescript">await dbPrisma.book.delete({
-  where: { id: "uuid-del-libro" },
-});
-</code></pre>
-<hr>
-<h2 id="relaciones-entre-modelos"><a class="header" href="#relaciones-entre-modelos">Relaciones entre modelos</a></h2>
-<pre><code class="language-prisma">model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String?
-  posts     Post[]   // Relación uno a muchos
-}
+  redis:
+    image: redis:alpine
+    volumes:
+      - redis-data:/data
 
-model Post {
-  id        String   @id @default(uuid())
-  title     String
-  content   String?
-  authorId  String   // Foreign key
-  author    User     @relation(fields: [authorId], references: [id]) // Relación
-}
+volumes:
+  redis-data:
 </code></pre>
-<h3 id="queries-con-relaciones"><a class="header" href="#queries-con-relaciones">Queries con relaciones:</a></h3>
-<pre><code class="language-typescript">// Obtener usuario con sus posts
-const userWithPosts = await dbPrisma.user.findUnique({
-  where: { id: "uuid" },
-  include: {
-    posts: true,
-  },
-});
+<h3 id="comandos-de-compose"><a class="header" href="#comandos-de-compose">Comandos de Compose</a></h3>
+<pre><code class="language-bash">docker compose up -d               # Iniciar servicios en segundo plano
+docker compose down                # Detener y eliminar contenedores
+docker compose ps                  # Estado de los servicios
+docker compose logs                # Ver logs de todos los servicios
+docker compose logs -f nombre      # Seguir logs de un servicio específico
+docker compose up -d --force-recreate  # Recrear contenedores
 </code></pre>
 <hr>
-<h2 id="casos-especiales"><a class="header" href="#casos-especiales">Casos especiales</a></h2>
-<h3 id="crear-tabla-sin-migraciones-para-desarrollo-rápido"><a class="header" href="#crear-tabla-sin-migraciones-para-desarrollo-rápido">Crear tabla sin migraciones (para desarrollo rápido)</a></h3>
-<pre><code class="language-bash">pnpm prisma db execute --stdin &lt;&lt;&lt; "CREATE TABLE IF NOT EXISTS \"MiTabla\" (id TEXT PRIMARY KEY);"
+<h2 id="8-solución-de-problemas"><a class="header" href="#8-solución-de-problemas">8. Solución de Problemas</a></h2>
+<h3 id="permiso-denegado-al-acceder-al-socket"><a class="header" href="#permiso-denegado-al-acceder-al-socket">Permiso denegado al acceder al socket</a></h3>
+<p><strong>Error:</strong> <code>permission denied while trying to connect to the Docker daemon socket</code></p>
+<pre><code class="language-bash">sudo usermod -aG docker $USER
+newgrp docker
 </code></pre>
-<h3 id="agregar-columna-sin-migraciones"><a class="header" href="#agregar-columna-sin-migraciones">Agregar columna sin migraciones</a></h3>
-<pre><code class="language-bash">pnpm prisma db execute --stdin &lt;&lt;&lt; "ALTER TABLE \"Book\" ADD COLUMN IF NOT EXISTS \"nuevaColumna\" TEXT;"
+<h3 id="docker-no-inicia-después-de-un-reinicio"><a class="header" href="#docker-no-inicia-después-de-un-reinicio">Docker no inicia después de un reinicio</a></h3>
+<p>Verificar el estado e inspeccionar los logs:</p>
+<pre><code class="language-bash">sudo systemctl status docker
+sudo journalctl -u docker --no-pager -n 50
 </code></pre>
-<h3 id="ver-la-db-visualmente"><a class="header" href="#ver-la-db-visualmente">Ver la DB visualmente</a></h3>
-<pre><code class="language-bash">pnpm prisma studio
+<p>Causa común: configuración inválida en <code>/etc/docker/daemon.json</code>. Verificar la sintaxis JSON antes de reiniciar.</p>
+<h3 id="los-contenedores-no-tienen-acceso-a-internet"><a class="header" href="#los-contenedores-no-tienen-acceso-a-internet">Los contenedores no tienen acceso a internet</a></h3>
+<p>Verificar las redes y reglas de firewall:</p>
+<pre><code class="language-bash">docker network ls
+docker network inspect bridge
+sudo iptables -L -n
 </code></pre>
-<p>Esto abre una UI en <code>http://localhost:5555</code> para ver y editar datos.</p>
-<hr>
-<h2 id="troubleshooting-común"><a class="header" href="#troubleshooting-común">Troubleshooting común</a></h2>
-<h3 id="drift-detected-la-db-no-coincide-con-las-migraciones"><a class="header" href="#drift-detected-la-db-no-coincide-con-las-migraciones">“Drift detected” (la DB no coincide con las migraciones)</a></h3>
-<p>Esto pasa cuando la DB se modificó manualmente o con <code>db push</code> pero las migraciones no están actualizadas.</p>
-<p><strong>Solución:</strong></p>
-<pre><code class="language-bash"># Opción 1: Resetear la DB (pierdes datos)
-pnpm prisma migrate reset
+<p>Los firewalls como <code>ufw</code> o <code>firewalld</code> pueden interferir con las redes de Docker. Revisar las excepciones correspondientes.</p>
+<h3 id="espacio-en-disco-agotado"><a class="header" href="#espacio-en-disco-agotado">Espacio en disco agotado</a></h3>
+<pre><code class="language-bash"># Ver uso de disco de Docker
+docker system df
 
-# Opción 2: Aceptar el estado actual y crear una migración
-pnpm prisma migrate dev --name sync_current_state
+# Limpieza selectiva
+docker container prune
+docker image prune
+docker volume prune
+
+# Limpieza completa (elimina todo lo no utilizado)
+docker system prune -a --volumes
 </code></pre>
-<h3 id="table-does-not-exist"><a class="header" href="#table-does-not-exist">“Table does not exist”</a></h3>
-<ol>
-<li>Verificar que el modelo está en <code>schema.prisma</code></li>
-<li>Ejecutar <code>pnpm prisma db push</code> o <code>migrate</code></li>
-<li>Ejecutar <code>pnpm prisma generate</code></li>
-</ol>
-<h3 id="el-servidor-no-reconoce-el-nuevo-modelo"><a class="header" href="#el-servidor-no-reconoce-el-nuevo-modelo">El servidor no reconoce el nuevo modelo</a></h3>
-<p><strong>Reiniciar el servidor</strong> - El cliente se carga al inicio, no se actualiza en caliente.</p>
+<h3 id="instalación-rota-o-corrupta"><a class="header" href="#instalación-rota-o-corrupta">Instalación rota o corrupta</a></h3>
+<p>Si Docker no funciona correctamente y los errores no tienen solución directa, la opción más fiable es hacer una desinstalación completa (ver <strong>Sección 2</strong>) y reinstalar desde cero (ver <strong>Sección 3</strong>). Este procedimiento resuelve la mayoría de los problemas causados por actualizaciones fallidas, conflictos de paquetes o configuraciones corruptas.</p>
 <hr>
-<h2 id="buenas-prácticas"><a class="header" href="#buenas-prácticas">Buenas prácticas</a></h2>
-<ol>
-<li><strong>Siempre ejecutar <code>prisma generate</code></strong> después de cambiar el schema</li>
-<li><strong>Reiniciar el servidor</strong> después de generate</li>
-<li><strong>Usar migraciones</strong> (<code>migrate dev</code>) en vez de <code>db push</code> para proyectos en equipo</li>
-<li><strong>No editar las migraciones a mano</strong> - crear nuevas en su lugar</li>
-<li><strong>Hacer backup</strong> antes de migraciones destructivas</li>
-</ol>
-<hr>
-<h2 id="estructura-de-archivos"><a class="header" href="#estructura-de-archivos">Estructura de archivos</a></h2>
-<pre><code>proyecto/
-├── prisma/
-│   ├── schema.prisma        ← Tus modelos
-│   └── migrations/          ← Historial de cambios
-│       └── 20240101_init/
-│           └── migration.sql
-├── node_modules/
-│   └── .prisma/             ← Cliente generado (NO editar)
-└── src/
-    └── tu-codigo.ts
-</code></pre>
-<hr>
-<h2 id="resumen-del-flujo-de-desarrollo"><a class="header" href="#resumen-del-flujo-de-desarrollo">Resumen del flujo de desarrollo</a></h2>
-<pre><code>1. Editás schema.prisma
-2. Ejecutás pnpm prisma generate
-3. Ejecutás pnpm prisma db push (dev) o migrate (prod)
-4. Reiniciás el servidor
-5. Usás dbPrisma.modelo.metodo() en tu código
-</code></pre>
-<p>¡Con esto ya sabés lo básico de Prisma para trabajar! 🚀</p>
+<p><em>Para profundizar en temas avanzados como Docker Swarm, seguridad en contenedores o desarrollo multi-etapa, consultar la <a href="https://docs.docker.com">documentación oficial de Docker</a>.</em></p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../docs/04-redis.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../docs/11-nat.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="../docs/05-react-native-primeros-pasos.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
-                            </a>
 
                         <div style="clear: both"></div>
                     </nav>
@@ -452,13 +527,10 @@ pnpm prisma migrate dev --name sync_current_state
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../docs/04-redis.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../docs/11-nat.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="../docs/05-react-native-primeros-pasos.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
-                    </a>
             </nav>
 
         </div>
