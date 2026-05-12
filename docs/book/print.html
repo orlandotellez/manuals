@@ -36,10 +36,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-68fe270f.js";
+            window.path_to_searchindex_js = "searchindex-5ac35087.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-93611208.js"></script>
+        <script src="toc-ae74bba0.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -187,6 +187,7 @@
 </ul>
 <h2 id="base-de-datos"><a class="header" href="#base-de-datos">Base de datos</a></h2>
 <ul>
+<li><a href="#manual-de-postgresql-en-debian--instalación-y-configuración-completa">Postgres</a></li>
 <li><a href="#1-instalar-sqlx-cli">SQLx</a></li>
 <li><a href="#redis">Redis</a></li>
 <li><a href="#guía-completa-de-prisma-6">Prisma</a></li>
@@ -4238,6 +4239,301 @@ cargo run
 <pre><code class="language-bash">REDIS_URL=redis://tu-servidor:6379 cargo run
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div>
+<h1 id="manual-de-postgresql-en-debian--instalación-y-configuración-completa"><a class="header" href="#manual-de-postgresql-en-debian--instalación-y-configuración-completa">Manual de PostgreSQL en Debian — Instalación y Configuración Completa</a></h1>
+<p>PostgreSQL es un sistema de gestión de bases de datos relacional de código abierto, conocido por su robustez, extensibilidad y cumplimiento estricto del estándar SQL. Este manual cubre la instalación completa usando el repositorio oficial de PostgreSQL, la configuración del usuario <code>dev-espada</code> y la forma de acceder directamente con <code>psql</code> sin parámetros adicionales.</p>
+<hr>
+<h2 id="índice"><a class="header" href="#índice">Índice</a></h2>
+<ol>
+<li><a href="#1-requisitos-previos-1">Requisitos Previos</a></li>
+<li><a href="#2-desinstalación-completa-hacer-primero-si-ya-tienes-postgres">Desinstalación Completa</a></li>
+<li><a href="#3-instalación-desde-el-repositorio-oficial">Instalación desde el Repositorio Oficial</a></li>
+<li><a href="#4-verificar-la-instalación">Verificar la Instalación</a></li>
+<li><a href="#5-configuración-del-usuario-dev-espada">Configuración del Usuario dev-espada</a></li>
+<li><a href="#6-acceso-directo-con-psql">Acceso directo con psql</a></li>
+<li><a href="#7-configuración-post-instalación">Configuración Post-Instalación</a></li>
+<li><a href="#8-comandos-básicos-de-psql">Comandos Básicos de psql</a></li>
+<li><a href="#9-solución-de-problemas">Solución de Problemas</a></li>
+</ol>
+<hr>
+<h2 id="1-requisitos-previos-1"><a class="header" href="#1-requisitos-previos-1">1. Requisitos Previos</a></h2>
+<ul>
+<li>Debian Bullseye (11), Bookworm (12) o superior</li>
+<li>Acceso a <code>sudo</code> o root</li>
+<li>Arquitectura <code>amd64</code>, <code>arm64</code> o <code>armhf</code></li>
+</ul>
+<p>Verificar versión y arquitectura:</p>
+<pre><code class="language-bash">cat /etc/debian_version
+dpkg --print-architecture
+</code></pre>
+<hr>
+<h2 id="2-desinstalación-completa-hacer-primero-si-ya-tienes-postgres"><a class="header" href="#2-desinstalación-completa-hacer-primero-si-ya-tienes-postgres">2. Desinstalación Completa (hacer primero si ya tienes Postgres)</a></h2>
+<blockquote>
+<p>Ejecuta esta sección completa si quieres partir de cero o tienes una instalación rota.</p>
+</blockquote>
+<h3 id="paso-1--detener-el-servicio"><a class="header" href="#paso-1--detener-el-servicio">Paso 1 — Detener el servicio</a></h3>
+<pre><code class="language-bash">sudo systemctl stop postgresql
+sudo systemctl disable postgresql
+</code></pre>
+<h3 id="paso-2--eliminar-todos-los-paquetes"><a class="header" href="#paso-2--eliminar-todos-los-paquetes">Paso 2 — Eliminar todos los paquetes</a></h3>
+<pre><code class="language-bash">sudo apt purge -y \
+  postgresql \
+  postgresql-* \
+  libpq-dev \
+  libpq5
+
+sudo apt autoremove -y
+sudo apt autoclean
+</code></pre>
+<h3 id="paso-3--eliminar-todos-los-datos-y-configuración"><a class="header" href="#paso-3--eliminar-todos-los-datos-y-configuración">Paso 3 — Eliminar todos los datos y configuración</a></h3>
+<blockquote>
+<p>⚠️ <strong>Advertencia:</strong> Esto borra permanentemente todas las bases de datos. Haz un backup antes si los datos importan.</p>
+</blockquote>
+<pre><code class="language-bash"># Datos de las bases de datos
+sudo rm -rf /var/lib/postgresql
+
+# Configuración
+sudo rm -rf /etc/postgresql
+sudo rm -rf /etc/postgresql-common
+
+# Logs
+sudo rm -rf /var/log/postgresql
+</code></pre>
+<h3 id="paso-4--eliminar-el-repositorio-y-la-clave-gpg"><a class="header" href="#paso-4--eliminar-el-repositorio-y-la-clave-gpg">Paso 4 — Eliminar el repositorio y la clave GPG</a></h3>
+<pre><code class="language-bash">sudo rm -f /etc/apt/sources.list.d/pgdg.list
+sudo rm -f /usr/share/keyrings/postgresql.gpg
+sudo rm -f /etc/apt/keyrings/postgresql.gpg
+sudo apt update
+</code></pre>
+<h3 id="paso-5--eliminar-el-usuario-del-sistema-postgres"><a class="header" href="#paso-5--eliminar-el-usuario-del-sistema-postgres">Paso 5 — Eliminar el usuario del sistema postgres</a></h3>
+<pre><code class="language-bash">sudo userdel -r postgres 2&gt;/dev/null || true
+sudo groupdel postgres 2&gt;/dev/null || true
+</code></pre>
+<h3 id="paso-6--verificar-que-fue-eliminado"><a class="header" href="#paso-6--verificar-que-fue-eliminado">Paso 6 — Verificar que fue eliminado</a></h3>
+<pre><code class="language-bash">psql --version 2&gt;/dev/null &amp;&amp; echo "⚠️  PostgreSQL todavía está instalado" || echo "✅ PostgreSQL eliminado correctamente"
+systemctl list-units --type=service | grep postgres
+</code></pre>
+<hr>
+<h2 id="3-instalación-desde-el-repositorio-oficial"><a class="header" href="#3-instalación-desde-el-repositorio-oficial">3. Instalación desde el Repositorio Oficial</a></h2>
+<p>El repositorio de Debian incluye PostgreSQL pero generalmente una versión desactualizada. El repositorio oficial de PostgreSQL (PGDG) siempre tiene la versión más reciente con todos los parches de seguridad.</p>
+<h3 id="paso-1--instalar-dependencias"><a class="header" href="#paso-1--instalar-dependencias">Paso 1 — Instalar dependencias</a></h3>
+<pre><code class="language-bash">sudo apt update
+sudo apt install -y curl ca-certificates gnupg lsb-release
+</code></pre>
+<h3 id="paso-2--agregar-la-clave-gpg-oficial"><a class="header" href="#paso-2--agregar-la-clave-gpg-oficial">Paso 2 — Agregar la clave GPG oficial</a></h3>
+<pre><code class="language-bash">sudo install -m 0755 -d /etc/apt/keyrings
+
+curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/postgresql.gpg
+
+sudo chmod a+r /etc/apt/keyrings/postgresql.gpg
+</code></pre>
+<h3 id="paso-3--agregar-el-repositorio-pgdg"><a class="header" href="#paso-3--agregar-el-repositorio-pgdg">Paso 3 — Agregar el repositorio PGDG</a></h3>
+<pre><code class="language-bash">echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/postgresql.gpg] \
+  https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | \
+  sudo tee /etc/apt/sources.list.d/pgdg.list &gt; /dev/null
+
+sudo apt update
+</code></pre>
+<h3 id="paso-4--instalar-postgresql"><a class="header" href="#paso-4--instalar-postgresql">Paso 4 — Instalar PostgreSQL</a></h3>
+<pre><code class="language-bash">sudo apt install -y postgresql postgresql-contrib
+</code></pre>
+<p><code>postgresql-contrib</code> incluye extensiones adicionales útiles como <code>pg_stat_statements</code>, <code>uuid-ossp</code> y otras herramientas de administración.</p>
+<h3 id="paso-5--iniciar-y-habilitar-el-servicio"><a class="header" href="#paso-5--iniciar-y-habilitar-el-servicio">Paso 5 — Iniciar y habilitar el servicio</a></h3>
+<pre><code class="language-bash">sudo systemctl start postgresql
+sudo systemctl enable postgresql
+</code></pre>
+<hr>
+<h2 id="4-verificar-la-instalación"><a class="header" href="#4-verificar-la-instalación">4. Verificar la Instalación</a></h2>
+<pre><code class="language-bash"># Estado del servicio
+sudo systemctl status postgresql
+
+# Versión instalada
+psql --version
+
+# Verificar que el proceso está corriendo
+pg_lsclusters
+</code></pre>
+<p><code>pg_lsclusters</code> muestra todos los clusters de PostgreSQL instalados, su versión, puerto y estado.</p>
+<hr>
+<h2 id="5-configuración-del-usuario-dev-espada"><a class="header" href="#5-configuración-del-usuario-dev-espada">5. Configuración del Usuario dev-espada</a></h2>
+<p>PostgreSQL usa autenticación basada en roles. Para acceder con <code>psql</code> directamente sin especificar usuario ni base de datos, el sistema operativo y PostgreSQL deben estar sincronizados: el nombre del usuario de Linux debe coincidir con un rol de PostgreSQL del mismo nombre, y debe existir una base de datos con ese mismo nombre.</p>
+<h3 id="paso-1--verificar-que-el-usuario-del-sistema-existe"><a class="header" href="#paso-1--verificar-que-el-usuario-del-sistema-existe">Paso 1 — Verificar que el usuario del sistema existe</a></h3>
+<p>Antes de crear el rol en PostgreSQL, confirma que tu usuario de sistema operativo es <code>dev-espada</code>:</p>
+<pre><code class="language-bash">whoami
+</code></pre>
+<p>Si el resultado es <code>dev-espada</code>, perfecto. Si es otro usuario y quieres que <code>dev-espada</code> sea un usuario separado del sistema, créalo primero:</p>
+<pre><code class="language-bash">sudo adduser dev-espada
+</code></pre>
+<h3 id="paso-2--crear-el-rol-en-postgresql"><a class="header" href="#paso-2--crear-el-rol-en-postgresql">Paso 2 — Crear el rol en PostgreSQL</a></h3>
+<p>Acceder a PostgreSQL como el superusuario <code>postgres</code>:</p>
+<pre><code class="language-bash">sudo -u postgres psql
+</code></pre>
+<p>Dentro del prompt de psql, crear el rol <code>dev-espada</code> con permisos para crear bases de datos:</p>
+<pre><code class="language-sql">CREATE ROLE "dev-espada" WITH LOGIN CREATEDB;
+</code></pre>
+<p>Si además quieres que pueda crear otros roles (útil en desarrollo):</p>
+<pre><code class="language-sql">ALTER ROLE "dev-espada" CREATEROLE;
+</code></pre>
+<p>Verificar que el rol fue creado:</p>
+<pre><code class="language-sql">\du
+</code></pre>
+<p>Salir de psql:</p>
+<pre><code class="language-sql">\q
+</code></pre>
+<h3 id="paso-3--crear-la-base-de-datos-con-el-mismo-nombre-que-el-usuario"><a class="header" href="#paso-3--crear-la-base-de-datos-con-el-mismo-nombre-que-el-usuario">Paso 3 — Crear la base de datos con el mismo nombre que el usuario</a></h3>
+<p>PostgreSQL, cuando ejecutas <code>psql</code> sin argumentos, intenta conectarse a una base de datos con el mismo nombre que el usuario actual. Por eso es necesario crear una base de datos llamada <code>dev-espada</code>:</p>
+<pre><code class="language-bash">sudo -u postgres createdb "dev-espada" --owner="dev-espada"
+</code></pre>
+<p>O desde dentro de psql como postgres:</p>
+<pre><code class="language-sql">CREATE DATABASE "dev-espada" OWNER "dev-espada";
+</code></pre>
+<hr>
+<h2 id="6-acceso-directo-con-psql"><a class="header" href="#6-acceso-directo-con-psql">6. Acceso directo con psql</a></h2>
+<p>Este es el objetivo central: ejecutar <code>psql</code> desde tu sesión como <code>dev-espada</code> y entrar directamente a tu base de datos, sin contraseña ni parámetros.</p>
+<h3 id="cómo-funciona-el-acceso-automático"><a class="header" href="#cómo-funciona-el-acceso-automático">Cómo funciona el acceso automático</a></h3>
+<p>PostgreSQL tiene un mecanismo de autenticación llamado <strong>peer authentication</strong>: cuando te conectas localmente a través del socket Unix, PostgreSQL confía en la identidad del usuario del sistema operativo. Si el usuario del SO se llama <code>dev-espada</code> y existe un rol de PostgreSQL con el mismo nombre, la conexión se acepta sin contraseña.</p>
+<p>Adicionalmente, cuando no especificas una base de datos en <code>psql</code>, PostgreSQL intenta conectarse a una base de datos con el mismo nombre que el usuario. Con la base de datos <code>dev-espada</code> creada, todo encaja.</p>
+<h3 id="verificar-la-configuración-de-autenticación"><a class="header" href="#verificar-la-configuración-de-autenticación">Verificar la configuración de autenticación</a></h3>
+<p>El archivo <code>pg_hba.conf</code> controla cómo se autentica cada tipo de conexión. Verificar que las conexiones locales por socket usan <code>peer</code>:</p>
+<pre><code class="language-bash"># Encontrar la ruta del archivo (varía según la versión)
+sudo find /etc/postgresql -name pg_hba.conf
+
+# Ver las líneas relevantes (ignorar comentarios)
+sudo grep -v "^#" /etc/postgresql/*/main/pg_hba.conf | grep -v "^$"
+</code></pre>
+<p>La línea clave debe verse así:</p>
+<pre><code>local   all   all   peer
+</code></pre>
+<p>Si el método es <code>md5</code> o <code>scram-sha-256</code> en lugar de <code>peer</code> para conexiones locales, cambiar a <code>peer</code>:</p>
+<pre><code class="language-bash">sudo nano /etc/postgresql/*/main/pg_hba.conf
+</code></pre>
+<p>Busca la línea:</p>
+<pre><code>local   all             all                                     md5
+</code></pre>
+<p>Y cámbiala a:</p>
+<pre><code>local   all             all                                     peer
+</code></pre>
+<p>Recargar la configuración para aplicar cambios:</p>
+<pre><code class="language-bash">sudo systemctl reload postgresql
+</code></pre>
+<h3 id="probar-el-acceso-directo"><a class="header" href="#probar-el-acceso-directo">Probar el acceso directo</a></h3>
+<p>Asegúrate de estar logueado como <code>dev-espada</code> (o usar <code>su - dev-espada</code>) y ejecuta simplemente:</p>
+<pre><code class="language-bash">psql
+</code></pre>
+<p>Deberías ver el prompt:</p>
+<pre><code>psql (16.x)
+Type "help" for help.
+
+dev-espada=#
+</code></pre>
+<p>El símbolo <code>#</code> indica que el rol tiene privilegios de superusuario en esa base de datos. El símbolo <code>&gt;</code> indicaría un rol normal.</p>
+<h3 id="alias-recomendado-opcional"><a class="header" href="#alias-recomendado-opcional">Alias recomendado (opcional)</a></h3>
+<p>Si por cualquier motivo necesitas pasar argumentos frecuentemente, puedes agregar un alias en <code>~/.bashrc</code> o <code>~/.bash_profile</code>:</p>
+<pre><code class="language-bash">echo 'alias psql="psql -U dev-espada -d dev-espada"' &gt;&gt; ~/.bashrc
+source ~/.bashrc
+</code></pre>
+<p>Aunque con la configuración <code>peer</code> correcta, el <code>psql</code> simple sin alias ya es suficiente.</p>
+<hr>
+<h2 id="7-configuración-post-instalación"><a class="header" href="#7-configuración-post-instalación">7. Configuración Post-Instalación</a></h2>
+<h3 id="ajustar-parámetros-básicos-de-rendimiento"><a class="header" href="#ajustar-parámetros-básicos-de-rendimiento">Ajustar parámetros básicos de rendimiento</a></h3>
+<p>El archivo principal de configuración de PostgreSQL es <code>postgresql.conf</code>:</p>
+<pre><code class="language-bash">sudo nano /etc/postgresql/*/main/postgresql.conf
+</code></pre>
+<p>Parámetros recomendados para un entorno de desarrollo:</p>
+<pre><code class="language-ini"># Memoria compartida (ajustar al 25% de la RAM disponible)
+shared_buffers = 256MB
+
+# Memoria para operaciones de ordenamiento
+work_mem = 16MB
+
+# Memoria para mantenimiento (VACUUM, CREATE INDEX)
+maintenance_work_mem = 128MB
+
+# Número máximo de conexiones
+max_connections = 100
+
+# Logging básico para desarrollo
+log_statement = 'all'
+log_duration = on
+</code></pre>
+<p>Reiniciar para aplicar los cambios:</p>
+<pre><code class="language-bash">sudo systemctl restart postgresql
+</code></pre>
+<h3 id="ver-el-log-en-tiempo-real"><a class="header" href="#ver-el-log-en-tiempo-real">Ver el log en tiempo real</a></h3>
+<pre><code class="language-bash">sudo tail -f /var/log/postgresql/postgresql-*.log
+</code></pre>
+<hr>
+<h2 id="8-comandos-básicos-de-psql"><a class="header" href="#8-comandos-básicos-de-psql">8. Comandos Básicos de psql</a></h2>
+<p>Una vez dentro de <code>psql</code>, los comandos internos empiezan con <code>\</code>:</p>
+<pre><code class="language-sql">\l              -- Listar todas las bases de datos
+\c nombre_db    -- Conectarse a otra base de datos
+\dt             -- Listar tablas del esquema actual
+\d nombre_tabla -- Describir estructura de una tabla
+\du             -- Listar roles y usuarios
+\dn             -- Listar esquemas
+\df             -- Listar funciones
+\timing         -- Activar/desactivar tiempo de ejecución
+\e              -- Abrir el editor de texto para escribir queries
+\i archivo.sql  -- Ejecutar un archivo SQL
+\o archivo.txt  -- Redirigir output a un archivo
+\q              -- Salir de psql
+</code></pre>
+<h3 id="operaciones-sql-frecuentes"><a class="header" href="#operaciones-sql-frecuentes">Operaciones SQL frecuentes</a></h3>
+<pre><code class="language-sql">-- Crear una base de datos
+CREATE DATABASE mi_proyecto OWNER "dev-espada";
+
+-- Crear una tabla
+CREATE TABLE usuarios (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    email VARCHAR(255) UNIQUE,
+    creado_en TIMESTAMP DEFAULT NOW()
+);
+
+-- Insertar datos
+INSERT INTO usuarios (nombre, email) VALUES ('Juan', 'juan@ejemplo.com');
+
+-- Consultar
+SELECT * FROM usuarios;
+
+-- Ver tamaño de las bases de datos
+SELECT pg_database.datname, pg_size_pretty(pg_database_size(pg_database.datname))
+FROM pg_database
+ORDER BY pg_database_size(pg_database.datname) DESC;
+</code></pre>
+<hr>
+<h2 id="9-solución-de-problemas"><a class="header" href="#9-solución-de-problemas">9. Solución de Problemas</a></h2>
+<h3 id="psql-error-fatal-role-dev-espada-does-not-exist"><a class="header" href="#psql-error-fatal-role-dev-espada-does-not-exist">psql: error: FATAL: role “dev-espada” does not exist</a></h3>
+<p>El rol no fue creado en PostgreSQL. Crearlo:</p>
+<pre><code class="language-bash">sudo -u postgres psql -c 'CREATE ROLE "dev-espada" WITH LOGIN CREATEDB;'
+</code></pre>
+<h3 id="psql-error-fatal-database-dev-espada-does-not-exist"><a class="header" href="#psql-error-fatal-database-dev-espada-does-not-exist">psql: error: FATAL: database “dev-espada” does not exist</a></h3>
+<p>La base de datos con el nombre del usuario no existe. Crearla:</p>
+<pre><code class="language-bash">sudo -u postgres createdb "dev-espada" --owner="dev-espada"
+</code></pre>
+<h3 id="psql-error-fatal-peer-authentication-failed-for-user-dev-espada"><a class="header" href="#psql-error-fatal-peer-authentication-failed-for-user-dev-espada">psql: error: FATAL: Peer authentication failed for user “dev-espada”</a></h3>
+<p>El usuario del sistema operativo con el que ejecutas <code>psql</code> no coincide con el rol de PostgreSQL, o el método de autenticación no es <code>peer</code>. Verificar:</p>
+<pre><code class="language-bash"># ¿Con qué usuario del sistema estás?
+whoami
+
+# ¿Qué método de autenticación está configurado?
+sudo grep -v "^#" /etc/postgresql/*/main/pg_hba.conf | grep local
+</code></pre>
+<p>Asegúrate de que la línea <code>local</code> tiene el método <code>peer</code> y de que el usuario del sistema coincide con el rol de PostgreSQL.</p>
+<h3 id="psql-error-could-not-connect-to-server-no-such-file-or-directory"><a class="header" href="#psql-error-could-not-connect-to-server-no-such-file-or-directory">psql: error: could not connect to server: No such file or directory</a></h3>
+<p>El servicio de PostgreSQL no está corriendo:</p>
+<pre><code class="language-bash">sudo systemctl start postgresql
+sudo systemctl status postgresql
+
+# Ver logs si no arranca
+sudo journalctl -u postgresql --no-pager -n 50
+</code></pre>
+<h3 id="instalación-rota-o-corrupta"><a class="header" href="#instalación-rota-o-corrupta">Instalación rota o corrupta</a></h3>
+<p>Seguir la <strong>Sección 2</strong> (Desinstalación Completa) y luego la <strong>Sección 3</strong> (Instalación). Este proceso resuelve la mayoría de los conflictos de paquetes y configuraciones corruptas.</p>
+<hr>
+<p><em>Para temas avanzados como replicación, particionado de tablas, extensiones o ajuste de rendimiento en producción, consultar la <a href="https://www.postgresql.org/docs/">documentación oficial de PostgreSQL</a>.</em></p>
+<div style="break-before: page; page-break-before: always;"></div>
 <h1 id="1-instalar-sqlx-cli"><a class="header" href="#1-instalar-sqlx-cli">1. Instalar SQLx CLI</a></h1>
 <pre><code class="language-bash">cargo install sqlx-cli --no-default-features --features postgres
 </code></pre>
@@ -5127,7 +5423,7 @@ pnpm prisma migrate dev --name sync_current_state
 <h1 id="primeros-pasos---react-native"><a class="header" href="#primeros-pasos---react-native">Primeros pasos - React Native</a></h1>
 <p>Este manual te guiará paso a paso para entender y desarrollar una aplicación de React Native desde 0. Usamos <strong>Expo</strong> con <strong>expo-router</strong>, que es la forma más moderna y recomendada de crear apps con React Native.</p>
 <hr>
-<h2 id="1-requisitos-previos-1"><a class="header" href="#1-requisitos-previos-1">1. Requisitos Previos</a></h2>
+<h2 id="1-requisitos-previos-2"><a class="header" href="#1-requisitos-previos-2">1. Requisitos Previos</a></h2>
 <p>Antes de comenzar, necesitas tener instalado en tu computadora:</p>
 <h3 id="11-nodejs-versión-18-o-superior"><a class="header" href="#11-nodejs-versión-18-o-superior">1.1 Node.js (versión 18 o superior)</a></h3>
 <pre><code class="language-bash"># Verificar si tienes Node instalado
@@ -5580,7 +5876,7 @@ npx expo build:ios
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="guía-completa-instalación-y-configuración-de-matrix-synapse-con-docker"><a class="header" href="#guía-completa-instalación-y-configuración-de-matrix-synapse-con-docker">Guía Completa: Instalación y Configuración de Matrix Synapse con Docker</a></h1>
-<h2 id="1-requisitos-previos-2"><a class="header" href="#1-requisitos-previos-2">1. Requisitos previos</a></h2>
+<h2 id="1-requisitos-previos-3"><a class="header" href="#1-requisitos-previos-3">1. Requisitos previos</a></h2>
 <ul>
 <li>Sistema basado en Linux (Ubuntu recomendado)</li>
 <li>Acceso con privilegios <code>sudo</code></li>
@@ -8311,19 +8607,19 @@ Red:      192.168.10.0
 <h1 id="manual-de-docker-en-debian--instalación-desinstalación-y-reinstalación-completa"><a class="header" href="#manual-de-docker-en-debian--instalación-desinstalación-y-reinstalación-completa">Manual de Docker en Debian — Instalación, Desinstalación y Reinstalación Completa</a></h1>
 <p>Docker es una plataforma de contenedores que permite empaquetar, distribuir y ejecutar aplicaciones en entornos aislados. Este manual cubre la instalación completa usando el repositorio oficial, la desinstalación limpia sin residuos, y el procedimiento de reinstalación desde cero.</p>
 <hr>
-<h2 id="índice"><a class="header" href="#índice">Índice</a></h2>
+<h2 id="índice-1"><a class="header" href="#índice-1">Índice</a></h2>
 <ol>
-<li><a href="#1-requisitos-previos-3">Requisitos Previos</a></li>
+<li><a href="#1-requisitos-previos-4">Requisitos Previos</a></li>
 <li><a href="#2-desinstalación-completa-hacer-primero-si-ya-tienes-docker">Desinstalación Completa</a></li>
-<li><a href="#3-instalación-desde-el-repositorio-oficial">Instalación desde el Repositorio Oficial</a></li>
-<li><a href="#4-verificar-la-instalación">Verificar la Instalación</a></li>
+<li><a href="#3-instalación-desde-el-repositorio-oficial-1">Instalación desde el Repositorio Oficial</a></li>
+<li><a href="#4-verificar-la-instalación-1">Verificar la Instalación</a></li>
 <li><a href="#5-configuración-post-instalación">Configuración Post-Instalación</a></li>
 <li><a href="#6-comandos-básicos">Comandos Básicos</a></li>
 <li><a href="#7-docker-compose">Docker Compose</a></li>
 <li><a href="#8-solución-de-problemas">Solución de Problemas</a></li>
 </ol>
 <hr>
-<h2 id="1-requisitos-previos-3"><a class="header" href="#1-requisitos-previos-3">1. Requisitos Previos</a></h2>
+<h2 id="1-requisitos-previos-4"><a class="header" href="#1-requisitos-previos-4">1. Requisitos Previos</a></h2>
 <h3 id="sistema-operativo-soportado"><a class="header" href="#sistema-operativo-soportado">Sistema operativo soportado</a></h3>
 <ul>
 <li>Debian Bullseye (11), Bookworm (12) o superior</li>
@@ -8388,7 +8684,7 @@ sudo rm -f /var/run/docker.sock
 sudo rm -f /var/run/docker.pid
 sudo rm -f /var/run/containerd/containerd.sock
 </code></pre>
-<h3 id="paso-4--eliminar-el-repositorio-y-la-clave-gpg"><a class="header" href="#paso-4--eliminar-el-repositorio-y-la-clave-gpg">Paso 4 — Eliminar el repositorio y la clave GPG</a></h3>
+<h3 id="paso-4--eliminar-el-repositorio-y-la-clave-gpg-1"><a class="header" href="#paso-4--eliminar-el-repositorio-y-la-clave-gpg-1">Paso 4 — Eliminar el repositorio y la clave GPG</a></h3>
 <pre><code class="language-bash"># Eliminar la entrada del repositorio de Docker
 sudo rm -f /etc/apt/sources.list.d/docker.list
 
@@ -8426,7 +8722,7 @@ systemctl list-units --type=service | grep containerd
 </code></pre>
 <p>Si todos los checks muestran que Docker fue eliminado, el sistema está limpio y listo para una instalación fresca.</p>
 <hr>
-<h2 id="3-instalación-desde-el-repositorio-oficial"><a class="header" href="#3-instalación-desde-el-repositorio-oficial">3. Instalación desde el Repositorio Oficial</a></h2>
+<h2 id="3-instalación-desde-el-repositorio-oficial-1"><a class="header" href="#3-instalación-desde-el-repositorio-oficial-1">3. Instalación desde el Repositorio Oficial</a></h2>
 <h3 id="paso-1--actualizar-el-índice-de-paquetes-e-instalar-dependencias"><a class="header" href="#paso-1--actualizar-el-índice-de-paquetes-e-instalar-dependencias">Paso 1 — Actualizar el índice de paquetes e instalar dependencias</a></h3>
 <pre><code class="language-bash">sudo apt update
 
@@ -8479,7 +8775,7 @@ sudo apt install -y \
 <li><code>docker-compose-plugin</code> — soporte para aplicaciones multi-contenedor</li>
 </ul>
 <hr>
-<h2 id="4-verificar-la-instalación"><a class="header" href="#4-verificar-la-instalación">4. Verificar la Instalación</a></h2>
+<h2 id="4-verificar-la-instalación-1"><a class="header" href="#4-verificar-la-instalación-1">4. Verificar la Instalación</a></h2>
 <h3 id="verificar-el-servicio"><a class="header" href="#verificar-el-servicio">Verificar el servicio</a></h3>
 <pre><code class="language-bash">sudo systemctl status docker
 </code></pre>
@@ -8641,7 +8937,7 @@ docker volume prune
 # Limpieza completa (elimina todo lo no utilizado)
 docker system prune -a --volumes
 </code></pre>
-<h3 id="instalación-rota-o-corrupta"><a class="header" href="#instalación-rota-o-corrupta">Instalación rota o corrupta</a></h3>
+<h3 id="instalación-rota-o-corrupta-1"><a class="header" href="#instalación-rota-o-corrupta-1">Instalación rota o corrupta</a></h3>
 <p>Si Docker no funciona correctamente y los errores no tienen solución directa, la opción más fiable es hacer una desinstalación completa (ver <strong>Sección 2</strong>) y reinstalar desde cero (ver <strong>Sección 3</strong>). Este procedimiento resuelve la mayoría de los problemas causados por actualizaciones fallidas, conflictos de paquetes o configuraciones corruptas.</p>
 <hr>
 <p><em>Para profundizar en temas avanzados como Docker Swarm, seguridad en contenedores o desarrollo multi-etapa, consultar la <a href="https://docs.docker.com">documentación oficial de Docker</a>.</em></p>

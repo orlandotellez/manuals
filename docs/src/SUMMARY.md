@@ -12,6 +12,7 @@
 - [Restix](./docs/12-restix.md)
 
 ## Base de datos
+- [Postgres](./docs/14-postgres-installation.md)
 - [SQLx](./docs/03-sqlx.md)
 - [Redis](./docs/04-redis.md)
 - [Prisma](./docs/06-prisma.md)
