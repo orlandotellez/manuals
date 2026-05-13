@@ -28,6 +28,7 @@
 - [Redes](./docs/09-redes.md)
 - [Redes ejercicios](./docs/10-redes-ejercicio-analisis-ipv4.md)
 - [NAT](./docs/11-nat.md)
+- [Comandos Packet Tracer](./docs/15-comandos-packet-tracer.md)
 
 ## Docker
 - [Docker Instalación](./docs/13-docker-installation.md)
