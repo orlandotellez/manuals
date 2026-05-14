@@ -1,3 +1,20 @@
+## ÍNDICE
+
+- [Qué es NAT y cómo actúa en nuestra red](#qué-es-nat-y-cómo-actúa-en-nuestra-red)
+  - [Funcionamiento de NAT](#funcionamiento-de-nat)
+  - [Tipos de NAT](#tipos-de-nat)
+  - [Seguridad NAT](#seguridad-nat)
+  - [Ventajas y desventajas de las NAT](#ventajas-y-desventajas-de-las-nat)
+  - [Impacto en el rendimiento](#impacto-en-el-rendimiento)
+  - [Carrier Grade NAT (CG-NAT)](#carrier-grade-nat-cg-nat)
+  - [Comprobación de uso de CG-NAT](#comprobación-de-uso-de-cg-nat)
+  - [Impacto de CG-NAT en usuarios](#impacto-de-cg-nat-en-usuarios)
+  - [NAT en videojuegos](#nat-en-videojuegos)
+  - [Conclusión](#conclusión)
+- [Dirección IP privada frente a dirección IP pública](#dirección-ip-privada-frente-a-dirección-ip-pública-cuál-es-la-mejor-opción-para-su-red-industrial)
+
+---
+
 ## 1. Qué es NAT y cómo actúa en nuestra red
 
 ### Introducción

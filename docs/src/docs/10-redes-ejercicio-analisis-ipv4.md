@@ -6,6 +6,19 @@ Este manual te guiará paso a paso para analizar direcciones IPv4 y determinar l
 
 ---
 
+## ÍNDICE
+
+- [Conceptos Fundamentales](#1-conceptos-fundamentales)
+- [Metodología Paso a Paso](#2-metodología-paso-a-paso)
+- [Resolución del Ejercicio](#3-resolución-del-ejercicio)
+- [Tabla Completa Resuelta](#4-tabla-completa-resuelta)
+- [Tips y Trucos](#5-tips-y-trucos)
+- [Ejercicios Adicionales para Practicar](#6-ejercicios-adicionales-para-practicar)
+- [Resumen de Fórmulas](#7-resumen-de-fórmulas)
+- [Conclusión](#conclusión)
+
+---
+
 ## 1. Conceptos Fundamentales
 
 ### 1.1 ¿Qué es el Prefijo CIDR?

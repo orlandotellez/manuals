@@ -1,5 +1,39 @@
 # Redes - Direcciones IP y Subredes
 
+---
+
+## ÍNDICE
+
+- [¿Qué es una Dirección IP?](#qué-es-una-dirección-ip)
+  - [El Protocolo de Internet (IP)](#el-protocolo-de-internet-ip)
+  - [Cómo Funciona IP](#cómo-funciona-ip)
+  - [Versiones de IP](#versiones-de-ip)
+- [Direcciones IPv4](#direcciones-ipv4)
+  - [Máscaras de Subred](#máscaras-de-subred)
+  - [Clases de Direcciones IP](#clases-de-direcciones-ip)
+  - [Resumen: Clases y Representaciones de Bits](#resumen-clases-de-direcciones-ip-y-representaciones-de-bits)
+  - [Direcciones Privadas](#direcciones-privadas)
+  - [Direcciones Especiales](#direcciones-especiales)
+  - [Agotamiento de Direcciones IPv4](#agotamiento-de-direcciones-ipv4)
+- [Direcciones IPv6](#direcciones-ipv6)
+  - [Abreviatura de Direcciones IPv6](#abreviatura-de-direcciones-ipv6)
+  - [Direcciones IPv6 Privadas](#direcciones-ipv6-privadas)
+- [Resolución de Nombres](#resolución-de-nombres)
+- [Subredes](#subredes)
+  - [¿Qué es una Subred?](#qué-es-una-subred)
+  - [Proceso para Crear Subredes](#proceso-para-crear-subredes)
+  - [Comunicación entre Subredes](#comunicación-entre-subredes)
+  - [Subredes IPv6](#subredes-ipv6)
+  - [Redes Punto a Punto](#redes-punto-a-punto)
+  - [¿Qué Significan las Diferentes Partes de una Dirección IP?](#qué-significan-las-diferentes-partes-de-una-dirección-ip)
+  - [Importancia de las Subredes](#importancia-de-las-subredes)
+  - [¿Qué es una Máscara de Subred?](#qué-es-una-máscara-de-subred)
+- [Tabla de Referencia de Máscaras de Subred](#tabla-de-referencia-de-máscaras-de-subred)
+- [Rangos de Direcciones de Clase](#rangos-de-direcciones-de-clase)
+- [Conclusión](#conclusión)
+
+---
+
 ## 1. ¿Qué es una Dirección IP?
 
 Una dirección IP (protocolo de internet, por sus siglas en inglés) es una representación numérica que identifica una interfaz concreta de manera única en la red.

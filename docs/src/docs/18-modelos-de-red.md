@@ -2,6 +2,23 @@
 
 ---
 
+## ÍNDICE
+
+- [¿Qué es un Modelo de Red?](#qué-es-un-modelo-de-red)
+- [Importancia de los Modelos de Red](#importancia-de-los-modelos-de-red)
+- [Modelo OSI (Open Systems Interconnection)](#modelo-osi-open-systems-interconnection)
+- [Modelo TCP/IP (Transmission Control Protocol / Internet Protocol)](#modelo-tcpip-transmission-control-protocol--internet-protocol)
+- [Comparación Detallada: OSI vs TCP/IP](#comparación-detallada-osi-vs-tcpip)
+- [Capa de Aplicación TCP/IP en Profundidad](#capa-de-aplicación-tcpip-en-profundidad)
+- [Capa de Transporte en Profundidad](#capa-de-transporte-en-profundidad)
+- [Capa de Internet en Profundidad](#capa-de-internet-en-profundidad)
+- [Capa de Acceso a Red en Profundidad](#capa-de-acceso-a-red-en-profundidad)
+- [Flujo Completo de Comunicación](#flujo-completo-de-comunicación-ejemplo)
+- [Otros Modelos y Referencias](#otros-modelos-y-referencias)
+- [Resumen Comparativo](#resumen-comparativo)
+
+---
+
 ## ¿Qué es un Modelo de Red?
 
 Un **modelo de red** es una representación estructurada y organizada de las funciones necesarias para la comunicación entre dispositivos en una red. Define cómo los datos viajan desde el origen hasta el destino, dividiendo el proceso en **capas** con responsabilidades específicas.

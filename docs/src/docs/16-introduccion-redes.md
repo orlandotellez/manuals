@@ -2,6 +2,23 @@
 
 ---
 
+## ÍNDICE
+
+- [¿Qué es una Red?](#qué-es-una-red)
+- [Ventajas de las Redes](#ventajas-de-las-redes)
+- [Preguntas Clave Antes de Crear una Red](#preguntas-clave-antes-de-crear-una-red)
+- [Administración de Red](#administración-de-red)
+- [Tipos de Tecnología de Red](#tipos-de-tecnología-de-red)
+- [Modelos de Conexión](#modelos-de-conexión)
+- [Topologías de Red](#topologías-de-red)
+- [¿Qué Topología es Mejor?](#qué-topología-es-mejor)
+- [Mapeo de la Topología](#mapeo-de-la-topología)
+- [Importancia de la Topología de Red](#importancia-de-la-topología-de-red)
+- [Componentes de la Capa Física](#componentes-de-la-capa-física)
+- [Componentes de Red para Redes Locales](#componentes-de-red-para-redes-locales)
+
+---
+
 ## ¿Qué es una Red?
 
 Una **red** es una conexión entre al menos dos dispositivos informáticos. Esta conexión puede tener diferentes estructuras (cableado o inalámbrico) y cubrir diferentes rangos.
