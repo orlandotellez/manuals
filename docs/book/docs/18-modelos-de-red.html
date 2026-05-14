@@ -1,0 +1,591 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Modelo OSI y TCP/IP - Manuales</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-5e400f4d.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-9ad8953f.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Manuales</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="18-modelos-de-red"><a class="header" href="#18-modelos-de-red">18. Modelos de Red</a></h1>
+<hr>
+<h2 id="qué-es-un-modelo-de-red"><a class="header" href="#qué-es-un-modelo-de-red">¿Qué es un Modelo de Red?</a></h2>
+<p>Un <strong>modelo de red</strong> es una representación estructurada y organizada de las funciones necesarias para la comunicación entre dispositivos en una red. Define cómo los datos viajan desde el origen hasta el destino, dividiendo el proceso en <strong>capas</strong> con responsabilidades específicas.</p>
+<blockquote>
+<p><strong>Nota:</strong> Los modelos de red sirven como guía teórica y práctica para el diseño, la implementación y la resolución de problemas en redes de comunicación.</p>
+</blockquote>
+<hr>
+<h2 id="importancia-de-los-modelos-de-red"><a class="header" href="#importancia-de-los-modelos-de-red">Importancia de los Modelos de Red</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Aspecto</th><th>Beneficio</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Estandarización</strong></td><td>Permite que fabricantes y desarrolladores trabajen con estándares comunes</td></tr>
+<tr><td><strong>Interoperabilidad</strong></td><td>Garantiza que dispositivos de distintos fabricantes se comuniquen correctamente</td></tr>
+<tr><td><strong>Solución de problemas</strong></td><td>Facilita la identificación de fallos al aislar problemas por capa</td></tr>
+<tr><td><strong>Diseño modular</strong></td><td>Cada capa puede evolucionar independientemente sin afectar a las demás</td></tr>
+<tr><td><strong>Comunicación clara</strong></td><td>Proporciona un vocabulario y estructura universal para profesionales de TI</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="modelo-osi-open-systems-interconnection"><a class="header" href="#modelo-osi-open-systems-interconnection">Modelo OSI (Open Systems Interconnection)</a></h2>
+<p>El modelo OSI fue desarrollado por la <strong>ISO</strong> (International Organization for Standardization) en 1984. Divide la comunicación de red en <strong>7 capas</strong>, cada una con una función específica.</p>
+<h3 id="las-7-capas-del-modelo-osi"><a class="header" href="#las-7-capas-del-modelo-osi">Las 7 Capas del Modelo OSI</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Capa</th><th>Nombre</th><th>Función</th><th>Ejemplos de Protocolos/Tecnologías</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>7</strong></td><td><strong>Aplicación</strong></td><td>Interfaz entre la red y las aplicaciones del usuario. Proporciona servicios de red directamente al software.</td><td>HTTP, FTP, SMTP, DNS, SNMP, DHCP</td></tr>
+<tr><td><strong>6</strong></td><td><strong>Presentación</strong></td><td>Traduce, cifra y comprime los datos para que la capa de aplicación pueda interpretarlos.</td><td>SSL/TLS, JPEG, MPEG, GIF, ASCII</td></tr>
+<tr><td><strong>5</strong></td><td><strong>Sesión</strong></td><td>Establece, gestiona y termina las sesiones de comunicación entre dispositivos.</td><td>NetBIOS, RPC, PPTP</td></tr>
+<tr><td><strong>4</strong></td><td><strong>Transporte</strong></td><td>Garantiza la entrega fiable o rápida de los datos entre extremos. Controla el flujo y el control de errores.</td><td>TCP, UDP, SCTP</td></tr>
+<tr><td><strong>3</strong></td><td><strong>Red</strong></td><td>Determina la mejor ruta lógica para los datos desde el origen hasta el destino. Maneja direccionamiento lógico.</td><td>IP, ICMP, IPSec, OSPF, BGP</td></tr>
+<tr><td><strong>2</strong></td><td><strong>Enlace de Datos</strong></td><td>Proporciona transferencia fiable de datos entre dos nodos adyacentes en una red. Controla el acceso al medio físico.</td><td>Ethernet (MAC), PPP, Frame Relay, ARP, Switches</td></tr>
+<tr><td><strong>1</strong></td><td><strong>Física</strong></td><td>Transmite bits sin procesar a través del medio físico. Define especificaciones eléctricas, mecánicas y funcionales.</td><td>Cables (UTP, fibra óptica), hubs, conectores, señales eléctricas</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="cómo-funciona-el-modelo-osi"><a class="header" href="#cómo-funciona-el-modelo-osi">Cómo Funciona el Modelo OSI</a></h3>
+<ol>
+<li>Los datos se generan en la capa <strong>7</strong> (Aplicación) y descienden capa por capa.</li>
+<li>En cada nivel, se añade un <strong>encabezado</strong> (y en algunos casos un <strong>trailer</strong>) con información de control propia. Este proceso se llama <strong>encapsulación</strong>.</li>
+<li>Los datos llegan a la capa <strong>1</strong> (Física) y se transmiten al dispositivo receptor.</li>
+<li>En el destino, los datos ascienden capa por capa, eliminando los encabezados en cada nivel. Este proceso se llama <strong>desencapsulación</strong>.</li>
+</ol>
+<pre><code>Dispositivo A                                        Dispositivo B
+┌──────────────┐      Encapsulación      Desencapsulación      ┌──────────────┐
+│  Aplicación  │ ──► │ Presentación │ ──► │  Sesión  │ ──► ... │  Aplicación  │
+└──────────────┘      └──────────────────┘                     └──────────────┘
+</code></pre>
+<blockquote>
+<p><strong>Dato clave:</strong> En la práctica, muchas implementaciones combinan o simplifican capas. Por eso surgió el modelo TCP/IP.</p>
+</blockquote>
+<hr>
+<h2 id="modelo-tcpip-transmission-control-protocol--internet-protocol"><a class="header" href="#modelo-tcpip-transmission-control-protocol--internet-protocol">Modelo TCP/IP (Transmission Control Protocol / Internet Protocol)</a></h2>
+<p>El modelo TCP/IP fue desarrollado por el <strong>Departamento de Defensa de EE.UU.</strong> (DoD). Es el modelo que realmente se utiliza en Internet. Se compone de <strong>4 capas</strong> que agrupan funcionalmente las 7 del modelo OSI.</p>
+<h3 id="las-4-capas-del-modelo-tcpip"><a class="header" href="#las-4-capas-del-modelo-tcpip">Las 4 Capas del Modelo TCP/IP</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Capa</th><th>Nombre</th><th>Función</th><th>Ejemplos de Protocolos/Tecnologías</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>4</strong></td><td><strong>Aplicación</strong></td><td>Combina las capas 7, 6 y 5 del OSI. Gestiona los servicios de red de alto nivel.</td><td>HTTP, FTP, SMTP, DNS, SSH, SNMP</td></tr>
+<tr><td><strong>3</strong></td><td><strong>Transporte</strong></td><td>Igual que la capa 4 del OSI. Comunicación extremo a extremo.</td><td>TCP, UDP</td></tr>
+<tr><td><strong>2</strong></td><td><strong>Internet</strong></td><td>Equivalente a la capa 3 del OSI. Enrutamiento y direccionamiento lógico.</td><td>IP, ICMP, ARP, IPSec</td></tr>
+<tr><td><strong>1</strong></td><td><strong>Acceso a Red (Link)</strong></td><td>Combina las capas 2 y 1 del OSI. Comunicación directa con el medio físico.</td><td>Ethernet, Wi-Fi, PPP, Frame Relay</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="comparación-rápida-con-el-modelo-osi"><a class="header" href="#comparación-rápida-con-el-modelo-osi">Comparación Rápida con el Modelo OSI</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">Modelo OSI</th><th style="text-align: center">Modelo TCP/IP</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">Capa 7 - Aplicación</td><td style="text-align: center"><strong>Capa de Aplicación</strong> (4)</td></tr>
+<tr><td style="text-align: center">Capa 6 - Presentación</td><td style="text-align: center"><strong>Capa de Aplicación</strong> (4)</td></tr>
+<tr><td style="text-align: center">Capa 5 - Sesión</td><td style="text-align: center"><strong>Capa de Aplicación</strong> (4)</td></tr>
+<tr><td style="text-align: center">Capa 4 - Transporte</td><td style="text-align: center"><strong>Capa de Transporte</strong> (3)</td></tr>
+<tr><td style="text-align: center">Capa 3 - Red</td><td style="text-align: center"><strong>Capa de Internet</strong> (2)</td></tr>
+<tr><td style="text-align: center">Capa 2 - Enlace de Datos</td><td style="text-align: center"><strong>Capa de Acceso a Red</strong> (1)</td></tr>
+<tr><td style="text-align: center">Capa 1 - Física</td><td style="text-align: center"><strong>Capa de Acceso a Red</strong> (1)</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="comparación-detallada-osi-vs-tcpip"><a class="header" href="#comparación-detallada-osi-vs-tcpip">Comparación Detallada: OSI vs TCP/IP</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Característica</th><th>Modelo OSI</th><th>Modelo TCP/IP</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Número de capas</strong></td><td>7</td><td>4</td></tr>
+<tr><td><strong>Origen</strong></td><td>Organización (ISO)</td><td>Práctico (DoD / IETF)</td></tr>
+<tr><td><strong>Uso real</strong></td><td>Principalmente teórico y educativo</td><td>Base de Internet y redes reales</td></tr>
+<tr><td><strong>Protocolo de red</strong></td><td>Independiente de protocolo</td><td>Basado en IP</td></tr>
+<tr><td><strong>Servicios definidos</strong></td><td>Cada capa tiene servicios bien definidos</td><td>Más flexible y menos rígido</td></tr>
+<tr><td><strong>Adaptabilidad</strong></td><td>Difícil de adaptar a nuevas tecnologías</td><td>Escalable y adaptable</td></tr>
+<tr><td><strong>Desarrollo</strong></td><td>Se creó primero el modelo, luego los protocolos</td><td>Se desarrollaron los protocolos primero, luego el modelo</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>En resumen:</strong> El modelo OSI es ideal para <strong>entender y enseñar</strong> los conceptos de redes. El modelo TCP/IP es el que <strong>realmente se usa</strong> en la práctica.</p>
+</blockquote>
+<hr>
+<h2 id="capa-de-aplicación-tcpip-en-profundidad"><a class="header" href="#capa-de-aplicación-tcpip-en-profundidad">Capa de Aplicación TCP/IP en Profundidad</a></h2>
+<p>La capa de Aplicación es la más cercana al usuario y engloba múltiples protocolos según el servicio:</p>
+<h3 id="protocolos-principales"><a class="header" href="#protocolos-principales">Protocolos Principales</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Protocolo</th><th style="text-align: center">Puerto Predeterminado</th><th>Función</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>HTTP</strong></td><td style="text-align: center">80</td><td>Transferencia de páginas web (sin cifrar)</td></tr>
+<tr><td><strong>HTTPS</strong></td><td style="text-align: center">443</td><td>Transferencia web cifrada con TLS</td></tr>
+<tr><td><strong>FTP</strong></td><td style="text-align: center">20 / 21</td><td>Transferencia de archivos</td></tr>
+<tr><td><strong>SSH</strong></td><td style="text-align: center">22</td><td>Acceso remoto seguro</td></tr>
+<tr><td><strong>Telnet</strong></td><td style="text-align: center">23</td><td>Acceso remoto (sin cifrar)</td></tr>
+<tr><td><strong>SMTP</strong></td><td style="text-align: center">25 / 587</td><td>Envío de correo electrónico</td></tr>
+<tr><td><strong>POP3</strong></td><td style="text-align: center">110</td><td>Recepción de correo (descarga)</td></tr>
+<tr><td><strong>IMAP</strong></td><td style="text-align: center">143</td><td>Recepción de correo (sincronización)</td></tr>
+<tr><td><strong>DNS</strong></td><td style="text-align: center">53</td><td>Resolución de nombres de dominio a IP</td></tr>
+<tr><td><strong>DHCP</strong></td><td style="text-align: center">67 / 68</td><td>Asignación dinámica de direcciones IP</td></tr>
+<tr><td><strong>SNMP</strong></td><td style="text-align: center">161</td><td>Gestión y monitorización de dispositivos</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="capa-de-transporte-en-profundidad"><a class="header" href="#capa-de-transporte-en-profundidad">Capa de Transporte en Profundidad</a></h2>
+<p>La capa de Transporte permite la comunicación entre procesos en hosts distintos. Ofrece dos modos principales:</p>
+<h3 id="tcp-transmission-control-protocol"><a class="header" href="#tcp-transmission-control-protocol">TCP (Transmission Control Protocol)</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Característica</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Tipo de conexión</strong></td><td>Conectado (establece sesión antes de transmitir)</td></tr>
+<tr><td><strong>Fiabilidad</strong></td><td>Garantiza la entrega y el orden de los paquetes</td></tr>
+<tr><td><strong>Control de flujo</strong></td><td>Evita que el emisor sature al receptor</td></tr>
+<tr><td><strong>Control de errores</strong></td><td>Detecta y retransmite paquetes perdidos</td></tr>
+<tr><td><strong>Uso ideal</strong></td><td>Web, correo electrónico, transferencia de archivos</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Analogía:</strong> TCP es como enviar una carta con acuse de recibo y seguimiento postal: sabes que llegó y en orden.</p>
+</blockquote>
+<h3 id="udp-user-datagram-protocol"><a class="header" href="#udp-user-datagram-protocol">UDP (User Datagram Protocol)</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Característica</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Tipo de conexión</strong></td><td>Sin conexión (no establece sesión)</td></tr>
+<tr><td><strong>Fiabilidad</strong></td><td>No garantiza entrega ni orden</td></tr>
+<tr><td><strong>Control de flujo</strong></td><td>No implementa control de flujo</td></tr>
+<tr><td><strong>Control de errores</strong></td><td>Solo verificación básica con checksum</td></tr>
+<tr><td><strong>Uso ideal</strong></td><td>Streaming de video/audio, VoIP, juegos en línea, DNS</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Analogía:</strong> UDP es como enviar una carta sin acuse de recibo: es más rápido, pero no sabes si llegó.</p>
+</blockquote>
+<h3 id="comparación-tcp-vs-udp"><a class="header" href="#comparación-tcp-vs-udp">Comparación TCP vs UDP</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Criterio</th><th>TCP</th><th>UDP</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Conexión</strong></td><td>Conectado</td><td>Sin conexión</td></tr>
+<tr><td><strong>Fiabilidad</strong></td><td>Alta</td><td>Baja</td></tr>
+<tr><td><strong>Velocidad</strong></td><td>Más lento</td><td>Más rápido</td></tr>
+<tr><td><strong>Overhead</strong></td><td>Mayor (más cabeceras)</td><td>Menor</td></tr>
+<tr><td><strong>Orden de paquetes</strong></td><td>Garantizado</td><td>No garantizado</td></tr>
+<tr><td><strong>Control de flujo</strong></td><td>Sí</td><td>No</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="capa-de-internet-en-profundidad"><a class="header" href="#capa-de-internet-en-profundidad">Capa de Internet en Profundidad</a></h2>
+<p>La capa de Internet es responsable de <strong>direccionamiento lógico</strong> y <strong>enrutamiento</strong> de los datos a través de redes.</p>
+<h3 id="ip-internet-protocol"><a class="header" href="#ip-internet-protocol">IP (Internet Protocol)</a></h3>
+<p>Existen dos versiones en uso:</p>
+<h4 id="ipv4"><a class="header" href="#ipv4">IPv4</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Característica</th><th>Detalle</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Longitud de dirección</strong></td><td>32 bits</td></tr>
+<tr><td><strong>Formato</strong></td><td>Decimal punteado (ej: <code>192.168.1.1</code>)</td></tr>
+<tr><td><strong>Espacio de direcciones</strong></td><td>~4.300 millones de direcciones</td></tr>
+<tr><td><strong>Encabezado</strong></td><td>20 bytes mínimo (sin opciones)</td></tr>
+</tbody>
+</table>
+</div>
+<h4 id="ipv6"><a class="header" href="#ipv6">IPv6</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Característica</th><th>Detalle</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Longitud de dirección</strong></td><td>128 bits</td></tr>
+<tr><td><strong>Formato</strong></td><td>Hexadecimal separado por dos puntos (ej: <code>2001:0db8::1</code>)</td></tr>
+<tr><td><strong>Espacio de direcciones</strong></td><td>Prácticamente ilimitado (~3.4 × 10³⁸)</td></tr>
+<tr><td><strong>Encabezado</strong></td><td>40 bytes fijos, más eficiente</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Motivo de la migración a IPv6:</strong> El agotamiento del espacio de direcciones IPv4 y la necesidad de más dispositivos conectados.</p>
+</blockquote>
+<h3 id="otros-protocolos-de-la-capa-de-internet"><a class="header" href="#otros-protocolos-de-la-capa-de-internet">Otros Protocolos de la Capa de Internet</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Protocolo</th><th>Función</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>ICMP</strong></td><td>Mensajes de control y diagnóstico (utilizado por <code>ping</code> y <code>traceroute</code>)</td></tr>
+<tr><td><strong>ICMPv6</strong></td><td>Versión para IPv6, incluye Neighbor Discovery</td></tr>
+<tr><td><strong>IGMP</strong></td><td>Gestión de grupos multicast</td></tr>
+<tr><td><strong>IPSec</strong></td><td>Seguridad mediante cifrado y autenticación a nivel de IP</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="capa-de-acceso-a-red-en-profundidad"><a class="header" href="#capa-de-acceso-a-red-en-profundidad">Capa de Acceso a Red en Profundidad</a></h2>
+<p>La capa de Acceso a Red (también llamada <strong>capa de enlace de datos</strong> y <strong>capa física</strong> combinadas) gestiona la comunicación directa con el medio de transmisión.</p>
+<h3 id="funciones-principales"><a class="header" href="#funciones-principales">Funciones Principales</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Función</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Encuadre (Framing)</strong></td><td>Encapsula los datos en tramas con delimitadores</td></tr>
+<tr><td><strong>Control de acceso al medio</strong></td><td>Determina cuándo un dispositivo puede transmitir (MAC)</td></tr>
+<tr><td><strong>Detección y corrección de errores</strong></td><td>Mecanismos como CRC para verificar la integridad</td></tr>
+<tr><td><strong>Direccionamiento físico</strong></td><td>Uso de direcciones MAC (48 bits) para identificar dispositivos</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="tecnologías-de-la-capa-de-acceso-a-red"><a class="header" href="#tecnologías-de-la-capa-de-acceso-a-red">Tecnologías de la Capa de Acceso a Red</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Tecnología</th><th>Medio</th><th>Uso típico</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Ethernet (IEEE 802.3)</strong></td><td>Cable (par trenzado, fibra)</td><td>Redes LAN cableadas</td></tr>
+<tr><td><strong>Wi-Fi (IEEE 802.11)</strong></td><td>Ondas de radio</td><td>Redes inalámbricas LAN</td></tr>
+<tr><td><strong>PPP</strong></td><td>Serial</td><td>Conexiones punto a punto (dial-up, VPN)</td></tr>
+<tr><td><strong>Frame Relay</strong></td><td>WAN empresarial</td><td>Conexiones entre sedes</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="flujo-completo-de-comunicación-ejemplo"><a class="header" href="#flujo-completo-de-comunicación-ejemplo">Flujo Completo de Comunicación (Ejemplo)</a></h2>
+<p>A continuación se muestra qué ocurre cuando un usuario abre una página web:</p>
+<ol>
+<li><strong>Aplicación (HTTP/HTTPS):</strong> El navegador genera una solicitud HTTP al servidor web.</li>
+<li><strong>Transporte (TCP):</strong> TCP segmenta los datos, numera los paquetes y establece la conexión (three-way handshake).</li>
+<li><strong>Internet (IP):</strong> IP encapsula los segmentos en paquetes con direcciones IP de origen y destino.</li>
+<li><strong>Acceso a Red (Ethernet/Wi-Fi):</strong> Los paquetes se encapsulan en tramas con direcciones MAC y se transmiten por el medio físico (cables o ondas).</li>
+</ol>
+<pre><code>Datos de usuario
+    │
+    ▼
+[Aplicación]  HTTP
+    │
+    ▼
+[Transporte]  TCP → Puerto 80 / 443
+    │
+    ▼
+[Internet]    IP  → IP origen + IP destino
+    │
+    ▼
+[Acceso a Red] Ethernet → Dirección MAC origen + Dirección MAC destino
+    │
+    ▼
+Señales eléctricas / ondas de radio
+</code></pre>
+<hr>
+<h2 id="otros-modelos-y-referencias"><a class="header" href="#otros-modelos-y-referencias">Otros Modelos y Referencias</a></h2>
+<h3 id="modelo-híbrido-modelo-de-internet"><a class="header" href="#modelo-híbrido-modelo-de-internet">Modelo Híbrido (Modelo de Internet)</a></h3>
+<p>En la práctica, la mayoría de las implementaciones modernas utilizan un <strong>modelo híbrido</strong> que combina elementos del OSI y del TCP/IP. Las herramientas de análisis de red como <strong>Wireshark</strong> y los sistemas operativos modernos no siguen estrictamente un solo modelo, sino que integran conceptos de ambos.</p>
+<h3 id="modelo-de-red-en-la-nube"><a class="header" href="#modelo-de-red-en-la-nube">Modelo de Red en la Nube</a></h3>
+<p>Con la evolución de la computación en la nube, surgen nuevas capas conceptuales:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Capa</th><th>Nombre</th><th>Ejemplo</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>SaaS</strong></td><td>Software como Servicio</td><td>Google Docs, Office 365</td></tr>
+<tr><td><strong>PaaS</strong></td><td>Plataforma como Servicio</td><td>Heroku, Google App Engine</td></tr>
+<tr><td><strong>IaaS</strong></td><td>Infraestructura como Servicio</td><td>AWS, Azure, Google Cloud</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>Esta clasificación (modelo SPI) no reemplaza los modelos OSI o TCP/IP, sino que complementa la perspectiva desde el punto de vista de los <strong>servicios</strong>.</p>
+</blockquote>
+<hr>
+<h2 id="resumen-comparativo"><a class="header" href="#resumen-comparativo">Resumen Comparativo</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Característica</th><th>OSI</th><th>TCP/IP</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Capas</strong></td><td>7</td><td>4</td></tr>
+<tr><td><strong>Propósito</strong></td><td>Referencia teórica y educativa</td><td>Implementación práctica</td></tr>
+<tr><td><strong>Protocolo base</strong></td><td>Independiente</td><td>IP</td></tr>
+<tr><td><strong>Sesión/Presentación</strong></td><td>Capas separadas</td><td>Integradas en Aplicación</td></tr>
+<tr><td><strong>Despliegue real</strong></td><td>No se implementó como estándar</td><td>Base de Internet</td></tr>
+<tr><td><strong>Enfoque</strong></td><td>Primero el modelo, luego los protocolos</td><td>Primero los protocolos, luego el modelo</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<blockquote>
+<p><strong>Fuente:</strong> Documentación propia basada en estándares ISO, IETF y material educativo de redes.</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../docs/16-introduccion-redes.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../docs/09-direcciones-ip.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../docs/16-introduccion-redes.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../docs/09-direcciones-ip.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

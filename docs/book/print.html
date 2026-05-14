@@ -36,10 +36,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-4bfd39a6.js";
+            window.path_to_searchindex_js = "searchindex-5e400f4d.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-2ce9bc6d.js"></script>
+        <script src="toc-9ad8953f.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -208,7 +208,8 @@
 <h2 id="redes"><a class="header" href="#redes">Redes</a></h2>
 <ul>
 <li><a href="#16-introducción-a-las-redes">Introduccion redes</a></li>
-<li><a href="#redes---direcciones-ip-y-subredes">Redes</a></li>
+<li><a href="#18-modelos-de-red">Modelo OSI y TCP/IP</a></li>
+<li><a href="#redes---direcciones-ip-y-subredes">Direcciones ip</a></li>
 <li><a href="#redes---ejercicio-análisis-de-direcciones-ipv4">Redes ejercicios</a></li>
 <li><a href="#nat">NAT</a></li>
 <li><a href="#cisco-packet-tracer--manual-de-comandos">Comandos Packet Tracer</a></li>
@@ -12141,6 +12142,348 @@ Pero lo ignora porque sender === currentUserId
 <hr>
 <blockquote>
 <p><strong>Fuente:</strong> The Network Monitor, CCNadesdecero.es</p>
+</blockquote>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="18-modelos-de-red"><a class="header" href="#18-modelos-de-red">18. Modelos de Red</a></h1>
+<hr>
+<h2 id="qué-es-un-modelo-de-red"><a class="header" href="#qué-es-un-modelo-de-red">¿Qué es un Modelo de Red?</a></h2>
+<p>Un <strong>modelo de red</strong> es una representación estructurada y organizada de las funciones necesarias para la comunicación entre dispositivos en una red. Define cómo los datos viajan desde el origen hasta el destino, dividiendo el proceso en <strong>capas</strong> con responsabilidades específicas.</p>
+<blockquote>
+<p><strong>Nota:</strong> Los modelos de red sirven como guía teórica y práctica para el diseño, la implementación y la resolución de problemas en redes de comunicación.</p>
+</blockquote>
+<hr>
+<h2 id="importancia-de-los-modelos-de-red"><a class="header" href="#importancia-de-los-modelos-de-red">Importancia de los Modelos de Red</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Aspecto</th><th>Beneficio</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Estandarización</strong></td><td>Permite que fabricantes y desarrolladores trabajen con estándares comunes</td></tr>
+<tr><td><strong>Interoperabilidad</strong></td><td>Garantiza que dispositivos de distintos fabricantes se comuniquen correctamente</td></tr>
+<tr><td><strong>Solución de problemas</strong></td><td>Facilita la identificación de fallos al aislar problemas por capa</td></tr>
+<tr><td><strong>Diseño modular</strong></td><td>Cada capa puede evolucionar independientemente sin afectar a las demás</td></tr>
+<tr><td><strong>Comunicación clara</strong></td><td>Proporciona un vocabulario y estructura universal para profesionales de TI</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="modelo-osi-open-systems-interconnection"><a class="header" href="#modelo-osi-open-systems-interconnection">Modelo OSI (Open Systems Interconnection)</a></h2>
+<p>El modelo OSI fue desarrollado por la <strong>ISO</strong> (International Organization for Standardization) en 1984. Divide la comunicación de red en <strong>7 capas</strong>, cada una con una función específica.</p>
+<h3 id="las-7-capas-del-modelo-osi"><a class="header" href="#las-7-capas-del-modelo-osi">Las 7 Capas del Modelo OSI</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Capa</th><th>Nombre</th><th>Función</th><th>Ejemplos de Protocolos/Tecnologías</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>7</strong></td><td><strong>Aplicación</strong></td><td>Interfaz entre la red y las aplicaciones del usuario. Proporciona servicios de red directamente al software.</td><td>HTTP, FTP, SMTP, DNS, SNMP, DHCP</td></tr>
+<tr><td><strong>6</strong></td><td><strong>Presentación</strong></td><td>Traduce, cifra y comprime los datos para que la capa de aplicación pueda interpretarlos.</td><td>SSL/TLS, JPEG, MPEG, GIF, ASCII</td></tr>
+<tr><td><strong>5</strong></td><td><strong>Sesión</strong></td><td>Establece, gestiona y termina las sesiones de comunicación entre dispositivos.</td><td>NetBIOS, RPC, PPTP</td></tr>
+<tr><td><strong>4</strong></td><td><strong>Transporte</strong></td><td>Garantiza la entrega fiable o rápida de los datos entre extremos. Controla el flujo y el control de errores.</td><td>TCP, UDP, SCTP</td></tr>
+<tr><td><strong>3</strong></td><td><strong>Red</strong></td><td>Determina la mejor ruta lógica para los datos desde el origen hasta el destino. Maneja direccionamiento lógico.</td><td>IP, ICMP, IPSec, OSPF, BGP</td></tr>
+<tr><td><strong>2</strong></td><td><strong>Enlace de Datos</strong></td><td>Proporciona transferencia fiable de datos entre dos nodos adyacentes en una red. Controla el acceso al medio físico.</td><td>Ethernet (MAC), PPP, Frame Relay, ARP, Switches</td></tr>
+<tr><td><strong>1</strong></td><td><strong>Física</strong></td><td>Transmite bits sin procesar a través del medio físico. Define especificaciones eléctricas, mecánicas y funcionales.</td><td>Cables (UTP, fibra óptica), hubs, conectores, señales eléctricas</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="cómo-funciona-el-modelo-osi"><a class="header" href="#cómo-funciona-el-modelo-osi">Cómo Funciona el Modelo OSI</a></h3>
+<ol>
+<li>Los datos se generan en la capa <strong>7</strong> (Aplicación) y descienden capa por capa.</li>
+<li>En cada nivel, se añade un <strong>encabezado</strong> (y en algunos casos un <strong>trailer</strong>) con información de control propia. Este proceso se llama <strong>encapsulación</strong>.</li>
+<li>Los datos llegan a la capa <strong>1</strong> (Física) y se transmiten al dispositivo receptor.</li>
+<li>En el destino, los datos ascienden capa por capa, eliminando los encabezados en cada nivel. Este proceso se llama <strong>desencapsulación</strong>.</li>
+</ol>
+<pre><code>Dispositivo A                                        Dispositivo B
+┌──────────────┐      Encapsulación      Desencapsulación      ┌──────────────┐
+│  Aplicación  │ ──► │ Presentación │ ──► │  Sesión  │ ──► ... │  Aplicación  │
+└──────────────┘      └──────────────────┘                     └──────────────┘
+</code></pre>
+<blockquote>
+<p><strong>Dato clave:</strong> En la práctica, muchas implementaciones combinan o simplifican capas. Por eso surgió el modelo TCP/IP.</p>
+</blockquote>
+<hr>
+<h2 id="modelo-tcpip-transmission-control-protocol--internet-protocol"><a class="header" href="#modelo-tcpip-transmission-control-protocol--internet-protocol">Modelo TCP/IP (Transmission Control Protocol / Internet Protocol)</a></h2>
+<p>El modelo TCP/IP fue desarrollado por el <strong>Departamento de Defensa de EE.UU.</strong> (DoD). Es el modelo que realmente se utiliza en Internet. Se compone de <strong>4 capas</strong> que agrupan funcionalmente las 7 del modelo OSI.</p>
+<h3 id="las-4-capas-del-modelo-tcpip"><a class="header" href="#las-4-capas-del-modelo-tcpip">Las 4 Capas del Modelo TCP/IP</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Capa</th><th>Nombre</th><th>Función</th><th>Ejemplos de Protocolos/Tecnologías</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>4</strong></td><td><strong>Aplicación</strong></td><td>Combina las capas 7, 6 y 5 del OSI. Gestiona los servicios de red de alto nivel.</td><td>HTTP, FTP, SMTP, DNS, SSH, SNMP</td></tr>
+<tr><td><strong>3</strong></td><td><strong>Transporte</strong></td><td>Igual que la capa 4 del OSI. Comunicación extremo a extremo.</td><td>TCP, UDP</td></tr>
+<tr><td><strong>2</strong></td><td><strong>Internet</strong></td><td>Equivalente a la capa 3 del OSI. Enrutamiento y direccionamiento lógico.</td><td>IP, ICMP, ARP, IPSec</td></tr>
+<tr><td><strong>1</strong></td><td><strong>Acceso a Red (Link)</strong></td><td>Combina las capas 2 y 1 del OSI. Comunicación directa con el medio físico.</td><td>Ethernet, Wi-Fi, PPP, Frame Relay</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="comparación-rápida-con-el-modelo-osi"><a class="header" href="#comparación-rápida-con-el-modelo-osi">Comparación Rápida con el Modelo OSI</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">Modelo OSI</th><th style="text-align: center">Modelo TCP/IP</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">Capa 7 - Aplicación</td><td style="text-align: center"><strong>Capa de Aplicación</strong> (4)</td></tr>
+<tr><td style="text-align: center">Capa 6 - Presentación</td><td style="text-align: center"><strong>Capa de Aplicación</strong> (4)</td></tr>
+<tr><td style="text-align: center">Capa 5 - Sesión</td><td style="text-align: center"><strong>Capa de Aplicación</strong> (4)</td></tr>
+<tr><td style="text-align: center">Capa 4 - Transporte</td><td style="text-align: center"><strong>Capa de Transporte</strong> (3)</td></tr>
+<tr><td style="text-align: center">Capa 3 - Red</td><td style="text-align: center"><strong>Capa de Internet</strong> (2)</td></tr>
+<tr><td style="text-align: center">Capa 2 - Enlace de Datos</td><td style="text-align: center"><strong>Capa de Acceso a Red</strong> (1)</td></tr>
+<tr><td style="text-align: center">Capa 1 - Física</td><td style="text-align: center"><strong>Capa de Acceso a Red</strong> (1)</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="comparación-detallada-osi-vs-tcpip"><a class="header" href="#comparación-detallada-osi-vs-tcpip">Comparación Detallada: OSI vs TCP/IP</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Característica</th><th>Modelo OSI</th><th>Modelo TCP/IP</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Número de capas</strong></td><td>7</td><td>4</td></tr>
+<tr><td><strong>Origen</strong></td><td>Organización (ISO)</td><td>Práctico (DoD / IETF)</td></tr>
+<tr><td><strong>Uso real</strong></td><td>Principalmente teórico y educativo</td><td>Base de Internet y redes reales</td></tr>
+<tr><td><strong>Protocolo de red</strong></td><td>Independiente de protocolo</td><td>Basado en IP</td></tr>
+<tr><td><strong>Servicios definidos</strong></td><td>Cada capa tiene servicios bien definidos</td><td>Más flexible y menos rígido</td></tr>
+<tr><td><strong>Adaptabilidad</strong></td><td>Difícil de adaptar a nuevas tecnologías</td><td>Escalable y adaptable</td></tr>
+<tr><td><strong>Desarrollo</strong></td><td>Se creó primero el modelo, luego los protocolos</td><td>Se desarrollaron los protocolos primero, luego el modelo</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>En resumen:</strong> El modelo OSI es ideal para <strong>entender y enseñar</strong> los conceptos de redes. El modelo TCP/IP es el que <strong>realmente se usa</strong> en la práctica.</p>
+</blockquote>
+<hr>
+<h2 id="capa-de-aplicación-tcpip-en-profundidad"><a class="header" href="#capa-de-aplicación-tcpip-en-profundidad">Capa de Aplicación TCP/IP en Profundidad</a></h2>
+<p>La capa de Aplicación es la más cercana al usuario y engloba múltiples protocolos según el servicio:</p>
+<h3 id="protocolos-principales"><a class="header" href="#protocolos-principales">Protocolos Principales</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Protocolo</th><th style="text-align: center">Puerto Predeterminado</th><th>Función</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>HTTP</strong></td><td style="text-align: center">80</td><td>Transferencia de páginas web (sin cifrar)</td></tr>
+<tr><td><strong>HTTPS</strong></td><td style="text-align: center">443</td><td>Transferencia web cifrada con TLS</td></tr>
+<tr><td><strong>FTP</strong></td><td style="text-align: center">20 / 21</td><td>Transferencia de archivos</td></tr>
+<tr><td><strong>SSH</strong></td><td style="text-align: center">22</td><td>Acceso remoto seguro</td></tr>
+<tr><td><strong>Telnet</strong></td><td style="text-align: center">23</td><td>Acceso remoto (sin cifrar)</td></tr>
+<tr><td><strong>SMTP</strong></td><td style="text-align: center">25 / 587</td><td>Envío de correo electrónico</td></tr>
+<tr><td><strong>POP3</strong></td><td style="text-align: center">110</td><td>Recepción de correo (descarga)</td></tr>
+<tr><td><strong>IMAP</strong></td><td style="text-align: center">143</td><td>Recepción de correo (sincronización)</td></tr>
+<tr><td><strong>DNS</strong></td><td style="text-align: center">53</td><td>Resolución de nombres de dominio a IP</td></tr>
+<tr><td><strong>DHCP</strong></td><td style="text-align: center">67 / 68</td><td>Asignación dinámica de direcciones IP</td></tr>
+<tr><td><strong>SNMP</strong></td><td style="text-align: center">161</td><td>Gestión y monitorización de dispositivos</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="capa-de-transporte-en-profundidad"><a class="header" href="#capa-de-transporte-en-profundidad">Capa de Transporte en Profundidad</a></h2>
+<p>La capa de Transporte permite la comunicación entre procesos en hosts distintos. Ofrece dos modos principales:</p>
+<h3 id="tcp-transmission-control-protocol"><a class="header" href="#tcp-transmission-control-protocol">TCP (Transmission Control Protocol)</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Característica</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Tipo de conexión</strong></td><td>Conectado (establece sesión antes de transmitir)</td></tr>
+<tr><td><strong>Fiabilidad</strong></td><td>Garantiza la entrega y el orden de los paquetes</td></tr>
+<tr><td><strong>Control de flujo</strong></td><td>Evita que el emisor sature al receptor</td></tr>
+<tr><td><strong>Control de errores</strong></td><td>Detecta y retransmite paquetes perdidos</td></tr>
+<tr><td><strong>Uso ideal</strong></td><td>Web, correo electrónico, transferencia de archivos</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Analogía:</strong> TCP es como enviar una carta con acuse de recibo y seguimiento postal: sabes que llegó y en orden.</p>
+</blockquote>
+<h3 id="udp-user-datagram-protocol"><a class="header" href="#udp-user-datagram-protocol">UDP (User Datagram Protocol)</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Característica</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Tipo de conexión</strong></td><td>Sin conexión (no establece sesión)</td></tr>
+<tr><td><strong>Fiabilidad</strong></td><td>No garantiza entrega ni orden</td></tr>
+<tr><td><strong>Control de flujo</strong></td><td>No implementa control de flujo</td></tr>
+<tr><td><strong>Control de errores</strong></td><td>Solo verificación básica con checksum</td></tr>
+<tr><td><strong>Uso ideal</strong></td><td>Streaming de video/audio, VoIP, juegos en línea, DNS</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Analogía:</strong> UDP es como enviar una carta sin acuse de recibo: es más rápido, pero no sabes si llegó.</p>
+</blockquote>
+<h3 id="comparación-tcp-vs-udp"><a class="header" href="#comparación-tcp-vs-udp">Comparación TCP vs UDP</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Criterio</th><th>TCP</th><th>UDP</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Conexión</strong></td><td>Conectado</td><td>Sin conexión</td></tr>
+<tr><td><strong>Fiabilidad</strong></td><td>Alta</td><td>Baja</td></tr>
+<tr><td><strong>Velocidad</strong></td><td>Más lento</td><td>Más rápido</td></tr>
+<tr><td><strong>Overhead</strong></td><td>Mayor (más cabeceras)</td><td>Menor</td></tr>
+<tr><td><strong>Orden de paquetes</strong></td><td>Garantizado</td><td>No garantizado</td></tr>
+<tr><td><strong>Control de flujo</strong></td><td>Sí</td><td>No</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="capa-de-internet-en-profundidad"><a class="header" href="#capa-de-internet-en-profundidad">Capa de Internet en Profundidad</a></h2>
+<p>La capa de Internet es responsable de <strong>direccionamiento lógico</strong> y <strong>enrutamiento</strong> de los datos a través de redes.</p>
+<h3 id="ip-internet-protocol"><a class="header" href="#ip-internet-protocol">IP (Internet Protocol)</a></h3>
+<p>Existen dos versiones en uso:</p>
+<h4 id="ipv4"><a class="header" href="#ipv4">IPv4</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Característica</th><th>Detalle</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Longitud de dirección</strong></td><td>32 bits</td></tr>
+<tr><td><strong>Formato</strong></td><td>Decimal punteado (ej: <code>192.168.1.1</code>)</td></tr>
+<tr><td><strong>Espacio de direcciones</strong></td><td>~4.300 millones de direcciones</td></tr>
+<tr><td><strong>Encabezado</strong></td><td>20 bytes mínimo (sin opciones)</td></tr>
+</tbody>
+</table>
+</div>
+<h4 id="ipv6"><a class="header" href="#ipv6">IPv6</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Característica</th><th>Detalle</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Longitud de dirección</strong></td><td>128 bits</td></tr>
+<tr><td><strong>Formato</strong></td><td>Hexadecimal separado por dos puntos (ej: <code>2001:0db8::1</code>)</td></tr>
+<tr><td><strong>Espacio de direcciones</strong></td><td>Prácticamente ilimitado (~3.4 × 10³⁸)</td></tr>
+<tr><td><strong>Encabezado</strong></td><td>40 bytes fijos, más eficiente</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Motivo de la migración a IPv6:</strong> El agotamiento del espacio de direcciones IPv4 y la necesidad de más dispositivos conectados.</p>
+</blockquote>
+<h3 id="otros-protocolos-de-la-capa-de-internet"><a class="header" href="#otros-protocolos-de-la-capa-de-internet">Otros Protocolos de la Capa de Internet</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Protocolo</th><th>Función</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>ICMP</strong></td><td>Mensajes de control y diagnóstico (utilizado por <code>ping</code> y <code>traceroute</code>)</td></tr>
+<tr><td><strong>ICMPv6</strong></td><td>Versión para IPv6, incluye Neighbor Discovery</td></tr>
+<tr><td><strong>IGMP</strong></td><td>Gestión de grupos multicast</td></tr>
+<tr><td><strong>IPSec</strong></td><td>Seguridad mediante cifrado y autenticación a nivel de IP</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="capa-de-acceso-a-red-en-profundidad"><a class="header" href="#capa-de-acceso-a-red-en-profundidad">Capa de Acceso a Red en Profundidad</a></h2>
+<p>La capa de Acceso a Red (también llamada <strong>capa de enlace de datos</strong> y <strong>capa física</strong> combinadas) gestiona la comunicación directa con el medio de transmisión.</p>
+<h3 id="funciones-principales"><a class="header" href="#funciones-principales">Funciones Principales</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Función</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Encuadre (Framing)</strong></td><td>Encapsula los datos en tramas con delimitadores</td></tr>
+<tr><td><strong>Control de acceso al medio</strong></td><td>Determina cuándo un dispositivo puede transmitir (MAC)</td></tr>
+<tr><td><strong>Detección y corrección de errores</strong></td><td>Mecanismos como CRC para verificar la integridad</td></tr>
+<tr><td><strong>Direccionamiento físico</strong></td><td>Uso de direcciones MAC (48 bits) para identificar dispositivos</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="tecnologías-de-la-capa-de-acceso-a-red"><a class="header" href="#tecnologías-de-la-capa-de-acceso-a-red">Tecnologías de la Capa de Acceso a Red</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Tecnología</th><th>Medio</th><th>Uso típico</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Ethernet (IEEE 802.3)</strong></td><td>Cable (par trenzado, fibra)</td><td>Redes LAN cableadas</td></tr>
+<tr><td><strong>Wi-Fi (IEEE 802.11)</strong></td><td>Ondas de radio</td><td>Redes inalámbricas LAN</td></tr>
+<tr><td><strong>PPP</strong></td><td>Serial</td><td>Conexiones punto a punto (dial-up, VPN)</td></tr>
+<tr><td><strong>Frame Relay</strong></td><td>WAN empresarial</td><td>Conexiones entre sedes</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="flujo-completo-de-comunicación-ejemplo"><a class="header" href="#flujo-completo-de-comunicación-ejemplo">Flujo Completo de Comunicación (Ejemplo)</a></h2>
+<p>A continuación se muestra qué ocurre cuando un usuario abre una página web:</p>
+<ol>
+<li><strong>Aplicación (HTTP/HTTPS):</strong> El navegador genera una solicitud HTTP al servidor web.</li>
+<li><strong>Transporte (TCP):</strong> TCP segmenta los datos, numera los paquetes y establece la conexión (three-way handshake).</li>
+<li><strong>Internet (IP):</strong> IP encapsula los segmentos en paquetes con direcciones IP de origen y destino.</li>
+<li><strong>Acceso a Red (Ethernet/Wi-Fi):</strong> Los paquetes se encapsulan en tramas con direcciones MAC y se transmiten por el medio físico (cables o ondas).</li>
+</ol>
+<pre><code>Datos de usuario
+    │
+    ▼
+[Aplicación]  HTTP
+    │
+    ▼
+[Transporte]  TCP → Puerto 80 / 443
+    │
+    ▼
+[Internet]    IP  → IP origen + IP destino
+    │
+    ▼
+[Acceso a Red] Ethernet → Dirección MAC origen + Dirección MAC destino
+    │
+    ▼
+Señales eléctricas / ondas de radio
+</code></pre>
+<hr>
+<h2 id="otros-modelos-y-referencias"><a class="header" href="#otros-modelos-y-referencias">Otros Modelos y Referencias</a></h2>
+<h3 id="modelo-híbrido-modelo-de-internet"><a class="header" href="#modelo-híbrido-modelo-de-internet">Modelo Híbrido (Modelo de Internet)</a></h3>
+<p>En la práctica, la mayoría de las implementaciones modernas utilizan un <strong>modelo híbrido</strong> que combina elementos del OSI y del TCP/IP. Las herramientas de análisis de red como <strong>Wireshark</strong> y los sistemas operativos modernos no siguen estrictamente un solo modelo, sino que integran conceptos de ambos.</p>
+<h3 id="modelo-de-red-en-la-nube"><a class="header" href="#modelo-de-red-en-la-nube">Modelo de Red en la Nube</a></h3>
+<p>Con la evolución de la computación en la nube, surgen nuevas capas conceptuales:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Capa</th><th>Nombre</th><th>Ejemplo</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>SaaS</strong></td><td>Software como Servicio</td><td>Google Docs, Office 365</td></tr>
+<tr><td><strong>PaaS</strong></td><td>Plataforma como Servicio</td><td>Heroku, Google App Engine</td></tr>
+<tr><td><strong>IaaS</strong></td><td>Infraestructura como Servicio</td><td>AWS, Azure, Google Cloud</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>Esta clasificación (modelo SPI) no reemplaza los modelos OSI o TCP/IP, sino que complementa la perspectiva desde el punto de vista de los <strong>servicios</strong>.</p>
+</blockquote>
+<hr>
+<h2 id="resumen-comparativo"><a class="header" href="#resumen-comparativo">Resumen Comparativo</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Característica</th><th>OSI</th><th>TCP/IP</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Capas</strong></td><td>7</td><td>4</td></tr>
+<tr><td><strong>Propósito</strong></td><td>Referencia teórica y educativa</td><td>Implementación práctica</td></tr>
+<tr><td><strong>Protocolo base</strong></td><td>Independiente</td><td>IP</td></tr>
+<tr><td><strong>Sesión/Presentación</strong></td><td>Capas separadas</td><td>Integradas en Aplicación</td></tr>
+<tr><td><strong>Despliegue real</strong></td><td>No se implementó como estándar</td><td>Base de Internet</td></tr>
+<tr><td><strong>Enfoque</strong></td><td>Primero el modelo, luego los protocolos</td><td>Primero los protocolos, luego el modelo</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<blockquote>
+<p><strong>Fuente:</strong> Documentación propia basada en estándares ISO, IETF y material educativo de redes.</p>
 </blockquote>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="redes---direcciones-ip-y-subredes"><a class="header" href="#redes---direcciones-ip-y-subredes">Redes - Direcciones IP y Subredes</a></h1>

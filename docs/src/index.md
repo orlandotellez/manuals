@@ -29,7 +29,8 @@ Mis manuales
 
 ## Redes 
 - [Introduccion redes](./docs/16-introduccion-redes.md)
-- [Redes](./docs/09-redes.md)
+- [Modelo OSI y TCP/IP](./docs/18-modelos-de-red.md)
+- [Direcciones ip](./docs/09-direcciones-ip.md)
 - [Redes ejercicios](./docs/10-redes-ejercicio-analisis-ipv4.md)
 - [NAT](./docs/11-nat.md)
 - [Comandos Packet Tracer](./docs/15-comandos-packet-tracer.md)
