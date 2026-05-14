@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Redes ejercicios - Manuales</title>
+        <title>Introduccion redes - Manuales</title>
 
 
         <!-- Custom HTML head -->
@@ -174,470 +174,331 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="redes---ejercicio-análisis-de-direcciones-ipv4"><a class="header" href="#redes---ejercicio-análisis-de-direcciones-ipv4">Redes - Ejercicio: Análisis de Direcciones IPv4</a></h1>
-<h2 id="introducción"><a class="header" href="#introducción">Introducción</a></h2>
-<p>Este manual te guiará paso a paso para analizar direcciones IPv4 y determinar cuál es la parte de red y cuál es la parte de host. Este es un ejercicio fundamental para entender cómo funcionan las subredes y cómo los routers enrutan paquetes entre diferentes redes.</p>
+                        <h1 id="16-introducción-a-las-redes"><a class="header" href="#16-introducción-a-las-redes">16. Introducción a las Redes</a></h1>
 <hr>
-<h2 id="1-conceptos-fundamentales"><a class="header" href="#1-conceptos-fundamentales">1. Conceptos Fundamentales</a></h2>
-<h3 id="11-qué-es-el-prefijo-cidr"><a class="header" href="#11-qué-es-el-prefijo-cidr">1.1 ¿Qué es el Prefijo CIDR?</a></h3>
-<p>El prefijo CIDR (Classless Inter-Domain Routing) es una notación que indica cuántos bits de la dirección IP corresponden a la parte de red. Se expresa como <code>/XX</code> donde XX es un número del 0 al 32.</p>
-<p><strong>Ejemplos:</strong></p>
+<h2 id="qué-es-una-red"><a class="header" href="#qué-es-una-red">¿Qué es una Red?</a></h2>
+<p>Una <strong>red</strong> es una conexión entre al menos dos dispositivos informáticos. Esta conexión puede tener diferentes estructuras (cableado o inalámbrico) y cubrir diferentes rangos.</p>
+<p>El objetivo es permitir el <strong>intercambio de datos, comunicación y uso compartido</strong> de recursos como:</p>
 <ul>
-<li><code>/24</code> significa que los primeros 24 bits son de red</li>
-<li><code>/26</code> significa que los primeros 26 bits son de red</li>
-<li><code>/28</code> significa que los primeros 28 bits son de red</li>
+<li>Espacio de almacenamiento</li>
+<li>Programas o aplicaciones</li>
+<li>Datos</li>
 </ul>
-<h3 id="12-la-notación-n-n-h-h"><a class="header" href="#12-la-notación-n-n-h-h">1.2 La Notación N, n, H, h</a></h3>
-<p>Para representar visualmente la división entre red y host, usamos una notación especial:</p>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Símbolo</th><th>Significado</th><th>Descripción</th></tr>
-</thead>
-<tbody>
-<tr><td><code>N</code></td><td>8 bits de red</td><td>octeto completo en la porción de red</td></tr>
-<tr><td><code>n</code></td><td>bit individual de red</td><td>un solo bit en la porción de red</td></tr>
-<tr><td><code>H</code></td><td>8 bits de host</td><td>octeto completo en la porción de host</td></tr>
-<tr><td><code>h</code></td><td>bit individual de host</td><td>un solo bit en la porción de host</td></tr>
-</tbody>
-</table>
-</div>
-<p><strong>Ejemplo visual para /24:</strong></p>
-<pre><code>NNNH.HHHH.HHHH.HHHH
-</code></pre>
-<p>Esto significa que los primeros 3 octetos (24 bits) son red, y el último octeto es host.</p>
-<p><strong>Ejemplo visual para /26:</strong></p>
-<pre><code>NNNnnHH.HHHH.HHHH.HHHH
-</code></pre>
-<p>Esto significa:</p>
-<ul>
-<li>24 bits de red completos (3 octetos)</li>
-<li>2 bits adicionales de red (por eso <code>nn</code>)</li>
-<li>Los 6 bits restantes del cuarto octeto son de host (por eso <code>hhHHHH</code>)</li>
-</ul>
-<h3 id="13-cómo-calcular-la-máscara-de-subred"><a class="header" href="#13-cómo-calcular-la-máscara-de-subred">1.3 Cómo Calcular la Máscara de Subred</a></h3>
-<p>La máscara de subred se calcula tomando los primeros X bits del prefijo y poniéndolos en 1:</p>
-<p><strong>Para /24:</strong></p>
-<pre><code>11111111.11111111.11111111.00000000
-= 255.255.255.0
-</code></pre>
-<p><strong>Para /26:</strong></p>
-<pre><code>11111111.11111111.11111111.11000000
-= 255.255.255.192
-</code></pre>
-<p><strong>Tabla de referencia rápida:</strong></p>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>CIDR</th><th>Máscara Decimal</th><th>Binario del Cuarto Octeto</th></tr>
-</thead>
-<tbody>
-<tr><td>/24</td><td>255.255.255.0</td><td>00000000</td></tr>
-<tr><td>/25</td><td>255.255.255.128</td><td>10000000</td></tr>
-<tr><td>/26</td><td>255.255.255.192</td><td>11000000</td></tr>
-<tr><td>/27</td><td>255.255.255.224</td><td>11100000</td></tr>
-<tr><td>/28</td><td>255.255.255.240</td><td>11110000</td></tr>
-<tr><td>/29</td><td>255.255.255.248</td><td>11111000</td></tr>
-<tr><td>/30</td><td>255.255.255.252</td><td>11111100</td></tr>
-</tbody>
-</table>
-</div>
-<h3 id="14-cómo-calcular-la-dirección-de-red"><a class="header" href="#14-cómo-calcular-la-dirección-de-red">1.4 Cómo Calcular la Dirección de Red</a></h3>
-<p>La dirección de red se obtiene aplicando una operación AND bit a bit entre la dirección IP y la máscara de subred. En términos simples: todos los bits de la porción de host se ponen a 0.</p>
-<p><strong>Ejemplo con 192.168.10.10/24:</strong></p>
-<pre><code>IP:       192.168.10.10
-Máscara:  255.255.255.0
-------------------------
-Red:      192.168.10.0
-</code></pre>
+<p>Se accede a estos recursos a través de un sistema operativo compatible con la red. Detrás de cada interacción digital hay una red: desde leer este documento, editar un documento con colegas, hasta conectar tu teléfono a dispositivos Bluetooth.</p>
 <hr>
-<h2 id="2-metodología-paso-a-paso"><a class="header" href="#2-metodología-paso-a-paso">2. Metodología Paso a Paso</a></h2>
-<h3 id="paso-1-identificar-el-prefijo"><a class="header" href="#paso-1-identificar-el-prefijo">Paso 1: Identificar el Prefijo</a></h3>
-<p>Del ejercicio, identificamos el prefijo CIDR de cada dirección.</p>
-<h3 id="paso-2-determinar-la-notación-nnhh"><a class="header" href="#paso-2-determinar-la-notación-nnhh">Paso 2: Determinar la Notación N/n/H/h</a></h3>
-<p>Contamos cuántos bits son de red (primeros X bits del prefijo) y cuántos son de host (los restantes hasta 32).</p>
-<h3 id="paso-3-calcular-la-máscara-de-subred"><a class="header" href="#paso-3-calcular-la-máscara-de-subred">Paso 3: Calcular la Máscara de Subred</a></h3>
-<p>Convertimos el prefijo a notación decimal con puntos.</p>
-<h3 id="paso-4-calcular-la-dirección-de-red"><a class="header" href="#paso-4-calcular-la-dirección-de-red">Paso 4: Calcular la Dirección de Red</a></h3>
-<p>Aplicamos la máscara a la dirección IP (todos los bits de host = 0).</p>
-<hr>
-<h2 id="3-resolución-del-ejercicio"><a class="header" href="#3-resolución-del-ejercicio">3. Resolución del Ejercicio</a></h2>
-<h3 id="ejercicio-analiza-la-siguiente-tabla"><a class="header" href="#ejercicio-analiza-la-siguiente-tabla">Ejercicio: Analiza la siguiente tabla</a></h3>
+<h2 id="ventajas-de-las-redes"><a class="header" href="#ventajas-de-las-redes">Ventajas de las Redes</a></h2>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>Dirección IP/Prefijo</th><th>Notación Red/Host</th><th>Máscara de Subred</th><th>Dirección de Red</th></tr>
+<tr><th>Ventaja</th><th>Descripción</th></tr>
 </thead>
 <tbody>
-<tr><td>192.168.10.10/24</td><td>?</td><td>?</td><td>?</td></tr>
-<tr><td>10.101.99.17/23</td><td>?</td><td>?</td><td>?</td></tr>
-<tr><td>209.165.200.227/27</td><td>?</td><td>?</td><td>?</td></tr>
-<tr><td>172.31.45.252/24</td><td>?</td><td>?</td><td>?</td></tr>
-<tr><td>10.1.8.200/26</td><td>?</td><td>?</td><td>?</td></tr>
-<tr><td>172.16.117.77/20</td><td>?</td><td>?</td><td>?</td></tr>
-<tr><td>10.1.1.101/25</td><td>?</td><td>?</td><td>?</td></tr>
-<tr><td>209.165.202.140/27</td><td>?</td><td>?</td><td>?</td></tr>
-<tr><td>192.168.28.45/28</td><td>?</td><td>?</td><td>?</td></tr>
+<tr><td><strong>Acceso compartido a los datos</strong></td><td>Todos los usuarios autorizados trabajan con la misma información actualizada</td></tr>
+<tr><td><strong>Uso compartido de dispositivos y software</strong></td><td>No es necesario duplicar impresoras, almacenamiento ni programas</td></tr>
+<tr><td><strong>Mayor rendimiento</strong></td><td>La potencia informática y el almacenamiento se utilizan de forma flexible y ampliada</td></tr>
+<tr><td><strong>Gestión centralizada</strong></td><td>Los programas, datos y configuraciones se controlan desde una única ubicación</td></tr>
+<tr><td><strong>Derechos de acceso claros</strong></td><td>Cada usuario recibe exactamente los permisos que necesita</td></tr>
+<tr><td><strong>Mayor seguridad de los datos</strong></td><td>Las normas de protección, copia de seguridad y seguridad se implementan de forma centralizada</td></tr>
+<tr><td><strong>Fácil expandibilidad</strong></td><td>Se pueden integrar fácilmente nuevos dispositivos o usuarios en la red</td></tr>
 </tbody>
 </table>
 </div>
 <hr>
-<h3 id="solución-1-192168101024"><a class="header" href="#solución-1-192168101024">Solución 1: 192.168.10.10/24</a></h3>
-<p><strong>Paso 1: Prefijo /24 = 24 bits de red</strong></p>
-<p><strong>Paso 2: Notación</strong></p>
-<ul>
-<li>24 bits ÷ 8 bits por octeto = 3 octetos completos de red</li>
-<li>Notación: <code>NNNH.HHHH.HHHH.HHHH</code> → simplificado: <code>NNNH</code></li>
-</ul>
-<p><strong>Paso 3: Máscara de subred</strong></p>
-<ul>
-<li>24 bits en 1 = <code>11111111.11111111.11111111.00000000</code></li>
-<li>Decimal: <code>255.255.255.0</code></li>
-</ul>
-<p><strong>Paso 4: Dirección de red</strong></p>
-<ul>
-<li>IP: <code>192.168.10.10</code></li>
-<li>Aplicando máscara: <code>192.168.10.0</code></li>
-</ul>
-<p><strong>Respuesta:</strong></p>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Notación</th><th>Máscara</th><th>Red</th></tr>
-</thead>
-<tbody>
-<tr><td>NNNH</td><td>255.255.255.0</td><td>192.168.10.0</td></tr>
-</tbody>
-</table>
-</div>
-<hr>
-<h3 id="solución-2-10101991723"><a class="header" href="#solución-2-10101991723">Solución 2: 10.101.99.17/23</a></h3>
-<p><strong>Paso 1: Prefijo /23 = 23 bits de red</strong></p>
-<p><strong>Paso 2: Notación</strong></p>
-<ul>
-<li>23 bits = 2 octetos completos (16 bits) + 7 bits del tercer octeto</li>
-<li>Tercer octeto: 7 bits de red + 1 bit de host = <code>nnnnnnn</code> + <code>h</code></li>
-<li>Notación: <code>NN.nnnnnnn.hHHHHHHH</code></li>
-</ul>
-<p><strong>Paso 3: Máscara de subred</strong></p>
-<ul>
-<li>23 bits en 1 = <code>11111111.11111111.11111110.00000000</code></li>
-<li>Decimal: <code>255.255.254.0</code></li>
-</ul>
-<p><strong>Paso 4: Dirección de red</strong></p>
-<ul>
-<li>IP: <code>10.101.99.17</code></li>
-<li>Tercer octeto en binario: <code>01100011</code></li>
-<li>Con máscara (7 bits de red): <code>01100010</code> = 98</li>
-<li>Cuarto octeto = 0</li>
-<li>Dirección de red: <code>10.101.98.0</code></li>
-</ul>
-<p><strong>Respuesta:</strong></p>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Notación</th><th>Máscara</th><th>Red</th></tr>
-</thead>
-<tbody>
-<tr><td>NNnnnnnnn.HHHHHHHH</td><td>255.255.254.0</td><td>10.101.98.0</td></tr>
-</tbody>
-</table>
-</div>
-<hr>
-<h3 id="solución-3-20916520022727"><a class="header" href="#solución-3-20916520022727">Solución 3: 209.165.200.227/27</a></h3>
-<p><strong>Paso 1: Prefijo /27 = 27 bits de red</strong></p>
-<p><strong>Paso 2: Notación</strong></p>
-<ul>
-<li>27 bits = 3 octetos completos (24 bits) + 3 bits del cuarto octeto</li>
-<li>Cuarto octeto: 3 bits de red + 5 bits de host = <code>nnn</code> + <code>hhhhh</code></li>
-<li>Notación: <code>NNNnnnhhhhh</code></li>
-</ul>
-<p><strong>Paso 3: Máscara de subred</strong></p>
-<ul>
-<li>27 bits en 1 = <code>11111111.11111111.11111111.11100000</code></li>
-<li>Decimal: <code>255.255.255.224</code></li>
-</ul>
-<p><strong>Paso 4: Dirección de red</strong></p>
-<ul>
-<li>IP: <code>209.165.200.227</code></li>
-<li>Cuarto octeto: <code>11100011</code></li>
-<li>Con máscara (3 bits de red): <code>11100000</code> = 224</li>
-<li>Dirección de red: <code>209.165.200.224</code></li>
-</ul>
-<p><strong>Respuesta:</strong></p>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Notación</th><th>Máscara</th><th>Red</th></tr>
-</thead>
-<tbody>
-<tr><td>NNNnnnhhhhh</td><td>255.255.255.224</td><td>209.165.200.224</td></tr>
-</tbody>
-</table>
-</div>
-<hr>
-<h3 id="solución-4-172314525224"><a class="header" href="#solución-4-172314525224">Solución 4: 172.31.45.252/24</a></h3>
-<p><strong>Paso 1: Prefijo /24 = 24 bits de red</strong></p>
-<p><strong>Paso 2: Notación</strong></p>
-<ul>
-<li>24 bits = 3 octetos completos</li>
-<li>Notación: <code>NNNH</code></li>
-</ul>
-<p><strong>Paso 3: Máscara de subred</strong></p>
-<ul>
-<li><code>255.255.255.0</code></li>
-</ul>
-<p><strong>Paso 4: Dirección de red</strong></p>
-<ul>
-<li>IP: <code>172.31.45.252</code></li>
-<li>Aplicando máscara: <code>172.31.45.0</code></li>
-</ul>
-<p><strong>Respuesta:</strong></p>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Notación</th><th>Máscara</th><th>Red</th></tr>
-</thead>
-<tbody>
-<tr><td>NNNH</td><td>255.255.255.0</td><td>172.31.45.0</td></tr>
-</tbody>
-</table>
-</div>
-<hr>
-<h3 id="solución-5-101820026"><a class="header" href="#solución-5-101820026">Solución 5: 10.1.8.200/26</a></h3>
-<p><strong>Paso 1: Prefijo /26 = 26 bits de red</strong></p>
-<p><strong>Paso 2: Notación</strong></p>
-<ul>
-<li>26 bits = 3 octetos completos (24 bits) + 2 bits del cuarto octeto</li>
-<li>Cuarto octeto: 2 bits de red + 6 bits de host = <code>nn</code> + <code>hhhhhh</code></li>
-<li>Notación: <code>NNNnnhhhhhh</code></li>
-</ul>
-<p><strong>Paso 3: Máscara de subred</strong></p>
-<ul>
-<li>26 bits en 1 = <code>11111111.11111111.11111111.11000000</code></li>
-<li>Decimal: <code>255.255.255.192</code></li>
-</ul>
-<p><strong>Paso 4: Dirección de red</strong></p>
-<ul>
-<li>IP: <code>10.1.8.200</code></li>
-<li>Cuarto octeto: <code>11001000</code></li>
-<li>Con máscara (2 bits de red): <code>11000000</code> = 192</li>
-<li>Dirección de red: <code>10.1.8.192</code></li>
-</ul>
-<p><strong>Respuesta:</strong></p>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Notación</th><th>Máscara</th><th>Red</th></tr>
-</thead>
-<tbody>
-<tr><td>NNNnnhhhhhh</td><td>255.255.255.192</td><td>10.1.8.192</td></tr>
-</tbody>
-</table>
-</div>
-<hr>
-<h3 id="solución-6-172161177720"><a class="header" href="#solución-6-172161177720">Solución 6: 172.16.117.77/20</a></h3>
-<p><strong>Paso 1: Prefijo /20 = 20 bits de red</strong></p>
-<p><strong>Paso 2: Notación</strong></p>
-<ul>
-<li>20 bits = 2 octetos completos (16 bits) + 4 bits del tercer octeto</li>
-<li>Tercer octeto: 4 bits de red + 4 bits de host = <code>nnnn</code> + <code>HHHH</code></li>
-<li>Cuarto octeto: completo de host</li>
-<li>Notación: <code>NNnnnnHH.HHHH.HHHH</code></li>
-</ul>
-<p><strong>Paso 3: Máscara de subred</strong></p>
-<ul>
-<li>20 bits en 1 = <code>11111111.11111111.11110000.00000000</code></li>
-<li>Decimal: <code>255.255.240.0</code></li>
-</ul>
-<p><strong>Paso 4: Dirección de red</strong></p>
-<ul>
-<li>IP: <code>172.16.117.77</code></li>
-<li>Tercer octeto: <code>01110101</code></li>
-<li>Con máscara (4 bits de red): <code>01110000</code> = 112</li>
-<li>Cuarto octeto = 0</li>
-<li>Dirección de red: <code>172.16.112.0</code></li>
-</ul>
-<p><strong>Respuesta:</strong></p>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Notación</th><th>Máscara</th><th>Red</th></tr>
-</thead>
-<tbody>
-<tr><td>NNnnnnHHHH.HHHH.HHHH</td><td>255.255.240.0</td><td>172.16.112.0</td></tr>
-</tbody>
-</table>
-</div>
-<hr>
-<h3 id="solución-7-101110125"><a class="header" href="#solución-7-101110125">Solución 7: 10.1.1.101/25</a></h3>
-<p><strong>Paso 1: Prefijo /25 = 25 bits de red</strong></p>
-<p><strong>Paso 2: Notación</strong></p>
-<ul>
-<li>25 bits = 3 octetos completos (24 bits) + 1 bit del cuarto octeto</li>
-<li>Cuarto octeto: 1 bit de red + 7 bits de host = <code>n</code> + <code>hhhhhhh</code></li>
-<li>Notación: <code>NNNnhhhhhhh</code></li>
-</ul>
-<p><strong>Paso 3: Máscara de subred</strong></p>
-<ul>
-<li>25 bits en 1 = <code>11111111.11111111.11111111.10000000</code></li>
-<li>Decimal: <code>255.255.255.128</code></li>
-</ul>
-<p><strong>Paso 4: Dirección de red</strong></p>
-<ul>
-<li>IP: <code>10.1.1.101</code></li>
-<li>Cuarto octeto: <code>01100101</code></li>
-<li>Con máscara (1 bit de red): <code>0</code> + <code>0000000</code> = 0</li>
-<li>Dirección de red: <code>10.1.1.0</code></li>
-</ul>
-<p><strong>Respuesta:</strong></p>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Notación</th><th>Máscara</th><th>Red</th></tr>
-</thead>
-<tbody>
-<tr><td>NNNnhhhhhhh</td><td>255.255.255.128</td><td>10.1.1.0</td></tr>
-</tbody>
-</table>
-</div>
-<hr>
-<h3 id="solución-8-20916520214027"><a class="header" href="#solución-8-20916520214027">Solución 8: 209.165.202.140/27</a></h3>
-<p><strong>Paso 1: Prefijo /27 = 27 bits de red</strong></p>
-<p><strong>Paso 2: Notación</strong></p>
-<ul>
-<li>27 bits = 3 octetos completos (24 bits) + 3 bits del cuarto octeto</li>
-<li>Mismo patrón que el ejercicio 3</li>
-<li>Notación: <code>NNNnnnhhhhh</code></li>
-</ul>
-<p><strong>Paso 3: Máscara de subred</strong></p>
-<ul>
-<li><code>255.255.255.224</code></li>
-</ul>
-<p><strong>Paso 4: Dirección de red</strong></p>
-<ul>
-<li>IP: <code>209.165.202.140</code></li>
-<li>Cuarto octeto: <code>10001100</code></li>
-<li>Con máscara (3 bits de red): <code>10000000</code> = 128</li>
-<li>Dirección de red: <code>209.165.202.128</code></li>
-</ul>
-<p><strong>Respuesta:</strong></p>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Notación</th><th>Máscara</th><th>Red</th></tr>
-</thead>
-<tbody>
-<tr><td>NNNnnnhhhhh</td><td>255.255.255.224</td><td>209.165.202.128</td></tr>
-</tbody>
-</table>
-</div>
-<hr>
-<h3 id="solución-9-192168284528"><a class="header" href="#solución-9-192168284528">Solución 9: 192.168.28.45/28</a></h3>
-<p><strong>Paso 1: Prefijo /28 = 28 bits de red</strong></p>
-<p><strong>Paso 2: Notación</strong></p>
-<ul>
-<li>28 bits = 3 octetos completos (24 bits) + 4 bits del cuarto octeto</li>
-<li>Cuarto octeto: 4 bits de red + 4 bits de host = <code>nnnn</code> + <code>hhhh</code></li>
-<li>Notación: <code>NNNnnnnhhhh</code></li>
-</ul>
-<p><strong>Paso 3: Máscara de subred</strong></p>
-<ul>
-<li>28 bits en 1 = <code>11111111.11111111.11111111.11110000</code></li>
-<li>Decimal: <code>255.255.255.240</code></li>
-</ul>
-<p><strong>Paso 4: Dirección de red</strong></p>
-<ul>
-<li>IP: <code>192.168.28.45</code></li>
-<li>Cuarto octeto: <code>00101101</code></li>
-<li>Con máscara (4 bits de red): <code>00100000</code> = 32</li>
-<li>Dirección de red: <code>192.168.28.32</code></li>
-</ul>
-<p><strong>Respuesta:</strong></p>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Notación</th><th>Máscara</th><th>Red</th></tr>
-</thead>
-<tbody>
-<tr><td>NNNnnnnhhhh</td><td>255.255.255.240</td><td>192.168.28.32</td></tr>
-</tbody>
-</table>
-</div>
-<hr>
-<h2 id="4-tabla-completa-resuelta"><a class="header" href="#4-tabla-completa-resuelta">4. Tabla Completa Resuelta</a></h2>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Dirección IP/Prefijo</th><th>Notación Red/Host</th><th>Máscara de Subred</th><th>Dirección de Red</th></tr>
-</thead>
-<tbody>
-<tr><td>192.168.10.10/24</td><td>NNNH</td><td>255.255.255.0</td><td>192.168.10.0</td></tr>
-<tr><td>10.101.99.17/23</td><td>NNnnnnnnn.HHHHHHHH</td><td>255.255.254.0</td><td>10.101.98.0</td></tr>
-<tr><td>209.165.200.227/27</td><td>NNNnnnhhhhh</td><td>255.255.255.224</td><td>209.165.200.224</td></tr>
-<tr><td>172.31.45.252/24</td><td>NNNH</td><td>255.255.255.0</td><td>172.31.45.0</td></tr>
-<tr><td>10.1.8.200/26</td><td>NNNnnhhhhhh</td><td>255.255.255.192</td><td>10.1.8.192</td></tr>
-<tr><td>172.16.117.77/20</td><td>NNnnnnHHHH.HHHH.HHHH</td><td>255.255.240.0</td><td>172.16.112.0</td></tr>
-<tr><td>10.1.1.101/25</td><td>NNNnhhhhhhh</td><td>255.255.255.128</td><td>10.1.1.0</td></tr>
-<tr><td>209.165.202.140/27</td><td>NNNnnnhhhhh</td><td>255.255.255.224</td><td>209.165.202.128</td></tr>
-<tr><td>192.168.28.45/28</td><td>NNNnnnnhhhh</td><td>255.255.255.240</td><td>192.168.28.32</td></tr>
-</tbody>
-</table>
-</div>
-<hr>
-<h2 id="5-tips-y-trucos"><a class="header" href="#5-tips-y-trucos">5. Tips y Trucos</a></h2>
-<h3 id="51-cálculo-mental-rápido"><a class="header" href="#51-cálculo-mental-rápido">5.1 Cálculo Mental Rápido</a></h3>
-<p><strong>Para determinar la dirección de red:</strong></p>
+<h2 id="preguntas-clave-antes-de-crear-una-red"><a class="header" href="#preguntas-clave-antes-de-crear-una-red">Preguntas Clave Antes de Crear una Red</a></h2>
+<p>Antes de profundizar en la tecnología de redes, debes responder:</p>
 <ol>
-<li>Identifica el cuarto octeto de la IP</li>
-<li>Calcula el “tamaño de bloque” restando el prefijo de 32 y calculando 2^(32-prefijo)</li>
-<li>Divide el valor del cuarto octeto por el tamaño de bloque</li>
-<li>Multiplica el resultado por el tamaño de bloque</li>
+<li>¿Qué requisitos tengo para la red?</li>
+<li>¿Lo necesito localmente o con mayor alcance?</li>
+<li>¿A cuántos participantes me dirijo y qué utilización de la capacidad implica esto?</li>
+<li>¿La red debe ser privada, pública o ambas?</li>
+<li>¿Qué tan alta debe ser la seguridad de la red?</li>
+<li>¿Qué hardware necesito?</li>
+<li>¿Puedo configurar la red yo mismo o necesito un experto?</li>
 </ol>
-<p><strong>Ejemplo /28:</strong></p>
+<blockquote>
+<p><strong>Nota:</strong> Una infraestructura de red estable constituye la base para sistemas de TI confiables en las empresas. Debe diseñarse para adaptarse fácilmente a futuras expansiones.</p>
+</blockquote>
+<hr>
+<h2 id="administración-de-red"><a class="header" href="#administración-de-red">Administración de Red</a></h2>
+<p>La administración de red es <strong>esencial para la seguridad y el funcionamiento ininterrumpido</strong>. Incluye tareas como:</p>
 <ul>
-<li>Tamaño de bloque: 2^(32-28) = 2^4 = 16</li>
-<li>IP cuarto octeto: 45</li>
-<li>45 ÷ 16 = 2 (ignorando decimales)</li>
-<li>2 × 16 = 32</li>
-<li>Dirección de red: terminación en .32</li>
+<li><strong>Monitoreo</strong> continuo del estado de la red</li>
+<li><strong>Actualizaciones</strong> de software y firmware</li>
+<li><strong>Gestión de usuarios</strong> y permisos</li>
+<li><strong>Mantenimiento</strong> preventivo</li>
 </ul>
-<h3 id="52errores-comunes"><a class="header" href="#52errores-comunes">5.2Errores Comunes</a></h3>
-<ol>
-<li>
-<p><strong>Confundir la dirección de red con la de broadcast</strong>: La dirección de red tiene todos los bits de host en 0. La dirección de broadcast tiene todos los bits de host en 1.</p>
-</li>
-<li>
-<p><strong>Olvidar que el primer y último host no se usan</strong>: En cada subred, la primera dirección es la de red y la última es broadcast. Los hosts usan las intermedias.</p>
-</li>
-<li>
-<p><strong>No convertir correctamente a binario</strong>: Siempre es útil convertir a binario para visualizar mejor la división.</p>
-</li>
-</ol>
+<p>Las modernas herramientas de gestión de redes facilitan la monitorización y el control de estructuras de TI complejas.</p>
 <hr>
-<h2 id="6-ejercicios-adicionales-para-practicar"><a class="header" href="#6-ejercicios-adicionales-para-practicar">6. Ejercicios Adicionales para Practicar</a></h2>
-<h3 id="ejercicio-1"><a class="header" href="#ejercicio-1">Ejercicio 1</a></h3>
-<p>Identifica la parte de red y host de: <code>192.168.50.100/22</code></p>
-<h3 id="ejercicio-2"><a class="header" href="#ejercicio-2">Ejercicio 2</a></h3>
-<p>Calcula la máscara de subred para: <code>/19</code></p>
-<h3 id="ejercicio-3"><a class="header" href="#ejercicio-3">Ejercicio 3</a></h3>
-<p>Determina la dirección de red para: <code>10.200.150.75/21</code></p>
-<h3 id="ejercicio-4"><a class="header" href="#ejercicio-4">Ejercicio 4</a></h3>
-<p>Given IP: <code>172.16.200.200/19</code>, ¿cuál es la dirección de broadcast?</p>
+<h2 id="tipos-de-tecnología-de-red"><a class="header" href="#tipos-de-tecnología-de-red">Tipos de Tecnología de Red</a></h2>
+<p>Las redes varían enormemente en escala: una conexión en un hogar privado de dos personas es completamente diferente de una red que conecta a miles de empleados en distintos países.</p>
+<h3 id="redes-de-área-local-lan"><a class="header" href="#redes-de-área-local-lan">Redes de Área Local (LAN)</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Tipo</th><th>Ventaja</th><th>Uso</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>PAN</strong> (Personal Area Network)</td><td>Configuración muy rápida; energéticamente eficiente</td><td>Relojes inteligentes, rastreadores de actividad, auriculares inalámbricos, conexiones para smartphones</td></tr>
+<tr><td><strong>LAN/WLAN</strong> (Local/Wireless LAN)</td><td>Transferencia rápida de datos dentro de un edificio; fácil conexión en red de empleados</td><td>Redes de oficinas, redes domésticas, pequeñas empresas</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Nota:</strong> Al configurar LAN y WLAN, es importante utilizar los enrutadores y conmutadores adecuados.</p>
+</blockquote>
+<h3 id="redes-de-área-extendida"><a class="header" href="#redes-de-área-extendida">Redes de Área Extendida</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Tipo</th><th>Ventaja</th><th>Uso</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>CAN</strong> (Campus Area Network)</td><td>Red segura para múltiples edificios en un campus</td><td>Universidades, instituciones de investigación, campus corporativos</td></tr>
+<tr><td><strong>MAN</strong> (Metropolitan Area Network)</td><td>Redes a nivel de ciudad, de largo alcance</td><td>Wi-Fi urbano, sistemas de gestión del tráfico, autoridades municipales</td></tr>
+<tr><td><strong>WAN</strong> (Wide Area Network)</td><td>Redes mundiales y almacenamiento centralizado de datos</td><td>Grandes empresas, sucursales internacionales, acceso a la nube</td></tr>
+<tr><td><strong>GAN</strong> (Global Area Network)</td><td>Acceso a recursos globales y alcance universal</td><td>Internet (World Wide Web), redes de comunicación globales</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="redes-privadas-virtuales-vpn"><a class="header" href="#redes-privadas-virtuales-vpn">Redes Privadas Virtuales (VPN)</a></h3>
+<p>Las VPN ocultan tanto la dirección IP como la ubicación. Pueden asignarse a uno de los tipos de red mencionados y, por tanto, pueden verse como un <strong>tipo de complemento</strong>.</p>
+<blockquote>
+<p><strong>Nota:</strong> Las redes LAN y WAN suelen estar conectadas. Existen tecnologías y protocolos que se utilizan en ambas, por lo que no siempre es posible una separación clara.</p>
+</blockquote>
 <hr>
-<h2 id="conclusión"><a class="header" href="#conclusión">Conclusión</a></h2>
-<p>El análisis de direcciones IPv4 es una habilidad fundamental en redes. La clave está en entender cómo el prefijo CIDR determina la división entre red y host, y cómo la máscara de subred se aplica para obtener la dirección de red.</p>
-<p>Practica con diferentes prefijos y direcciones para dominar este concepto.</p>
+<h2 id="modelos-de-conexión"><a class="header" href="#modelos-de-conexión">Modelos de Conexión</a></h2>
+<h3 id="red-peer-to-peer-p2p"><a class="header" href="#red-peer-to-peer-p2p">Red Peer-to-Peer (P2P)</a></h3>
+<p>Aquí hay ordenadores con <strong>iguales derechos</strong>, cada uno de los cuales puede ser a la vez servidor y cliente. No existe una jerarquía central.</p>
+<h3 id="red-cliente-servidor"><a class="header" href="#red-cliente-servidor">Red Cliente-Servidor</a></h3>
+<p>Una computadora de servicio adicional (a menudo un servidor de red) forma el <strong>centro de control</strong> desde el cual todos los dispositivos conectados recuperan los datos. Ideal para empresas de todos los tamaños.</p>
+<hr>
+<h2 id="topologías-de-red"><a class="header" href="#topologías-de-red">Topologías de Red</a></h2>
+<p>La <strong>topología de red</strong> es cómo se organizan los elementos de una red de comunicaciones. La estructura topológica se puede representar de forma <strong>física</strong> o <strong>lógica</strong>:</p>
+<ul>
+<li><strong>Topología lógica:</strong> Los dispositivos de comunicación se modelan como nodos y las conexiones entre dispositivos se modelan como enlaces o líneas entre nodos.</li>
+<li><strong>Topología física:</strong> Describe la verdadera apariencia o diseño de la red. Las distancias entre nodos, interconexiones físicas, velocidades de transmisión o tipos de señales pueden diferir.</li>
+</ul>
+<h3 id="tipos-de-topologías"><a class="header" href="#tipos-de-topologías">Tipos de Topologías</a></h3>
+<h4 id="topología-en-estrella"><a class="header" href="#topología-en-estrella">Topología en Estrella</a></h4>
+<p><img src="../img/redes/topologia-estrella.webp" alt="Topología en Estrella"></p>
+<p>La red está organizada de modo que los nodos estén conectados a un <strong>dispositivo central (HUB)</strong>, que actúa como servidor. El HUB gestiona la transmisión de datos a través de la red. Cualquier dato enviado viaja a través del dispositivo central antes de llegar a su destino.</p>
+<p><strong>Ventajas:</strong></p>
+<ul>
+<li>✅ Gestión conveniente desde una ubicación central</li>
+<li>✅ Si un nodo falla, la red aún funciona</li>
+<li>✅ Los dispositivos se pueden agregar o quitar sin interrumpir la red</li>
+<li>✅ Más fácil de identificar y aislar los problemas de rendimiento</li>
+</ul>
+<p><strong>Desventajas:</strong></p>
+<ul>
+<li>❌ Si el dispositivo central falla, toda la red dejará de funcionar</li>
+<li>❌ El rendimiento y el ancho de banda están limitados por el nodo central</li>
+<li>❌ Puede ser costoso de operar</li>
+</ul>
+<hr>
+<h4 id="topología-en-bus"><a class="header" href="#topología-en-bus">Topología en Bus</a></h4>
+<p><img src="../img/redes/topologia-bus.webp" alt="Topología en Bus"></p>
+<p>También llamada topología de <strong>red troncal, bus o línea</strong>. Guía los dispositivos a lo largo de un <strong>single cable</strong> que se extiende desde un extremo de la red hasta el otro. Los datos fluirán a lo largo del cable a medida que viajan a su destino.</p>
+<p><strong>Ventajas:</strong></p>
+<ul>
+<li>✅ Económico para redes más pequeñas</li>
+<li>✅ Diseño simple; todos los dispositivos conectados a través de un cable</li>
+<li>✅ Se pueden agregar más nodos alargando la línea</li>
+</ul>
+<p><strong>Desventajas:</strong></p>
+<ul>
+<li>❌ La red es vulnerable a fallas de cables</li>
+<li>❌ Cada nodo agregado disminuye la velocidad de transmisión</li>
+<li>❌ Los datos solo se pueden enviar en una dirección a la vez</li>
+</ul>
+<hr>
+<h4 id="topología-en-anillo"><a class="header" href="#topología-en-anillo">Topología en Anillo</a></h4>
+<p><img src="../img/redes/topologia-anillo.webp" alt="Topología en Anillo"></p>
+<p>Los nodos se configuran en un <strong>patrón circular</strong>. Los datos viajan a través de cada dispositivo a medida que atraviesan el anillo. En redes grandes, pueden necesitarse repetidores para evitar la pérdida de paquetes.</p>
+<p>Las topologías de anillo pueden configurarse como:</p>
+<ul>
+<li><strong>Anillo simple (half-dúplex):</strong> Tráfico en una sola dirección</li>
+<li><strong>Anillo doble (full-dúplex):</strong> Tráfico en ambas direcciones simultáneamente</li>
+</ul>
+<p><strong>Ventajas:</strong></p>
+<ul>
+<li>✅ Costo efectivo</li>
+<li>✅ Barato de instalar</li>
+<li>✅ Problemas de rendimiento fáciles de identificar</li>
+</ul>
+<p><strong>Desventajas:</strong></p>
+<ul>
+<li>❌ Si un nodo cae, puede afectar varios nodos con él</li>
+<li>❌ Todos los dispositivos comparten ancho de banda, limitando el rendimiento</li>
+<li>❌ Agregar o eliminar nodos significa tiempo de inactividad para toda la red</li>
+</ul>
+<hr>
+<h4 id="topología-en-árbol"><a class="header" href="#topología-en-árbol">Topología en Árbol</a></h4>
+<p><img src="../img/redes/topologia-arbol.webp" alt="Topología en Árbol"></p>
+<p>Un <strong>nodo central conecta los hubs secundarios</strong>. Estos hubs tienen una relación de <strong>padres-hijos</strong> con los dispositivos. El eje central es como el tronco del árbol, y las ramas son los concentradores secundarios o nodos de control.</p>
+<p><strong>Ventajas:</strong></p>
+<ul>
+<li>✅ Extremadamente flexible y escalable</li>
+<li>✅ Facilidad para identificar errores (cada branch puede diagnosticarse individualmente)</li>
+</ul>
+<p><strong>Desventajas:</strong></p>
+<ul>
+<li>❌ Si falla un hub central, los nodos se desconectarán (aunque las ramas pueden funcionar independientemente)</li>
+<li>❌ La estructura puede ser difícil de gestionar de forma eficaz</li>
+<li>❌ Utiliza mucho más cableado que otros métodos</li>
+</ul>
+<hr>
+<h4 id="topología-de-malla-mesh"><a class="header" href="#topología-de-malla-mesh">Topología de Malla (Mesh)</a></h4>
+<p><img src="../img/redes/topologia-malla.webp" alt="Topología de Malla"></p>
+<p>Los nodos están <strong>interconectados</strong>.</p>
+<ul>
+<li><strong>Full-mesh:</strong> Conecta todos los dispositivos directamente entre sí</li>
+<li><strong>Partial-mesh:</strong> La mayoría de los dispositivos se conectan directamente, proporcionando múltiples rutas para la entrega de datos</li>
+</ul>
+<p>Los datos se envían por la distancia más corta disponible.</p>
+<p><strong>Ventajas:</strong></p>
+<ul>
+<li>✅ Confiable y estable</li>
+<li>✅ Ningún fallo de un solo nodo desconecta la red</li>
+</ul>
+<p><strong>Desventajas:</strong></p>
+<ul>
+<li>❌ Grado complejo de interconectividad entre nodos</li>
+<li>❌ Mano de obra intensiva para instalar</li>
+<li>❌ Utiliza mucho cableado para conectar todos los dispositivos</li>
+</ul>
+<hr>
+<h4 id="topología-híbrida"><a class="header" href="#topología-híbrida">Topología Híbrida</a></h4>
+<p><img src="../img/redes/topologia-hibrida.webp" alt="Topología Híbrida"></p>
+<p>Utiliza <strong>varias estructuras de topología</strong>. Es más común en organizaciones grandes donde cada departamento puede tener un tipo de topología diferente (estrella o línea), conectándose a un hub central.</p>
+<p><strong>Ventajas:</strong></p>
+<ul>
+<li>✅ Flexibilidad</li>
+<li>✅ Puede personalizarse según las necesidades del cliente</li>
+</ul>
+<p><strong>Desventajas:</strong></p>
+<ul>
+<li>❌ La complejidad aumenta</li>
+<li>❌ Se requiere experiencia en múltiples topologías</li>
+<li>❌ Puede ser más difícil determinar los problemas de rendimiento</li>
+</ul>
+<hr>
+<h2 id="qué-topología-es-mejor"><a class="header" href="#qué-topología-es-mejor">¿Qué Topología es Mejor?</a></h2>
+<p>No existe una respuesta correcta o incorrecta. La elección dependerá de:</p>
+<ul>
+<li><strong>Nivel de comodidad</strong> y cantidad de redundancia necesaria</li>
+<li><strong>Presupuesto:</strong> Cuantos más cables y más compleja la topología, más costosa</li>
+<li><strong>Necesidades comerciales</strong> que cambian y evolucionan</li>
+</ul>
+<p>muchas organizaciones eligen topologías en estrella porque es fácil realizar cambios sin interrupciones significativas.</p>
+<hr>
+<h2 id="mapeo-de-la-topología"><a class="header" href="#mapeo-de-la-topología">Mapeo de la Topología</a></h2>
+<p>La gestión eficaz de la topología requiere un <strong>mapeo visual</strong>. Se necesita un mapa de red preciso que incluya:</p>
+<ul>
+<li>Dispositivos</li>
+<li>Interconexiones</li>
+<li>Posibles cuellos de botella</li>
+</ul>
+<p>A medida que las redes se vuelven más complejas, los mapas de topología se convierten en la columna vertebral de la continuidad empresarial. Existen herramientas de descubrimiento y mapeo que pueden generar automáticamente topologías de capa 2 y 3.</p>
+<hr>
+<h2 id="importancia-de-la-topología-de-red"><a class="header" href="#importancia-de-la-topología-de-red">Importancia de la Topología de Red</a></h2>
+<p>La topología desempeña un papel crucial en la <strong>funcionalidad y eficiencia</strong> de la red.</p>
+<h3 id="impacto-en-el-rendimiento"><a class="header" href="#impacto-en-el-rendimiento">Impacto en el Rendimiento</a></h3>
+<p>La elección de topología afecta significativamente las velocidades de transferencia, el ancho de banda y la latencia:</p>
+<ul>
+<li><strong>Estrella:</strong> Transmisión más rápida para redes con pocos nodos</li>
+<li><strong>Malla:</strong> Mejor rendimiento para redes grandes y complejas</li>
+</ul>
+<h3 id="fiabilidad-y-tolerancia-a-fallos"><a class="header" href="#fiabilidad-y-tolerancia-a-fallos">Fiabilidad y Tolerancia a Fallos</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Topología</th><th>Redundancia</th></tr>
+</thead>
+<tbody>
+<tr><td>Malla</td><td>Alta (múltiples rutas de datos)</td></tr>
+<tr><td>Bus/Estrella</td><td>Vulnerable a puntos únicos de fallo</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="escalabilidad"><a class="header" href="#escalabilidad">Escalabilidad</a></h3>
+<ul>
+<li><strong>Estrella y Árbol:</strong> Adición más sencilla de nuevos nodos</li>
+<li><strong>Malla y Estrella:</strong> Más adecuadas para grandes volúmenes de tráfico</li>
+</ul>
+<h3 id="consideraciones-de-coste"><a class="header" href="#consideraciones-de-coste">Consideraciones de Coste</a></h3>
+<ul>
+<li><strong>Bus:</strong> Costes iniciales más bajos</li>
+<li><strong>Malla:</strong> Requiere más cableado y equipo</li>
+</ul>
+<p>Debe considerarse el <strong>TCO</strong> (Total Cost of Ownership): inversión inicial, gastos operativos y costes del tiempo de inactividad.</p>
+<h3 id="implicaciones-de-seguridad"><a class="header" href="#implicaciones-de-seguridad">Implicaciones de Seguridad</a></h3>
+<ul>
+<li><strong>Centralizadas (estrella):</strong> Aplicación más sencilla de protocolos de seguridad y control de acceso</li>
+<li><strong>Descentralizadas (mesh):</strong> Beneficios de seguridad inherentes gracias a la diversidad de rutas</li>
+</ul>
+<p>Los firewalls se utilizan a menudo para proteger contra amenazas externas. Una topología segura ayuda a cumplir normativas como <strong>RGPD</strong> e <strong>HIPAA</strong>.</p>
+<h3 id="facilidad-de-gestión"><a class="header" href="#facilidad-de-gestión">Facilidad de Gestión</a></h3>
+<ul>
+<li><strong>Estrella:</strong> Problemas suelen aislarse en nodos específicos o en el hub central</li>
+<li><strong>Anillo:</strong> Puede requerir más esfuerzo para localizar y resolver problemas</li>
+</ul>
+<hr>
+<h2 id="componentes-de-la-capa-física"><a class="header" href="#componentes-de-la-capa-física">Componentes de la Capa Física</a></h2>
+<h3 id="elementos-clave"><a class="header" href="#elementos-clave">Elementos Clave</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Componente</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Nodos</strong></td><td>Dispositivos como computadoras, servidores, impresoras, enrutadores y conmutadores</td></tr>
+<tr><td><strong>Enlaces</strong></td><td>Conexiones físicas o inalámbricas entre nodos</td></tr>
+<tr><td><strong>NIC</strong> (Tarjeta de Interfaz de Red)</td><td>Hardware que permite conectar un dispositivo a la red</td></tr>
+<tr><td><strong>Conmutadores (Switches)</strong></td><td>Conectan múltiples nodos en una LAN y facilitan el reenvío de datos</td></tr>
+<tr><td><strong>Enrutadores (Routers)</strong></td><td>Conectan múltiples redes y permiten el enrutamiento entre ellas</td></tr>
+<tr><td><strong>Cables y medios de transmisión</strong></td><td>Medio físico para transportar señales (cables de par trenzado, fibra óptica)</td></tr>
+<tr><td><strong>Protocolos</strong></td><td>Reglas y convenciones que rigen la transmisión de datos</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="componentes-de-red-para-redes-locales"><a class="header" href="#componentes-de-red-para-redes-locales">Componentes de Red para Redes Locales</a></h2>
+<p>Para crear una red, se deben conectar al menos dos computadoras u otros dispositivos finales. Los datos pueden transmitirse a través de:</p>
+<ul>
+<li><strong>Cobre</strong> (cableado tradicional)</li>
+<li><strong>Fibra óptica</strong></li>
+<li><strong>WLAN/WiFi</strong></li>
+<li><strong>Combinación de estos</strong></li>
+</ul>
+<h3 id="dispositivos-de-red"><a class="header" href="#dispositivos-de-red">Dispositivos de Red</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Dispositivo</th><th>Función</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>HUB</strong></td><td>Reúnen dispositivos en una LAN. No diferencian participantes individuales. Siempre envía paquetes a todos los usuarios.</td></tr>
+<tr><td><strong>Switch</strong></td><td>Identifica participantes por su <strong>dirección MAC</strong>. Solo envía datos al destinatario deseado.</td></tr>
+<tr><td><strong>Router</strong></td><td>Lee y asigna <strong>direcciones IP</strong>. Permite comunicación fuera de la LAN y uso de Internet.</td></tr>
+<tr><td><strong>Switch de Capa 3</strong></td><td>Combinación de router y switch. Útil en redes grandes por su mayor velocidad.</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<blockquote>
+<p><strong>Fuente:</strong> The Network Monitor, CCNadesdecero.es</p>
+</blockquote>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../docs/09-redes.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../docs/08-matrix-typescript-implementation.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="../docs/11-nat.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../docs/09-redes.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -647,11 +508,11 @@ Red:      192.168.10.0
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../docs/09-redes.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../docs/08-matrix-typescript-implementation.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="../docs/11-nat.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../docs/09-redes.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>

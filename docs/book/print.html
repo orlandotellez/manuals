@@ -36,10 +36,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5174b9a3.js";
+            window.path_to_searchindex_js = "searchindex-267f9367.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-1e3da95a.js"></script>
+        <script src="toc-104a62a9.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -203,6 +203,7 @@
 </ul>
 <h2 id="redes"><a class="header" href="#redes">Redes</a></h2>
 <ul>
+<li><a href="#16-introducción-a-las-redes">Introduccion redes</a></li>
 <li><a href="#redes---direcciones-ip-y-subredes">Redes</a></li>
 <li><a href="#redes---ejercicio-análisis-de-direcciones-ipv4">Redes ejercicios</a></li>
 <li><a href="#nat">NAT</a></li>
@@ -7785,6 +7786,322 @@ Pero lo ignora porque sender === currentUserId
 <li>Reacciones a mensajes</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div>
+<h1 id="16-introducción-a-las-redes"><a class="header" href="#16-introducción-a-las-redes">16. Introducción a las Redes</a></h1>
+<hr>
+<h2 id="qué-es-una-red"><a class="header" href="#qué-es-una-red">¿Qué es una Red?</a></h2>
+<p>Una <strong>red</strong> es una conexión entre al menos dos dispositivos informáticos. Esta conexión puede tener diferentes estructuras (cableado o inalámbrico) y cubrir diferentes rangos.</p>
+<p>El objetivo es permitir el <strong>intercambio de datos, comunicación y uso compartido</strong> de recursos como:</p>
+<ul>
+<li>Espacio de almacenamiento</li>
+<li>Programas o aplicaciones</li>
+<li>Datos</li>
+</ul>
+<p>Se accede a estos recursos a través de un sistema operativo compatible con la red. Detrás de cada interacción digital hay una red: desde leer este documento, editar un documento con colegas, hasta conectar tu teléfono a dispositivos Bluetooth.</p>
+<hr>
+<h2 id="ventajas-de-las-redes"><a class="header" href="#ventajas-de-las-redes">Ventajas de las Redes</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Ventaja</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Acceso compartido a los datos</strong></td><td>Todos los usuarios autorizados trabajan con la misma información actualizada</td></tr>
+<tr><td><strong>Uso compartido de dispositivos y software</strong></td><td>No es necesario duplicar impresoras, almacenamiento ni programas</td></tr>
+<tr><td><strong>Mayor rendimiento</strong></td><td>La potencia informática y el almacenamiento se utilizan de forma flexible y ampliada</td></tr>
+<tr><td><strong>Gestión centralizada</strong></td><td>Los programas, datos y configuraciones se controlan desde una única ubicación</td></tr>
+<tr><td><strong>Derechos de acceso claros</strong></td><td>Cada usuario recibe exactamente los permisos que necesita</td></tr>
+<tr><td><strong>Mayor seguridad de los datos</strong></td><td>Las normas de protección, copia de seguridad y seguridad se implementan de forma centralizada</td></tr>
+<tr><td><strong>Fácil expandibilidad</strong></td><td>Se pueden integrar fácilmente nuevos dispositivos o usuarios en la red</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="preguntas-clave-antes-de-crear-una-red"><a class="header" href="#preguntas-clave-antes-de-crear-una-red">Preguntas Clave Antes de Crear una Red</a></h2>
+<p>Antes de profundizar en la tecnología de redes, debes responder:</p>
+<ol>
+<li>¿Qué requisitos tengo para la red?</li>
+<li>¿Lo necesito localmente o con mayor alcance?</li>
+<li>¿A cuántos participantes me dirijo y qué utilización de la capacidad implica esto?</li>
+<li>¿La red debe ser privada, pública o ambas?</li>
+<li>¿Qué tan alta debe ser la seguridad de la red?</li>
+<li>¿Qué hardware necesito?</li>
+<li>¿Puedo configurar la red yo mismo o necesito un experto?</li>
+</ol>
+<blockquote>
+<p><strong>Nota:</strong> Una infraestructura de red estable constituye la base para sistemas de TI confiables en las empresas. Debe diseñarse para adaptarse fácilmente a futuras expansiones.</p>
+</blockquote>
+<hr>
+<h2 id="administración-de-red"><a class="header" href="#administración-de-red">Administración de Red</a></h2>
+<p>La administración de red es <strong>esencial para la seguridad y el funcionamiento ininterrumpido</strong>. Incluye tareas como:</p>
+<ul>
+<li><strong>Monitoreo</strong> continuo del estado de la red</li>
+<li><strong>Actualizaciones</strong> de software y firmware</li>
+<li><strong>Gestión de usuarios</strong> y permisos</li>
+<li><strong>Mantenimiento</strong> preventivo</li>
+</ul>
+<p>Las modernas herramientas de gestión de redes facilitan la monitorización y el control de estructuras de TI complejas.</p>
+<hr>
+<h2 id="tipos-de-tecnología-de-red"><a class="header" href="#tipos-de-tecnología-de-red">Tipos de Tecnología de Red</a></h2>
+<p>Las redes varían enormemente en escala: una conexión en un hogar privado de dos personas es completamente diferente de una red que conecta a miles de empleados en distintos países.</p>
+<h3 id="redes-de-área-local-lan"><a class="header" href="#redes-de-área-local-lan">Redes de Área Local (LAN)</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Tipo</th><th>Ventaja</th><th>Uso</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>PAN</strong> (Personal Area Network)</td><td>Configuración muy rápida; energéticamente eficiente</td><td>Relojes inteligentes, rastreadores de actividad, auriculares inalámbricos, conexiones para smartphones</td></tr>
+<tr><td><strong>LAN/WLAN</strong> (Local/Wireless LAN)</td><td>Transferencia rápida de datos dentro de un edificio; fácil conexión en red de empleados</td><td>Redes de oficinas, redes domésticas, pequeñas empresas</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Nota:</strong> Al configurar LAN y WLAN, es importante utilizar los enrutadores y conmutadores adecuados.</p>
+</blockquote>
+<h3 id="redes-de-área-extendida"><a class="header" href="#redes-de-área-extendida">Redes de Área Extendida</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Tipo</th><th>Ventaja</th><th>Uso</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>CAN</strong> (Campus Area Network)</td><td>Red segura para múltiples edificios en un campus</td><td>Universidades, instituciones de investigación, campus corporativos</td></tr>
+<tr><td><strong>MAN</strong> (Metropolitan Area Network)</td><td>Redes a nivel de ciudad, de largo alcance</td><td>Wi-Fi urbano, sistemas de gestión del tráfico, autoridades municipales</td></tr>
+<tr><td><strong>WAN</strong> (Wide Area Network)</td><td>Redes mundiales y almacenamiento centralizado de datos</td><td>Grandes empresas, sucursales internacionales, acceso a la nube</td></tr>
+<tr><td><strong>GAN</strong> (Global Area Network)</td><td>Acceso a recursos globales y alcance universal</td><td>Internet (World Wide Web), redes de comunicación globales</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="redes-privadas-virtuales-vpn"><a class="header" href="#redes-privadas-virtuales-vpn">Redes Privadas Virtuales (VPN)</a></h3>
+<p>Las VPN ocultan tanto la dirección IP como la ubicación. Pueden asignarse a uno de los tipos de red mencionados y, por tanto, pueden verse como un <strong>tipo de complemento</strong>.</p>
+<blockquote>
+<p><strong>Nota:</strong> Las redes LAN y WAN suelen estar conectadas. Existen tecnologías y protocolos que se utilizan en ambas, por lo que no siempre es posible una separación clara.</p>
+</blockquote>
+<hr>
+<h2 id="modelos-de-conexión"><a class="header" href="#modelos-de-conexión">Modelos de Conexión</a></h2>
+<h3 id="red-peer-to-peer-p2p"><a class="header" href="#red-peer-to-peer-p2p">Red Peer-to-Peer (P2P)</a></h3>
+<p>Aquí hay ordenadores con <strong>iguales derechos</strong>, cada uno de los cuales puede ser a la vez servidor y cliente. No existe una jerarquía central.</p>
+<h3 id="red-cliente-servidor"><a class="header" href="#red-cliente-servidor">Red Cliente-Servidor</a></h3>
+<p>Una computadora de servicio adicional (a menudo un servidor de red) forma el <strong>centro de control</strong> desde el cual todos los dispositivos conectados recuperan los datos. Ideal para empresas de todos los tamaños.</p>
+<hr>
+<h2 id="topologías-de-red"><a class="header" href="#topologías-de-red">Topologías de Red</a></h2>
+<p>La <strong>topología de red</strong> es cómo se organizan los elementos de una red de comunicaciones. La estructura topológica se puede representar de forma <strong>física</strong> o <strong>lógica</strong>:</p>
+<ul>
+<li><strong>Topología lógica:</strong> Los dispositivos de comunicación se modelan como nodos y las conexiones entre dispositivos se modelan como enlaces o líneas entre nodos.</li>
+<li><strong>Topología física:</strong> Describe la verdadera apariencia o diseño de la red. Las distancias entre nodos, interconexiones físicas, velocidades de transmisión o tipos de señales pueden diferir.</li>
+</ul>
+<h3 id="tipos-de-topologías"><a class="header" href="#tipos-de-topologías">Tipos de Topologías</a></h3>
+<h4 id="topología-en-estrella"><a class="header" href="#topología-en-estrella">Topología en Estrella</a></h4>
+<p><img src="img/redes/topologia-estrella.webp" alt="Topología en Estrella"></p>
+<p>La red está organizada de modo que los nodos estén conectados a un <strong>dispositivo central (HUB)</strong>, que actúa como servidor. El HUB gestiona la transmisión de datos a través de la red. Cualquier dato enviado viaja a través del dispositivo central antes de llegar a su destino.</p>
+<p><strong>Ventajas:</strong></p>
+<ul>
+<li>✅ Gestión conveniente desde una ubicación central</li>
+<li>✅ Si un nodo falla, la red aún funciona</li>
+<li>✅ Los dispositivos se pueden agregar o quitar sin interrumpir la red</li>
+<li>✅ Más fácil de identificar y aislar los problemas de rendimiento</li>
+</ul>
+<p><strong>Desventajas:</strong></p>
+<ul>
+<li>❌ Si el dispositivo central falla, toda la red dejará de funcionar</li>
+<li>❌ El rendimiento y el ancho de banda están limitados por el nodo central</li>
+<li>❌ Puede ser costoso de operar</li>
+</ul>
+<hr>
+<h4 id="topología-en-bus"><a class="header" href="#topología-en-bus">Topología en Bus</a></h4>
+<p><img src="img/redes/topologia-bus.webp" alt="Topología en Bus"></p>
+<p>También llamada topología de <strong>red troncal, bus o línea</strong>. Guía los dispositivos a lo largo de un <strong>single cable</strong> que se extiende desde un extremo de la red hasta el otro. Los datos fluirán a lo largo del cable a medida que viajan a su destino.</p>
+<p><strong>Ventajas:</strong></p>
+<ul>
+<li>✅ Económico para redes más pequeñas</li>
+<li>✅ Diseño simple; todos los dispositivos conectados a través de un cable</li>
+<li>✅ Se pueden agregar más nodos alargando la línea</li>
+</ul>
+<p><strong>Desventajas:</strong></p>
+<ul>
+<li>❌ La red es vulnerable a fallas de cables</li>
+<li>❌ Cada nodo agregado disminuye la velocidad de transmisión</li>
+<li>❌ Los datos solo se pueden enviar en una dirección a la vez</li>
+</ul>
+<hr>
+<h4 id="topología-en-anillo"><a class="header" href="#topología-en-anillo">Topología en Anillo</a></h4>
+<p><img src="img/redes/topologia-anillo.webp" alt="Topología en Anillo"></p>
+<p>Los nodos se configuran en un <strong>patrón circular</strong>. Los datos viajan a través de cada dispositivo a medida que atraviesan el anillo. En redes grandes, pueden necesitarse repetidores para evitar la pérdida de paquetes.</p>
+<p>Las topologías de anillo pueden configurarse como:</p>
+<ul>
+<li><strong>Anillo simple (half-dúplex):</strong> Tráfico en una sola dirección</li>
+<li><strong>Anillo doble (full-dúplex):</strong> Tráfico en ambas direcciones simultáneamente</li>
+</ul>
+<p><strong>Ventajas:</strong></p>
+<ul>
+<li>✅ Costo efectivo</li>
+<li>✅ Barato de instalar</li>
+<li>✅ Problemas de rendimiento fáciles de identificar</li>
+</ul>
+<p><strong>Desventajas:</strong></p>
+<ul>
+<li>❌ Si un nodo cae, puede afectar varios nodos con él</li>
+<li>❌ Todos los dispositivos comparten ancho de banda, limitando el rendimiento</li>
+<li>❌ Agregar o eliminar nodos significa tiempo de inactividad para toda la red</li>
+</ul>
+<hr>
+<h4 id="topología-en-árbol"><a class="header" href="#topología-en-árbol">Topología en Árbol</a></h4>
+<p><img src="img/redes/topologia-arbol.webp" alt="Topología en Árbol"></p>
+<p>Un <strong>nodo central conecta los hubs secundarios</strong>. Estos hubs tienen una relación de <strong>padres-hijos</strong> con los dispositivos. El eje central es como el tronco del árbol, y las ramas son los concentradores secundarios o nodos de control.</p>
+<p><strong>Ventajas:</strong></p>
+<ul>
+<li>✅ Extremadamente flexible y escalable</li>
+<li>✅ Facilidad para identificar errores (cada branch puede diagnosticarse individualmente)</li>
+</ul>
+<p><strong>Desventajas:</strong></p>
+<ul>
+<li>❌ Si falla un hub central, los nodos se desconectarán (aunque las ramas pueden funcionar independientemente)</li>
+<li>❌ La estructura puede ser difícil de gestionar de forma eficaz</li>
+<li>❌ Utiliza mucho más cableado que otros métodos</li>
+</ul>
+<hr>
+<h4 id="topología-de-malla-mesh"><a class="header" href="#topología-de-malla-mesh">Topología de Malla (Mesh)</a></h4>
+<p><img src="img/redes/topologia-malla.webp" alt="Topología de Malla"></p>
+<p>Los nodos están <strong>interconectados</strong>.</p>
+<ul>
+<li><strong>Full-mesh:</strong> Conecta todos los dispositivos directamente entre sí</li>
+<li><strong>Partial-mesh:</strong> La mayoría de los dispositivos se conectan directamente, proporcionando múltiples rutas para la entrega de datos</li>
+</ul>
+<p>Los datos se envían por la distancia más corta disponible.</p>
+<p><strong>Ventajas:</strong></p>
+<ul>
+<li>✅ Confiable y estable</li>
+<li>✅ Ningún fallo de un solo nodo desconecta la red</li>
+</ul>
+<p><strong>Desventajas:</strong></p>
+<ul>
+<li>❌ Grado complejo de interconectividad entre nodos</li>
+<li>❌ Mano de obra intensiva para instalar</li>
+<li>❌ Utiliza mucho cableado para conectar todos los dispositivos</li>
+</ul>
+<hr>
+<h4 id="topología-híbrida"><a class="header" href="#topología-híbrida">Topología Híbrida</a></h4>
+<p><img src="img/redes/topologia-hibrida.webp" alt="Topología Híbrida"></p>
+<p>Utiliza <strong>varias estructuras de topología</strong>. Es más común en organizaciones grandes donde cada departamento puede tener un tipo de topología diferente (estrella o línea), conectándose a un hub central.</p>
+<p><strong>Ventajas:</strong></p>
+<ul>
+<li>✅ Flexibilidad</li>
+<li>✅ Puede personalizarse según las necesidades del cliente</li>
+</ul>
+<p><strong>Desventajas:</strong></p>
+<ul>
+<li>❌ La complejidad aumenta</li>
+<li>❌ Se requiere experiencia en múltiples topologías</li>
+<li>❌ Puede ser más difícil determinar los problemas de rendimiento</li>
+</ul>
+<hr>
+<h2 id="qué-topología-es-mejor"><a class="header" href="#qué-topología-es-mejor">¿Qué Topología es Mejor?</a></h2>
+<p>No existe una respuesta correcta o incorrecta. La elección dependerá de:</p>
+<ul>
+<li><strong>Nivel de comodidad</strong> y cantidad de redundancia necesaria</li>
+<li><strong>Presupuesto:</strong> Cuantos más cables y más compleja la topología, más costosa</li>
+<li><strong>Necesidades comerciales</strong> que cambian y evolucionan</li>
+</ul>
+<p>muchas organizaciones eligen topologías en estrella porque es fácil realizar cambios sin interrupciones significativas.</p>
+<hr>
+<h2 id="mapeo-de-la-topología"><a class="header" href="#mapeo-de-la-topología">Mapeo de la Topología</a></h2>
+<p>La gestión eficaz de la topología requiere un <strong>mapeo visual</strong>. Se necesita un mapa de red preciso que incluya:</p>
+<ul>
+<li>Dispositivos</li>
+<li>Interconexiones</li>
+<li>Posibles cuellos de botella</li>
+</ul>
+<p>A medida que las redes se vuelven más complejas, los mapas de topología se convierten en la columna vertebral de la continuidad empresarial. Existen herramientas de descubrimiento y mapeo que pueden generar automáticamente topologías de capa 2 y 3.</p>
+<hr>
+<h2 id="importancia-de-la-topología-de-red"><a class="header" href="#importancia-de-la-topología-de-red">Importancia de la Topología de Red</a></h2>
+<p>La topología desempeña un papel crucial en la <strong>funcionalidad y eficiencia</strong> de la red.</p>
+<h3 id="impacto-en-el-rendimiento"><a class="header" href="#impacto-en-el-rendimiento">Impacto en el Rendimiento</a></h3>
+<p>La elección de topología afecta significativamente las velocidades de transferencia, el ancho de banda y la latencia:</p>
+<ul>
+<li><strong>Estrella:</strong> Transmisión más rápida para redes con pocos nodos</li>
+<li><strong>Malla:</strong> Mejor rendimiento para redes grandes y complejas</li>
+</ul>
+<h3 id="fiabilidad-y-tolerancia-a-fallos"><a class="header" href="#fiabilidad-y-tolerancia-a-fallos">Fiabilidad y Tolerancia a Fallos</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Topología</th><th>Redundancia</th></tr>
+</thead>
+<tbody>
+<tr><td>Malla</td><td>Alta (múltiples rutas de datos)</td></tr>
+<tr><td>Bus/Estrella</td><td>Vulnerable a puntos únicos de fallo</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="escalabilidad"><a class="header" href="#escalabilidad">Escalabilidad</a></h3>
+<ul>
+<li><strong>Estrella y Árbol:</strong> Adición más sencilla de nuevos nodos</li>
+<li><strong>Malla y Estrella:</strong> Más adecuadas para grandes volúmenes de tráfico</li>
+</ul>
+<h3 id="consideraciones-de-coste"><a class="header" href="#consideraciones-de-coste">Consideraciones de Coste</a></h3>
+<ul>
+<li><strong>Bus:</strong> Costes iniciales más bajos</li>
+<li><strong>Malla:</strong> Requiere más cableado y equipo</li>
+</ul>
+<p>Debe considerarse el <strong>TCO</strong> (Total Cost of Ownership): inversión inicial, gastos operativos y costes del tiempo de inactividad.</p>
+<h3 id="implicaciones-de-seguridad"><a class="header" href="#implicaciones-de-seguridad">Implicaciones de Seguridad</a></h3>
+<ul>
+<li><strong>Centralizadas (estrella):</strong> Aplicación más sencilla de protocolos de seguridad y control de acceso</li>
+<li><strong>Descentralizadas (mesh):</strong> Beneficios de seguridad inherentes gracias a la diversidad de rutas</li>
+</ul>
+<p>Los firewalls se utilizan a menudo para proteger contra amenazas externas. Una topología segura ayuda a cumplir normativas como <strong>RGPD</strong> e <strong>HIPAA</strong>.</p>
+<h3 id="facilidad-de-gestión"><a class="header" href="#facilidad-de-gestión">Facilidad de Gestión</a></h3>
+<ul>
+<li><strong>Estrella:</strong> Problemas suelen aislarse en nodos específicos o en el hub central</li>
+<li><strong>Anillo:</strong> Puede requerir más esfuerzo para localizar y resolver problemas</li>
+</ul>
+<hr>
+<h2 id="componentes-de-la-capa-física"><a class="header" href="#componentes-de-la-capa-física">Componentes de la Capa Física</a></h2>
+<h3 id="elementos-clave"><a class="header" href="#elementos-clave">Elementos Clave</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Componente</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Nodos</strong></td><td>Dispositivos como computadoras, servidores, impresoras, enrutadores y conmutadores</td></tr>
+<tr><td><strong>Enlaces</strong></td><td>Conexiones físicas o inalámbricas entre nodos</td></tr>
+<tr><td><strong>NIC</strong> (Tarjeta de Interfaz de Red)</td><td>Hardware que permite conectar un dispositivo a la red</td></tr>
+<tr><td><strong>Conmutadores (Switches)</strong></td><td>Conectan múltiples nodos en una LAN y facilitan el reenvío de datos</td></tr>
+<tr><td><strong>Enrutadores (Routers)</strong></td><td>Conectan múltiples redes y permiten el enrutamiento entre ellas</td></tr>
+<tr><td><strong>Cables y medios de transmisión</strong></td><td>Medio físico para transportar señales (cables de par trenzado, fibra óptica)</td></tr>
+<tr><td><strong>Protocolos</strong></td><td>Reglas y convenciones que rigen la transmisión de datos</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="componentes-de-red-para-redes-locales"><a class="header" href="#componentes-de-red-para-redes-locales">Componentes de Red para Redes Locales</a></h2>
+<p>Para crear una red, se deben conectar al menos dos computadoras u otros dispositivos finales. Los datos pueden transmitirse a través de:</p>
+<ul>
+<li><strong>Cobre</strong> (cableado tradicional)</li>
+<li><strong>Fibra óptica</strong></li>
+<li><strong>WLAN/WiFi</strong></li>
+<li><strong>Combinación de estos</strong></li>
+</ul>
+<h3 id="dispositivos-de-red"><a class="header" href="#dispositivos-de-red">Dispositivos de Red</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Dispositivo</th><th>Función</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>HUB</strong></td><td>Reúnen dispositivos en una LAN. No diferencian participantes individuales. Siempre envía paquetes a todos los usuarios.</td></tr>
+<tr><td><strong>Switch</strong></td><td>Identifica participantes por su <strong>dirección MAC</strong>. Solo envía datos al destinatario deseado.</td></tr>
+<tr><td><strong>Router</strong></td><td>Lee y asigna <strong>direcciones IP</strong>. Permite comunicación fuera de la LAN y uso de Internet.</td></tr>
+<tr><td><strong>Switch de Capa 3</strong></td><td>Combinación de router y switch. Útil en redes grandes por su mayor velocidad.</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<blockquote>
+<p><strong>Fuente:</strong> The Network Monitor, CCNadesdecero.es</p>
+</blockquote>
+<div style="break-before: page; page-break-before: always;"></div>
 <h1 id="redes---direcciones-ip-y-subredes"><a class="header" href="#redes---direcciones-ip-y-subredes">Redes - Direcciones IP y Subredes</a></h1>
 <h2 id="1-qué-es-una-dirección-ip"><a class="header" href="#1-qué-es-una-dirección-ip">1. ¿Qué es una Dirección IP?</a></h2>
 <p>Una dirección IP (protocolo de internet, por sus siglas en inglés) es una representación numérica que identifica una interfaz concreta de manera única en la red.</p>
@@ -8550,7 +8867,7 @@ Red:      192.168.10.0
 <li>Mayor complejidad en configuración y mantenimiento, principalmente a la hora de establecer reglas de traducción de direcciones IP y puertos para aplicaciones específicas. Por ejemplo, NAT modifica los valores en los encabezados que interfieren en las verificaciones de integridad realizadas por IPsec y otros protocolos de tunneling.</li>
 <li>Posibles interrupciones en conexiones de Protocolo de Control de Transmisión (Transmission Control Protocol, TCP). Los servicios que requieren una conexión TCP desde una red externa o “protocolos” sin estado pueden interrumpirse. A menos que el router NAT esté configurado para admitir estos protocolos, los paquetes entrantes podrían no llegar a su destino.</li>
 </ul>
-<h3 id="impacto-en-el-rendimiento"><a class="header" href="#impacto-en-el-rendimiento">Impacto en el rendimiento</a></h3>
+<h3 id="impacto-en-el-rendimiento-1"><a class="header" href="#impacto-en-el-rendimiento-1">Impacto en el rendimiento</a></h3>
 <p>NAT ayuda a reducir la carga en la red cuando permite que varios dispositivos compartan una única dirección IP pública. Esto puede ser útil cuando contamos con pocas o una única IP Pública disponible, aportando también una capa de seguridad al impedir la no identificación y el acceso directo a los dispositivos internos de la red.</p>
 <p>Sin embargo, también puede generar limitaciones en el ancho de banda y posibles problemas de conectividad en entornos de red con un gran número de dispositivos y tráfico de red intenso. En entornos con NAT PAT se puede producir una congestión si hay muchas conexiones simultáneas desde múltiples dispositivos, lo que puede añadir una latencia adicional en la comunicación de red afectando negativamente a la experiencia del usuario.</p>
 <h3 id="carrier-grade-nat-cg-nat"><a class="header" href="#carrier-grade-nat-cg-nat">Carrier Grade NAT (CG-NAT)</a></h3>

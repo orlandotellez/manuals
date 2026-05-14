@@ -25,6 +25,7 @@
 - [Matrix TypeScript implementation](./docs/08-matrix-typescript-implementation.md)
 
 ## Redes 
+- [Introduccion redes](./docs/16-introduccion-redes.md)
 - [Redes](./docs/09-redes.md)
 - [Redes ejercicios](./docs/10-redes-ejercicio-analisis-ipv4.md)
 - [NAT](./docs/11-nat.md)
