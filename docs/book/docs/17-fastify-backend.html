@@ -1,0 +1,4286 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Backend Farmacia - Manuales</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-4bfd39a6.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-2ce9bc6d.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Manuales</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="manual-completo--backend-farmacia-con-fastify"><a class="header" href="#manual-completo--backend-farmacia-con-fastify">Manual Completo — Backend Farmacia con Fastify</a></h1>
+<blockquote>
+<p><strong>Stack:</strong> Node.js + TypeScript + Fastify + Prisma + PostgreSQL + Redis + JWT<br><strong>Patrón:</strong> Clean Architecture (Domain-Driven) con módulos</p>
+</blockquote>
+<hr>
+<h2 id="índice"><a class="header" href="#índice">ÍNDICE</a></h2>
+<ol>
+<li><a href="#1-introducción-y-arquitectura">Introducción y Arquitectura</a></li>
+<li><a href="#2-prerequisitos">Prerequisitos</a></li>
+<li><a href="#3-estructura-del-proyecto">Estructura del Proyecto</a></li>
+<li><a href="#4-paso-1-packagejson">Paso 1 — package.json</a></li>
+<li><a href="#5-paso-2-tsconfigjson">Paso 2 — tsconfig.json</a></li>
+<li><a href="#6-paso-3-variables-de-entorno-env">Paso 3 — Variables de Entorno (.env)</a></li>
+<li><a href="#7-paso-4-docker-composeyml">Paso 4 — Docker Compose</a></li>
+<li><a href="#8-paso-5-prisma-schema">Paso 5 — Prisma Schema</a></li>
+<li><a href="#9-paso-6-migración-inicial">Paso 6 — Migración Inicial</a></li>
+<li><a href="#10-paso-7-servidor-serverts">Paso 7 — Servidor (server.ts)</a></li>
+<li><a href="#11-paso-8-aplicación-appts">Paso 8 — Aplicación (app.ts)</a></li>
+<li><a href="#12-paso-9-configuración">Paso 9 — Configuración (env, prisma, redis)</a></li>
+<li><a href="#13-paso-10-logger">Paso 10 — Logger</a></li>
+<li><a href="#14-paso-11-errores-personalizados">Paso 11 — Errores Personalizados</a></li>
+<li><a href="#15-paso-12-tipos-del-sistema">Paso 12 — Tipos del Sistema</a></li>
+<li><a href="#16-paso-13-middlewares">Paso 13 — Middlewares</a></li>
+<li><a href="#17-paso-14-rutas">Paso 14 — Rutas</a></li>
+<li><a href="#18-paso-15-módulo-auth">Paso 15 — Módulo Auth</a></li>
+<li><a href="#19-paso-16-módulo-users">Paso 16 — Módulo Users</a></li>
+<li><a href="#20-paso-17-módulo-medicines">Paso 17 — Módulo Medicines</a></li>
+<li><a href="#21-paso-18-módulo-sales">Paso 18 — Módulo Sales</a></li>
+<li><a href="#22-paso-19-módulo-clients">Paso 19 — Módulo Clients</a></li>
+<li><a href="#23-paso-20-módulo-reports">Paso 20 — Módulo Reports</a></li>
+<li><a href="#24-paso-21-seed-script">Paso 21 — Seed Script</a></li>
+<li><a href="#25-paso-22-api-reference">Paso 22 — API Reference (api.http)</a></li>
+<li><a href="#26-paso-23-scripts-del-packagejson">Paso 23 — Scripts del package.json</a></li>
+<li><a href="#27-resumen-de-endpoints">Resumen de Endpoints</a></li>
+</ol>
+<hr>
+<h2 id="1-introducción-y-arquitectura"><a class="header" href="#1-introducción-y-arquitectura">1. Introducción y Arquitectura</a></h2>
+<p>Este backend está construido con una <strong>arquitectura limpia (Clean Architecture)</strong> organizada en capas:</p>
+<pre><code>src/
+├── config/              # Configuración: env, prisma, redis
+├── core/errors/         # Errores personalizados de la aplicación
+├── infrastructure/      # Logger de infraestructura
+├── presentation/        # Capa de presentación
+│   ├── middlewares/     # Middlewares (auth, error, RBAC)
+│   └── routes.ts        # Registro de todas las rutas
+├── modules/             # Módulos de negocio (DDD)
+│   ├── auth/
+│   │   ├── application/ # Lógica de negocio (service)
+│   │   └── presentation/ # Controller, DTOs, Routes
+│   ├── users/
+│   ├── medicines/
+│   ├── sales/
+│   ├── clients/
+│   └── reports/
+├── types/               # Tipos compartidos del sistema
+├── scripts/             # Scripts utilitarios (seed)
+├── server.ts            # Punto de entrada
+└── app.ts               # Configuración de Fastify
+</code></pre>
+<p><strong>Tecnologías clave:</strong></p>
+<ul>
+<li><strong>Fastify</strong> — Framework HTTP de alto rendimiento</li>
+<li><strong>Prisma</strong> — ORM para PostgreSQL</li>
+<li><strong>Redis (ioredis)</strong> — Caché para tokens de refresh</li>
+<li><strong>JWT</strong> — Autenticación stateless con access/refresh tokens</li>
+<li><strong>Zod</strong> — Validación de esquemas (DTOs)</li>
+<li><strong>bcrypt</strong> — Hash de contraseñas</li>
+<li><strong>Helmet + CORS + Rate Limit</strong> — Seguridad</li>
+</ul>
+<p><strong>Principios aplicados:</strong></p>
+<ul>
+<li>Separación de concerns (capas)</li>
+<li>Repositorios con interfaces (contratos)</li>
+<li>DTOs con validación en los controladores</li>
+<li>Middleware de autenticación y autorización (RBAC)</li>
+<li>Soft delete en todas las entidades</li>
+<li>Paginación en listados</li>
+</ul>
+<hr>
+<h2 id="2-prerequisitos"><a class="header" href="#2-prerequisitos">2. Prerequisitos</a></h2>
+<p>Antes de empezar, necesitás tener instalado:</p>
+<ul>
+<li><strong>Node.js</strong> v18+ (recomendado 20+)</li>
+<li><strong>npm</strong>, <strong>yarn</strong> o <strong>pnpm</strong></li>
+<li><strong>Docker</strong> y <strong>Docker Compose</strong> (para levantar Postgres y Redis)</li>
+<li><strong>TypeScript</strong> (se instala como devDependency)</li>
+</ul>
+<hr>
+<h2 id="3-estructura-del-proyecto"><a class="header" href="#3-estructura-del-proyecto">3. Estructura del Proyecto</a></h2>
+<p>Creá el directorio del proyecto:</p>
+<pre><code class="language-bash">mkdir -p farmacy-backend/src/{config,core/errors,infrastructure,presentation/middlewares,modules/{auth,users,medicines,sales,clients,reports}/{application,domain,infrastructure,presentation},types,scripts}
+</code></pre>
+<hr>
+<h2 id="4-paso-1--packagejson"><a class="header" href="#4-paso-1--packagejson">4. Paso 1 — package.json</a></h2>
+<p>Creá el archivo <code>package.json</code> en la raíz del backend:</p>
+<pre><code class="language-json">{
+  "name": "farmacia-backend",
+  "version": "1.0.0",
+  "description": "Farmacia backend with Fastify, Prisma, and JWT",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsup src/server.ts --format cjs --dts",
+    "start": "node dist/server.js",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio"
+  },
+  "keywords": [
+    "farmacia",
+    "pharmacy",
+    "fastify",
+    "prisma"
+  ],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@fastify/compress": "^8.3.1",
+    "@fastify/cors": "^11.2.0",
+    "@fastify/helmet": "^13.0.2",
+    "@fastify/jwt": "^10.0.0",
+    "@fastify/rate-limit": "^10.3.0",
+    "@prisma/client": "^5.22.0",
+    "@types/jsonwebtoken": "^9.0.10",
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.3.1",
+    "fastify": "^5.7.4",
+    "ioredis": "^5.10.0",
+    "jsonwebtoken": "^9.0.3",
+    "pino": "^10.3.1",
+    "pino-pretty": "^13.1.3",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/node": "^25.3.3",
+    "prisma": "^5.22.0",
+    "tsup": "^8.5.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}
+</code></pre>
+<p><strong>¿Qué significa cada cosa?</strong></p>
+<ul>
+<li><code>"type": "module"</code> habilita ESM (imports/exports con <code>import</code>/<code>export</code> en vez de <code>require</code>).</li>
+<li><strong>Dependencias de runtime:</strong>
+<ul>
+<li><code>fastify</code> — Framework HTTP</li>
+<li><code>@fastify/cors</code> — Habilita CORS</li>
+<li><code>@fastify/helmet</code> — Headers de seguridad</li>
+<li><code>@fastify/compress</code> — Compresión gzip</li>
+<li><code>@fastify/jwt</code> — Plugin JWT para Fastify</li>
+<li><code>@fastify/rate-limit</code> — Limitación de rate</li>
+<li><code>@prisma/client</code> — Cliente generado por Prisma (ORM)</li>
+<li><code>bcrypt</code> — Hashear contraseñas</li>
+<li><code>dotenv</code> — Cargar variables de <code>.env</code></li>
+<li><code>ioredis</code> — Cliente Redis</li>
+<li><code>jsonwebtoken</code> — Para generar/verificar tokens manualmente (refresh)</li>
+<li><code>pino</code> + <code>pino-pretty</code> — Logger</li>
+<li><code>zod</code> — Validación de esquemas</li>
+</ul>
+</li>
+<li><strong>DevDependencies:</strong>
+<ul>
+<li><code>typescript</code> — El lenguaje</li>
+<li><code>tsx</code> — Ejecutar TypeScript directamente sin compilar</li>
+<li><code>tsup</code> — Empaquetador para production build</li>
+<li><code>prisma</code> — CLI de Prisma</li>
+<li><code>@types/node</code> / <code>@types/bcrypt</code> — Tipos de Node y bcrypt</li>
+</ul>
+</li>
+</ul>
+<p><strong>Instalá las dependencias:</strong></p>
+<pre><code class="language-bash">npm install
+</code></pre>
+<hr>
+<h2 id="5-paso-2--tsconfigjson"><a class="header" href="#5-paso-2--tsconfigjson">5. Paso 2 — tsconfig.json</a></h2>
+<p>Creá <code>tsconfig.json</code> en la raíz:</p>
+<pre><code class="language-json">{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "baseUrl": "./",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    },
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "include": [
+    "src/**/*"
+  ]
+}
+</code></pre>
+<p><strong>¿Qué hace esto?</strong></p>
+<ul>
+<li><code>"target": "ES2022"</code> — Compila a ES2022 (compatible con Node 18+)</li>
+<li><code>"module": "NodeNext"</code> — Usa el sistema de módulos nativo de Node.js (ESM)</li>
+<li><code>"moduleResolution": "NodeNext"</code> — Resolución de módulos acorde</li>
+<li><code>"baseUrl": "./"</code> + <code>"paths": { "@/*": ["src/*"] }</code> — Alias <code>@/</code> apunta a <code>src/</code>, así en vez de escribir <code>../../../config/env</code> escribís <code>@/config/env</code></li>
+<li><code>"outDir": "./dist"</code> — El output compilado va a <code>dist/</code></li>
+<li><code>"rootDir": "./src"</code> — El código fuente está en <code>src/</code></li>
+<li><code>"strict": true</code> — Máxima estrictitud (strictNullChecks, noImplicitAny, etc.)</li>
+<li><code>"skipLibCheck": true</code> — No chequea los <code>.d.ts</code> de node_modules (más rápido)</li>
+</ul>
+<hr>
+<h2 id="6-paso-3--variables-de-entorno-env"><a class="header" href="#6-paso-3--variables-de-entorno-env">6. Paso 3 — Variables de Entorno (.env)</a></h2>
+<p>Creá <code>.env.example</code>:</p>
+<pre><code class="language-env"># Server
+NODE_ENV=development
+PORT=3000
+
+# Database
+DATABASE_URL="postgresql://farmacia:farmacia@localhost:5432/farmacy_db?schema=public"
+
+# JWT
+JWT_SECRET=your-super-secret-jwt-key-min-32-chars-long
+JWT_EXPIRES_IN=15m
+JWT_REFRESH_SECRET=your-super-secret-refresh-key-min-32-chars
+JWT_REFRESH_EXPIRES_IN=7d
+
+# Redis
+REDIS_HOST=127.0.0.1
+REDIS_PORT=6379
+</code></pre>
+<p>Creá <code>.env</code> real:</p>
+<pre><code class="language-env">NODE_ENV=development
+PORT=3000
+
+DATABASE_URL="postgresql://dev-espada:espadaPOSTGRES@localhost:5432/farmacy_db?schema=public"
+
+JWT_SECRET=super-secret-jwt-key-that-is-at-least-32-chars-long
+JWT_EXPIRES_IN=15m
+JWT_REFRESH_SECRET=super-secret-refresh-key-that-is-at-least-32-chars
+JWT_REFRESH_EXPIRES_IN=7d
+
+REDIS_HOST=127.0.0.1
+REDIS_PORT=6379
+</code></pre>
+<p><strong>⚠️ IMPORTANTE:</strong> El <code>.env</code> NUNCA se commitea al git.</p>
+<p>Creá <code>.gitignore</code>:</p>
+<pre><code>.env
+node_modules
+</code></pre>
+<p><strong>Cada variable:</strong></p>
+<ul>
+<li><code>NODE_ENV</code> — <code>development</code>, <code>production</code> o <code>test</code></li>
+<li><code>PORT</code> — Puerto del servidor (default 3000)</li>
+<li><code>DATABASE_URL</code> — Connection string de PostgreSQL</li>
+<li><code>JWT_SECRET</code> — Clave secreta para firmar el access token (mínimo 32 chars)</li>
+<li><code>JWT_EXPIRES_IN</code> — Tiempo de expiración del access token (15 minutos)</li>
+<li><code>JWT_REFRESH_SECRET</code> — Clave secreta para firmar el refresh token</li>
+<li><code>JWT_REFRESH_EXPIRES_IN</code> — Tiempo del refresh token (7 días)</li>
+<li><code>REDIS_HOST</code> / <code>REDIS_PORT</code> — Conexión a Redis</li>
+</ul>
+<hr>
+<h2 id="7-paso-4--docker-compose"><a class="header" href="#7-paso-4--docker-compose">7. Paso 4 — Docker Compose</a></h2>
+<p>Creá <code>docker-compose.yml</code>:</p>
+<pre><code class="language-yaml">version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: farmacia-postgres
+    environment:
+      POSTGRES_DB: farmacia
+      POSTGRES_USER: farmacia
+      POSTGRES_PASSWORD: farmacia
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U farmacia"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: farmacia-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  postgres_data:
+  redis_data:
+</code></pre>
+<p><strong>¿Qué levanta?</strong></p>
+<ul>
+<li><strong>PostgreSQL 15 Alpine</strong> — Database: <code>farmacia</code>, User: <code>farmacia</code>, Password: <code>farmacia</code></li>
+<li><strong>Redis 7 Alpine</strong> — Cache en memoria</li>
+</ul>
+<p><strong>Para levantar:</strong></p>
+<pre><code class="language-bash">docker-compose up -d
+</code></pre>
+<hr>
+<h2 id="8-paso-5--prisma-schema"><a class="header" href="#8-paso-5--prisma-schema">8. Paso 5 — Prisma Schema</a></h2>
+<p>Creá la estructura:</p>
+<pre><code>prisma/
+├── schema.prisma
+└── migrations/
+    └── 20260502015115_init/
+        └── migration.sql
+</code></pre>
+<p><strong><code>prisma/schema.prisma</code>:</strong></p>
+<pre><code class="language-prisma">generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  admin
+  staff
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      Role     @default(staff)
+  deletedAt DateTime?
+  sales     Sale[]
+
+  @@index([email])
+  @@index([role])
+  @@map("users")
+}
+
+model Medicine {
+  id            String   @id @default(uuid())
+  tradeName     String
+  genericName   String
+  description   String?
+  price         Decimal
+  stock         Int      @default(0)
+  expiryDate    DateTime?
+  laboratoryId  String
+  categoryId    String
+  laboratory    Lab      @relation(fields: [laboratoryId], references: [id])
+  category      Category @relation(fields: [categoryId], references: [id])
+  saleItems     SaleItem[]
+  deletedAt     DateTime?
+
+  @@index([tradeName])
+  @@index([genericName])
+  @@index([laboratoryId])
+  @@index([categoryId])
+  @@map("medicines")
+}
+
+model Sale {
+  id           String     @id @default(uuid())
+  date         DateTime   @default(now())
+  total        Decimal
+  paymentMethod String
+  userId       String
+  clientId     String?
+  user         User       @relation(fields: [userId], references: [id])
+  client       Client?    @relation(fields: [clientId], references: [id])
+  items        SaleItem[]
+
+  @@index([date])
+  @@index([userId])
+  @@index([clientId])
+  @@map("sales")
+}
+
+model SaleItem {
+  id         String   @id @default(uuid())
+  saleId     String
+  medicineId String
+  quantity   Int
+  unitPrice  Decimal
+  sale       Sale     @relation(fields: [saleId], references: [id])
+  medicine   Medicine @relation(fields: [medicineId], references: [id])
+
+  @@index([saleId])
+  @@index([medicineId])
+  @@map("sale_items")
+}
+
+model Client {
+  id             String   @id @default(uuid())
+  name           String
+  documentNumber String   @unique
+  email          String?
+  phone          String?
+  address        String?
+  membership     String   @default("bronze")
+  deletedAt      DateTime?
+  sales          Sale[]
+
+  @@index([documentNumber])
+  @@index([email])
+  @@map("clients")
+}
+
+model Lab {
+  id        String     @id @default(uuid())
+  name      String
+  medicines Medicine[]
+  deletedAt DateTime?
+
+  @@map("labs")
+}
+
+model Supplier {
+  id        String   @id @default(uuid())
+  name      String
+  contact   String?
+  deletedAt DateTime?
+
+  @@map("suppliers")
+}
+
+model Category {
+  id        String     @id @default(uuid())
+  name      String
+  medicines Medicine[]
+
+  @@map("categories")
+}
+</code></pre>
+<p><strong>¿Qué modelamos?</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Modelo</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>User</strong></td><td>Usuarios del sistema (admin o staff). Tiene <code>deletedAt</code> para soft delete.</td></tr>
+<tr><td><strong>Role</strong></td><td>Enum con solo dos valores: <code>admin</code> y <code>staff</code></td></tr>
+<tr><td><strong>Client</strong></td><td>Clientes de la farmacia. Membresía: bronze/silver/gold.</td></tr>
+<tr><td><strong>Lab</strong></td><td>Laboratorio farmacéutico</td></tr>
+<tr><td><strong>Category</strong></td><td>Categoría de medicamentos</td></tr>
+<tr><td><strong>Medicine</strong></td><td>Medicamento. Tiene relación con Lab y Category.</td></tr>
+<tr><td><strong>Sale</strong></td><td>Venta. Tiene relación con User y Client.</td></tr>
+<tr><td><strong>SaleItem</strong></td><td>Items de una venta</td></tr>
+<tr><td><strong>Supplier</strong></td><td>Proveedor</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Relaciones clave:</strong></p>
+<ul>
+<li>User → Sale (1:N)</li>
+<li>Client → Sale (1:N, opcional)</li>
+<li>Medicine → SaleItem (1:N)</li>
+<li>Sale → SaleItem (1:N)</li>
+<li>Lab → Medicine (1:N)</li>
+<li>Category → Medicine (1:N)</li>
+</ul>
+<p><strong>Todas las entidades tienen <code>deletedAt</code></strong> para implementar soft delete.</p>
+<p><strong>Ejecutá la migración:</strong></p>
+<pre><code class="language-bash">npx prisma migrate dev --name init
+</code></pre>
+<hr>
+<h2 id="9-paso-6--migración-sql"><a class="header" href="#9-paso-6--migración-sql">9. Paso 6 — Migración SQL</a></h2>
+<p>Prisma genera automáticamente el SQL. El archivo <code>prisma/migrations/20260502015115_init/migration.sql</code> contiene:</p>
+<pre><code class="language-sql">-- CreateEnum
+CREATE TYPE "Role" AS ENUM ('admin', 'staff');
+
+-- CreateTable
+CREATE TABLE "users" (
+    "id" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "role" "Role" NOT NULL DEFAULT 'staff',
+    "deletedAt" TIMESTAMP(3),
+    CONSTRAINT "users_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "medicines" (
+    "id" TEXT NOT NULL,
+    "tradeName" TEXT NOT NULL,
+    "genericName" TEXT NOT NULL,
+    "description" TEXT,
+    "price" DECIMAL(65,30) NOT NULL,
+    "stock" INTEGER NOT NULL DEFAULT 0,
+    "expiryDate" TIMESTAMP(3),
+    "laboratoryId" TEXT NOT NULL,
+    "categoryId" TEXT NOT NULL,
+    "deletedAt" TIMESTAMP(3),
+    CONSTRAINT "medicines_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "sales" (
+    "id" TEXT NOT NULL,
+    "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "total" DECIMAL(65,30) NOT NULL,
+    "paymentMethod" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "clientId" TEXT,
+    CONSTRAINT "sales_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "sale_items" (
+    "id" TEXT NOT NULL,
+    "saleId" TEXT NOT NULL,
+    "medicineId" TEXT NOT NULL,
+    "quantity" INTEGER NOT NULL,
+    "unitPrice" DECIMAL(65,30) NOT NULL,
+    CONSTRAINT "sale_items_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "clients" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "documentNumber" TEXT NOT NULL,
+    "email" TEXT,
+    "phone" TEXT,
+    "address" TEXT,
+    "membership" TEXT NOT NULL DEFAULT 'bronze',
+    "deletedAt" TIMESTAMP(3),
+    CONSTRAINT "clients_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "labs" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "deletedAt" TIMESTAMP(3),
+    CONSTRAINT "labs_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "suppliers" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "contact" TEXT,
+    "deletedAt" TIMESTAMP(3),
+    CONSTRAINT "suppliers_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "categories" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    CONSTRAINT "categories_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
+CREATE INDEX "users_email_idx" ON "users"("email");
+CREATE INDEX "users_role_idx" ON "users"("role");
+CREATE INDEX "medicines_tradeName_idx" ON "medicines"("tradeName");
+CREATE INDEX "medicines_genericName_idx" ON "medicines"("genericName");
+CREATE INDEX "medicines_laboratoryId_idx" ON "medicines"("laboratoryId");
+CREATE INDEX "medicines_categoryId_idx" ON "medicines"("categoryId");
+CREATE INDEX "sales_date_idx" ON "sales"("date");
+CREATE INDEX "sales_userId_idx" ON "sales"("userId");
+CREATE INDEX "sales_clientId_idx" ON "sales"("clientId");
+CREATE INDEX "sale_items_saleId_idx" ON "sale_items"("saleId");
+CREATE INDEX "sale_items_medicineId_idx" ON "sale_items"("medicineId");
+CREATE UNIQUE INDEX "clients_documentNumber_key" ON "clients"("documentNumber");
+CREATE INDEX "clients_documentNumber_idx" ON "clients"("documentNumber");
+
+-- AddForeignKey
+ALTER TABLE "medicines" ADD CONSTRAINT "medicines_laboratoryId_fkey" FOREIGN KEY ("laboratoryId") REFERENCES "labs"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "medicines" ADD CONSTRAINT "medicines_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "categories"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "sales" ADD CONSTRAINT "sales_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "sales" ADD CONSTRAINT "sales_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "clients"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "sale_items" ADD CONSTRAINT "sale_items_saleId_fkey" FOREIGN KEY ("saleId") REFERENCES "sales"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "sale_items" ADD CONSTRAINT "sale_items_medicineId_fkey" FOREIGN KEY ("medicineId") REFERENCES "medicines"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+</code></pre>
+<hr>
+<h2 id="10-paso-7--servidor-serverts"><a class="header" href="#10-paso-7--servidor-serverts">10. Paso 7 — Servidor (server.ts)</a></h2>
+<p>Creá <code>src/server.ts</code>:</p>
+<pre><code class="language-typescript">import { buildApp } from './app.js';
+import { env } from './config/env.js';
+import { logger } from './infrastructure/logger.js';
+import { prisma } from './config/prisma.js';
+import { redis } from './config/redis.js';
+
+const startServer = async () =&gt; {
+  try {
+    const app = await buildApp();
+
+    await app.listen({ port: env.PORT, host: '0.0.0.0' });
+
+    logger.info(`Server listening on port ${env.PORT} in ${env.NODE_ENV} mode`);
+
+    const gracefulShutdown = async (signal: string) =&gt; {
+      logger.info(`Received ${signal}, shutting down gracefully...`);
+      await app.close();
+      await prisma.$disconnect();
+      redis.disconnect();
+      process.exit(0);
+    };
+
+    process.on('SIGINT', () =&gt; gracefulShutdown('SIGINT'));
+    process.on('SIGTERM', () =&gt; gracefulShutdown('SIGTERM'));
+
+  } catch (error) {
+    logger.error({ err: error }, 'Failed to start server');
+    process.exit(1);
+  }
+};
+
+startServer();
+</code></pre>
+<p><strong>¿Qué hace?</strong></p>
+<ol>
+<li>Importa <code>buildApp</code> (que configura Fastify).</li>
+<li>Levanta el servidor en el puerto de las variables de entorno.</li>
+<li><strong>Graceful shutdown</strong>: al recibir SIGINT (Ctrl+C) o SIGTERM, cierra el servidor, Prisma y Redis antes de salir.</li>
+<li>Si algo falla, loguea y sale con código 1.</li>
+</ol>
+<hr>
+<h2 id="11-paso-8--aplicación-appts"><a class="header" href="#11-paso-8--aplicación-appts">11. Paso 8 — Aplicación (app.ts)</a></h2>
+<p>Creá <code>src/app.ts</code>:</p>
+<pre><code class="language-typescript">import Fastify from 'fastify';
+import cors from '@fastify/cors';
+import helmet from '@fastify/helmet';
+import compress from '@fastify/compress';
+import rateLimit from '@fastify/rate-limit';
+import { env } from './config/env.js';
+import { errorHandler } from './presentation/middlewares/errorHandler.js';
+import { registerAuth } from './presentation/middlewares/auth.js';
+import { routes } from './presentation/routes.js';
+
+export const buildApp = async () =&gt; {
+    const app = Fastify({
+        logger: env.NODE_ENV === 'development'
+            ? {
+                level: 'debug',
+                transport: {
+                    target: 'pino-pretty',
+                    options: {
+                        colorize: true,
+                        translateTime: 'SYS:standard',
+                        ignore: 'pid,hostname',
+                    },
+                },
+            }
+            : {
+                level: 'info',
+            },
+    });
+
+    // Error Handler
+    app.setErrorHandler(errorHandler);
+
+    // Security and Utils
+    await app.register(helmet);
+    await app.register(cors, {
+        origin: '*',
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    });
+    await app.register(compress);
+
+    // Rate Limiting
+    await app.register(rateLimit, {
+        max: 100,
+        timeWindow: '1 minute',
+    });
+
+    // JWT Auth
+    await registerAuth(app);
+
+    // Routes
+    app.register(routes, { prefix: '/api/v1' });
+
+    // Health check
+    app.get('/health', async () =&gt; {
+        return { status: 'ok', timestamp: new Date().toISOString() };
+    });
+
+    return app;
+};
+</code></pre>
+<p><strong>¿Qué hace cada parte?</strong></p>
+<ul>
+<li><code>Fastify({ logger: ... })</code> — Crea la instancia. En desarrollo usa <code>pino-pretty</code> con colores; en producción <code>level: 'info'</code>.</li>
+<li><code>app.setErrorHandler(errorHandler)</code> — Handler global de errores.</li>
+<li><code>app.register(helmet)</code> — Headers de seguridad (XSS, HSTS, etc.).</li>
+<li><code>app.register(cors, ...)</code> — Habilita CORS desde cualquier origen.</li>
+<li><code>app.register(compress)</code> — Comprime respuestas con gzip.</li>
+<li><code>app.register(rateLimit, ...)</code> — Limita a 100 requests/min por IP.</li>
+<li><code>registerAuth(app)</code> — Configura JWT.</li>
+<li><code>app.register(routes, { prefix: '/api/v1' })</code> — Registra todas las rutas bajo <code>/api/v1</code>.</li>
+<li><code>app.get('/health', ...)</code> — Health check para monitoreo.</li>
+</ul>
+<hr>
+<h2 id="12-paso-9--configuración"><a class="header" href="#12-paso-9--configuración">12. Paso 9 — Configuración</a></h2>
+<h3 id="12a-srcconfigenvts"><a class="header" href="#12a-srcconfigenvts">12a. <code>src/config/env.ts</code></a></h3>
+<pre><code class="language-typescript">import { z } from 'zod';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const envSchema = z.object({
+    NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+    PORT: z.coerce.number().default(3000),
+    DATABASE_URL: z.string().url(),
+    REDIS_HOST: z.string().default('127.0.0.1'),
+    REDIS_PORT: z.coerce.number().default(6379),
+    JWT_SECRET: z.string().min(32),
+    JWT_EXPIRES_IN: z.string().default('15m'),
+    JWT_REFRESH_SECRET: z.string().min(32),
+    JWT_REFRESH_EXPIRES_IN: z.string().default('7d'),
+});
+
+const _env = envSchema.safeParse(process.env);
+
+if (!_env.success) {
+    console.error('❌ Invalid environment variables', _env.error.format());
+    process.exit(1);
+}
+
+export const env = _env.data;
+</code></pre>
+<p><strong>¿Qué hace?</strong></p>
+<ul>
+<li>Carga <code>.env</code> con <code>dotenv.config()</code>.</li>
+<li>Usa <strong>Zod</strong> para validar todas las variables.</li>
+<li>Si falta alguna o tiene formato inválido, muestra el error y mata el proceso.</li>
+<li>Exporta <code>env</code> tipado correctamente por TypeScript.</li>
+</ul>
+<hr>
+<h3 id="12b-srcconfigprismats"><a class="header" href="#12b-srcconfigprismats">12b. <code>src/config/prisma.ts</code></a></h3>
+<pre><code class="language-typescript">import { PrismaClient } from '@prisma/client';
+import { env } from './env.js';
+
+export const prisma = new PrismaClient({
+    log: env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+    datasourceUrl: env.DATABASE_URL,
+});
+</code></pre>
+<p><strong>¿Qué hace?</strong></p>
+<ul>
+<li>Crea una instancia singleton de Prisma Client.</li>
+<li>En desarrollo loguea todas las queries SQL.</li>
+<li>En producción solo loggea errores.</li>
+</ul>
+<hr>
+<h3 id="12c-srcconfigredists"><a class="header" href="#12c-srcconfigredists">12c. <code>src/config/redis.ts</code></a></h3>
+<pre><code class="language-typescript">import Redis from 'ioredis';
+import { env } from './env.js';
+
+const redisConfig = {
+    host: env.REDIS_HOST,
+    port: env.REDIS_PORT,
+    maxRetriesPerRequest: 1,
+    enableOfflineQueue: false,
+    retryStrategy: () =&gt; null,
+    reconnectOnError: () =&gt; false,
+};
+
+export const redis = new Redis.default(redisConfig);
+
+redis.on('error', (err: Error) =&gt; {
+    // Silenciar errores - Redis es opcional
+});
+
+export const isRedisConnected = () =&gt; redis.status === 'ready';
+</code></pre>
+<p><strong>¿Qué hace?</strong></p>
+<ul>
+<li>Se conecta a Redis con ioredis.</li>
+<li>No reintenta infinitamente si Redis cae.</li>
+<li>Los errores de Redis se silencian porque <strong>Redis es opcional</strong>.</li>
+<li><code>isRedisConnected()</code> verifica si Redis está disponible.</li>
+</ul>
+<hr>
+<h2 id="13-paso-10--logger"><a class="header" href="#13-paso-10--logger">13. Paso 10 — Logger</a></h2>
+<p>Creá <code>src/infrastructure/logger.ts</code>:</p>
+<pre><code class="language-typescript">import pino from 'pino';
+
+export const logger = pino({
+    transport: process.env.NODE_ENV === 'development' ? {
+        target: 'pino-pretty',
+        options: {
+            colorize: true,
+            translateTime: 'SYS:standard',
+            ignore: 'pid,hostname',
+        },
+    } : undefined,
+});
+</code></pre>
+<p><strong>¿Qué hace?</strong></p>
+<ul>
+<li>Usa <strong>Pino</strong> como logger de alto rendimiento.</li>
+<li>En desarrollo: <code>pino-pretty</code> con colores y timestamps legibles.</li>
+<li>En producción: formato JSON plano (más rápido).</li>
+</ul>
+<hr>
+<h2 id="14-paso-11--errores-personalizados"><a class="header" href="#14-paso-11--errores-personalizados">14. Paso 11 — Errores Personalizados</a></h2>
+<p>Creá <code>src/core/errors/AppError.ts</code>:</p>
+<pre><code class="language-typescript">export class AppError extends Error {
+    statusCode: number;
+    isOperational: boolean;
+
+    constructor(message: string, statusCode = 400, isOperational = true) {
+        super(message);
+        this.statusCode = statusCode;
+        this.isOperational = isOperational;
+
+        Object.setPrototypeOf(this, new.target.prototype);
+        Error.captureStackTrace(this);
+    }
+}
+
+export class NotFoundError extends AppError {
+    constructor(message = 'Resource not found') {
+        super(message, 404);
+    }
+}
+
+export class UnauthorizedError extends AppError {
+    constructor(message = 'Unauthorized') {
+        super(message, 401);
+    }
+}
+
+export class ForbiddenError extends AppError {
+    constructor(message = 'Forbidden') {
+        super(message, 403);
+    }
+}
+
+export class ConflictError extends AppError {
+    constructor(message = 'Resource already exists') {
+        super(message, 409);
+    }
+}
+</code></pre>
+<p><strong>¿Por qué?</strong></p>
+<ul>
+<li><code>AppError</code> es la base con <code>statusCode</code> y <code>isOperational</code> (distinguir errores esperados de bugs).</li>
+<li><code>NotFoundError</code> → 404</li>
+<li><code>UnauthorizedError</code> → 401</li>
+<li><code>ForbiddenError</code> → 403</li>
+<li><code>ConflictError</code> → 409</li>
+</ul>
+<hr>
+<h2 id="15-paso-12--tipos-del-sistema"><a class="header" href="#15-paso-12--tipos-del-sistema">15. Paso 12 — Tipos del Sistema</a></h2>
+<h3 id="15a-srctypesindexts"><a class="header" href="#15a-srctypesindexts">15a. <code>src/types/index.ts</code></a></h3>
+<pre><code class="language-typescript">export * from './user.js';
+export * from './auth.js';
+export * from './medicine.js';
+export * from './client.js';
+export * from './sale.js';
+export * from './fastify.js';
+</code></pre>
+<h3 id="15b-srctypesuserts"><a class="header" href="#15b-srctypesuserts">15b. <code>src/types/user.ts</code></a></h3>
+<pre><code class="language-typescript">export type Role = 'admin' | 'staff';
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  role: Role;
+  deletedAt?: Date | null;
+}
+
+export interface UserWithoutPassword {
+  id: string;
+  name: string;
+  email: string;
+  role: Role;
+}
+
+export interface CreateUserDto {
+  name: string;
+  email: string;
+  password: string;
+  role?: Role;
+}
+
+export interface UpdateUserDto {
+  name?: string;
+  email?: string;
+  password?: string;
+  role?: Role;
+}
+
+export interface UserFilters {
+  search?: string;
+}
+
+export interface PaginationParams {
+  page?: number;
+  limit?: number;
+}
+
+export interface PaginatedResponse&lt;T&gt; {
+  data: T[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+</code></pre>
+<h3 id="15c-srctypesauthts"><a class="header" href="#15c-srctypesauthts">15c. <code>src/types/auth.ts</code></a></h3>
+<pre><code class="language-typescript">import { Role } from './user.js';
+
+export interface JwtPayload {
+  userId: string;
+  email: string;
+  role: Role;
+}
+
+export interface RefreshPayload {
+  userId: string;
+}
+
+export interface AuthResponse {
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    role: Role;
+    createdAt?: Date;
+  };
+  accessToken: string;
+  refreshToken: string;
+}
+
+export interface RegisterDto {
+  name: string;
+  email: string;
+  password: string;
+  role?: Role;
+}
+
+export interface LoginDto {
+  email: string;
+  password: string;
+}
+
+export interface RefreshTokenDto {
+  refreshToken: string;
+}
+</code></pre>
+<h3 id="15d-srctypesclientts"><a class="header" href="#15d-srctypesclientts">15d. <code>src/types/client.ts</code></a></h3>
+<pre><code class="language-typescript">export type MembershipTier = 'bronze' | 'silver' | 'gold' | 'platinum';
+
+export interface Client {
+  id: string;
+  name: string;
+  documentNumber: string;
+  email?: string | null;
+  phone?: string | null;
+  address?: string | null;
+  membership: string;
+  deletedAt?: Date | null;
+}
+
+export interface CreateClientDto {
+  name: string;
+  documentNumber: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  membership?: string;
+}
+
+export interface UpdateClientDto {
+  name?: string;
+  documentNumber?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  membership?: string;
+}
+
+export interface ClientFilters {
+  search?: string;
+  membership?: string;
+}
+</code></pre>
+<h3 id="15e-srctypesmedicinets"><a class="header" href="#15e-srctypesmedicinets">15e. <code>src/types/medicine.ts</code></a></h3>
+<pre><code class="language-typescript">export interface Lab {
+  id: string;
+  name: string;
+  deletedAt?: Date | null;
+}
+
+export interface Category {
+  id: string;
+  name: string;
+}
+
+export interface Medicine {
+  id: string;
+  tradeName: string;
+  genericName: string;
+  description?: string | null;
+  price: number;
+  stock: number;
+  expiryDate?: Date | null;
+  laboratoryId: string;
+  categoryId: string;
+  laboratory?: Lab;
+  category?: Category;
+  deletedAt?: Date | null;
+}
+
+export interface CreateMedicineDto {
+  tradeName: string;
+  genericName: string;
+  description?: string;
+  price: number;
+  stock?: number;
+  expiryDate?: string;
+  laboratoryId: string;
+  categoryId: string;
+}
+
+export interface UpdateMedicineDto {
+  tradeName?: string;
+  genericName?: string;
+  description?: string;
+  price?: number;
+  expiryDate?: string;
+  laboratoryId?: string;
+  categoryId?: string;
+}
+
+export interface UpdateStockDto {
+  stock?: number;
+  increment?: number;
+  decrement?: number;
+}
+
+export type StockStatus = 'low' | 'out' | 'adequate' | 'well';
+
+export interface MedicineFilters {
+  search?: string;
+  laboratoryId?: string;
+  categoryId?: string;
+  stockStatus?: StockStatus;
+}
+</code></pre>
+<h3 id="15f-srctypessalets"><a class="header" href="#15f-srctypessalets">15f. <code>src/types/sale.ts</code></a></h3>
+<pre><code class="language-typescript">export type PaymentMethod = 'cash' | 'card' | 'transfer';
+
+export interface SaleItem {
+  id: string;
+  saleId: string;
+  medicineId: string;
+  quantity: number;
+  unitPrice: number;
+}
+
+export interface Sale {
+  id: string;
+  date: Date;
+  total: number;
+  paymentMethod: string;
+  userId: string;
+  clientId?: string | null;
+  items?: SaleItem[];
+}
+
+export interface CreateSaleItemDto {
+  medicineId: string;
+  quantity: number;
+  unitPrice: number;
+}
+
+export interface CreateSaleDto {
+  paymentMethod: PaymentMethod;
+  clientId?: string;
+  items: CreateSaleItemDto[];
+}
+
+export interface SaleFilters {
+  startDate?: string;
+  endDate?: string;
+  userId?: string;
+  clientId?: string;
+}
+</code></pre>
+<h3 id="15g-srctypesfastifyts"><a class="header" href="#15g-srctypesfastifyts">15g. <code>src/types/fastify.ts</code></a></h3>
+<pre><code class="language-typescript">import { FastifyRequest, FastifyReply } from 'fastify';
+import { JwtPayload } from './auth.js';
+
+export interface AuthenticatedRequest extends FastifyRequest {
+  user: JwtPayload;
+}
+
+export type FastifyRouteHandler = (
+  request: FastifyRequest | AuthenticatedRequest,
+  reply: FastifyReply
+) =&gt; Promise&lt;any&gt;;
+
+export interface QueryParams {
+  page?: number;
+  limit?: number;
+  [key: string]: any;
+}
+</code></pre>
+<p><strong>¿Por qué necesitamos <code>AuthenticatedRequest</code>?</strong></p>
+<ul>
+<li>Fastify no sabe que <code>request.user</code> existe. Este tipo extiende <code>FastifyRequest</code> agregando la propiedad <code>user</code> con el payload del JWT. Así TypeScript no se queja cuando usamos <code>request.user.sub</code> en un handler protegido.</li>
+</ul>
+<hr>
+<h2 id="16-paso-13--middlewares"><a class="header" href="#16-paso-13--middlewares">16. Paso 13 — Middlewares</a></h2>
+<h3 id="16a-srcpresentationmiddlewaresauthts"><a class="header" href="#16a-srcpresentationmiddlewaresauthts">16a. <code>src/presentation/middlewares/auth.ts</code></a></h3>
+<pre><code class="language-typescript">import jwt from '@fastify/jwt';
+import { FastifyInstance } from 'fastify';
+import { env } from '../../config/env.js';
+
+export async function registerAuth(app: FastifyInstance): Promise&lt;void&gt; {
+    // Register JWT plugin
+    await app.register(jwt, {
+        secret: env.JWT_SECRET,
+    });
+
+    // Decorate app with authenticate method
+    app.decorate('authenticate', async function(request: any, reply: any) {
+        try {
+            await request.jwtVerify();
+        } catch (err) {
+            reply.send(err);
+        }
+    });
+}
+</code></pre>
+<p><strong>¿Qué hace?</strong></p>
+<ol>
+<li>Registra el plugin <code>@fastify/jwt</code> con el secreto del <code>.env</code>.</li>
+<li>Crea un <strong>decorador</strong> <code>app.authenticate</code> que puede usarse como <code>preHandler</code> en rutas.</li>
+<li>Cuando <code>jwtVerify()</code> falla (token expirado, inválido, etc.), envía el error como respuesta.</li>
+</ol>
+<p><strong>¿Cómo se usa?</strong></p>
+<pre><code class="language-typescript">fastify.get('/protected', {
+    preHandler: [fastify.authenticate],
+    handler: (request, reply) =&gt; { ... }
+});
+</code></pre>
+<p>El <code>preHandler</code> se ejecuta ANTES del handler. Si <code>authenticate</code> falla, el handler nunca se ejecuta.</p>
+<hr>
+<h3 id="16b-srcpresentationmiddlewareserrorhandlerts"><a class="header" href="#16b-srcpresentationmiddlewareserrorhandlerts">16b. <code>src/presentation/middlewares/errorHandler.ts</code></a></h3>
+<pre><code class="language-typescript">import { ZodError } from 'zod';
+import { logger } from '../../infrastructure/logger.js';
+import { AppError } from '../../core/errors/AppError.js';
+
+const errorHandler = (error: any, request: any, reply: any) =&gt; {
+    if (error instanceof ZodError) {
+        logger.warn({ err: error }, 'Validation error');
+        return reply.status(400).send({
+            statusCode: 400,
+            error: 'Bad Request',
+            message: 'Validation failed',
+            issues: error.issues,
+        });
+    }
+
+    if (error instanceof AppError) {
+        logger.warn({ err: error }, error.message);
+        return reply.status(error.statusCode).send({
+            statusCode: error.statusCode,
+            error: error.name,
+            message: error.message,
+        });
+    }
+
+    if (error.statusCode) {
+        return reply.status(error.statusCode).send({
+            statusCode: error.statusCode,
+            error: error.name,
+            message: error.message,
+        });
+    }
+
+    logger.error({ err: error }, 'Unhandled Error');
+    return reply.status(500).send({
+        statusCode: 500,
+        error: 'Internal Server Error',
+        message: 'An unexpected error occurred',
+    });
+};
+
+export { errorHandler };
+</code></pre>
+<p><strong>¿Qué hace?</strong>
+Centraliza el manejo de TODOS los errores:</p>
+<ol>
+<li><strong>ZodError</strong> (status 400) — Validación de DTO fallida.</li>
+<li><strong>AppError</strong> — Nuestros errores personalizados.</li>
+<li><strong>Error con statusCode</strong> — Otros errores con código de estado.</li>
+<li><strong>Error genérico</strong> (status 500) — Para cualquier error inesperado. NUNCA exponemos el stack trace.</li>
+</ol>
+<hr>
+<h3 id="16c-srcpresentationmiddlewaresrbacts"><a class="header" href="#16c-srcpresentationmiddlewaresrbacts">16c. <code>src/presentation/middlewares/rbac.ts</code></a></h3>
+<pre><code class="language-typescript">import { FastifyRequest, FastifyReply } from 'fastify';
+import { UnauthorizedError, ForbiddenError } from '../../core/errors/AppError.js';
+import { Role } from '../../types/index.js';
+
+const requireRoles = (roles: Role[]) =&gt; {
+    return async (_request: FastifyRequest, _reply: FastifyReply) =&gt; {
+        const request = _request as FastifyRequest &amp; { user?: { role?: Role } };
+        const user = request.user;
+        if (!user || !user.role) {
+            throw new UnauthorizedError('User not authenticated');
+        }
+
+        if (!roles.includes(user.role)) {
+            throw new ForbiddenError('Insufficient permissions');
+        }
+    };
+};
+
+export { requireRoles };
+</code></pre>
+<p><strong>¿Qué hace?</strong>
+Implementa <strong>RBAC (Role-Based Access Control)</strong>:</p>
+<ul>
+<li>Recibe un array de roles permitidos (ej: <code>['admin']</code>, <code>['admin', 'staff']</code>).</li>
+<li>Verifica que el usuario esté autenticado.</li>
+<li>Verifica que el rol del usuario esté en la lista permitida.</li>
+<li>Si no cumple, lanza <code>UnauthorizedError</code> o <code>ForbiddenError</code>.</li>
+</ul>
+<p><strong>¿Cómo se usa?</strong></p>
+<pre><code class="language-typescript">fastify.delete('/:id', {
+    preHandler: [fastify.authenticate, requireRoles(['admin'])],
+    handler: clientController.delete,
+});
+</code></pre>
+<hr>
+<h2 id="17-paso-14--rutas"><a class="header" href="#17-paso-14--rutas">17. Paso 14 — Rutas</a></h2>
+<p>Creá <code>src/presentation/routes.ts</code>:</p>
+<pre><code class="language-typescript">import authRoutes from '../modules/auth/presentation/auth.routes.js';
+import userRoutes from '../modules/users/presentation/user.routes.js';
+import medicineRoutes from '../modules/medicines/presentation/medicine.routes.js';
+import saleRoutes from '../modules/sales/presentation/sale.routes.js';
+import clientRoutes from '../modules/clients/presentation/client.routes.js';
+import reportRoutes from '../modules/reports/presentation/report.routes.js';
+
+const routes = async (fastify: any, options: any) =&gt; {
+    fastify.register(authRoutes, { prefix: '/auth' });
+    fastify.register(userRoutes, { prefix: '/users' });
+    fastify.register(medicineRoutes, { prefix: '/medicines' });
+    fastify.register(saleRoutes, { prefix: '/sales' });
+    fastify.register(clientRoutes, { prefix: '/clients' });
+    fastify.register(reportRoutes, { prefix: '/reports' });
+};
+
+export { routes };
+</code></pre>
+<p><strong>¿Qué hace?</strong></p>
+<ul>
+<li>Registra todos los módulos de rutas como <strong>fastify plugins</strong>.</li>
+<li>Como en <code>app.ts</code> se registró con <code>{ prefix: '/api/v1' }</code>, las URLs finales quedan:
+<code>/api/v1/auth/register</code>, <code>/api/v1/users/</code>, <code>/api/v1/medicines/</code>, etc.</li>
+</ul>
+<hr>
+<h2 id="18-paso-15--módulo-auth"><a class="header" href="#18-paso-15--módulo-auth">18. Paso 15 — Módulo Auth</a></h2>
+<h3 id="18a-srcmodulesauthpresentationauthroutests"><a class="header" href="#18a-srcmodulesauthpresentationauthroutests">18a. <code>src/modules/auth/presentation/auth.routes.ts</code></a></h3>
+<pre><code class="language-typescript">import { register, login, refresh, logout } from './auth.controller.js';
+
+const authRoutes = async (fastify: any, options: any) =&gt; {
+    fastify.post('/register', register);
+    fastify.post('/login', login);
+    fastify.post('/refresh', refresh);
+    fastify.post('/logout', {
+        preHandler: [fastify.authenticate],
+        handler: logout,
+    });
+};
+
+export default authRoutes;
+</code></pre>
+<p><strong>Rutas:</strong></p>
+<ul>
+<li><code>POST /auth/register</code> — Registro público.</li>
+<li><code>POST /auth/login</code> — Login público.</li>
+<li><code>POST /auth/refresh</code> — Refrescar token público.</li>
+<li><code>POST /auth/logout</code> — Logout protegido.</li>
+</ul>
+<hr>
+<h3 id="18b-srcmodulesauthpresentationauthdtots"><a class="header" href="#18b-srcmodulesauthpresentationauthdtots">18b. <code>src/modules/auth/presentation/auth.dto.ts</code></a></h3>
+<pre><code class="language-typescript">import { z } from 'zod';
+
+export const RegisterDtoSchema = z.object({
+    name: z.string().min(2, 'Name must be at least 2 characters'),
+    email: z.string().email('Invalid email format'),
+    password: z.string().min(8, 'Password must be at least 8 characters'),
+    role: z.enum(['admin', 'staff']).optional(),
+});
+
+export const LoginDtoSchema = z.object({
+    email: z.string().email('Invalid email format'),
+    password: z.string().min(1, 'Password is required'),
+});
+
+export const RefreshTokenDtoSchema = z.object({
+    refreshToken: z.string().min(1, 'Refresh token is required'),
+});
+</code></pre>
+<hr>
+<h3 id="18c-srcmodulesauthpresentationauthcontrollerts"><a class="header" href="#18c-srcmodulesauthpresentationauthcontrollerts">18c. <code>src/modules/auth/presentation/auth.controller.ts</code></a></h3>
+<pre><code class="language-typescript">import { RegisterDtoSchema, LoginDtoSchema, RefreshTokenDtoSchema } from './auth.dto.js';
+import * as authService from '../application/auth.service.js';
+
+const register = async (request: any, reply: any) =&gt; {
+    const data = RegisterDtoSchema.parse(request.body);
+    const result = await authService.register(data);
+    return reply.status(201).send(result);
+};
+
+const login = async (request: any, reply: any) =&gt; {
+    const data = LoginDtoSchema.parse(request.body);
+    const result = await authService.login(data.email, data.password);
+
+    reply.setCookie('access_token', result.accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 15 * 60 * 1000,
+    });
+
+    reply.setCookie('refresh_token', result.refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    return reply.send({
+        user: result.user,
+        accessToken: result.accessToken,
+        refreshToken: result.refreshToken,
+    });
+};
+
+const refresh = async (request: any, reply: any) =&gt; {
+    const data = RefreshTokenDtoSchema.parse(request.body);
+    const result = await authService.refresh(data.refreshToken);
+
+    reply.setCookie('access_token', result.accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 15 * 60 * 1000,
+    });
+
+    reply.setCookie('refresh_token', result.refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    return reply.send(result);
+};
+
+const logout = async (request: any, reply: any) =&gt; {
+    await authService.logout(request.user.sub);
+
+    reply.clearCookie('access_token');
+    reply.clearCookie('refresh_token');
+
+    return reply.send({ message: 'Logged out successfully' });
+};
+
+export { register, login, refresh, logout };
+</code></pre>
+<hr>
+<h3 id="18d-srcmodulesauthapplicationauthservicets"><a class="header" href="#18d-srcmodulesauthapplicationauthservicets">18d. <code>src/modules/auth/application/auth.service.ts</code></a></h3>
+<pre><code class="language-typescript">import bcrypt from 'bcrypt';
+import jwt, { SignOptions } from 'jsonwebtoken';
+import { env } from '../../../config/env.js';
+import { prisma } from '../../../config/prisma.js';
+import { redis, isRedisConnected } from '../../../config/redis.js';
+import { UnauthorizedError, ConflictError } from '../../../core/errors/AppError.js';
+import { Role, UserWithoutPassword, AuthResponse } from '../../../types/index.js';
+
+const SALT_ROUNDS = 10;
+
+const hashPassword = async (password: string): Promise&lt;string&gt; =&gt; {
+    return await bcrypt.hash(password, SALT_ROUNDS);
+};
+
+const comparePassword = async (password: string, hash: string): Promise&lt;boolean&gt; =&gt; {
+    return await bcrypt.compare(password, hash);
+};
+
+interface TokenPayload {
+    userId: string;
+    email: string;
+    role: Role;
+}
+
+const generateTokens = (userId: string, email: string, role: Role) =&gt; {
+    const accessTokenOptions: SignOptions = {
+        expiresIn: 900
+    };
+    
+    const refreshTokenOptions: SignOptions = {
+        expiresIn: 604800
+    };
+
+    const accessToken = jwt.sign(
+        { userId, email, role } as TokenPayload,
+        env.JWT_SECRET,
+        accessTokenOptions
+    );
+
+    const refreshToken = jwt.sign(
+        { userId },
+        env.JWT_REFRESH_SECRET,
+        refreshTokenOptions
+    );
+
+    return { accessToken, refreshToken };
+};
+
+interface RegisterData {
+    name: string;
+    email: string;
+    password: string;
+    role?: Role;
+}
+
+const register = async (data: RegisterData): Promise&lt;AuthResponse&gt; =&gt; {
+    const { name, email, password, role = 'staff' } = data;
+
+    const existingUser = await prisma.user.findFirst({
+        where: { email, deletedAt: null },
+    });
+
+    if (existingUser) {
+        throw new ConflictError('Email already registered');
+    }
+
+    const hashedPassword = await hashPassword(password);
+
+    const user = await prisma.user.create({
+        data: {
+            name,
+            email,
+            password: hashedPassword,
+            role,
+        },
+    });
+
+    const { accessToken, refreshToken } = generateTokens(user.id, user.email, user.role as Role);
+
+    if (isRedisConnected()) {
+        await redis.set(
+            `refresh_token:${user.id}`,
+            refreshToken,
+            'EX',
+            7 * 24 * 60 * 60
+        );
+    }
+
+    return {
+        user: {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role as Role,
+        },
+        accessToken,
+        refreshToken,
+    };
+};
+
+const login = async (email: string, password: string): Promise&lt;AuthResponse&gt; =&gt; {
+    const user = await prisma.user.findFirst({
+        where: { email, deletedAt: null },
+    });
+
+    if (!user) {
+        throw new UnauthorizedError('Invalid credentials');
+    }
+
+    const isValidPassword = await comparePassword(password, user.password);
+
+    if (!isValidPassword) {
+        throw new UnauthorizedError('Invalid credentials');
+    }
+
+    const { accessToken, refreshToken } = generateTokens(user.id, user.email, user.role as Role);
+
+    if (isRedisConnected()) {
+        await redis.set(
+            `refresh_token:${user.id}`,
+            refreshToken,
+            'EX',
+            7 * 24 * 60 * 60
+        );
+    }
+
+    return {
+        user: {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role as Role,
+        },
+        accessToken,
+        refreshToken,
+    };
+};
+
+interface RefreshResponse {
+    accessToken: string;
+    refreshToken: string;
+}
+
+const refresh = async (refreshToken: string): Promise&lt;RefreshResponse&gt; =&gt; {
+    if (!isRedisConnected()) {
+        throw new UnauthorizedError('Token refresh unavailable');
+    }
+
+    try {
+        const payload = jwt.verify(refreshToken, env.JWT_REFRESH_SECRET) as { userId: string };
+
+        const storedToken = await redis.get(`refresh_token:${payload.userId}`);
+
+        if (storedToken !== refreshToken) {
+            throw new UnauthorizedError('Invalid or expired refresh token');
+        }
+
+        const user = await prisma.user.findFirst({
+            where: { id: payload.userId, deletedAt: null },
+        });
+
+        if (!user) {
+            throw new UnauthorizedError('User not found');
+        }
+
+        const { accessToken, refreshToken: newRefreshToken } = generateTokens(
+            user.id,
+            user.email,
+            user.role as Role
+        );
+
+        await redis.set(
+            `refresh_token:${user.id}`,
+            newRefreshToken,
+            'EX',
+            7 * 24 * 60 * 60
+        );
+
+        return {
+            accessToken,
+            refreshToken: newRefreshToken,
+        };
+    } catch (error) {
+        throw new UnauthorizedError('Invalid or expired refresh token');
+    }
+};
+
+const logout = async (userId: string): Promise&lt;void&gt; =&gt; {
+    if (isRedisConnected()) {
+        await redis.del(`refresh_token:${userId}`);
+    }
+};
+
+export { register, login, refresh, logout, generateTokens };
+</code></pre>
+<p><strong>¿Qué hace cada función?</strong></p>
+<ul>
+<li><strong><code>hashPassword</code></strong> — Usa bcrypt con 10 salt rounds para hashear contraseñas.</li>
+<li><strong><code>comparePassword</code></strong> — Compara una contraseña en texto plano contra un hash.</li>
+<li><strong><code>generateTokens</code></strong> — Genera:
+<ul>
+<li><strong>Access Token</strong> (15 min): contiene <code>userId</code>, <code>email</code>, <code>role</code>, firmado con <code>JWT_SECRET</code>.</li>
+<li><strong>Refresh Token</strong> (7 días): contiene solo <code>userId</code>, firmado con <code>JWT_REFRESH_SECRET</code> (diferente!).</li>
+</ul>
+</li>
+<li><strong><code>register</code>:</strong>
+<ol>
+<li>Busca si ya existe un usuario con ese email (solo usuarios no borrados: <code>deletedAt: null</code>).</li>
+<li>Si existe, lanza <code>ConflictError</code>.</li>
+<li>Hashea la contraseña.</li>
+<li>Crea el usuario en la base de datos.</li>
+<li>Genera tokens.</li>
+<li>Guarda el refresh token en Redis (<code>refresh_token:{userId}</code>) con expiración de 7 días.</li>
+<li>Retorna el usuario (sin password) y los tokens.</li>
+</ol>
+</li>
+<li><strong><code>login</code>:</strong>
+<ol>
+<li>Busca el usuario por email.</li>
+<li>Si no existe, lanza <code>UnauthorizedError</code>.</li>
+<li>Compara la contraseña.</li>
+<li>Si no coincide, lanza <code>UnauthorizedError</code>.</li>
+<li>Genera tokens, guarda refresh token en Redis, retorna.</li>
+</ol>
+</li>
+<li><strong><code>refresh</code>:</strong>
+<ol>
+<li>Verifica que Redis esté conectado (si no, no se puede refrescar).</li>
+<li>Verifica el refresh token con la clave secreta.</li>
+<li>Busca en Redis si el refresh token coincide con el almacenado (previene reutilización de tokens robados).</li>
+<li>Busca al usuario en la DB.</li>
+<li>Genera nuevos tokens (rotación de refresh token).</li>
+<li>Guarda el nuevo refresh token en Redis.</li>
+</ol>
+</li>
+<li><strong><code>logout</code>:</strong> Borra el refresh token de Redis, invalidándolo.</li>
+</ul>
+<hr>
+<h2 id="19-paso-16--módulo-users"><a class="header" href="#19-paso-16--módulo-users">19. Paso 16 — Módulo Users</a></h2>
+<p>Controla usuarios del sistema (CRUD). Solo admin puede realizar operaciones.</p>
+<h3 id="19a-srcmodulesuserspresentationuserroutests"><a class="header" href="#19a-srcmodulesuserspresentationuserroutests">19a. <code>src/modules/users/presentation/user.routes.ts</code></a></h3>
+<pre><code class="language-typescript">import { userController } from './user.controller.js';
+import { requireRoles } from '../../../presentation/middlewares/rbac.js';
+
+const userRoutes = async (fastify: any, _options: any) =&gt; {
+    fastify.get('/', {
+        preHandler: [fastify.authenticate, requireRoles(['admin'])],
+        handler: userController.findAll,
+    });
+
+    fastify.get('/:id', {
+        preHandler: [fastify.authenticate, requireRoles(['admin'])],
+        handler: userController.findById,
+    });
+
+    fastify.post('/', {
+        preHandler: [fastify.authenticate, requireRoles(['admin'])],
+        handler: userController.create,
+    });
+
+    fastify.put('/:id', {
+        preHandler: [fastify.authenticate, requireRoles(['admin'])],
+        handler: userController.update,
+    });
+
+    fastify.delete('/:id', {
+        preHandler: [fastify.authenticate, requireRoles(['admin'])],
+        handler: userController.delete,
+    });
+};
+
+export default userRoutes;
+</code></pre>
+<p><strong>Todas las rutas requieren autenticación + rol admin.</strong></p>
+<ul>
+<li><code>GET /users</code> — Lista paginada de usuarios.</li>
+<li><code>GET /users/:id</code> — Un usuario específico.</li>
+<li><code>POST /users</code> — Crear nuevo usuario.</li>
+<li><code>PUT /users/:id</code> — Actualizar usuario.</li>
+<li><code>DELETE /users/:id</code> — Soft delete de usuario.</li>
+</ul>
+<hr>
+<h3 id="19b-srcmodulesuserspresentationuserdtots"><a class="header" href="#19b-srcmodulesuserspresentationuserdtots">19b. <code>src/modules/users/presentation/user.dto.ts</code></a></h3>
+<pre><code class="language-typescript">import { z } from 'zod';
+
+export const CreateUserDtoSchema = z.object({
+    name: z.string().min(2, 'Name must be at least 2 characters'),
+    email: z.string().email('Invalid email format'),
+    password: z.string().min(8, 'Password must be at least 8 characters'),
+    role: z.enum(['admin', 'staff']).optional(),
+});
+
+export const UpdateUserDtoSchema = z.object({
+    name: z.string().min(2, 'Name must be at least 2 characters').optional(),
+    email: z.string().email('Invalid email format').optional(),
+    password: z.string().min(8, 'Password must be at least 8 characters').optional(),
+    role: z.enum(['admin', 'staff']).optional(),
+});
+</code></pre>
+<hr>
+<h3 id="19c-srcmodulesuserspresentationusercontrollerts"><a class="header" href="#19c-srcmodulesuserspresentationusercontrollerts">19c. <code>src/modules/users/presentation/user.controller.ts</code></a></h3>
+<pre><code class="language-typescript">import { FastifyRequest, FastifyReply } from 'fastify';
+import { CreateUserDtoSchema, UpdateUserDtoSchema } from './user.dto.js';
+import { userService } from '../application/user.service.js';
+
+export const userController = {
+    findAll: async (request: FastifyRequest, reply: FastifyReply) =&gt; {
+        const query = request.query as { page?: number; limit?: number };
+        const { page = 1, limit = 10 } = query;
+        const result = await userService.findAll(Number(page), Number(limit));
+        return reply.send(result);
+    },
+
+    findById: async (request: FastifyRequest, reply: FastifyReply) =&gt; {
+        const params = request.params as { id: string };
+        const { id } = params;
+        const user = await userService.findById(id);
+        return reply.send(user);
+    },
+
+    create: async (request: FastifyRequest, reply: FastifyReply) =&gt; {
+        const data = CreateUserDtoSchema.parse(request.body);
+        const user = await userService.create(data);
+        return reply.status(201).send(user);
+    },
+
+    update: async (request: FastifyRequest, reply: FastifyReply) =&gt; {
+        const params = request.params as { id: string };
+        const { id } = params;
+        const data = UpdateUserDtoSchema.parse(request.body);
+        const currentUserId = (request as any).user?.sub;
+        const user = await userService.update(id, data, currentUserId);
+        return reply.send(user);
+    },
+
+    delete: async (request: FastifyRequest, reply: FastifyReply) =&gt; {
+        const params = request.params as { id: string };
+        const { id } = params;
+        const currentUserId = (request as any).user?.sub;
+        await userService.delete(id, currentUserId);
+        return reply.send({ message: 'User deleted successfully' });
+    },
+};
+</code></pre>
+<p><strong>Cada handler:</strong></p>
+<ul>
+<li>Obtiene datos del request (query params, params de URL, o body).</li>
+<li>Los valida con Zod (<code>.parse()</code>).</li>
+<li>Llama al servicio correspondiente.</li>
+<li>Retorna la respuesta con el status code adecuado.</li>
+</ul>
+<p>Nótese que en <code>update</code> y <code>delete</code> se extrae <code>currentUserId</code> del token JWT (<code>request.user.sub</code>) para prevenir que un usuario se elimine a sí mismo o cambie su propio rol.</p>
+<hr>
+<h3 id="19d-srcmodulesusersapplicationuserservicets"><a class="header" href="#19d-srcmodulesusersapplicationuserservicets">19d. <code>src/modules/users/application/user.service.ts</code></a></h3>
+<pre><code class="language-typescript">import bcrypt from 'bcrypt';
+import { userRepository } from '../infrastructure/user.repository.js';
+import { ConflictError, NotFoundError, ForbiddenError } from '../../../core/errors/AppError.js';
+import { CreateUserDto, UpdateUserDto, PaginatedResponse, UserWithoutPassword } from '../../../types/index.js';
+
+const SALT_ROUNDS = 10;
+
+export const userService = {
+    findAll: async (page = 1, limit = 10): Promise&lt;PaginatedResponse&lt;UserWithoutPassword&gt;&gt; =&gt; {
+        const skip = (page - 1) * limit;
+        const users = await userRepository.findAllActive(skip, limit);
+        const total = await userRepository.countActive();
+        const totalPages = Math.ceil(total / limit);
+
+        return {
+            data: users,
+            pagination: {
+                page,
+                limit,
+                total,
+                totalPages,
+            },
+        };
+    },
+
+    findById: async (id: string): Promise&lt;UserWithoutPassword | null&gt; =&gt; {
+        const user = await userRepository.findById(id);
+        if (!user) {
+            throw new NotFoundError('User not found');
+        }
+        return user;
+    },
+
+    create: async (data: CreateUserDto): Promise&lt;UserWithoutPassword&gt; =&gt; {
+        const existingUser = await userRepository.findByEmail(data.email);
+        if (existingUser) {
+            throw new ConflictError('Email already registered');
+        }
+
+        const hashedPassword = await bcrypt.hash(data.password, SALT_ROUNDS);
+
+        return await userRepository.create({
+            name: data.name,
+            email: data.email,
+            password: hashedPassword,
+            role: data.role || 'staff',
+        });
+    },
+
+    update: async (id: string, data: UpdateUserDto, currentUserId: string): Promise&lt;UserWithoutPassword&gt; =&gt; {
+        const user = await userRepository.findById(id);
+        if (!user) {
+            throw new NotFoundError('User not found');
+        }
+
+        if (currentUserId === id &amp;&amp; data.role) {
+            throw new ForbiddenError('Cannot change your own role');
+        }
+
+        if (data.email) {
+            const existingUser = await userRepository.findByEmail(data.email);
+            if (existingUser &amp;&amp; existingUser.id !== id) {
+                throw new ConflictError('Email already in use');
+            }
+        }
+
+        const updateData = { ...data };
+        if (updateData.password) {
+            updateData.password = await bcrypt.hash(updateData.password, SALT_ROUNDS);
+        }
+
+        return await userRepository.update(id, updateData);
+    },
+
+    delete: async (id: string, currentUserId: string): Promise&lt;void&gt; =&gt; {
+        const user = await userRepository.findById(id);
+        if (!user) {
+            throw new NotFoundError('User not found');
+        }
+
+        if (currentUserId === id) {
+            throw new ForbiddenError('Cannot delete your own account');
+        }
+
+        await userRepository.softDelete(id);
+    },
+};
+</code></pre>
+<p><strong>Lógica de negocio clave:</strong></p>
+<ul>
+<li>No se puede cambiar el rol de uno mismo.</li>
+<li>No se puede usar el email de otro usuario.</li>
+<li>No se puede eliminar la propia cuenta.</li>
+<li>Las contraseñas siempre se hashean antes de guardar.</li>
+<li>El <code>delete</code> es soft delete (pone <code>deletedAt</code> en vez de borrar).</li>
+</ul>
+<hr>
+<h3 id="19e-srcmodulesusersdomainuserrepositoryinterfacets"><a class="header" href="#19e-srcmodulesusersdomainuserrepositoryinterfacets">19e. <code>src/modules/users/domain/user.repository.interface.ts</code></a></h3>
+<pre><code class="language-typescript">import { CreateUserDto, UpdateUserDto, UserWithoutPassword } from '../../../types/index.js';
+
+// IUserRepository interface
+// This defines the contract for user data access
+
+export interface IUserRepository {
+    findByEmail(email: string): Promise&lt;any | null&gt;;
+    findById(id: string): Promise&lt;UserWithoutPassword | null&gt;;
+    findAllActive(skip?: number, take?: number): Promise&lt;UserWithoutPassword[]&gt;;
+    countActive(): Promise&lt;number&gt;;
+    create(data: { name: string; email: string; password: string; role?: string }): Promise&lt;UserWithoutPassword&gt;;
+    update(id: string, data: { name?: string; email?: string; password?: string; role?: string }): Promise&lt;UserWithoutPassword&gt;;
+    softDelete(id: string): Promise&lt;any&gt;;
+}
+
+export const userRepositoryContract: IUserRepository = {
+    findByEmail: async (email: string) =&gt; { return null; },
+    findById: async (id: string) =&gt; { return null; },
+    findAllActive: async (skip = 0, take = 10) =&gt; { return []; },
+    countActive: async () =&gt; { return 0; },
+    create: async (data) =&gt; { return {} as UserWithoutPassword; },
+    update: async (id: string, data) =&gt; { return {} as UserWithoutPassword; },
+    softDelete: async (id: string) =&gt; {},
+};
+</code></pre>
+<p><strong>¿Por qué una interfaz?</strong></p>
+<ul>
+<li>Define un <strong>contrato</strong>: lo que el servicio espera del repositorio, sin importar la implementación.</li>
+<li>Si mañana cambiás Prisma por Knex o raw queries, el servicio no se toca.</li>
+<li><code>userRepositoryContract</code> es una implementación vacía (mock) útil para tests.</li>
+</ul>
+<hr>
+<h3 id="19f-srcmodulesusersinfrastructureuserrepositoryts"><a class="header" href="#19f-srcmodulesusersinfrastructureuserrepositoryts">19f. <code>src/modules/users/infrastructure/user.repository.ts</code></a></h3>
+<pre><code class="language-typescript">import { prisma } from '../../../config/prisma.js';
+import { UserWithoutPassword, Role } from '../../../types/index.js';
+
+interface CreateUserData {
+    name: string;
+    email: string;
+    password: string;
+    role?: string;
+}
+
+interface UpdateUserData {
+    name?: string;
+    email?: string;
+    password?: string;
+    role?: string;
+}
+
+// Helper to map Prisma user to UserWithoutPassword
+const mapToUserWithoutPassword = (user: {
+    id: string;
+    name: string;
+    email: string;
+    role: Role;
+}): UserWithoutPassword =&gt; ({
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+});
+
+export const userRepository = {
+    findByEmail: async (email: string) =&gt; {
+        return await prisma.user.findFirst({
+            where: { email, deletedAt: null },
+        });
+    },
+
+    findById: async (id: string): Promise&lt;UserWithoutPassword | null&gt; =&gt; {
+        const user = await prisma.user.findFirst({
+            where: { id, deletedAt: null },
+        });
+        if (!user) return null;
+        return mapToUserWithoutPassword(user);
+    },
+
+    findAllActive: async (skip = 0, take = 10): Promise&lt;UserWithoutPassword[]&gt; =&gt; {
+        const users = await prisma.user.findMany({
+            where: { deletedAt: null },
+            skip,
+            take,
+        });
+        return users.map(mapToUserWithoutPassword);
+    },
+
+    countActive: async (): Promise&lt;number&gt; =&gt; {
+        return await prisma.user.count({
+            where: { deletedAt: null },
+        });
+    },
+
+    create: async (data: CreateUserData): Promise&lt;UserWithoutPassword&gt; =&gt; {
+        const user = await prisma.user.create({
+            data: {
+                name: data.name,
+                email: data.email,
+                password: data.password,
+                role: data.role as Role,
+            },
+        });
+        return mapToUserWithoutPassword(user);
+    },
+
+    update: async (id: string, data: UpdateUserData): Promise&lt;UserWithoutPassword&gt; =&gt; {
+        const user = await prisma.user.update({
+            where: { id },
+            data: {
+                name: data.name,
+                email: data.email,
+                password: data.password,
+                role: data.role as Role,
+            },
+        });
+        return mapToUserWithoutPassword(user);
+    },
+
+    softDelete: async (id: string): Promise&lt;any&gt; =&gt; {
+        return await prisma.user.update({
+            where: { id },
+            data: { deletedAt: new Date() },
+        });
+    },
+};
+</code></pre>
+<p><strong>¿Qué hace?</strong></p>
+<ul>
+<li>Es la implementación concreta de <code>IUserRepository</code> usando Prisma.</li>
+<li><code>mapToUserWithoutPassword</code> — Elimina el campo <code>password</code> antes de devolver al servicio (seguridad).</li>
+<li>Todas las queries filtran por <code>deletedAt: null</code> (soft delete).</li>
+<li><code>findByEmail</code> se usa para verificar duplicados.</li>
+<li><code>create</code> y <code>update</code> reciben los datos ya validados por el servicio.</li>
+</ul>
+<hr>
+<h2 id="20-paso-17--módulo-medicines"><a class="header" href="#20-paso-17--módulo-medicines">20. Paso 17 — Módulo Medicines</a></h2>
+<h3 id="20a-srcmodulesmedicinespresentationmedicineroutests"><a class="header" href="#20a-srcmodulesmedicinespresentationmedicineroutests">20a. <code>src/modules/medicines/presentation/medicine.routes.ts</code></a></h3>
+<pre><code class="language-typescript">import { medicineController } from './medicine.controller.js';
+import { requireRoles } from '../../../presentation/middlewares/rbac.js';
+
+export default async function medicineRoutes(fastify: any, _options: any) {
+    fastify.get('/', {
+        preHandler: [fastify.authenticate],
+        handler: medicineController.findAll,
+    });
+
+    fastify.get('/:id', {
+        preHandler: [fastify.authenticate],
+        handler: medicineController.findById,
+    });
+
+    fastify.post('/', {
+        preHandler: [fastify.authenticate, requireRoles(['admin', 'staff'])],
+        handler: medicineController.create,
+    });
+
+    fastify.put('/:id', {
+        preHandler: [fastify.authenticate, requireRoles(['admin', 'staff'])],
+        handler: medicineController.update,
+    });
+
+    fastify.patch('/:id/stock', {
+        preHandler: [fastify.authenticate, requireRoles(['admin', 'staff'])],
+        handler: medicineController.updateStock,
+    });
+
+    fastify.delete('/:id', {
+        preHandler: [fastify.authenticate, requireRoles(['admin'])],
+        handler: medicineController.delete,
+    });
+}
+</code></pre>
+<p><strong>Nota:</strong> La eliminación es solo admin, pero el CRUD básico puede ser admin Y staff.</p>
+<hr>
+<h3 id="20b-srcmodulesmedicinespresentationmedicinedtots"><a class="header" href="#20b-srcmodulesmedicinespresentationmedicinedtots">20b. <code>src/modules/medicines/presentation/medicine.dto.ts</code></a></h3>
+<pre><code class="language-typescript">import { z } from 'zod';
+
+export const CreateMedicineDtoSchema = z.object({
+    tradeName: z.string().min(2, 'Trade name must be at least 2 characters'),
+    genericName: z.string().min(2, 'Generic name must be at least 2 characters'),
+    description: z.string().optional(),
+    price: z.number().positive('Price must be positive'),
+    stock: z.number().int().min(0).optional(),
+    expiryDate: z.string().datetime().optional(),
+    laboratoryId: z.string().min(1, 'Laboratory is required'),
+    categoryId: z.string().min(1, 'Category is required'),
+});
+
+export const UpdateMedicineDtoSchema = z.object({
+    tradeName: z.string().min(2, 'Trade name must be at least 2 characters').optional(),
+    genericName: z.string().min(2, 'Generic name must be at least 2 characters').optional(),
+    description: z.string().optional(),
+    price: z.number().positive('Price must be positive').optional(),
+    expiryDate: z.string().datetime().optional(),
+    laboratoryId: z.string().min(1, 'Laboratory is required').optional(),
+    categoryId: z.string().min(1, 'Category is required').optional(),
+});
+
+export const UpdateStockDtoSchema = z.object({
+    stock: z.number().int().min(0).optional(),
+    increment: z.number().int().positive().optional(),
+    decrement: z.number().int().positive().optional(),
+}).refine(data =&gt; {
+    const count = [data.stock, data.increment, data.decrement].filter(v =&gt; v !== undefined).length;
+    return count === 1;
+}, { message: 'Exactly one of stock, increment, or decrement must be provided' });
+</code></pre>
+<p><strong>Particularidad de <code>UpdateStockDtoSchema</code>:</strong></p>
+<ul>
+<li>Usa <code>.refine()</code> para asegurar que se envíe EXACTAMENTE una de las tres opciones: <code>stock</code> (valor absoluto), <code>increment</code> (sumar) o <code>decrement</code> (restar).</li>
+</ul>
+<hr>
+<h3 id="20c-srcmodulesmedicinespresentationmedicinecontrollerts"><a class="header" href="#20c-srcmodulesmedicinespresentationmedicinecontrollerts">20c. <code>src/modules/medicines/presentation/medicine.controller.ts</code></a></h3>
+<pre><code class="language-typescript">import { FastifyRequest, FastifyReply } from 'fastify';
+import { CreateMedicineDtoSchema, UpdateMedicineDtoSchema, UpdateStockDtoSchema } from './medicine.dto.js';
+import { medicineService } from '../application/medicine.service.js';
+import { CreateMedicineDto, UpdateMedicineDto, UpdateStockDto, MedicineFilters } from '../../../types/index.js';
+
+interface Params {
+    id: string;
+}
+
+interface Query extends MedicineFilters {
+    page?: number;
+    limit?: number;
+}
+
+export const medicineController = {
+    findAll: async (request: FastifyRequest&lt;{ Querystring: Query }&gt;, reply: FastifyReply) =&gt; {
+        const result = await medicineService.findAll(request.query);
+        return reply.send(result);
+    },
+
+    findById: async (request: FastifyRequest&lt;{ Params: Params }&gt;, reply: FastifyReply) =&gt; {
+        const { id } = request.params;
+        const medicine = await medicineService.findById(id);
+        return reply.send(medicine);
+    },
+
+    create: async (request: FastifyRequest&lt;{ Body: CreateMedicineDto }&gt;, reply: FastifyReply) =&gt; {
+        const data = CreateMedicineDtoSchema.parse(request.body);
+        const medicine = await medicineService.create(data);
+        return reply.status(201).send(medicine);
+    },
+
+    update: async (request: FastifyRequest&lt;{ Params: Params; Body: UpdateMedicineDto }&gt;, reply: FastifyReply) =&gt; {
+        const { id } = request.params;
+        const data = UpdateMedicineDtoSchema.parse(request.body);
+        const medicine = await medicineService.update(id, data);
+        return reply.send(medicine);
+    },
+
+    updateStock: async (request: FastifyRequest&lt;{ Params: Params; Body: UpdateStockDto }&gt;, reply: FastifyReply) =&gt; {
+        const { id } = request.params;
+        const data = UpdateStockDtoSchema.parse(request.body);
+        const medicine = await medicineService.updateStock(id, data);
+        return reply.send(medicine);
+    },
+
+    delete: async (request: FastifyRequest&lt;{ Params: Params }&gt;, reply: FastifyReply) =&gt; {
+        const { id } = request.params;
+        await medicineService.delete(id);
+        return reply.send({ message: 'Medicine deleted successfully' });
+    },
+};
+</code></pre>
+<hr>
+<h3 id="20d-srcmodulesmedicinesapplicationmedicineservicets"><a class="header" href="#20d-srcmodulesmedicinesapplicationmedicineservicets">20d. <code>src/modules/medicines/application/medicine.service.ts</code></a></h3>
+<pre><code class="language-typescript">import { medicineRepository } from '../infrastructure/medicine.repository.js';
+import { NotFoundError, ForbiddenError } from '../../../core/errors/AppError.js';
+import { CreateMedicineDto, UpdateMedicineDto, UpdateStockDto, MedicineFilters, PaginatedResponse, Medicine } from '../../../types/index.js';
+
+export const medicineService = {
+    findAll: async (queryParams: MedicineFilters &amp; { q?: string; page?: number; limit?: number }): Promise&lt;PaginatedResponse&lt;Medicine&gt;&gt; =&gt; {
+        const { q, laboratoryId, categoryId, stockStatus, page = 1, limit = 10 } = queryParams;
+        const skip = (Number(page) - 1) * Number(limit);
+
+        const filters: MedicineFilters = {};
+        if (q) filters.search = q;
+        if (laboratoryId) filters.laboratoryId = laboratoryId;
+        if (categoryId) filters.categoryId = categoryId;
+        if (stockStatus) filters.stockStatus = stockStatus;
+
+        const medicines = await medicineRepository.findAllActive(filters, skip, Number(limit));
+        const total = await medicineRepository.countActive(filters);
+        const totalPages = Math.ceil(total / Number(limit));
+
+        return {
+            data: medicines,
+            pagination: {
+                page: Number(page),
+                limit: Number(limit),
+                total,
+                totalPages,
+            },
+        };
+    },
+
+    findById: async (id: string): Promise&lt;Medicine | null&gt; =&gt; {
+        const medicine = await medicineRepository.findById(id);
+        if (!medicine) {
+            throw new NotFoundError('Medicine not found');
+        }
+        return medicine;
+    },
+
+    create: async (data: CreateMedicineDto): Promise&lt;Medicine&gt; =&gt; {
+        return await medicineRepository.create({
+            tradeName: data.tradeName,
+            genericName: data.genericName,
+            description: data.description,
+            price: data.price,
+            stock: data.stock || 0,
+            expiryDate: data.expiryDate ? new Date(data.expiryDate) : null,
+            laboratoryId: data.laboratoryId,
+            categoryId: data.categoryId,
+        });
+    },
+
+    update: async (id: string, data: UpdateMedicineDto &amp; { stock?: number }): Promise&lt;Medicine&gt; =&gt; {
+        const medicine = await medicineRepository.findById(id);
+        if (!medicine) {
+            throw new NotFoundError('Medicine not found');
+        }
+
+        if (data.stock !== undefined) {
+            throw new ForbiddenError('Use PATCH /medicines/:id/stock to update stock');
+        }
+
+        return await medicineRepository.update(id, {
+            tradeName: data.tradeName,
+            genericName: data.genericName,
+            description: data.description,
+            price: data.price,
+            expiryDate: data.expiryDate ? new Date(data.expiryDate) : undefined,
+            laboratoryId: data.laboratoryId,
+            categoryId: data.categoryId,
+        });
+    },
+
+    updateStock: async (id: string, stockData: UpdateStockDto): Promise&lt;Medicine&gt; =&gt; {
+        const medicine = await medicineRepository.findById(id);
+        if (!medicine) {
+            throw new NotFoundError('Medicine not found');
+        }
+
+        if (stockData.stock !== undefined) {
+            if (stockData.stock &lt; 0) {
+                throw new ForbiddenError('Stock cannot be negative');
+            }
+            return await medicineRepository.updateStock(id, stockData.stock);
+        }
+
+        if (stockData.increment !== undefined) {
+            return await medicineRepository.incrementStock(id, stockData.increment);
+        }
+
+        if (stockData.decrement !== undefined) {
+            const newStock = medicine.stock - stockData.decrement;
+            if (newStock &lt; 0) {
+                throw new ForbiddenError('Stock cannot be negative');
+            }
+            return await medicineRepository.decrementStock(id, stockData.decrement);
+        }
+
+        throw new ForbiddenError('No valid stock operation provided');
+    },
+
+    delete: async (id: string): Promise&lt;Medicine&gt; =&gt; {
+        const medicine = await medicineRepository.findById(id);
+        if (!medicine) {
+            throw new NotFoundError('Medicine not found');
+        }
+
+        return await medicineRepository.softDelete(id);
+    },
+};
+</code></pre>
+<hr>
+<h3 id="20e-srcmodulesmedicinesdomainmedicinerepositoryinterfacets"><a class="header" href="#20e-srcmodulesmedicinesdomainmedicinerepositoryinterfacets">20e. <code>src/modules/medicines/domain/medicine.repository.interface.ts</code></a></h3>
+<pre><code class="language-typescript">import { Medicine, CreateMedicineDto, UpdateMedicineDto, UpdateStockDto, MedicineFilters } from '../../../types/index.js';
+
+// IMedicineRepository interface
+// This defines the contract for medicine data access
+
+export interface IMedicineRepository {
+    findById(id: string): Promise&lt;Medicine | null&gt;;
+    findAllActive(filters: MedicineFilters, skip?: number, take?: number): Promise&lt;Medicine[]&gt;;
+    countActive(filters: MedicineFilters): Promise&lt;number&gt;;
+    create(data: CreateMedicineDto): Promise&lt;Medicine&gt;;
+    update(id: string, data: UpdateMedicineDto): Promise&lt;Medicine&gt;;
+    updateStock(id: string, stock: number): Promise&lt;Medicine&gt;;
+    incrementStock(id: string, amount: number): Promise&lt;Medicine&gt;;
+    decrementStock(id: string, amount: number): Promise&lt;Medicine&gt;;
+    softDelete(id: string): Promise&lt;Medicine&gt;;
+}
+
+export const medicineRepositoryContract: IMedicineRepository = {
+    findById: async (id: string) =&gt; { return null; },
+    findAllActive: async (filters: MedicineFilters, skip = 0, take = 10) =&gt; { return []; },
+    countActive: async (filters: MedicineFilters) =&gt; { return 0; },
+    create: async (data: CreateMedicineDto) =&gt; { return {} as Medicine; },
+    update: async (id: string, data: UpdateMedicineDto) =&gt; { return {} as Medicine; },
+    updateStock: async (id: string, stock: number) =&gt; { return {} as Medicine; },
+    incrementStock: async (id: string, amount: number) =&gt; { return {} as Medicine; },
+    decrementStock: async (id: string, amount: number) =&gt; { return {} as Medicine; },
+    softDelete: async (id: string) =&gt; { return {} as Medicine; },
+};
+</code></pre>
+<hr>
+<h3 id="20f-srcmodulesmedicinesinfrastructuremedicinerepositoryts"><a class="header" href="#20f-srcmodulesmedicinesinfrastructuremedicinerepositoryts">20f. <code>src/modules/medicines/infrastructure/medicine.repository.ts</code></a></h3>
+<pre><code class="language-typescript">import { prisma } from '../../../config/prisma.js';
+import { Medicine, MedicineFilters } from '../../../types/index.js';
+
+// Helper to convert Prisma Decimal to number
+const toNumber = (value: any): number =&gt; {
+    if (value === null || value === undefined) return 0;
+    if (typeof value === 'number') return value;
+    if (typeof value.toNumber === 'function') return value.toNumber();
+    return Number(value);
+};
+
+interface CreateMedicineData {
+    tradeName: string;
+    genericName: string;
+    description?: string | null;
+    price: number;
+    stock: number;
+    expiryDate?: Date | null;
+    laboratoryId: string;
+    categoryId: string;
+}
+
+interface UpdateMedicineData {
+    tradeName?: string;
+    genericName?: string;
+    description?: string | null;
+    price?: number;
+    expiryDate?: Date | undefined;
+    laboratoryId?: string;
+    categoryId?: string;
+}
+
+const mapPrismaToMedicine = (data: any): Medicine =&gt; ({
+    id: data.id,
+    tradeName: data.tradeName,
+    genericName: data.genericName,
+    description: data.description,
+    price: toNumber(data.price),
+    stock: data.stock,
+    expiryDate: data.expiryDate,
+    laboratoryId: data.laboratoryId,
+    categoryId: data.categoryId,
+    laboratory: data.laboratory ? {
+        id: data.laboratory.id,
+        name: data.laboratory.name,
+        deletedAt: data.laboratory.deletedAt,
+    } : undefined,
+    category: data.category ? {
+        id: data.category.id,
+        name: data.category.name,
+    } : undefined,
+    deletedAt: data.deletedAt,
+});
+
+export const medicineRepository = {
+    findById: async (id: string): Promise&lt;Medicine | null&gt; =&gt; {
+        const data = await prisma.medicine.findFirst({
+            where: { id, deletedAt: null },
+            include: {
+                laboratory: true,
+                category: true,
+            },
+        });
+        return data ? mapPrismaToMedicine(data) : null;
+    },
+
+    findAllActive: async (filters: MedicineFilters = {}, skip = 0, take = 10): Promise&lt;Medicine[]&gt; =&gt; {
+        const where: any = { deletedAt: null };
+
+        if (filters.search) {
+            where.OR = [
+                { tradeName: { contains: filters.search, mode: 'insensitive' } },
+                { genericName: { contains: filters.search, mode: 'insensitive' } },
+            ];
+        }
+
+        if (filters.laboratoryId) {
+            where.laboratoryId = filters.laboratoryId;
+        }
+
+        if (filters.categoryId) {
+            where.categoryId = filters.categoryId;
+        }
+
+        if (filters.stockStatus) {
+            if (filters.stockStatus === 'low') {
+                where.stock = { lt: 10 };
+            } else if (filters.stockStatus === 'out') {
+                where.stock = 0;
+            } else if (filters.stockStatus === 'adequate') {
+                where.stock = { gte: 10, lt: 50 };
+            } else if (filters.stockStatus === 'well') {
+                where.stock = { gte: 50 };
+            }
+        }
+
+        const results = await prisma.medicine.findMany({
+            where,
+            skip,
+            take,
+            include: {
+                laboratory: true,
+                category: true,
+            },
+            orderBy: { tradeName: 'asc' },
+        });
+        return results.map(mapPrismaToMedicine);
+    },
+
+    countActive: async (filters: MedicineFilters = {}): Promise&lt;number&gt; =&gt; {
+        const where: any = { deletedAt: null };
+
+        if (filters.search) {
+            where.OR = [
+                { tradeName: { contains: filters.search, mode: 'insensitive' } },
+                { genericName: { contains: filters.search, mode: 'insensitive' } },
+            ];
+        }
+
+        if (filters.laboratoryId) {
+            where.laboratoryId = filters.laboratoryId;
+        }
+
+        if (filters.categoryId) {
+            where.categoryId = filters.categoryId;
+        }
+
+        if (filters.stockStatus) {
+            if (filters.stockStatus === 'low') {
+                where.stock = { lt: 10 };
+            } else if (filters.stockStatus === 'out') {
+                where.stock = 0;
+            } else if (filters.stockStatus === 'adequate') {
+                where.stock = { gte: 10, lt: 50 };
+            } else if (filters.stockStatus === 'well') {
+                where.stock = { gte: 50 };
+            }
+        }
+
+        return await prisma.medicine.count({ where });
+    },
+
+    create: async (data: CreateMedicineData): Promise&lt;Medicine&gt; =&gt; {
+        const result = await prisma.medicine.create({
+            data: {
+                tradeName: data.tradeName,
+                genericName: data.genericName,
+                description: data.description,
+                price: data.price,
+                stock: data.stock,
+                expiryDate: data.expiryDate,
+                laboratoryId: data.laboratoryId,
+                categoryId: data.categoryId,
+            },
+            include: {
+                laboratory: true,
+                category: true,
+            },
+        });
+        return mapPrismaToMedicine(result);
+    },
+
+    update: async (id: string, data: UpdateMedicineData): Promise&lt;Medicine&gt; =&gt; {
+        const result = await prisma.medicine.update({
+            where: { id },
+            data: {
+                tradeName: data.tradeName,
+                genericName: data.genericName,
+                description: data.description,
+                price: data.price,
+                expiryDate: data.expiryDate,
+                laboratoryId: data.laboratoryId,
+                categoryId: data.categoryId,
+            },
+            include: {
+                laboratory: true,
+                category: true,
+            },
+        });
+        return mapPrismaToMedicine(result);
+    },
+
+    updateStock: async (id: string, stock: number): Promise&lt;Medicine&gt; =&gt; {
+        const result = await prisma.medicine.update({
+            where: { id },
+            data: { stock },
+            include: {
+                laboratory: true,
+                category: true,
+            },
+        });
+        return mapPrismaToMedicine(result);
+    },
+
+    incrementStock: async (id: string, amount: number): Promise&lt;Medicine&gt; =&gt; {
+        const result = await prisma.medicine.update({
+            where: { id },
+            data: { stock: { increment: amount } },
+            include: {
+                laboratory: true,
+                category: true,
+            },
+        });
+        return mapPrismaToMedicine(result);
+    },
+
+    decrementStock: async (id: string, amount: number): Promise&lt;Medicine&gt; =&gt; {
+        const result = await prisma.medicine.update({
+            where: { id },
+            data: { stock: { decrement: amount } },
+            include: {
+                laboratory: true,
+                category: true,
+            },
+        });
+        return mapPrismaToMedicine(result);
+    },
+
+    softDelete: async (id: string): Promise&lt;Medicine&gt; =&gt; {
+        const result = await prisma.medicine.update({
+            where: { id },
+            data: { deletedAt: new Date() },
+        });
+        return mapPrismaToMedicine(result);
+    },
+};
+</code></pre>
+<p><strong>Detalles importantes:</strong></p>
+<ul>
+<li><code>toNumber()</code> — Prisma devuelve <code>Decimal</code> como objeto. Este helper convierte a number nativo.</li>
+<li><code>mapPrismaToMedicine()</code> — Mapea el objeto de Prisma al tipo <code>Medicine</code>.</li>
+<li>Las queries siempre filtran por <code>deletedAt: null</code> (soft delete).</li>
+</ul>
+<hr>
+<h2 id="21-paso-18--módulo-sales"><a class="header" href="#21-paso-18--módulo-sales">21. Paso 18 — Módulo Sales</a></h2>
+<h3 id="21a-srcmodulessalespresentationsaleroutests"><a class="header" href="#21a-srcmodulessalespresentationsaleroutests">21a. <code>src/modules/sales/presentation/sale.routes.ts</code></a></h3>
+<pre><code class="language-typescript">import { saleController } from './sale.controller.js';
+import { requireRoles } from '../../../presentation/middlewares/rbac.js';
+
+const saleRoutes = async (fastify: any, _options: any) =&gt; {
+    fastify.get('/', {
+        preHandler: [fastify.authenticate, requireRoles(['admin', 'staff'])],
+        handler: saleController.findAll,
+    });
+
+    fastify.get('/:id', {
+        preHandler: [fastify.authenticate, requireRoles(['admin', 'staff'])],
+        handler: saleController.findById,
+    });
+
+    fastify.post('/', {
+        preHandler: [fastify.authenticate, requireRoles(['admin', 'staff'])],
+        handler: saleController.register,
+    });
+};
+</code></pre>
+<hr>
+<h3 id="21b-srcmodulessalespresentationsaledtots"><a class="header" href="#21b-srcmodulessalespresentationsaledtots">21b. <code>src/modules/sales/presentation/sale.dto.ts</code></a></h3>
+<pre><code class="language-typescript">import { z } from 'zod';
+
+const SaleItemDtoSchema = z.object({
+    medicineId: z.string().min(1, 'Medicine ID is required'),
+    quantity: z.number().int().positive('Quantity must be positive'),
+    unitPrice: z.number().positive('Unit price must be positive'),
+});
+
+const CreateSaleDtoSchema = z.object({
+    clientId: z.string().optional(),
+    items: z.array(SaleItemDtoSchema).min(1, 'At least one item is required'),
+    paymentMethod: z.string().min(1, 'Payment method is required'),
+    total: z.number().positive('Total must be positive'),
+});
+
+export { CreateSaleDtoSchema, SaleItemDtoSchema };
+</code></pre>
+<hr>
+<h3 id="21c-srcmodulessalespresentationsalecontrollerts"><a class="header" href="#21c-srcmodulessalespresentationsalecontrollerts">21c. <code>src/modules/sales/presentation/sale.controller.ts</code></a></h3>
+<pre><code class="language-typescript">import { FastifyRequest, FastifyReply } from 'fastify';
+import { CreateSaleDtoSchema } from './sale.dto.js';
+import { saleService } from '../application/sale.service.js';
+import { PaymentMethod } from '../../../types/index.js';
+
+const saleController = {
+    findAll: async (request: FastifyRequest, reply: FastifyReply) =&gt; {
+        const result = await saleService.findAll(request.query as any);
+        return reply.send(result);
+    },
+
+    findById: async (request: FastifyRequest, reply: FastifyReply) =&gt; {
+        const params = request.params as { id: string };
+        const { id } = params;
+        const sale = await saleService.findById(id);
+        return reply.send(sale);
+    },
+
+    register: async (request: FastifyRequest, reply: FastifyReply) =&gt; {
+        const data = CreateSaleDtoSchema.parse(request.body);
+        const userId = (request as any).user?.sub;
+        const sale = await saleService.register({
+            ...data,
+            paymentMethod: data.paymentMethod as PaymentMethod,
+        }, userId);
+        return reply.status(201).send(sale);
+    },
+};
+
+export { saleController };
+</code></pre>
+<hr>
+<h3 id="21d-srcmodulessalesapplicationsaleservicets"><a class="header" href="#21d-srcmodulessalesapplicationsaleservicets">21d. <code>src/modules/sales/application/sale.service.ts</code></a></h3>
+<pre><code class="language-typescript">import { prisma } from '../../../config/prisma.js';
+import { medicineRepository } from '../../medicines/infrastructure/medicine.repository.js';
+import { saleRepository } from '../infrastructure/sale.repository.js';
+import { NotFoundError, ForbiddenError } from '../../../core/errors/AppError.js';
+import { CreateSaleDto, SaleFilters, PaginatedResponse, Sale } from '../../../types/index.js';
+
+export const saleService = {
+    register: async (data: CreateSaleDto, userId: string | undefined) =&gt; {
+        const { clientId, items } = data;
+
+        // Calculate total
+        const total = items.reduce((sum, item) =&gt; sum + (item.unitPrice * item.quantity), 0);
+
+        // Verify medicines exist and have sufficient stock
+        const medicineIds = items.map(item =&gt; item.medicineId);
+        const medicines = await prisma.medicine.findMany({
+            where: {
+                id: { in: medicineIds },
+                deletedAt: null,
+            },
+        });
+
+        if (medicines.length !== medicineIds.length) {
+            const foundIds = medicines.map(m =&gt; m.id);
+            const missingIds = medicineIds.filter(id =&gt; !foundIds.includes(id));
+            throw new NotFoundError(`Medicine not found: ${missingIds.join(', ')}`);
+        }
+
+        // Check stock availability
+        for (const item of items) {
+            const medicine = medicines.find(m =&gt; m.id === item.medicineId);
+            if (medicine &amp;&amp; medicine.stock &lt; item.quantity) {
+                throw new ForbiddenError(
+                    `Insufficient stock for medicine: ${medicine.tradeName} (available: ${medicine.stock}, requested: ${item.quantity})`
+                );
+            }
+        }
+
+        // Use transaction for atomicity
+        const sale = await prisma.$transaction(async (tx) =&gt; {
+            // Create sale
+            const newSale = await tx.sale.create({
+                data: {
+                    total,
+                    paymentMethod: data.paymentMethod,
+                    userId: userId!,
+                    clientId,
+                    items: {
+                        create: items.map(item =&gt; ({
+                            medicineId: item.medicineId,
+                            quantity: item.quantity,
+                            unitPrice: item.unitPrice,
+                        })),
+                    },
+                },
+                include: {
+                    user: {
+                        select: { id: true, name: true, email: true },
+                    },
+                    client: true,
+                    items: {
+                        include: {
+                            medicine: {
+                                select: { id: true, tradeName: true, genericName: true },
+                            },
+                        },
+                    },
+                },
+            });
+
+            // Update medicine stock
+            for (const item of items) {
+                await tx.medicine.update({
+                    where: { id: item.medicineId },
+                    data: { stock: { decrement: item.quantity } },
+                });
+            }
+
+            return newSale;
+        });
+
+        return sale;
+    },
+
+    findAll: async (queryParams: SaleFilters &amp; { page?: number; limit?: number; paymentMethod?: string }): Promise&lt;PaginatedResponse&lt;Sale&gt;&gt; =&gt; {
+        const { startDate, endDate, clientId, userId, paymentMethod, page = 1, limit = 10 } = queryParams;
+        const skip = (Number(page) - 1) * Number(limit);
+
+        const filters: SaleFilters &amp; { paymentMethod?: string } = {};
+        if (startDate) filters.startDate = startDate;
+        if (endDate) filters.endDate = endDate;
+        if (clientId) filters.clientId = clientId;
+        if (userId) filters.userId = userId;
+        if (paymentMethod) filters.paymentMethod = paymentMethod;
+
+        const sales = await saleRepository.findAll(filters, skip, Number(limit));
+        const total = await saleRepository.count(filters);
+        const totalPages = Math.ceil(total / Number(limit));
+
+        return {
+            data: sales,
+            pagination: {
+                page: Number(page),
+                limit: Number(limit),
+                total,
+                totalPages,
+            },
+        };
+    },
+
+    findById: async (id: string): Promise&lt;Sale | null&gt; =&gt; {
+        const sale = await saleRepository.findById(id);
+        if (!sale) {
+            throw new NotFoundError('Sale not found');
+        }
+        return sale;
+    },
+};
+</code></pre>
+<p><strong>Lógica clave de <code>register</code>:</strong></p>
+<ol>
+<li>Calcula el total sumando <code>unitPrice * quantity</code> de cada item.</li>
+<li>Verifica que TODAS las medicinas existan y no estén borradas.</li>
+<li>Verifica que haya stock suficiente de cada medicina.</li>
+<li>Usa <strong><code>prisma.$transaction</code></strong> para que todo sea atómico.</li>
+<li>Dentro de la transacción: crea la venta con sus items y actualiza el stock.</li>
+</ol>
+<hr>
+<h3 id="21e-srcmodulessalesdomainsalerepositoryinterfacets"><a class="header" href="#21e-srcmodulessalesdomainsalerepositoryinterfacets">21e. <code>src/modules/sales/domain/sale.repository.interface.ts</code></a></h3>
+<pre><code class="language-typescript">import { Sale, SaleFilters, CreateSaleItemDto } from '../../../types/index.js';
+
+// ISaleRepository interface
+// This defines the contract for sale data access
+
+export interface ISaleRepository {
+    findById(id: string): Promise&lt;Sale | null&gt;;
+    findAll(filters: SaleFilters &amp; { paymentMethod?: string }, skip?: number, take?: number): Promise&lt;Sale[]&gt;;
+    count(filters: SaleFilters &amp; { paymentMethod?: string }): Promise&lt;number&gt;;
+    create(data: { total: number; paymentMethod: string; userId?: string; clientId?: string }): Promise&lt;Sale&gt;;
+    createItems(items: CreateSaleItemDto[]): Promise&lt;any&gt;;
+    updateMedicinesStock(updates: Array&lt;{ id: string; decrement: number }&gt;): Promise&lt;any[]&gt;;
+}
+
+export const saleRepositoryContract: ISaleRepository = {
+    findById: async (id: string) =&gt; { return null; },
+    findAll: async (filters: SaleFilters &amp; { paymentMethod?: string }, skip = 0, take = 10) =&gt; { return []; },
+    count: async (filters: SaleFilters &amp; { paymentMethod?: string }) =&gt; { return 0; },
+    create: async (data) =&gt; { return {} as Sale; },
+    createItems: async (items: CreateSaleItemDto[]) =&gt; { return {}; },
+    updateMedicinesStock: async (updates: Array&lt;{ id: string; decrement: number }&gt;) =&gt; { return []; },
+};
+</code></pre>
+<hr>
+<h3 id="21f-srcmodulessalesinfrastructuresalerepositoryts"><a class="header" href="#21f-srcmodulessalesinfrastructuresalerepositoryts">21f. <code>src/modules/sales/infrastructure/sale.repository.ts</code></a></h3>
+<pre><code class="language-typescript">import { prisma } from '../../../config/prisma.js';
+import { Sale, SaleFilters, SaleItem } from '../../../types/index.js';
+
+// Helper to convert Prisma Decimal to number
+const toNumber = (value: any): number =&gt; {
+    if (value === null || value === undefined) return 0;
+    if (typeof value === 'number') return value;
+    if (typeof value.toNumber === 'function') return value.toNumber();
+    return Number(value);
+};
+
+interface CreateSaleData {
+    total: number;
+    paymentMethod: string;
+    userId: string;
+    clientId?: string | null;
+    items?: any[];
+}
+
+interface StockUpdate {
+    id: string;
+    decrement: number;
+}
+
+const mapPrismaToSale = (data: any): Sale =&gt; ({
+    id: data.id,
+    date: data.date,
+    total: toNumber(data.total),
+    paymentMethod: data.paymentMethod,
+    userId: data.userId,
+    clientId: data.clientId,
+    items: data.items ? data.items.map((item: any) =&gt; ({
+        id: item.id,
+        saleId: item.saleId,
+        medicineId: item.medicineId,
+        quantity: item.quantity,
+        unitPrice: toNumber(item.unitPrice),
+    })) : undefined,
+});
+
+export const saleRepository = {
+    findById: async (id: string): Promise&lt;Sale | null&gt; =&gt; {
+        const data = await prisma.sale.findUnique({
+            where: { id },
+            include: {
+                user: {
+                    select: { id: true, name: true, email: true, role: true },
+                },
+                client: true,
+                items: {
+                    include: {
+                        medicine: {
+                            select: { id: true, tradeName: true, genericName: true },
+                        },
+                    },
+                },
+            },
+        });
+        return data ? mapPrismaToSale(data) : null;
+    },
+
+    findAll: async (filters: SaleFilters &amp; { paymentMethod?: string } = {}, skip = 0, take = 10): Promise&lt;Sale[]&gt; =&gt; {
+        const where: any = {};
+
+        if (filters.startDate) {
+            where.date = { gte: new Date(filters.startDate) };
+        }
+        if (filters.endDate) {
+            where.date = { ...where.date, lte: new Date(filters.endDate) };
+        }
+        if (filters.clientId) {
+            where.clientId = filters.clientId;
+        }
+        if (filters.paymentMethod) {
+            where.paymentMethod = filters.paymentMethod;
+        }
+        if (filters.userId) {
+            where.userId = filters.userId;
+        }
+
+        const results = await prisma.sale.findMany({
+            where,
+            skip,
+            take,
+            include: {
+                user: {
+                    select: { id: true, name: true },
+                },
+                client: {
+                    select: { id: true, name: true },
+                },
+                items: {
+                    include: {
+                        medicine: {
+                            select: { id: true, tradeName: true },
+                        },
+                    },
+                },
+            },
+            orderBy: { date: 'desc' },
+        });
+        return results.map(mapPrismaToSale);
+    },
+
+    count: async (filters: SaleFilters &amp; { paymentMethod?: string } = {}): Promise&lt;number&gt; =&gt; {
+        const where: any = {};
+
+        if (filters.startDate) {
+            where.date = { gte: new Date(filters.startDate) };
+        }
+        if (filters.endDate) {
+            where.date = { ...where.date, lte: new Date(filters.endDate) };
+        }
+        if (filters.clientId) {
+            where.clientId = filters.clientId;
+        }
+        if (filters.paymentMethod) {
+            where.paymentMethod = filters.paymentMethod;
+        }
+        if (filters.userId) {
+            where.userId = filters.userId;
+        }
+
+        return await prisma.sale.count({ where });
+    },
+
+    create: async (data: CreateSaleData): Promise&lt;Sale&gt; =&gt; {
+        const result = await prisma.sale.create({
+            data: {
+                total: data.total,
+                paymentMethod: data.paymentMethod,
+                userId: data.userId,
+                clientId: data.clientId,
+            },
+            include: {
+                user: {
+                    select: { id: true, name: true, email: true },
+                },
+                client: true,
+                items: {
+                    include: {
+                        medicine: true,
+                    },
+                },
+            },
+        });
+        return mapPrismaToSale(result);
+    },
+
+    createItems: async (items: Array&lt;{ saleId: string; medicineId: string; quantity: number; unitPrice: number }&gt;): Promise&lt;any&gt; =&gt; {
+        return await prisma.saleItem.createMany({
+            data: items,
+        });
+    },
+
+    updateMedicinesStock: async (updates: StockUpdate[]): Promise&lt;any[]&gt; =&gt; {
+        const promises = updates.map(({ id, decrement }) =&gt;
+            prisma.medicine.update({
+                where: { id },
+                data: { stock: { decrement } },
+            })
+        );
+        return await Promise.all(promises);
+    },
+};
+</code></pre>
+<hr>
+<h2 id="22-paso-19--módulo-clients"><a class="header" href="#22-paso-19--módulo-clients">22. Paso 19 — Módulo Clients</a></h2>
+<h3 id="22a-srcmodulesclientspresentationclientroutests"><a class="header" href="#22a-srcmodulesclientspresentationclientroutests">22a. <code>src/modules/clients/presentation/client.routes.ts</code></a></h3>
+<pre><code class="language-typescript">import { clientController } from './client.controller.js';
+import { requireRoles } from '../../../presentation/middlewares/rbac.js';
+
+const clientRoutes = async (fastify: any, _options: any) =&gt; {
+    fastify.get('/', {
+        preHandler: [fastify.authenticate],
+        handler: clientController.findAll,
+    });
+
+    fastify.get('/:id', {
+        preHandler: [fastify.authenticate],
+        handler: clientController.findById,
+    });
+
+    fastify.post('/', {
+        preHandler: [fastify.authenticate, requireRoles(['admin', 'staff'])],
+        handler: clientController.create,
+    });
+
+    fastify.put('/:id', {
+        preHandler: [fastify.authenticate, requireRoles(['admin', 'staff'])],
+        handler: clientController.update,
+    });
+
+    fastify.delete('/:id', {
+        preHandler: [fastify.authenticate, requireRoles(['admin'])],
+        handler: clientController.delete,
+    });
+};
+
+export default clientRoutes;
+</code></pre>
+<p><strong>Nota:</strong> El listado y detalle de clientes puede verlo cualquier usuario autenticado. Crear/editar requiere admin o staff. Eliminar solo admin.</p>
+<hr>
+<h3 id="22b-srcmodulesclientspresentationclientdtots"><a class="header" href="#22b-srcmodulesclientspresentationclientdtots">22b. <code>src/modules/clients/presentation/client.dto.ts</code></a></h3>
+<pre><code class="language-typescript">import { z } from 'zod';
+
+export const CreateClientDtoSchema = z.object({
+    name: z.string().min(2, 'Name must be at least 2 characters'),
+    documentNumber: z.string().min(5, 'Document number must be at least 5 characters'),
+    email: z.string().email('Invalid email format').optional(),
+    phone: z.string().optional(),
+    address: z.string().optional(),
+    membership: z.enum(['bronze', 'silver', 'gold']).optional(),
+});
+
+export const UpdateClientDtoSchema = z.object({
+    name: z.string().min(2, 'Name must be at least 2 characters').optional(),
+    email: z.string().email('Invalid email format').optional(),
+    phone: z.string().optional(),
+    address: z.string().optional(),
+    membership: z.enum(['bronze', 'silver', 'gold']).optional(),
+});
+</code></pre>
+<hr>
+<h3 id="22c-srcmodulesclientspresentationclientcontrollerts"><a class="header" href="#22c-srcmodulesclientspresentationclientcontrollerts">22c. <code>src/modules/clients/presentation/client.controller.ts</code></a></h3>
+<pre><code class="language-typescript">import { FastifyRequest, FastifyReply } from 'fastify';
+import { CreateClientDtoSchema, UpdateClientDtoSchema } from './client.dto.js';
+import { clientService } from '../application/client.service.js';
+
+export const clientController = {
+    findAll: async (request: FastifyRequest, reply: FastifyReply) =&gt; {
+        const result = await clientService.findAll(request.query as any);
+        return reply.send(result);
+    },
+
+    findById: async (request: FastifyRequest, reply: FastifyReply) =&gt; {
+        const params = request.params as { id: string };
+        const { id } = params;
+        const client = await clientService.findById(id);
+        return reply.send(client);
+    },
+
+    create: async (request: FastifyRequest, reply: FastifyReply) =&gt; {
+        const data = CreateClientDtoSchema.parse(request.body);
+        const client = await clientService.create(data);
+        return reply.status(201).send(client);
+    },
+
+    update: async (request: FastifyRequest, reply: FastifyReply) =&gt; {
+        const params = request.params as { id: string };
+        const { id } = params;
+        const data = UpdateClientDtoSchema.parse(request.body);
+        const client = await clientService.update(id, data);
+        return reply.send(client);
+    },
+
+    delete: async (request: FastifyRequest, reply: FastifyReply) =&gt; {
+        const params = request.params as { id: string };
+        const { id } = params;
+        await clientService.delete(id);
+        return reply.send({ message: 'Client deleted successfully' });
+    },
+};
+</code></pre>
+<hr>
+<h3 id="22d-srcmodulesclientsapplicationclientservicets"><a class="header" href="#22d-srcmodulesclientsapplicationclientservicets">22d. <code>src/modules/clients/application/client.service.ts</code></a></h3>
+<pre><code class="language-typescript">import { clientRepository } from '../infrastructure/client.repository.js';
+import { ConflictError, NotFoundError, ForbiddenError } from '../../../core/errors/AppError.js';
+import { CreateClientDto, UpdateClientDto, ClientFilters, PaginatedResponse, Client } from '../../../types/index.js';
+
+interface PurchaseHistory {
+    totalPurchases: number;
+    totalSpent: number;
+    lastPurchase: Date | null;
+    sales: Array&lt;{
+        id: string;
+        date: Date;
+        total: number;
+        itemsCount: number;
+    }&gt;;
+}
+
+interface ClientWithHistory extends Client {
+    totalPurchases: number;
+    totalSpent: number;
+    lastPurchase: Date | null;
+    sales: Array&lt;{
+        id: string;
+        date: Date;
+        total: number;
+        itemsCount: number;
+    }&gt;;
+}
+
+export const clientService = {
+    findAll: async (queryParams: ClientFilters &amp; { page?: number; limit?: number; q?: string }): Promise&lt;PaginatedResponse&lt;Client&gt;&gt; =&gt; {
+        const { q, membership, page = 1, limit = 10 } = queryParams;
+        const skip = (Number(page) - 1) * Number(limit);
+
+        const filters: ClientFilters = {};
+        if (q) filters.search = q;
+        if (membership) filters.membership = membership;
+
+        const clients = await clientRepository.findAllActive(filters, skip, Number(limit));
+        const total = await clientRepository.countActive(filters);
+        const totalPages = Math.ceil(total / Number(limit));
+
+        return {
+            data: clients,
+            pagination: {
+                page: Number(page),
+                limit: Number(limit),
+                total,
+                totalPages,
+            },
+        };
+    },
+
+    findById: async (id: string): Promise&lt;ClientWithHistory&gt; =&gt; {
+        const client = await clientRepository.findById(id);
+        if (!client) {
+            throw new NotFoundError('Client not found');
+        }
+
+        const purchaseHistory = await clientRepository.getPurchaseHistory(id);
+
+        return {
+            ...client,
+            ...purchaseHistory,
+        };
+    },
+
+    create: async (data: CreateClientDto): Promise&lt;Client&gt; =&gt; {
+        const existingClient = await clientRepository.findByDocumentNumber(data.documentNumber);
+        if (existingClient &amp;&amp; !existingClient.deletedAt) {
+            throw new ConflictError('Document number already registered');
+        }
+
+        return await clientRepository.create({
+            name: data.name,
+            documentNumber: data.documentNumber,
+            email: data.email,
+            phone: data.phone,
+            address: data.address,
+            membership: data.membership || 'bronze',
+        });
+    },
+
+    update: async (id: string, data: UpdateClientDto): Promise&lt;Client&gt; =&gt; {
+        const client = await clientRepository.findById(id);
+        if (!client) {
+            throw new NotFoundError('Client not found');
+        }
+
+        if (data.documentNumber) {
+            throw new ForbiddenError('Document number cannot be changed');
+        }
+
+        if (data.email) {
+            const existingClient = await clientRepository.findByEmail(data.email);
+            if (existingClient &amp;&amp; existingClient.id !== id) {
+                throw new ConflictError('Email already in use');
+            }
+        }
+
+        return await clientRepository.update(id, {
+            name: data.name,
+            email: data.email,
+            phone: data.phone,
+            address: data.address,
+            membership: data.membership,
+        });
+    },
+
+    delete: async (id: string): Promise&lt;void&gt; =&gt; {
+        const client = await clientRepository.findById(id);
+        if (!client) {
+            throw new NotFoundError('Client not found');
+        }
+
+        await clientRepository.softDelete(id);
+    },
+};
+</code></pre>
+<hr>
+<h3 id="22e-srcmodulesclientsdomainclientrepositoryinterfacets"><a class="header" href="#22e-srcmodulesclientsdomainclientrepositoryinterfacets">22e. <code>src/modules/clients/domain/client.repository.interface.ts</code></a></h3>
+<pre><code class="language-typescript">import { Client, CreateClientDto, UpdateClientDto, ClientFilters } from '../../../types/index.js';
+
+// IClientRepository interface
+// This defines the contract for client data access
+
+export interface IClientRepository {
+    findById(id: string): Promise&lt;Client | null&gt;;
+    findByDocumentNumber(documentNumber: string): Promise&lt;Client | null&gt;;
+    findByEmail(email: string): Promise&lt;Client | null&gt;;
+    findAllActive(filters: ClientFilters, skip?: number, take?: number): Promise&lt;Client[]&gt;;
+    countActive(filters: ClientFilters): Promise&lt;number&gt;;
+    create(data: CreateClientDto): Promise&lt;Client&gt;;
+    update(id: string, data: Partial&lt;UpdateClientDto&gt;): Promise&lt;Client&gt;;
+    softDelete(id: string): Promise&lt;Client&gt;;
+    getPurchaseHistory(id: string): Promise&lt;{
+        totalPurchases: number;
+        totalSpent: number;
+        lastPurchase: Date | null;
+        sales: Array&lt;{ id: string; date: Date; total: number; itemsCount: number }&gt;;
+    }&gt;;
+}
+
+export const clientRepositoryContract: IClientRepository = {
+    findById: async (id: string) =&gt; { return null; },
+    findByDocumentNumber: async (documentNumber: string) =&gt; { return null; },
+    findByEmail: async (email: string) =&gt; { return null; },
+    findAllActive: async (filters: ClientFilters, skip = 0, take = 10) =&gt; { return []; },
+    countActive: async (filters: ClientFilters) =&gt; { return 0; },
+    create: async (data: CreateClientDto) =&gt; { return {} as Client; },
+    update: async (id: string, data: Partial&lt;UpdateClientDto&gt;) =&gt; { return {} as Client; },
+    softDelete: async (id: string) =&gt; { return {} as Client; },
+    getPurchaseHistory: async (id: string) =&gt; {
+        return {
+            totalPurchases: 0,
+            totalSpent: 0,
+            lastPurchase: null,
+            sales: [],
+        };
+    },
+};
+</code></pre>
+<hr>
+<h3 id="22f-srcmodulesclientsinfrastructureclientrepositoryts"><a class="header" href="#22f-srcmodulesclientsinfrastructureclientrepositoryts">22f. <code>src/modules/clients/infrastructure/client.repository.ts</code></a></h3>
+<pre><code class="language-typescript">import { prisma } from '../../../config/prisma.js';
+import { Client, ClientFilters } from '../../../types/index.js';
+
+interface CreateClientData {
+    name: string;
+    documentNumber: string;
+    email?: string | null;
+    phone?: string | null;
+    address?: string | null;
+    membership?: string;
+}
+
+interface UpdateClientData {
+    name?: string;
+    email?: string | null;
+    phone?: string | null;
+    address?: string | null;
+    membership?: string;
+}
+
+interface PurchaseHistory {
+    totalPurchases: number;
+    totalSpent: number;
+    lastPurchase: Date | null;
+    sales: Array&lt;{
+        id: string;
+        date: Date;
+        total: number;
+        itemsCount: number;
+    }&gt;;
+}
+
+export const clientRepository = {
+    findById: async (id: string): Promise&lt;Client | null&gt; =&gt; {
+        return await prisma.client.findFirst({
+            where: { id, deletedAt: null },
+        });
+    },
+
+    findByDocumentNumber: async (documentNumber: string): Promise&lt;Client | null&gt; =&gt; {
+        return await prisma.client.findFirst({
+            where: { documentNumber },
+        });
+    },
+
+    findByEmail: async (email: string): Promise&lt;Client | null&gt; =&gt; {
+        if (!email) return null;
+        return await prisma.client.findFirst({
+            where: { email, deletedAt: null },
+        });
+    },
+
+    findAllActive: async (filters: ClientFilters = {}, skip = 0, take = 10): Promise&lt;Client[]&gt; =&gt; {
+        const where: any = { deletedAt: null };
+
+        if (filters.search) {
+            where.OR = [
+                { name: { contains: filters.search, mode: 'insensitive' } },
+                { documentNumber: { contains: filters.search, mode: 'insensitive' } },
+                { email: { contains: filters.search, mode: 'insensitive' } },
+            ];
+        }
+
+        if (filters.membership) {
+            where.membership = filters.membership;
+        }
+
+        return await prisma.client.findMany({
+            where,
+            skip,
+            take,
+            orderBy: { name: 'asc' },
+        });
+    },
+
+    countActive: async (filters: ClientFilters = {}): Promise&lt;number&gt; =&gt; {
+        const where: any = { deletedAt: null };
+
+        if (filters.search) {
+            where.OR = [
+                { name: { contains: filters.search, mode: 'insensitive' } },
+                { documentNumber: { contains: filters.search, mode: 'insensitive' } },
+                { email: { contains: filters.search, mode: 'insensitive' } },
+            ];
+        }
+
+        if (filters.membership) {
+            where.membership = filters.membership;
+        }
+
+        return await prisma.client.count({ where });
+    },
+
+    create: async (data: CreateClientData): Promise&lt;Client&gt; =&gt; {
+        return await prisma.client.create({
+            data,
+        });
+    },
+
+    update: async (id: string, data: UpdateClientData): Promise&lt;Client&gt; =&gt; {
+        return await prisma.client.update({
+            where: { id },
+            data,
+        });
+    },
+
+    softDelete: async (id: string): Promise&lt;Client&gt; =&gt; {
+        return await prisma.client.update({
+            where: { id },
+            data: { deletedAt: new Date() },
+        });
+    },
+
+    getPurchaseHistory: async (id: string): Promise&lt;PurchaseHistory&gt; =&gt; {
+        const sales = await prisma.sale.findMany({
+            where: { clientId: id },
+            include: {
+                items: {
+                    include: {
+                        medicine: {
+                            select: { tradeName: true },
+                        },
+                    },
+                },
+            },
+            orderBy: { date: 'desc' },
+        });
+
+        const totalSpent = sales.reduce((sum, sale) =&gt; sum + Number(sale.total), 0);
+        const lastPurchase = sales.length &gt; 0 ? sales[0].date : null;
+
+        return {
+            totalPurchases: sales.length,
+            totalSpent,
+            lastPurchase,
+            sales: sales.map(sale =&gt; ({
+                id: sale.id,
+                date: sale.date,
+                total: Number(sale.total),
+                itemsCount: sale.items.length,
+            })),
+        };
+    },
+};
+</code></pre>
+<hr>
+<h2 id="23-paso-20--módulo-reports"><a class="header" href="#23-paso-20--módulo-reports">23. Paso 20 — Módulo Reports</a></h2>
+<h3 id="23a-srcmodulesreportspresentationreportroutests"><a class="header" href="#23a-srcmodulesreportspresentationreportroutests">23a. <code>src/modules/reports/presentation/report.routes.ts</code></a></h3>
+<pre><code class="language-typescript">import { reportController } from './report.controller.js';
+import { requireRoles } from '../../../presentation/middlewares/rbac.js';
+
+const reportRoutes = async (fastify: any, _options: any) =&gt; {
+    fastify.get('/sales', {
+        preHandler: [fastify.authenticate, requireRoles(['admin', 'staff'])],
+        handler: reportController.salesReport,
+    });
+
+    fastify.get('/top-medicines', {
+        preHandler: [fastify.authenticate, requireRoles(['admin', 'staff'])],
+        handler: reportController.topMedicines,
+    });
+
+    fastify.get('/dashboard', {
+        preHandler: [fastify.authenticate, requireRoles(['admin', 'staff'])],
+        handler: reportController.dashboard,
+    });
+
+    fastify.get('/stock-status', {
+        preHandler: [fastify.authenticate, requireRoles(['admin', 'staff'])],
+        handler: reportController.stockStatus,
+    });
+};
+
+export default reportRoutes;
+</code></pre>
+<hr>
+<h3 id="23b-srcmodulesreportspresentationreportcontrollerts"><a class="header" href="#23b-srcmodulesreportspresentationreportcontrollerts">23b. <code>src/modules/reports/presentation/report.controller.ts</code></a></h3>
+<pre><code class="language-typescript">import { FastifyRequest, FastifyReply } from 'fastify';
+import { prisma } from '../../../config/prisma.js';
+import { ForbiddenError } from '../../../core/errors/AppError.js';
+
+const reportController = {
+    salesReport: async (request: FastifyRequest, reply: FastifyReply) =&gt; {
+        const query = request.query as { startDate?: string; endDate?: string };
+        const { startDate, endDate } = query;
+
+        if (!startDate || !endDate) {
+            throw new ForbiddenError('startDate and endDate are required');
+        }
+
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+
+        if (start &gt; end) {
+            throw new ForbiddenError('Invalid date range: end date must be after start date');
+        }
+
+        const daysDiff = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+        if (daysDiff &gt; 90) {
+            throw new ForbiddenError('Date range cannot exceed 90 days');
+        }
+
+        const sales = await prisma.sale.findMany({
+            where: {
+                date: {
+                    gte: start,
+                    lte: end,
+                },
+            },
+            include: {
+                items: true,
+            },
+        });
+
+        const totalSales = sales.length;
+        const totalRevenue = sales.reduce((sum, sale) =&gt; sum + Number(sale.total), 0);
+        const avgSaleValue = totalSales &gt; 0 ? totalRevenue / totalSales : 0;
+
+        const byPaymentMethod: Record&lt;string, number&gt; = {};
+        sales.forEach(sale =&gt; {
+            byPaymentMethod[sale.paymentMethod] = (byPaymentMethod[sale.paymentMethod] || 0) + 1;
+        });
+
+        const dailyBreakdown: Record&lt;string, { sales: number; revenue: number }&gt; = {};
+        sales.forEach(sale =&gt; {
+            const date = sale.date.toISOString().split('T')[0];
+            if (!dailyBreakdown[date]) {
+                dailyBreakdown[date] = { sales: 0, revenue: 0 };
+            }
+            dailyBreakdown[date].sales++;
+            dailyBreakdown[date].revenue += Number(sale.total);
+        });
+
+        return reply.send({
+            totalSales,
+            totalRevenue,
+            avgSaleValue,
+            byPaymentMethod,
+            dailyBreakdown: Object.entries(dailyBreakdown).map(([date, data]) =&gt; ({
+                date,
+                ...data,
+            })),
+        });
+    },
+
+    topMedicines: async (request: FastifyRequest, reply: FastifyReply) =&gt; {
+        const query = request.query as { startDate?: string; endDate?: string; limit?: number };
+        const { startDate, endDate, limit = 10 } = query;
+
+        if (!startDate || !endDate) {
+            throw new ForbiddenError('startDate and endDate are required');
+        }
+
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+
+        const limitNum = Math.min(Number(limit), 50);
+
+        const saleItems = await prisma.saleItem.findMany({
+            where: {
+                sale: {
+                    date: {
+                        gte: start,
+                        lte: end,
+                    },
+                },
+            },
+            include: {
+                medicine: {
+                    select: { id: true, tradeName: true, genericName: true },
+                },
+            },
+        });
+
+        interface MedicineStat {
+            medicine: { id: string; tradeName: string; genericName: string };
+            totalSold: number;
+            revenue: number;
+            transactions: Set&lt;string&gt;;
+        }
+
+        const medicineStats: Record&lt;string, MedicineStat&gt; = {};
+        saleItems.forEach(item =&gt; {
+            const medId = item.medicineId;
+            if (!medicineStats[medId]) {
+                medicineStats[medId] = {
+                    medicine: item.medicine,
+                    totalSold: 0,
+                    revenue: 0,
+                    transactions: new Set(),
+                };
+            }
+            medicineStats[medId].totalSold += item.quantity;
+            medicineStats[medId].revenue += Number(item.unitPrice) * item.quantity;
+            medicineStats[medId].transactions.add(item.saleId);
+        });
+
+        const sortedMedicines = Object.values(medicineStats)
+            .sort((a, b) =&gt; b.totalSold - a.totalSold)
+            .slice(0, limitNum)
+            .map(stat =&gt; ({
+                medicine: stat.medicine,
+                totalSold: stat.totalSold,
+                revenue: stat.revenue,
+                transactions: stat.transactions.size,
+            }));
+
+        return reply.send(sortedMedicines);
+    },
+
+    dashboard: async (_request: FastifyRequest, reply: FastifyReply) =&gt; {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
+        const [
+            totalMedicines,
+            lowStockCount,
+            totalClients,
+            salesToday,
+            salesThisMonth,
+            revenueThisMonth
+        ] = await Promise.all([
+            prisma.medicine.count({ where: { deletedAt: null } }),
+            prisma.medicine.count({ where: { deletedAt: null, stock: { lt: 10 } } }),
+            prisma.client.count({ where: { deletedAt: null } }),
+            prisma.sale.count({ where: { date: { gte: today } } }),
+            prisma.sale.count({ where: { date: { gte: firstDayOfMonth } } }),
+            prisma.sale.aggregate({
+                where: { date: { gte: firstDayOfMonth } },
+                _sum: { total: true },
+            }),
+        ]);
+
+        return reply.send({
+            totalMedicines,
+            lowStockCount,
+            totalClients,
+            salesToday,
+            salesThisMonth,
+            revenueThisMonth: revenueThisMonth._sum.total || 0,
+        });
+    },
+
+    stockStatus: async (request: FastifyRequest, reply: FastifyReply) =&gt; {
+        const query = request.query as { categoryId?: string };
+        const { categoryId } = query;
+
+        const where: any = { deletedAt: null };
+        if (categoryId) where.categoryId = categoryId;
+
+        const medicines = await prisma.medicine.findMany({
+            where,
+            select: { id: true, tradeName: true, stock: true, categoryId: true },
+        });
+
+        const outOfStock = medicines.filter(m =&gt; m.stock === 0);
+        const lowStock = medicines.filter(m =&gt; m.stock &gt; 0 &amp;&amp; m.stock &lt; 10);
+        const adequateStock = medicines.filter(m =&gt; m.stock &gt;= 10 &amp;&amp; m.stock &lt; 50);
+        const wellStocked = medicines.filter(m =&gt; m.stock &gt;= 50);
+
+        return reply.send({
+            outOfStock: { count: outOfStock.length, items: outOfStock },
+            lowStock: { count: lowStock.length, items: lowStock },
+            adequateStock: { count: adequateStock.length, items: adequateStock },
+            wellStocked: { count: wellStocked.length, items: wellStocked },
+        });
+    },
+};
+
+export { reportController };
+</code></pre>
+<hr>
+<h2 id="24-paso-21--seed-script"><a class="header" href="#24-paso-21--seed-script">24. Paso 21 — Seed Script</a></h2>
+<p>Creá <code>src/scripts/seed.ts</code>:</p>
+<pre><code class="language-typescript">import { prisma } from "@/config/prisma.js";
+import bcrypt from "bcrypt"
+
+const SALT_ROUNDS = 10;
+
+const seed = async () =&gt; {
+  console.log('🌱 Starting seed...');
+
+  // Create admin user
+  const adminPassword = await bcrypt.hash('Admin123!', SALT_ROUNDS);
+  const admin = await prisma.user.upsert({
+    where: { email: 'admin@farmacia.com' },
+    update: {},
+    create: {
+      name: 'Admin User',
+      email: 'admin@farmacia.com',
+      password: adminPassword,
+      role: 'admin',
+    },
+  });
+  console.log('✅ Admin user created:', admin.email);
+
+  // Create staff user
+  const staffPassword = await bcrypt.hash('Staff123!', SALT_ROUNDS);
+  const staff = await prisma.user.upsert({
+    where: { email: 'staff@farmacia.com' },
+    update: {},
+    create: {
+      name: 'Staff User',
+      email: 'staff@farmacia.com',
+      password: staffPassword,
+      role: 'staff',
+    },
+  });
+  console.log('✅ Staff user created:', staff.email);
+
+  // Create sample lab
+  const lab = await prisma.lab.upsert({
+    where: { id: 'lab-farma' },
+    update: {},
+    create: {
+      id: 'lab-farma',
+      name: 'Lab Farma',
+    },
+  });
+  console.log('✅ Lab created:', lab.name);
+
+  // Create sample category
+  const category = await prisma.category.upsert({
+    where: { id: 'cat-analgesics' },
+    update: {},
+    create: {
+      id: 'cat-analgesics',
+      name: 'Analgesics',
+    },
+  });
+  console.log('✅ Category created:', category.name);
+
+  // Create sample medicines
+  const medicines = [
+    {
+      tradeName: 'Ibuprofeno 400mg',
+      genericName: 'Ibuprofeno',
+      description: 'Anti-inflammatory drug',
+      price: 12.50,
+      stock: 100,
+      laboratoryId: lab.id,
+      categoryId: category.id,
+    },
+    {
+      tradeName: 'Paracetamol 500mg',
+      genericName: 'Paracetamol',
+      description: 'Pain reliever and fever reducer',
+      price: 8.00,
+      stock: 150,
+      laboratoryId: lab.id,
+      categoryId: category.id,
+    },
+  ];
+
+  for (const med of medicines) {
+    const medId = med.tradeName.toLowerCase().replace(/\s+/g, '-').replace(/[0-9]+/g, '');
+    const medicine = await prisma.medicine.upsert({
+      where: { id: medId },
+      update: {},
+      create: {
+        id: medId,
+        ...med,
+      },
+    });
+    console.log('✅ Medicine created:', medicine.tradeName);
+  }
+
+  // Create sample client
+  const client = await prisma.client.upsert({
+    where: { documentNumber: '12345678' },
+    update: {},
+    create: {
+      name: 'Juan Pérez',
+      documentNumber: '12345678',
+      email: 'juan@email.com',
+      phone: '555-1234',
+      membership: 'silver',
+    },
+  });
+  console.log('✅ Client created:', client.name);
+
+  console.log('🎉 Seed completed!');
+};
+
+seed()
+  .catch((e) =&gt; {
+    console.error('❌ Seed failed:', e);
+    process.exit(1);
+  })
+  .finally(async () =&gt; {
+    await prisma.$disconnect();
+  });
+</code></pre>
+<p><strong>¿Qué hace?</strong></p>
+<ul>
+<li>Crea un usuario admin con email <code>admin@farmacia.com</code> y password <code>Admin123!</code>.</li>
+<li>Crea un usuario staff.</li>
+<li>Crea un laboratorio (Lab Farma) y una categoría (Analgesics).</li>
+<li>Crea dos medicamentos de ejemplo.</li>
+<li>Crea un cliente de ejemplo.</li>
+<li>Usa <code>upsert</code>, así que si se ejecuta varias veces no duplica datos.</li>
+</ul>
+<p><strong>Para ejecutar:</strong></p>
+<pre><code class="language-bash">npx tsx src/scripts/seed.ts
+</code></pre>
+<hr>
+<h2 id="25-paso-22--api-reference"><a class="header" href="#25-paso-22--api-reference">25. Paso 22 — API Reference</a></h2>
+<pre><code>### FARMACIA API ENDPOINTS ###
+
+@baseUrl = http://localhost:3000
+
+### AUTH ENDPOINTS ###
+
+# Registrarse (Solo admin puede crear usuarios)
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+    "name": "Admin User",
+    "email": "admin@farmacia.com",
+    "password": "admin123",
+    "role": "admin"
+}
+
+###
+
+# Iniciar sesión
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+    "email": "admin@farmacia.com",
+    "password": "admin123"
+}
+
+###
+
+# Refrescar token
+POST {{baseUrl}}/api/auth/refresh
+Content-Type: application/json
+
+{
+    "refreshToken": "tu-refresh-token-aquí"
+}
+
+###
+
+# Cerrar sesión (requiere Auth)
+POST {{baseUrl}}/api/auth/logout
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+
+### USERS ENDPOINTS (Solo Admin) ###
+
+# Obtener todos los usuarios (paginado)
+GET {{baseUrl}}/api/users?page=1&amp;limit=10
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+
+# Obtener usuario por ID
+GET {{baseUrl}}/api/users/&lt;user-id&gt;
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+
+# Crear nuevo usuario
+POST {{baseUrl}}/api/users
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+    "name": "Nuevo Staff",
+    "email": "staff2@farmacia.com",
+    "password": "staff123",
+    "role": "staff"
+}
+
+###
+
+# Actualizar usuario
+PUT {{baseUrl}}/api/users/&lt;user-id&gt;
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+    "name": "Staff Actualizado",
+    "email": "staff_actualizado@farmacia.com"
+}
+
+###
+
+# Eliminar usuario (Soft Delete)
+DELETE {{baseUrl}}/api/users/&lt;user-id&gt;
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+
+### MEDICINES ENDPOINTS (Admin y Staff) ###
+
+# Obtener todos los medicamentos
+GET {{baseUrl}}/api/medicines?search=paracetamol
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+
+# Obtener medicamento por ID
+GET {{baseUrl}}/api/medicines/&lt;medicine-id&gt;
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+
+# Crear medicamento
+POST {{baseUrl}}/api/medicines
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+    "tradeName": "Paracetamol 500mg",
+    "genericName": "Acetaminofén",
+    "description": "Analgésico y antipirético",
+    "price": 5.50,
+    "stock": 100,
+    "laboratoryId": "&lt;lab-id&gt;",
+    "categoryId": "&lt;category-id&gt;"
+}
+
+###
+
+# Actualizar medicamento
+PUT {{baseUrl}}/api/medicines/&lt;medicine-id&gt;
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+    "price": 6.00,
+    "stock": 150
+}
+
+###
+
+# Actualizar stock específico
+PATCH {{baseUrl}}/api/medicines/&lt;medicine-id&gt;/stock
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+    "stock": 50
+}
+
+###
+
+# Eliminar medicamento (Soft Delete)
+DELETE {{baseUrl}}/api/medicines/&lt;medicine-id&gt;
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+
+### SALES ENDPOINTS (Admin y Staff) ###
+
+# Registrar una venta
+POST {{baseUrl}}/api/sales
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+    "clientId": "&lt;client-id&gt;",
+    "paymentMethod": "cash",
+    "items": [
+        {
+            "medicineId": "&lt;medicine-id&gt;",
+            "quantity": 2,
+            "unitPrice": 5.50
+        }
+    ]
+}
+
+###
+
+# Obtener historial de ventas
+GET {{baseUrl}}/api/sales?startDate=2026-05-01&amp;endDate=2026-05-31
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+
+### CLIENTS ENDPOINTS (Admin y Staff) ###
+
+# Obtener clientes
+GET {{baseUrl}}/api/clients
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+
+# Crear cliente
+POST {{baseUrl}}/api/clients
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+    "name": "Juan Pérez",
+    "documentNumber": "12345678",
+    "email": "juan@email.com",
+    "phone": "123456789"
+}
+
+###
+
+### REPORTS ENDPOINTS (Admin y Staff) ###
+
+# Reporte de ventas por fecha
+GET {{baseUrl}}/api/reports/sales?startDate=2026-05-01&amp;endDate=2026-05-31
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+
+# Top medicamentos más vendidos
+GET {{baseUrl}}/api/reports/top-medicines?startDate=2026-05-01&amp;endDate=2026-05-31&amp;limit=10
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+</code></pre>
+<hr>
+<h2 id="26-paso-23--scripts-del-packagejson"><a class="header" href="#26-paso-23--scripts-del-packagejson">26. Paso 23 — Scripts del package.json</a></h2>
+<pre><code class="language-bash"># Desarrollo (auto-reload)
+npm run dev
+
+# Compilar para producción
+npm run build
+
+# Iniciar servidor compilado
+npm start
+
+# Generar cliente de Prisma (después de cambios en schema)
+npm run prisma:generate
+
+# Ejecutar migraciones
+npm run prisma:migrate
+
+# Abrir Prisma Studio (GUI para la DB)
+npm run prisma:studio
+</code></pre>
+<hr>
+<h2 id="27-resumen-de-endpoints"><a class="header" href="#27-resumen-de-endpoints">27. Resumen de Endpoints</a></h2>
+<p>Todos los endpoints están bajo <code>/api/v1</code>.</p>
+<h3 id="auth"><a class="header" href="#auth">Auth</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>Endpoint</th><th>Público</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td>POST</td><td>/auth/register</td><td>✅</td><td>Registra usuario</td></tr>
+<tr><td>POST</td><td>/auth/login</td><td>✅</td><td>Inicia sesión</td></tr>
+<tr><td>POST</td><td>/auth/refresh</td><td>✅</td><td>Refresca token</td></tr>
+<tr><td>POST</td><td>/auth/logout</td><td>🔒</td><td>Cierra sesión</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="users-solo-admin"><a class="header" href="#users-solo-admin">Users (solo Admin)</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>Endpoint</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td>GET</td><td>/users</td><td>Lista paginada</td></tr>
+<tr><td>GET</td><td>/users/:id</td><td>Detalle</td></tr>
+<tr><td>POST</td><td>/users</td><td>Crear</td></tr>
+<tr><td>PUT</td><td>/users/:id</td><td>Actualizar</td></tr>
+<tr><td>DELETE</td><td>/users/:id</td><td>Soft delete</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="medicines-admin--staff"><a class="header" href="#medicines-admin--staff">Medicines (Admin + Staff)</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>Endpoint</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td>GET</td><td>/medicines</td><td>Lista con filtros</td></tr>
+<tr><td>GET</td><td>/medicines/:id</td><td>Detalle</td></tr>
+<tr><td>POST</td><td>/medicines</td><td>Crear</td></tr>
+<tr><td>PUT</td><td>/medicines/:id</td><td>Actualizar</td></tr>
+<tr><td>PATCH</td><td>/medicines/:id/stock</td><td>Actualizar stock</td></tr>
+<tr><td>DELETE</td><td>/medicines/:id</td><td>Soft delete (solo admin)</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="sales-admin--staff"><a class="header" href="#sales-admin--staff">Sales (Admin + Staff)</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>Endpoint</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td>GET</td><td>/sales</td><td>Historial con filtros</td></tr>
+<tr><td>GET</td><td>/sales/:id</td><td>Detalle</td></tr>
+<tr><td>POST</td><td>/sales</td><td>Registrar venta</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="clients-admin--staff"><a class="header" href="#clients-admin--staff">Clients (Admin + Staff)</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>Endpoint</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td>GET</td><td>/clients</td><td>Lista paginada</td></tr>
+<tr><td>GET</td><td>/clients/:id</td><td>Detalle + historial</td></tr>
+<tr><td>POST</td><td>/clients</td><td>Crear</td></tr>
+<tr><td>PUT</td><td>/clients/:id</td><td>Actualizar</td></tr>
+<tr><td>DELETE</td><td>/clients/:id</td><td>Soft delete (solo admin)</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="reports-admin--staff"><a class="header" href="#reports-admin--staff">Reports (Admin + Staff)</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>Endpoint</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td>GET</td><td>/reports/sales</td><td>Reporte de ventas por fecha</td></tr>
+<tr><td>GET</td><td>/reports/top-medicines</td><td>Top medicamentos vendidos</td></tr>
+<tr><td>GET</td><td>/reports/dashboard</td><td>Dashboard (stats generales)</td></tr>
+<tr><td>GET</td><td>/reports/stock-status</td><td>Estado de stock</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="health"><a class="header" href="#health">Health</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>Endpoint</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td>GET</td><td>/health</td><td>Health check</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="28-cómo-arrancar-el-proyecto-paso-a-paso"><a class="header" href="#28-cómo-arrancar-el-proyecto-paso-a-paso">28. Cómo arrancar el proyecto (paso a paso)</a></h2>
+<pre><code class="language-bash"># 1. Instalar dependencias
+npm install
+
+# 2. Levantar Postgres y Redis con Docker
+docker-compose up -d
+
+# 3. Ejecutar migración de Prisma
+npx prisma migrate dev --name init
+
+# 4. (Opcional) Populal la base con datos de ejemplo
+npx tsx src/scripts/seed.ts
+
+# 5. Iniciar el servidor en desarrollo
+npm run dev
+</code></pre>
+<p>El servidor estará disponible en <code>http://localhost:3000/api/v1</code>.</p>
+<hr>
+<h2 id="29-patrones-y-buenas-prácticas-aplicadas"><a class="header" href="#29-patrones-y-buenas-prácticas-aplicadas">29. Patrones y Buenas Prácticas aplicadas</a></h2>
+<ul>
+<li><strong>Clean Architecture</strong>: Separación clara en capas (domain → application → infrastructure → presentation)</li>
+<li><strong>DRY (Don’t Repeat Yourself)</strong>: Helpers compartidos (<code>toNumber</code>, <code>mapPrismaToMedicine</code>, etc.)</li>
+<li><strong>SOLID</strong>: Principio de Responsabilidad Única (cada archivo tiene una función clara)</li>
+<li><strong>DDD</strong>: Cada módulo es un bounded context con su propio servicio, repositorio y DTOs</li>
+<li><strong>Type Safety</strong>: Zod para runtime validation, TypeScript para compile-time safety</li>
+<li><strong>Security</strong>: Soft delete, httpOnly cookies, helmet, rate limiting, bcrypt</li>
+<li><strong>Observability</strong>: Pino logger con niveles diferenciados por entorno</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../docs/12-restix.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../docs/14-postgres-installation.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../docs/12-restix.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../docs/14-postgres-installation.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

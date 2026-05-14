@@ -11,6 +11,9 @@ Mis manuales
 - [Backend con Axum (rasflow)](./docs/02-axum-rasflow.md)
 - [Restix](./docs/12-restix.md)
 
+## Fastify(TypeScript)
+- [Backend Farmacia](./docs/17-fastify-backend.md)
+
 ## Base de datos
 - [Postgres](./docs/14-postgres-installation.md)
 - [SQLx](./docs/03-sqlx.md)
