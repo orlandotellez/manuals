@@ -35,7 +35,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-63e4dfa9.js";
+            window.path_to_searchindex_js = "../searchindex-4adf7a0d.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-45a33be9.js"></script>
@@ -208,10 +208,18 @@
 │   └── logger.ts
 └── modules/                 # Módulos de la aplicación
     └── auth/
-        ├── domain/         # Contratos e interfaces
+        ├── domain/         # Contratos, tipos y entidades
+        │   ├── auth.interface.ts  # Interfaces del repository
+        │   ├── auth.types.ts      # Tipos (payload, response)
+        │   └── auth.entities.ts   # Entidades del dominio
         ├── application/   # Lógica de negocio (services)
+        │   └── auth.service.ts
         ├── infrastructure # Implementaciones (repositories)
+        │   └── auth.prisma.repository.ts
         └── presentation   # Controladores, rutas, DTOs
+            ├── auth.controller.ts
+            ├── auth.routes.ts
+            └── auth.dto.ts
 </code></pre>
 <hr>
 <h2 id="2-configuración-principal"><a class="header" href="#2-configuración-principal">2. Configuración Principal</a></h2>
@@ -278,44 +286,42 @@
 </table>
 </div>
 <p><strong>Dependencias principales:</strong></p>
-<ul>
-<li><strong>Fastify</strong> - Framework web (reemplaza Express)</li>
-<li><strong>@fastify/jwt</strong> - Autenticación JWT</li>
-<li><strong>@fastify/rate-limit</strong> - Limitación de requests</li>
-<li><strong>@fastify/helmet</strong> - Headers de seguridad</li>
-<li><strong>@fastify/cors</strong> - CORS</li>
-<li><strong>@fastify/compress</strong> - Compresión gzip</li>
-<li><strong>Prisma</strong> - ORM de base de datos (PostgreSQL)</li>
-<li><strong>ioredis</strong> - Cliente Redis</li>
-<li><strong>bcrypt</strong> - Hash de passwords</li>
-<li><strong>zod</strong> - Validación de esquemas</li>
-<li><strong>pino</strong> - Logger de alto rendimiento</li>
-</ul>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Paquete</th><th>Función</th></tr>
+</thead>
+<tbody>
+<tr><td><code>fastify</code></td><td>Framework web (reemplaza Express)</td></tr>
+<tr><td><code>@fastify/jwt</code></td><td>Autenticación JWT</td></tr>
+<tr><td><code>@fastify/rate-limit</code></td><td>Limitación de requests</td></tr>
+<tr><td><code>@fastify/helmet</code></td><td>Headers de seguridad</td></tr>
+<tr><td><code>@fastify/cors</code></td><td>CORS</td></tr>
+<tr><td><code>@fastify/compress</code></td><td>Compresión gzip</td></tr>
+<tr><td><code>@prisma/client</code></td><td>ORM de base de datos (PostgreSQL)</td></tr>
+<tr><td><code>ioredis</code></td><td>Cliente Redis</td></tr>
+<tr><td><code>bcrypt</code></td><td>Hash de passwords</td></tr>
+<tr><td><code>zod</code></td><td>Validación de esquemas</td></tr>
+<tr><td><code>pino</code></td><td>Logger de alto rendimiento</td></tr>
+<tr><td><code>jsonwebtoken</code></td><td>Manejo de JWTs</td></tr>
+</tbody>
+</table>
+</div>
 <hr>
 <h3 id="22-env---variables-de-entorno"><a class="header" href="#22-env---variables-de-entorno">2.2 <code>.env</code> - Variables de Entorno</a></h3>
-<pre><code class="language-env"># Server
-NODE_ENV=development
+<pre><code class="language-env">NODE_ENV=development
 PORT=3000
 HOST="0.0.0.0"
-
-# Database
-DATABASE_URL="postgresql://user:password@localhost:5432/practica_farmacy_db?schema=public"
-
-# JWT
+DATABASE_URL="postgresql://..."
 JWT_SECRET=your-super-secret-jwt-key-min-32-chars-long
-JWT_EXPIRES_IN=15m
 JWT_REFRESH_SECRET=your-super-secret-refresh-key-min-32-chars
-JWT_REFRESH_EXPIRES_IN=7d
-
-# Redis
-REDIS_HOST=127.0.0.1
-REDIS_PORT=6379
 REDIS_URL=redis://localhost:6379
 </code></pre>
 <hr>
 <h3 id="23-srcconfigenvts---validación-de-entorno"><a class="header" href="#23-srcconfigenvts---validación-de-entorno">2.3 <code>src/config/env.ts</code> - Validación de Entorno</a></h3>
 <pre><code class="language-typescript">import { z } from "zod";
 import dotenv from "dotenv";
+import { logger } from "@/infrastructure/logger";
 
 dotenv.config();
 
@@ -821,7 +827,7 @@ export class UnprocessableEntityError extends AppError {
 
 export class InternalServerError extends AppError {
   constructor(message = 'Internal Server Error') {
-    super(message, 500, 'INPROCESSABLE_ENTITY')
+    super(message, 500, 'INTERNAL_SERVER_ERROR')
   }
 }
 
@@ -871,55 +877,103 @@ export class TooManyRequestsError extends AppError {
 </ul>
 <hr>
 <h2 id="5-módulo-auth"><a class="header" href="#5-módulo-auth">5. Módulo Auth</a></h2>
-<h3 id="51-domain-layer"><a class="header" href="#51-domain-layer">5.1 Domain Layer</a></h3>
-<h4 id="srcmodulesauthdomainauthinterfacets---interfaces-y-contratos"><a class="header" href="#srcmodulesauthdomainauthinterfacets---interfaces-y-contratos"><code>src/modules/auth/domain/auth.interface.ts</code> - Interfaces y Contratos</a></h4>
+<p>El módulo de autenticación sigue una arquitectura limpia (Clean Architecture) con separación en capas:</p>
+<pre><code>src/modules/auth/
+├── domain/           # Contratos e interfaces
+├── application/      # Lógica de negocio
+├── infrastructure/   # Implementaciones (Prisma)
+└── presentation/     # Controladores, rutas, DTOs
+</code></pre>
+<h3 id="51-domain-layer---capa-de-dominio"><a class="header" href="#51-domain-layer---capa-de-dominio">5.1 Domain Layer - Capa de Dominio</a></h3>
+<p>La capa de dominio contiene los contratos y tipos puros, sin dependencias de frameworks.</p>
+<h4 id="srcmodulesauthdomainauthentitiests---entidades"><a class="header" href="#srcmodulesauthdomainauthentitiests---entidades"><code>src/modules/auth/domain/auth.entities.ts</code> - Entidades</a></h4>
 <pre><code class="language-typescript">import type { Role } from "@/types/user"
 
-export interface IRegisterUser {
+export interface IUserEntity {
+  id: string
+  name: string
+  email: string
+  password: string
+  role: Role
+  createdAt?: Date
+  updatedAt?: Date
+}
+</code></pre>
+<p><strong>¿Qué hace este archivo?</strong></p>
+<ul>
+<li>Define la interfaz <code>IUserEntity</code> - Representa el usuario persistido en la base de datos</li>
+<li>Contiene todos los campos incluyendo <code>password</code> (hasheada)</li>
+<li>Incluye timestamps opcionales (<code>createdAt</code>, <code>updatedAt</code>)</li>
+</ul>
+<hr>
+<h4 id="srcmodulesauthdomainauthtypests---tipos-de-payload-y-response"><a class="header" href="#srcmodulesauthdomainauthtypests---tipos-de-payload-y-response"><code>src/modules/auth/domain/auth.types.ts</code> - Tipos de Payload y Response</a></h4>
+<pre><code class="language-typescript">import type { Role } from "@/types/user"
+
+export interface IRegisterPayload {
   name: string
   email: string
   password: string
   role?: Role
 }
 
-export interface IUserEntity {
-  id: string
-  name: string
+export interface ILoginPayload {
   email: string
-  role: Role
-  createdAt?: Date
-  updatedAt?: Date
+  password: string
 }
 
-export interface IAuthRepository {
-  findByEmail(email: string): Promise&lt;IUserEntity | null&gt;
-  create(data: IRegisterUser): Promise&lt;IUserEntity&gt;
+export interface IAuthResponse {
+  message: string
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    role: Role;
+    createdAt?: Date;
+  };
+  accessToken: string;
+  refreshToken: string;
 }
 </code></pre>
 <p><strong>¿Qué hace este archivo?</strong></p>
 <ol>
 <li>
-<p><strong><code>IRegisterUser</code></strong> - Interface para datos de registro:</p>
+<p><strong><code>IRegisterPayload</code></strong> - Tipo para el payload de registro:</p>
 <ul>
 <li><code>name</code>, <code>email</code>, <code>password</code> - Campos requeridos</li>
 <li><code>role</code> - Opcional (default: staff)</li>
 </ul>
 </li>
 <li>
-<p><strong><code>IUserEntity</code></strong> - Interface para el usuario persistido:</p>
+<p><strong><code>ILoginPayload</code></strong> - Tipo para el payload de login:</p>
 <ul>
-<li>Similar a <code>User</code> de types/user.ts pero más enfocada al dominio</li>
-<li>Incluye timestamps opcionales</li>
+<li><code>email</code> y <code>password</code> para autenticar</li>
 </ul>
 </li>
 <li>
-<p><strong><code>IAuthRepository</code></strong> - Contrato del repository:</p>
+<p><strong><code>IAuthResponse</code></strong> - Tipo para la respuesta de auth:</p>
 <ul>
-<li><code>findByEmail(email)</code> - Busca usuario por email</li>
-<li><code>create(data)</code> - Crea un nuevo usuario</li>
+<li><code>message</code> - Mensaje de éxito</li>
+<li><code>user</code> - Datos del usuario (sin password)</li>
+<li><code>accessToken</code> y <code>refreshToken</code> - Tokens JWT</li>
 </ul>
 </li>
 </ol>
+<hr>
+<h4 id="srcmodulesauthdomainauthinterfacets---interfaces-del-repository"><a class="header" href="#srcmodulesauthdomainauthinterfacets---interfaces-del-repository"><code>src/modules/auth/domain/auth.interface.ts</code> - Interfaces del Repository</a></h4>
+<pre><code class="language-typescript">import type { IUserEntity } from "./auth.entities"
+import type { IRegisterPayload } from "./auth.types"
+
+export interface IAuthRepository {
+  findByEmail(email: string): Promise&lt;IUserEntity | null&gt;
+  create(data: IRegisterPayload): Promise&lt;IUserEntity&gt;
+}
+</code></pre>
+<p><strong>¿Qué hace este archivo?</strong></p>
+<ul>
+<li>Define <code>IAuthRepository</code> - Contrato del repository que debe implementar la infraestructura</li>
+<li><strong><code>findByEmail(email)</code></strong> - Busca usuario por email</li>
+<li><strong><code>create(data)</code></strong> - Crea un nuevo usuario</li>
+</ul>
 <p><strong>¿Por qué interfaces?</strong></p>
 <ul>
 <li>Define el contrato sin importar la implementación</li>
@@ -927,36 +981,35 @@ export interface IAuthRepository {
 <li>Facilita testing (mock del repository)</li>
 </ul>
 <hr>
-<h3 id="52-application-layer"><a class="header" href="#52-application-layer">5.2 Application Layer</a></h3>
+<h3 id="52-application-layer---capa-de-aplicación"><a class="header" href="#52-application-layer---capa-de-aplicación">5.2 Application Layer - Capa de Aplicación</a></h3>
 <h4 id="srcmodulesauthapplicationauthservicets---lógica-de-negocio"><a class="header" href="#srcmodulesauthapplicationauthservicets---lógica-de-negocio"><code>src/modules/auth/application/auth.service.ts</code> - Lógica de Negocio</a></h4>
-<pre><code class="language-typescript">import { ConflictError } from "@/core/errors/AppError"
-import { hashPassword } from "@/core/utils/crypto.utils"
+<pre><code class="language-typescript">import { ConflictError, UnauthorizedError } from "@/core/errors/AppError"
+import { comparePassword, hashPassword } from "@/core/utils/crypto.utils"
 import { generateTokens } from "@/core/utils/token.utils"
-import type { IRegisterUser, IAuthRepository } from "../domain/auth.interface"
+import type { IAuthRepository } from "../domain/auth.interface"
+import type { IAuthResponse, ILoginPayload, IRegisterPayload } from "../domain/auth.types"
+import type { Role } from "@/types/user"
 
 export const createAuthService = (repository: IAuthRepository) =&gt; ({
-  register: async (data: IRegisterUser) =&gt; {
+  register: async (data: IRegisterPayload): Promise&lt;IAuthResponse&gt; =&gt; {
     const { name, email, password, role = "staff" } = data
 
-    // 1. Verificar si el usuario ya existe
     const existingUser = await repository.findByEmail(email)
 
     if (existingUser) {
       throw new ConflictError("Email already registered")
     }
 
-    // 2. Hashear el password
     const hashedPassword = await hashPassword(password)
 
-    // 3. Crear el usuario
     const newUser = { name, email, password: hashedPassword, role }
+
     const user = await repository.create(newUser)
 
-    // 4. Generar tokens JWT
     const { accessToken, refreshToken } = generateTokens(user.id, user.email, user.role)
 
-    // 5. Retornar respuesta
-    return {
+    const response: IAuthResponse = {
+      message: "User create successfully",
       user: {
         id: user.id,
         name: user.name,
@@ -966,6 +1019,40 @@ export const createAuthService = (repository: IAuthRepository) =&gt; ({
       accessToken,
       refreshToken
     }
+
+    return response
+  },
+
+  login: async (data: ILoginPayload): Promise&lt;IAuthResponse&gt; =&gt; {
+    const { email, password } = data
+
+    const user = await repository.findByEmail(email)
+
+    if (!user) {
+      throw new UnauthorizedError("Invalid credentials")
+    }
+
+    const isValidPassword = await comparePassword(password, user.password)
+
+    if (!isValidPassword) {
+      throw new UnauthorizedError("Invalid credentials")
+    }
+
+    const { accessToken, refreshToken } = generateTokens(user.id, user.email, user.role as Role)
+
+    const response: IAuthResponse = {
+      message: "Login successfully",
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      },
+      accessToken,
+      refreshToken
+    }
+
+    return response
   }
 })
 </code></pre>
@@ -982,7 +1069,17 @@ export const createAuthService = (repository: IAuthRepository) =&gt; ({
 <li><strong>Step 2</strong>: Hashea el password con bcrypt (10 rounds)</li>
 <li><strong>Step 3</strong>: Crea el usuario en la BD usando el repository</li>
 <li><strong>Step 4</strong>: Genera access + refresh tokens</li>
-<li><strong>Step 5</strong>: Retorna el usuario creado + tokens</li>
+<li><strong>Step 5</strong>: Retorna la respuesta con mensaje, usuario y tokens</li>
+</ul>
+</li>
+<li>
+<p><strong><code>login(data)</code></strong> - Lógica de login:</p>
+<ul>
+<li>Recibe <code>data</code> con email y password</li>
+<li><strong>Step 1</strong>: Busca el usuario por email → si no existe, lanza <code>UnauthorizedError</code></li>
+<li><strong>Step 2</strong>: Compara el password con el hash guardado → si no coincide, lanza <code>UnauthorizedError</code></li>
+<li><strong>Step 3</strong>: Genera access + refresh tokens</li>
+<li><strong>Step 4</strong>: Retorna la respuesta con mensaje, usuario y tokens</li>
 </ul>
 </li>
 </ol>
@@ -992,10 +1089,11 @@ export const createAuthService = (repository: IAuthRepository) =&gt; ({
 <li>El controller inyecta la implementación concreta (<code>AuthRepository</code> de Prisma)</li>
 </ul>
 <hr>
-<h3 id="53-infrastructure-layer"><a class="header" href="#53-infrastructure-layer">5.3 Infrastructure Layer</a></h3>
+<h3 id="53-infrastructure-layer---capa-de-infraestructura"><a class="header" href="#53-infrastructure-layer---capa-de-infraestructura">5.3 Infrastructure Layer - Capa de Infraestructura</a></h3>
 <h4 id="srcmodulesauthinfrastructureauthprismarepositoryts---implementación-prisma"><a class="header" href="#srcmodulesauthinfrastructureauthprismarepositoryts---implementación-prisma"><code>src/modules/auth/infrastructure/auth.prisma.repository.ts</code> - Implementación Prisma</a></h4>
 <pre><code class="language-typescript">import { prisma } from "@/config/prisma";
-import type { IAuthRepository, IRegisterUser } from "../domain/auth.interface";
+import type { IAuthRepository } from "../domain/auth.interface";
+import type { IRegisterPayload } from "../domain/auth.types";
 
 export const AuthRepository: IAuthRepository = {
   async findByEmail(email: string) {
@@ -1004,7 +1102,7 @@ export const AuthRepository: IAuthRepository = {
     })
   },
 
-  async create(data: IRegisterUser) {
+  async create(data: IRegisterPayload) {
     return prisma.user.create({
       data: {
         name: data.name,
@@ -1037,27 +1135,32 @@ export const AuthRepository: IAuthRepository = {
 </ul>
 </li>
 </ol>
-<p><strong>¿Por qué separados?</strong></p>
+<p><strong>¿Por qué separado?</strong></p>
 <ul>
 <li>Si mañana usás MongoDB en vez de PostgreSQL, solo cambiás este archivo</li>
 <li>El service sigue funcionando igual porque usa la interfaz</li>
 </ul>
 <hr>
-<h3 id="54-presentation-layer"><a class="header" href="#54-presentation-layer">5.4 Presentation Layer</a></h3>
-<h4 id="srcmodulesauthpresentationauthdtots---validación-de-input"><a class="header" href="#srcmodulesauthpresentationauthdtots---validación-de-input"><code>src/modules/auth/presentation/auth.dto.ts</code> - Validación de Input</a></h4>
+<h3 id="54-presentation-layer---capa-de-presentación"><a class="header" href="#54-presentation-layer---capa-de-presentación">5.4 Presentation Layer - Capa de Presentación</a></h3>
+<h4 id="srcmodulesauthpresentationauthdtots---validación-de-input-zod"><a class="header" href="#srcmodulesauthpresentationauthdtots---validación-de-input-zod"><code>src/modules/auth/presentation/auth.dto.ts</code> - Validación de Input (Zod)</a></h4>
 <pre><code class="language-typescript">import { z } from "zod"
 
-export const RegisterUserDtoSchema = z.object({
+export const RegisterPayloadDtoSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email format"),
   password: z.string().min(8, "Password must be at least 8 characters"),
   role: z.enum(["admin", "staff"]).optional()
 })
+
+export const LoginPayloadDtoSchema = z.object({
+  email: z.string().email("Invalid email format"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+})
 </code></pre>
 <p><strong>¿Qué hace este archivo?</strong></p>
 <ol>
 <li>
-<p><strong>Define schema de validación</strong> con Zod para el registro:</p>
+<p><strong><code>RegisterPayloadDtoSchema</code></strong> - Schema de validación para registro:</p>
 <ul>
 <li><code>name</code>: string, mínimo 2 caracteres</li>
 <li><code>email</code>: formato válido de email</li>
@@ -1066,24 +1169,34 @@ export const RegisterUserDtoSchema = z.object({
 </ul>
 </li>
 <li>
-<p><strong>Retorna schema</strong> que se usa en el controller para parsear y validar el body del request</p>
+<p><strong><code>LoginPayloadDtoSchema</code></strong> - Schema de validación para login:</p>
+<ul>
+<li><code>email</code>: formato válido de email</li>
+<li><code>password</code>: mínimo 8 caracteres</li>
+</ul>
 </li>
 </ol>
 <hr>
 <h4 id="srcmodulesauthpresentationauthcontrollerts---controlador"><a class="header" href="#srcmodulesauthpresentationauthcontrollerts---controlador"><code>src/modules/auth/presentation/auth.controller.ts</code> - Controlador</a></h4>
 <pre><code class="language-typescript">import type { FastifyReply, FastifyRequest } from "fastify";
 import { createAuthService } from "../application/auth.service";
-import { RegisterUserDtoSchema } from "./auth.dto";
 import { AuthRepository } from "../infrastructure/auth.prisma.repository";
+import { LoginPayloadDtoSchema, RegisterPayloadDtoSchema } from "./auth.dto";
 
 // Inyección de dependencias: el controller decide qué implementación usar
 const authService = createAuthService(AuthRepository)
 
 export const authController = {
   register: async (request: FastifyRequest, reply: FastifyReply) =&gt; {
-    const data = RegisterUserDtoSchema.parse(request.body)
+    const data = RegisterPayloadDtoSchema.parse(request.body)
     const result = await authService.register(data)
     return reply.status(201).send(result)
+  },
+
+  login: async (request: FastifyRequest, reply: FastifyReply) =&gt; {
+    const data = LoginPayloadDtoSchema.parse(request.body)
+    const result = await authService.login(data)
+    return reply.status(200).send(result)
   }
 }
 </code></pre>
@@ -1097,7 +1210,7 @@ export const authController = {
 </ul>
 </li>
 <li>
-<p><strong><code>register(request, reply)</code></strong> - Handler del endpoint:</p>
+<p><strong><code>register(request, reply)</code></strong> - Handler del endpoint POST /register:</p>
 <ul>
 <li><strong>Step 1</strong>: Valida el body con Zod schema → si falla, lanza error</li>
 <li><strong>Step 2</strong>: Llama al service con los datos validados</li>
@@ -1105,7 +1218,12 @@ export const authController = {
 </ul>
 </li>
 <li>
-<p><strong>Retorna objeto con controller</strong> - Expone los handlers para las rutas</p>
+<p><strong><code>login(request, reply)</code></strong> - Handler del endpoint POST /login:</p>
+<ul>
+<li><strong>Step 1</strong>: Valida el body con Zod schema</li>
+<li><strong>Step 2</strong>: Llama al service con los datos validados</li>
+<li><strong>Step 3</strong>: Retorna 200 OK con el resultado</li>
+</ul>
 </li>
 </ol>
 <p><strong>Flujo:</strong></p>
@@ -1118,6 +1236,7 @@ import { authController } from "./auth.controller";
 
 export const authRoutes = async (fastify: FastifyInstance, _options: any) =&gt; {
   fastify.post("/register", authController.register)
+  fastify.post("/login", authController.login)
 }
 </code></pre>
 <p><strong>¿Qué hace este archivo?</strong></p>
@@ -1126,6 +1245,7 @@ export const authRoutes = async (fastify: FastifyInstance, _options: any) =&gt; 
 <p><strong>Registra rutas de auth</strong> en Fastify:</p>
 <ul>
 <li><code>POST /register</code> → <code>authController.register</code></li>
+<li><code>POST /login</code> → <code>authController.login</code></li>
 </ul>
 </li>
 <li>
@@ -1145,13 +1265,13 @@ export const routes = async (fastify: FastifyInstance, _option: any) =&gt; {
 <p><strong>¿Qué hace este archivo?</strong></p>
 <ol>
 <li><strong>Registra las rutas del módulo auth</strong> con prefijo <code>/auth</code></li>
-<li><strong>Resultado final</strong>: las rutas quedan en <code>/api/v1/auth/register</code></li>
+<li><strong>Resultado final</strong>: las rutas quedan en <code>/api/v1/auth/register</code> y <code>/api/v1/auth/login</code></li>
 </ol>
 <p><strong>Estructura de prefijos:</strong></p>
 <ul>
 <li><code>app.ts</code> registra <code>routes</code> con prefijo <code>/api/v1</code></li>
 <li><code>routes.ts</code> registra <code>authRoutes</code> con prefijo <code>/auth</code></li>
-<li>Total: <code>/api/v1/auth/register</code></li>
+<li>Total: <code>/api/v1/auth/register</code> y <code>/api/v1/auth/login</code></li>
 </ul>
 <hr>
 <h2 id="7-prisma-schema"><a class="header" href="#7-prisma-schema">7. Prisma Schema</a></h2>
@@ -1307,23 +1427,60 @@ model category {
 <li><strong>Map</strong> - Nombres de tabla personalizados (<code>@@map</code>)</li>
 </ul>
 <hr>
-<h2 id="resumen-del-flujo-de-una-request"><a class="header" href="#resumen-del-flujo-de-una-request">Resumen del Flujo de una Request</a></h2>
-<pre><code>1. HTTP Request → server.ts → buildApp() (app.ts)
+<h2 id="8-flujo-completo-de-una-request"><a class="header" href="#8-flujo-completo-de-una-request">8. Flujo Completo de una Request</a></h2>
+<h3 id="ejemplo-post-apiv1authregister"><a class="header" href="#ejemplo-post-apiv1authregister">Ejemplo: POST /api/v1/auth/register</a></h3>
+<pre><code>1. HTTP Request
      ↓
-2. Fastify registra plugins (helmet, cors, compress, rate-limit)
+2. server.ts → buildApp() (app.ts)
      ↓
-3. Routing: /api/v1/auth/register → authRoutes → authController.register
+3. Fastify registra plugins (helmet, cors, compress, rate-limit)
      ↓
-4. Controller: Valida request.body con Zod (RegisterUserDtoSchema)
+4. Routing: /api/v1/auth/register
+   → routes.ts (/api/v1 prefix)
+   → authRoutes.ts (/auth prefix)
+   → POST /register → authController.register
      ↓
-5. Service: createAuthService(AuthRepository).register(data)
+5. Controller:
+   - Valida request.body con RegisterPayloadDtoSchema (Zod)
+   - Llama a authService.register(data)
      ↓
-6. Repository: AuthRepository.findByEmail() → prisma.user.findFirst()
+6. Service (createAuthService):
+   - repository.findByEmail(email) → Busca si existe
+   - Si existe → throw ConflictError
+   - hashPassword(password) → Hashea el password
+   - repository.create(newUser) → Crea en BD
+   - generateTokens(user.id, ...) → Genera JWTs
+   - Retorna IAuthResponse
      ↓
-7. Response: { user: {...}, accessToken, refreshToken } → HTTP 201
+7. Repository (Prisma):
+   - prisma.user.findFirst({ where: {...} })
+   - prisma.user.create({ data: {...} })
+     ↓
+8. Response:
+   - HTTP 201 Created
+   - { message, user, accessToken, refreshToken }
+</code></pre>
+<h3 id="ejemplo-post-apiv1authlogin"><a class="header" href="#ejemplo-post-apiv1authlogin">Ejemplo: POST /api/v1/auth/login</a></h3>
+<pre><code>1. HTTP Request con { email, password }
+     ↓
+2. Controller:
+   - Valida con LoginPayloadDtoSchema
+   - Llama authService.login(data)
+     ↓
+3. Service:
+   - repository.findByEmail(email)
+   - Si no existe → throw UnauthorizedError
+   - comparePassword(password, user.password)
+   - Si no coincide → throw UnauthorizedError
+   - generateTokens(user.id, ...) → Genera JWTs
+   - Retorna IAuthResponse
+     ↓
+4. Response:
+   - HTTP 200 OK
+   - { message, user, accessToken, refreshToken }
 </code></pre>
 <hr>
-<h2 id="commands-útiles"><a class="header" href="#commands-útiles">Commands Útiles</a></h2>
+<h2 id="9-commands-útiles"><a class="header" href="#9-commands-útiles">9. Commands Útiles</a></h2>
 <pre><code class="language-bash"># Desarrollo (watch mode con tsx)
 bun dev
 
@@ -1342,6 +1499,24 @@ bun build
 # Iniciar producción
 bun start
 </code></pre>
+<hr>
+<h2 id="10-resumen-de-patrones-usados"><a class="header" href="#10-resumen-de-patrones-usados">10. Resumen de Patrones Usados</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Patrón</th><th>Aplicación</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Clean Architecture</strong></td><td>Separación en domain/application/infrastructure/presentation</td></tr>
+<tr><td><strong>Dependency Inversion</strong></td><td>Service depende de IAuthRepository, no de implementación concreta</td></tr>
+<tr><td><strong>Factory Pattern</strong></td><td><code>createAuthService(repository)</code> crea el service con dependencias</td></tr>
+<tr><td><strong>Singleton</strong></td><td><code>prisma</code>, <code>redisClient</code>, <code>logger</code> - una sola instancia global</td></tr>
+<tr><td><strong>Error Handling</strong></td><td>Errores custom con statusCode y código interno</td></tr>
+<tr><td><strong>Soft Delete</strong></td><td>Campos <code>deletedAt</code> en vez de borrar registros</td></tr>
+<tr><td><strong>Value Objects</strong></td><td>Zod schemas para validar DTOs en la capa de presentación</td></tr>
+</tbody>
+</table>
+</div>
 
                     </main>
 

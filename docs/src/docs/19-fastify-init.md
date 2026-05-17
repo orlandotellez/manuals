@@ -38,10 +38,18 @@ src/
 │   └── logger.ts
 └── modules/                 # Módulos de la aplicación
     └── auth/
-        ├── domain/         # Contratos e interfaces
+        ├── domain/         # Contratos, tipos y entidades
+        │   ├── auth.interface.ts  # Interfaces del repository
+        │   ├── auth.types.ts      # Tipos (payload, response)
+        │   └── auth.entities.ts   # Entidades del dominio
         ├── application/   # Lógica de negocio (services)
+        │   └── auth.service.ts
         ├── infrastructure # Implementaciones (repositories)
+        │   └── auth.prisma.repository.ts
         └── presentation   # Controladores, rutas, DTOs
+            ├── auth.controller.ts
+            ├── auth.routes.ts
+            └── auth.dto.ts
 ```
 
 ---
@@ -110,40 +118,32 @@ src/
 
 **Dependencias principales:**
 
-- **Fastify** - Framework web (reemplaza Express)
-- **@fastify/jwt** - Autenticación JWT
-- **@fastify/rate-limit** - Limitación de requests
-- **@fastify/helmet** - Headers de seguridad
-- **@fastify/cors** - CORS
-- **@fastify/compress** - Compresión gzip
-- **Prisma** - ORM de base de datos (PostgreSQL)
-- **ioredis** - Cliente Redis
-- **bcrypt** - Hash de passwords
-- **zod** - Validación de esquemas
-- **pino** - Logger de alto rendimiento
+| Paquete | Función |
+|---------|---------|
+| `fastify` | Framework web (reemplaza Express) |
+| `@fastify/jwt` | Autenticación JWT |
+| `@fastify/rate-limit` | Limitación de requests |
+| `@fastify/helmet` | Headers de seguridad |
+| `@fastify/cors` | CORS |
+| `@fastify/compress` | Compresión gzip |
+| `@prisma/client` | ORM de base de datos (PostgreSQL) |
+| `ioredis` | Cliente Redis |
+| `bcrypt` | Hash de passwords |
+| `zod` | Validación de esquemas |
+| `pino` | Logger de alto rendimiento |
+| `jsonwebtoken` | Manejo de JWTs |
 
 ---
 
 ### 2.2 `.env` - Variables de Entorno
 
 ```env
-# Server
 NODE_ENV=development
 PORT=3000
 HOST="0.0.0.0"
-
-# Database
-DATABASE_URL="postgresql://user:password@localhost:5432/practica_farmacy_db?schema=public"
-
-# JWT
+DATABASE_URL="postgresql://..."
 JWT_SECRET=your-super-secret-jwt-key-min-32-chars-long
-JWT_EXPIRES_IN=15m
 JWT_REFRESH_SECRET=your-super-secret-refresh-key-min-32-chars
-JWT_REFRESH_EXPIRES_IN=7d
-
-# Redis
-REDIS_HOST=127.0.0.1
-REDIS_PORT=6379
 REDIS_URL=redis://localhost:6379
 ```
 
@@ -154,6 +154,7 @@ REDIS_URL=redis://localhost:6379
 ```typescript
 import { z } from "zod";
 import dotenv from "dotenv";
+import { logger } from "@/infrastructure/logger";
 
 dotenv.config();
 
@@ -654,7 +655,7 @@ export class UnprocessableEntityError extends AppError {
 
 export class InternalServerError extends AppError {
   constructor(message = 'Internal Server Error') {
-    super(message, 500, 'INPROCESSABLE_ENTITY')
+    super(message, 500, 'INTERNAL_SERVER_ERROR')
   }
 }
 
@@ -695,48 +696,108 @@ export class TooManyRequestsError extends AppError {
 
 ## 5. Módulo Auth
 
-### 5.1 Domain Layer
+El módulo de autenticación sigue una arquitectura limpia (Clean Architecture) con separación en capas:
 
-#### `src/modules/auth/domain/auth.interface.ts` - Interfaces y Contratos
+```
+src/modules/auth/
+├── domain/           # Contratos e interfaces
+├── application/      # Lógica de negocio
+├── infrastructure/   # Implementaciones (Prisma)
+└── presentation/     # Controladores, rutas, DTOs
+```
+
+### 5.1 Domain Layer - Capa de Dominio
+
+La capa de dominio contiene los contratos y tipos puros, sin dependencias de frameworks.
+
+#### `src/modules/auth/domain/auth.entities.ts` - Entidades
 
 ```typescript
 import type { Role } from "@/types/user"
 
-export interface IRegisterUser {
+export interface IUserEntity {
+  id: string
+  name: string
+  email: string
+  password: string
+  role: Role
+  createdAt?: Date
+  updatedAt?: Date
+}
+```
+
+**¿Qué hace este archivo?**
+
+- Define la interfaz `IUserEntity` - Representa el usuario persistido en la base de datos
+- Contiene todos los campos incluyendo `password` (hasheada)
+- Incluye timestamps opcionales (`createdAt`, `updatedAt`)
+
+---
+
+#### `src/modules/auth/domain/auth.types.ts` - Tipos de Payload y Response
+
+```typescript
+import type { Role } from "@/types/user"
+
+export interface IRegisterPayload {
   name: string
   email: string
   password: string
   role?: Role
 }
 
-export interface IUserEntity {
-  id: string
-  name: string
+export interface ILoginPayload {
   email: string
-  role: Role
-  createdAt?: Date
-  updatedAt?: Date
+  password: string
 }
 
-export interface IAuthRepository {
-  findByEmail(email: string): Promise<IUserEntity | null>
-  create(data: IRegisterUser): Promise<IUserEntity>
+export interface IAuthResponse {
+  message: string
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    role: Role;
+    createdAt?: Date;
+  };
+  accessToken: string;
+  refreshToken: string;
 }
 ```
 
 **¿Qué hace este archivo?**
 
-1. **`IRegisterUser`** - Interface para datos de registro:
+1. **`IRegisterPayload`** - Tipo para el payload de registro:
    - `name`, `email`, `password` - Campos requeridos
    - `role` - Opcional (default: staff)
 
-2. **`IUserEntity`** - Interface para el usuario persistido:
-   - Similar a `User` de types/user.ts pero más enfocada al dominio
-   - Incluye timestamps opcionales
+2. **`ILoginPayload`** - Tipo para el payload de login:
+   - `email` y `password` para autenticar
 
-3. **`IAuthRepository`** - Contrato del repository:
-   - `findByEmail(email)` - Busca usuario por email
-   - `create(data)` - Crea un nuevo usuario
+3. **`IAuthResponse`** - Tipo para la respuesta de auth:
+   - `message` - Mensaje de éxito
+   - `user` - Datos del usuario (sin password)
+   - `accessToken` y `refreshToken` - Tokens JWT
+
+---
+
+#### `src/modules/auth/domain/auth.interface.ts` - Interfaces del Repository
+
+```typescript
+import type { IUserEntity } from "./auth.entities"
+import type { IRegisterPayload } from "./auth.types"
+
+export interface IAuthRepository {
+  findByEmail(email: string): Promise<IUserEntity | null>
+  create(data: IRegisterPayload): Promise<IUserEntity>
+}
+```
+
+**¿Qué hace este archivo?**
+
+- Define `IAuthRepository` - Contrato del repository que debe implementar la infraestructura
+- **`findByEmail(email)`** - Busca usuario por email
+- **`create(data)`** - Crea un nuevo usuario
 
 **¿Por qué interfaces?**
 - Define el contrato sin importar la implementación
@@ -745,39 +806,38 @@ export interface IAuthRepository {
 
 ---
 
-### 5.2 Application Layer
+### 5.2 Application Layer - Capa de Aplicación
 
 #### `src/modules/auth/application/auth.service.ts` - Lógica de Negocio
 
 ```typescript
-import { ConflictError } from "@/core/errors/AppError"
-import { hashPassword } from "@/core/utils/crypto.utils"
+import { ConflictError, UnauthorizedError } from "@/core/errors/AppError"
+import { comparePassword, hashPassword } from "@/core/utils/crypto.utils"
 import { generateTokens } from "@/core/utils/token.utils"
-import type { IRegisterUser, IAuthRepository } from "../domain/auth.interface"
+import type { IAuthRepository } from "../domain/auth.interface"
+import type { IAuthResponse, ILoginPayload, IRegisterPayload } from "../domain/auth.types"
+import type { Role } from "@/types/user"
 
 export const createAuthService = (repository: IAuthRepository) => ({
-  register: async (data: IRegisterUser) => {
+  register: async (data: IRegisterPayload): Promise<IAuthResponse> => {
     const { name, email, password, role = "staff" } = data
 
-    // 1. Verificar si el usuario ya existe
     const existingUser = await repository.findByEmail(email)
 
     if (existingUser) {
       throw new ConflictError("Email already registered")
     }
 
-    // 2. Hashear el password
     const hashedPassword = await hashPassword(password)
 
-    // 3. Crear el usuario
     const newUser = { name, email, password: hashedPassword, role }
+
     const user = await repository.create(newUser)
 
-    // 4. Generar tokens JWT
     const { accessToken, refreshToken } = generateTokens(user.id, user.email, user.role)
 
-    // 5. Retornar respuesta
-    return {
+    const response: IAuthResponse = {
+      message: "User create successfully",
       user: {
         id: user.id,
         name: user.name,
@@ -787,6 +847,40 @@ export const createAuthService = (repository: IAuthRepository) => ({
       accessToken,
       refreshToken
     }
+
+    return response
+  },
+
+  login: async (data: ILoginPayload): Promise<IAuthResponse> => {
+    const { email, password } = data
+
+    const user = await repository.findByEmail(email)
+
+    if (!user) {
+      throw new UnauthorizedError("Invalid credentials")
+    }
+
+    const isValidPassword = await comparePassword(password, user.password)
+
+    if (!isValidPassword) {
+      throw new UnauthorizedError("Invalid credentials")
+    }
+
+    const { accessToken, refreshToken } = generateTokens(user.id, user.email, user.role as Role)
+
+    const response: IAuthResponse = {
+      message: "Login successfully",
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      },
+      accessToken,
+      refreshToken
+    }
+
+    return response
   }
 })
 ```
@@ -801,7 +895,14 @@ export const createAuthService = (repository: IAuthRepository) => ({
    - **Step 2**: Hashea el password con bcrypt (10 rounds)
    - **Step 3**: Crea el usuario en la BD usando el repository
    - **Step 4**: Genera access + refresh tokens
-   - **Step 5**: Retorna el usuario creado + tokens
+   - **Step 5**: Retorna la respuesta con mensaje, usuario y tokens
+
+3. **`login(data)`** - Lógica de login:
+   - Recibe `data` con email y password
+   - **Step 1**: Busca el usuario por email → si no existe, lanza `UnauthorizedError`
+   - **Step 2**: Compara el password con el hash guardado → si no coincide, lanza `UnauthorizedError`
+   - **Step 3**: Genera access + refresh tokens
+   - **Step 4**: Retorna la respuesta con mensaje, usuario y tokens
 
 **Patrón usado: Dependency Inversion**
 - El service depende de la abstracción (`IAuthRepository`), no de la implementación
@@ -809,13 +910,14 @@ export const createAuthService = (repository: IAuthRepository) => ({
 
 ---
 
-### 5.3 Infrastructure Layer
+### 5.3 Infrastructure Layer - Capa de Infraestructura
 
 #### `src/modules/auth/infrastructure/auth.prisma.repository.ts` - Implementación Prisma
 
 ```typescript
 import { prisma } from "@/config/prisma";
-import type { IAuthRepository, IRegisterUser } from "../domain/auth.interface";
+import type { IAuthRepository } from "../domain/auth.interface";
+import type { IRegisterPayload } from "../domain/auth.types";
 
 export const AuthRepository: IAuthRepository = {
   async findByEmail(email: string) {
@@ -824,7 +926,7 @@ export const AuthRepository: IAuthRepository = {
     })
   },
 
-  async create(data: IRegisterUser) {
+  async create(data: IRegisterPayload) {
     return prisma.user.create({
       data: {
         name: data.name,
@@ -850,36 +952,43 @@ export const AuthRepository: IAuthRepository = {
    - Usa `prisma.user.create()`
    - Recibe: name, email, password (ya hasheado), role
 
-**¿Por qué separados?**
+**¿Por qué separado?**
 - Si mañana usás MongoDB en vez de PostgreSQL, solo cambiás este archivo
 - El service sigue funcionando igual porque usa la interfaz
 
 ---
 
-### 5.4 Presentation Layer
+### 5.4 Presentation Layer - Capa de Presentación
 
-#### `src/modules/auth/presentation/auth.dto.ts` - Validación de Input
+#### `src/modules/auth/presentation/auth.dto.ts` - Validación de Input (Zod)
 
 ```typescript
 import { z } from "zod"
 
-export const RegisterUserDtoSchema = z.object({
+export const RegisterPayloadDtoSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email format"),
   password: z.string().min(8, "Password must be at least 8 characters"),
   role: z.enum(["admin", "staff"]).optional()
 })
+
+export const LoginPayloadDtoSchema = z.object({
+  email: z.string().email("Invalid email format"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+})
 ```
 
 **¿Qué hace este archivo?**
 
-1. **Define schema de validación** con Zod para el registro:
+1. **`RegisterPayloadDtoSchema`** - Schema de validación para registro:
    - `name`: string, mínimo 2 caracteres
    - `email`: formato válido de email
    - `password`: mínimo 8 caracteres
    - `role`: opcional, solo "admin" o "staff"
 
-2. **Retorna schema** que se usa en el controller para parsear y validar el body del request
+2. **`LoginPayloadDtoSchema`** - Schema de validación para login:
+   - `email`: formato válido de email
+   - `password`: mínimo 8 caracteres
 
 ---
 
@@ -888,17 +997,23 @@ export const RegisterUserDtoSchema = z.object({
 ```typescript
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { createAuthService } from "../application/auth.service";
-import { RegisterUserDtoSchema } from "./auth.dto";
 import { AuthRepository } from "../infrastructure/auth.prisma.repository";
+import { LoginPayloadDtoSchema, RegisterPayloadDtoSchema } from "./auth.dto";
 
 // Inyección de dependencias: el controller decide qué implementación usar
 const authService = createAuthService(AuthRepository)
 
 export const authController = {
   register: async (request: FastifyRequest, reply: FastifyReply) => {
-    const data = RegisterUserDtoSchema.parse(request.body)
+    const data = RegisterPayloadDtoSchema.parse(request.body)
     const result = await authService.register(data)
     return reply.status(201).send(result)
+  },
+
+  login: async (request: FastifyRequest, reply: FastifyReply) => {
+    const data = LoginPayloadDtoSchema.parse(request.body)
+    const result = await authService.login(data)
+    return reply.status(200).send(result)
   }
 }
 ```
@@ -909,12 +1024,15 @@ export const authController = {
    - `createAuthService(AuthRepository)` → inyecta la implementación de Prisma
    - Esto permite cambiar la implementación sin tocar el controller
 
-2. **`register(request, reply)`** - Handler del endpoint:
+2. **`register(request, reply)`** - Handler del endpoint POST /register:
    - **Step 1**: Valida el body con Zod schema → si falla, lanza error
    - **Step 2**: Llama al service con los datos validados
    - **Step 3**: Retorna 201 Created con el resultado
 
-3. **Retorna objeto con controller** - Expone los handlers para las rutas
+3. **`login(request, reply)`** - Handler del endpoint POST /login:
+   - **Step 1**: Valida el body con Zod schema
+   - **Step 2**: Llama al service con los datos validados
+   - **Step 3**: Retorna 200 OK con el resultado
 
 **Flujo:**
 ```
@@ -931,6 +1049,7 @@ import { authController } from "./auth.controller";
 
 export const authRoutes = async (fastify: FastifyInstance, _options: any) => {
   fastify.post("/register", authController.register)
+  fastify.post("/login", authController.login)
 }
 ```
 
@@ -938,6 +1057,7 @@ export const authRoutes = async (fastify: FastifyInstance, _options: any) => {
 
 1. **Registra rutas de auth** en Fastify:
    - `POST /register` → `authController.register`
+   - `POST /login` → `authController.login`
 
 2. **Exporta función asíncrona** que recibe la instancia de Fastify
 
@@ -959,12 +1079,12 @@ export const routes = async (fastify: FastifyInstance, _option: any) => {
 **¿Qué hace este archivo?**
 
 1. **Registra las rutas del módulo auth** con prefijo `/auth`
-2. **Resultado final**: las rutas quedan en `/api/v1/auth/register`
+2. **Resultado final**: las rutas quedan en `/api/v1/auth/register` y `/api/v1/auth/login`
 
 **Estructura de prefijos:**
 - `app.ts` registra `routes` con prefijo `/api/v1`
 - `routes.ts` registra `authRoutes` con prefijo `/auth`
-- Total: `/api/v1/auth/register`
+- Total: `/api/v1/auth/register` y `/api/v1/auth/login`
 
 ---
 
@@ -1121,27 +1241,68 @@ model category {
 
 ---
 
-## Resumen del Flujo de una Request
+## 8. Flujo Completo de una Request
+
+### Ejemplo: POST /api/v1/auth/register
 
 ```
-1. HTTP Request → server.ts → buildApp() (app.ts)
+1. HTTP Request
      ↓
-2. Fastify registra plugins (helmet, cors, compress, rate-limit)
+2. server.ts → buildApp() (app.ts)
      ↓
-3. Routing: /api/v1/auth/register → authRoutes → authController.register
+3. Fastify registra plugins (helmet, cors, compress, rate-limit)
      ↓
-4. Controller: Valida request.body con Zod (RegisterUserDtoSchema)
+4. Routing: /api/v1/auth/register
+   → routes.ts (/api/v1 prefix)
+   → authRoutes.ts (/auth prefix)
+   → POST /register → authController.register
      ↓
-5. Service: createAuthService(AuthRepository).register(data)
+5. Controller:
+   - Valida request.body con RegisterPayloadDtoSchema (Zod)
+   - Llama a authService.register(data)
      ↓
-6. Repository: AuthRepository.findByEmail() → prisma.user.findFirst()
+6. Service (createAuthService):
+   - repository.findByEmail(email) → Busca si existe
+   - Si existe → throw ConflictError
+   - hashPassword(password) → Hashea el password
+   - repository.create(newUser) → Crea en BD
+   - generateTokens(user.id, ...) → Genera JWTs
+   - Retorna IAuthResponse
      ↓
-7. Response: { user: {...}, accessToken, refreshToken } → HTTP 201
+7. Repository (Prisma):
+   - prisma.user.findFirst({ where: {...} })
+   - prisma.user.create({ data: {...} })
+     ↓
+8. Response:
+   - HTTP 201 Created
+   - { message, user, accessToken, refreshToken }
+```
+
+### Ejemplo: POST /api/v1/auth/login
+
+```
+1. HTTP Request con { email, password }
+     ↓
+2. Controller:
+   - Valida con LoginPayloadDtoSchema
+   - Llama authService.login(data)
+     ↓
+3. Service:
+   - repository.findByEmail(email)
+   - Si no existe → throw UnauthorizedError
+   - comparePassword(password, user.password)
+   - Si no coincide → throw UnauthorizedError
+   - generateTokens(user.id, ...) → Genera JWTs
+   - Retorna IAuthResponse
+     ↓
+4. Response:
+   - HTTP 200 OK
+   - { message, user, accessToken, refreshToken }
 ```
 
 ---
 
-## Commands Útiles
+## 9. Commands Útiles
 
 ```bash
 # Desarrollo (watch mode con tsx)
@@ -1162,4 +1323,18 @@ bun build
 # Iniciar producción
 bun start
 ```
+
+---
+
+## 10. Resumen de Patrones Usados
+
+| Patrón | Aplicación |
+|--------|------------|
+| **Clean Architecture** | Separación en domain/application/infrastructure/presentation |
+| **Dependency Inversion** | Service depende de IAuthRepository, no de implementación concreta |
+| **Factory Pattern** | `createAuthService(repository)` crea el service con dependencias |
+| **Singleton** | `prisma`, `redisClient`, `logger` - una sola instancia global |
+| **Error Handling** | Errores custom con statusCode y código interno |
+| **Soft Delete** | Campos `deletedAt` en vez de borrar registros |
+| **Value Objects** | Zod schemas para validar DTOs en la capa de presentación |
 
