@@ -36,10 +36,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-f626ccf9.js";
+            window.path_to_searchindex_js = "searchindex-63e4dfa9.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-9ad8953f.js"></script>
+        <script src="toc-45a33be9.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -187,6 +187,7 @@
 </ul>
 <h2 id="fastifytypescript"><a class="header" href="#fastifytypescript">Fastify(TypeScript)</a></h2>
 <ul>
+<li><a href="#fastify-init---manual-técnico-completo">Backend Fastify Primeros Pasos</a></li>
 <li><a href="#manual-completo--backend-farmacia-con-fastify">Backend Farmacia</a></li>
 </ul>
 <h2 id="base-de-datos"><a class="header" href="#base-de-datos">Base de datos</a></h2>
@@ -4246,12 +4247,1181 @@ cargo run
 <pre><code class="language-bash">REDIS_URL=redis://tu-servidor:6379 cargo run
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div>
+<h1 id="fastify-init---manual-técnico-completo"><a class="header" href="#fastify-init---manual-técnico-completo">Fastify Init - Manual Técnico Completo</a></h1>
+<p>Este manual documenta todo el código del proyecto, explicando cada función, configuración e implementación.</p>
+<hr>
+<h2 id="índice"><a class="header" href="#índice">Índice</a></h2>
+<ol>
+<li><a href="#estructura-del-proyecto">Estructura del Proyecto</a></li>
+<li><a href="#configuración-principal">Configuración Principal</a></li>
+<li><a href="#utils-y-helpers">Utils y Helpers</a></li>
+<li><a href="#errores">Errores</a></li>
+<li><a href="#módulo-auth">Módulo Auth</a></li>
+<li><a href="#presentation-layer">Presentation Layer</a></li>
+<li><a href="#prisma-schema">Prisma Schema</a></li>
+</ol>
+<hr>
+<h2 id="1-estructura-del-proyecto"><a class="header" href="#1-estructura-del-proyecto">1. Estructura del Proyecto</a></h2>
+<pre><code>src/
+├── app.ts                    # Configuración de Fastify (plugins)
+├── server.ts                 # Punto de entrada, levanta el servidor
+├── config/                   # Configuraciones externas
+│   ├── env.ts               # Variables de entorno (validación Zod)
+│   ├── prisma.ts           # Cliente Prisma
+│   └── redis.ts            # Cliente Redis (caché)
+├── core/
+│   ├── errors/             # Errores personalizados
+│   │   └── AppError.ts
+│   └── utils/              # Utilities genéricas
+│       ├── crypto.utils.ts  # Hash de passwords
+│       └── token.utils.ts  # Generación de JWTs
+├── types/                   # Tipos globales
+│   └── user.ts
+├── infrastructure/          # Configuraciones de infraestructura
+│   └── logger.ts
+└── modules/                 # Módulos de la aplicación
+    └── auth/
+        ├── domain/         # Contratos e interfaces
+        ├── application/   # Lógica de negocio (services)
+        ├── infrastructure # Implementaciones (repositories)
+        └── presentation   # Controladores, rutas, DTOs
+</code></pre>
+<hr>
+<h2 id="2-configuración-principal"><a class="header" href="#2-configuración-principal">2. Configuración Principal</a></h2>
+<h3 id="21-packagejson---dependencias-del-proyecto"><a class="header" href="#21-packagejson---dependencias-del-proyecto">2.1 <code>package.json</code> - Dependencias del Proyecto</a></h3>
+<pre><code class="language-json">{
+  "name": "01",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsup src/server.ts --format cjs --dts",
+    "start": "node dist/server.js",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio"
+  },
+  "dependencies": {
+    "@fastify/compress": "^8.3.1",
+    "@fastify/cors": "^11.2.0",
+    "@fastify/helmet": "^13.0.2",
+    "@fastify/jwt": "^10.0.0",
+    "@fastify/rate-limit": "^10.3.0",
+    "@prisma/client": "^5.22.0",
+    "@types/jsonwebtoken": "^9.0.10",
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.3.1",
+    "fastify": "^5.7.4",
+    "ioredis": "^5.10.0",
+    "jsonwebtoken": "^9.0.3",
+    "pino": "^10.3.1",
+    "pino-pretty": "^13.1.3",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/bcrypt": "^6.0.0",
+    "@types/node": "^25.3.3",
+    "prisma": "^5.22.0",
+    "tsup": "^8.5.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
+
+</code></pre>
+<p><strong>Scripts disponibles:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Script</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><code>bun dev</code></td><td>Inicia el servidor en modo desarrollo con watch</td></tr>
+<tr><td><code>bun build</code></td><td>Compila a JavaScript con tsup</td></tr>
+<tr><td><code>bun start</code></td><td>Inicia el servidor desde el build</td></tr>
+<tr><td><code>bun prisma:generate</code></td><td>Genera el cliente Prisma</td></tr>
+<tr><td><code>bun prisma:migrate</code></td><td>Ejecuta migraciones de BD</td></tr>
+<tr><td><code>bun prisma:studio</code></td><td>Abre Prisma Studio (UI de BD)</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Dependencias principales:</strong></p>
+<ul>
+<li><strong>Fastify</strong> - Framework web (reemplaza Express)</li>
+<li><strong>@fastify/jwt</strong> - Autenticación JWT</li>
+<li><strong>@fastify/rate-limit</strong> - Limitación de requests</li>
+<li><strong>@fastify/helmet</strong> - Headers de seguridad</li>
+<li><strong>@fastify/cors</strong> - CORS</li>
+<li><strong>@fastify/compress</strong> - Compresión gzip</li>
+<li><strong>Prisma</strong> - ORM de base de datos (PostgreSQL)</li>
+<li><strong>ioredis</strong> - Cliente Redis</li>
+<li><strong>bcrypt</strong> - Hash de passwords</li>
+<li><strong>zod</strong> - Validación de esquemas</li>
+<li><strong>pino</strong> - Logger de alto rendimiento</li>
+</ul>
+<hr>
+<h3 id="22-env---variables-de-entorno"><a class="header" href="#22-env---variables-de-entorno">2.2 <code>.env</code> - Variables de Entorno</a></h3>
+<pre><code class="language-env"># Server
+NODE_ENV=development
+PORT=3000
+HOST="0.0.0.0"
+
+# Database
+DATABASE_URL="postgresql://user:password@localhost:5432/practica_farmacy_db?schema=public"
+
+# JWT
+JWT_SECRET=your-super-secret-jwt-key-min-32-chars-long
+JWT_EXPIRES_IN=15m
+JWT_REFRESH_SECRET=your-super-secret-refresh-key-min-32-chars
+JWT_REFRESH_EXPIRES_IN=7d
+
+# Redis
+REDIS_HOST=127.0.0.1
+REDIS_PORT=6379
+REDIS_URL=redis://localhost:6379
+</code></pre>
+<hr>
+<h3 id="23-srcconfigenvts---validación-de-entorno"><a class="header" href="#23-srcconfigenvts---validación-de-entorno">2.3 <code>src/config/env.ts</code> - Validación de Entorno</a></h3>
+<pre><code class="language-typescript">import { z } from "zod";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const envSchema = z.object({
+  NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+  PORT: z.coerce.number().default(3000),
+  HOST: z.string(),
+  DATABASE_URL: z.string(),
+  REDIS_HOST: z.string().default("127.0.0.1"),
+  REDIS_PORT: z.coerce.number().default(6379),
+  REDIS_URL: z.string().default("redis://localhost:6379"),
+  JWT_SECRET: z.string().min(32),
+  JWT_EXPIRES_IN: z.string().default("15m"),
+  JWT_REFRESH_SECRET: z.string().min(32),
+  JWT_REFRESH_EXPIRES_IN: z.string().default("7d"),
+});
+
+const _env = envSchema.safeParse(process.env);
+
+if (!_env.success) {
+  logger.error("Invalid environment variables");
+  process.exit(1);
+}
+
+export const env = _env.data;
+</code></pre>
+<p><strong>¿Qué hace este archivo?</strong></p>
+<ol>
+<li><strong><code>dotenv.config()</code></strong> - Carga las variables del archivo <code>.env</code> en <code>process.env</code></li>
+<li><strong>Define un schema Zod</strong> (<code>envSchema</code>) que valida:
+<ul>
+<li><code>NODE_ENV</code> - Entorno de ejecución (development/production/test)</li>
+<li><code>PORT</code> - Puerto del servidor (default 3000)</li>
+<li><code>HOST</code> - Host donde escucha el servidor</li>
+<li><code>DATABASE_URL</code> - URL de PostgreSQL</li>
+<li><code>REDIS_*</code> - Configuración de Redis (caché)</li>
+<li><code>JWT_SECRET</code> - Clave para firmar access tokens (min 32 chars)</li>
+<li><code>JWT_REFRESH_SECRET</code> - Clave para firmar refresh tokens</li>
+</ul>
+</li>
+<li><strong>Valida con <code>safeParse()</code></strong> - Si falla, muestra error y sale del proceso</li>
+<li><strong>Exporta el objeto validado</strong> (<code>env</code>) con tipos seguros</li>
+</ol>
+<p><strong>¿Por qué Zod?</strong> Permite validar y tipar las variables de entorno en tiempo de ejecución, evitando errores por config faltante.</p>
+<hr>
+<h3 id="24-srcconfigprismats---cliente-de-base-de-datos"><a class="header" href="#24-srcconfigprismats---cliente-de-base-de-datos">2.4 <code>src/config/prisma.ts</code> - Cliente de Base de Datos</a></h3>
+<pre><code class="language-typescript">import { PrismaClient } from '@prisma/client';
+import { env } from './env.js';
+
+export const prisma = new PrismaClient({
+  log: env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+  datasourceUrl: env.DATABASE_URL,
+});
+</code></pre>
+<p><strong>¿Qué hace este archivo?</strong></p>
+<ol>
+<li><strong>Crea una instancia de PrismaClient</strong> - El cliente oficial de Prisma para conectar a PostgreSQL</li>
+<li><strong>Configura logging</strong>:
+<ul>
+<li>Development: muestra queries, errores y warnings</li>
+<li>Production: solo errores</li>
+</ul>
+</li>
+<li><strong>Usa <code>datasourceUrl</code></strong> - La URL de la base de datos del <code>.env</code></li>
+</ol>
+<p><strong>¿Por qué es singleton?</strong> Prisma mantiene un pool de conexiones. Crear múltiples instancias puede causar problemas de memoria. Se importa como <code>prisma</code> en todo el proyecto.</p>
+<hr>
+<h3 id="25-srcconfigredists---cliente-de-caché-redis"><a class="header" href="#25-srcconfigredists---cliente-de-caché-redis">2.5 <code>src/config/redis.ts</code> - Cliente de Caché Redis</a></h3>
+<pre><code class="language-typescript">import Redis from "ioredis"
+import { env } from "./env"
+import { logger } from "@/infrastructure/logger"
+
+let redisClient: Redis | null = null
+
+export const getRedisClient = () =&gt; {
+  if (redisClient) return redisClient
+
+  try {
+    redisClient = new Redis(env.REDIS_URL, {
+      maxRetriesPerRequest: 3,
+      lazyConnect: true,
+      connectionName: "farmacy",
+      retryStrategy: (times) =&gt; {
+        if (times &gt; 5) {
+          logger.error("Redis max retries reached")
+          return null
+        }
+        return Math.min(times * 200, 2000)
+      },
+    })
+
+    // Connect and log status
+    redisClient.connect().then(() =&gt; {
+      logger.info("Redis connected successfully")
+    }).catch((error) =&gt; {
+      logger.error({ error: error }, "Redis connection failed")
+    })
+
+    let hasLoggedRedisError = false
+
+    redisClient.on("ready", () =&gt; {
+      hasLoggedRedisError = false
+      logger.info("Redis ready")
+    })
+
+    redisClient.on("error", (error) =&gt; {
+      if (!hasLoggedRedisError) {
+        logger.error({ error }, "Redis connection error")
+        hasLoggedRedisError = true
+      }
+    })
+
+    redisClient.on("reconnecting", () =&gt; {
+      logger.warn("Redis reconnecting...")
+    })
+
+    redisClient.on("close", () =&gt; {
+      logger.warn("Redis connection closed")
+    })
+
+    return redisClient
+  } catch (error) {
+    logger.error("Redis unavailable, continuing without cache")
+    return null
+  }
+}
+
+export const closeRedis = async () =&gt; {
+  if (redisClient) {
+    await redisClient.quit()
+    logger.info("Redis disconnected")
+  }
+}
+
+export const redis = getRedisClient()
+</code></pre>
+<p><strong>¿Qué hace este archivo?</strong></p>
+<ol>
+<li><strong>Singleton pattern</strong> - Si ya existe el cliente, lo reutiliza</li>
+<li><strong>Configuración de conexión</strong>:
+<ul>
+<li><code>maxRetriesPerRequest: 3</code> - Reintentos por request</li>
+<li><code>lazyConnect: true</code> - Conectar solo cuando se necesita</li>
+<li><code>connectionName: "farmacy"</code> - Identificador de la conexión</li>
+</ul>
+</li>
+<li><strong>Retry strategy</strong> - Exponential backoff:
+<ul>
+<li>Máximo 5 reintentos</li>
+<li>Delay: <code>min(times * 200, 2000)</code> ms</li>
+</ul>
+</li>
+<li><strong>Event handlers</strong> - Escucha eventos de Redis para logging:
+<ul>
+<li><code>ready</code> - Conexión establecida</li>
+<li><code>error</code> - Error de conexión</li>
+<li><code>reconnecting</code> - Intentando reconectar</li>
+<li><code>close</code> - Conexión cerrada</li>
+</ul>
+</li>
+<li><strong>Graceful shutdown</strong> - <code>closeRedis()</code> para cerrar correctamente</li>
+<li><strong>Fallback</strong> - Si Redis falla, la app sigue funcionando (continúa sin cache)</li>
+</ol>
+<p><strong>¿Por qué usar Redis?</strong> Para caching de respuestas, sesiones, rate limiting, y cualquier dato que requiera acceso rápido.</p>
+<hr>
+<h3 id="26-srcinfrastructureloggerts---logger"><a class="header" href="#26-srcinfrastructureloggerts---logger">2.6 <code>src/infrastructure/logger.ts</code> - Logger</a></h3>
+<pre><code class="language-typescript">import pino from "pino";
+
+export const logger = pino({
+  transport: process.env.NODE_ENV === "development" ? {
+    target: "pino-pretty",
+    options: {
+      colorize: true,
+      translateTime: "SYS:standard",
+      ignore: "pid,hostname",
+    },
+  } : undefined,
+});
+</code></pre>
+<p><strong>¿Qué hace este archivo?</strong></p>
+<ol>
+<li><strong>Usa pino</strong> - Logger de alto rendimiento para Node.js</li>
+<li><strong>Configuración development</strong>:
+<ul>
+<li><code>pino-pretty</code> - Formatea los logs en consola con colores</li>
+<li><code>translateTime: "SYS:standard"</code> - Timestamps legibles</li>
+<li><code>ignore: "pid,hostname"</code> - Oculta info irrelevante</li>
+</ul>
+</li>
+<li><strong>Production</strong> - Logs JSON estructurados (para parseo automático)</li>
+</ol>
+<p><strong>¿Por qué pino?</strong> Es 10x más rápido que otros loggers, soportado por Fastify natively, y produce logs JSON estructurados (ideal para log aggregation como Datadog, ELK, etc.).</p>
+<hr>
+<h3 id="27-srcserverts---punto-de-entrada"><a class="header" href="#27-srcserverts---punto-de-entrada">2.7 <code>src/server.ts</code> - Punto de Entrada</a></h3>
+<pre><code class="language-typescript">import { buildApp } from "./app"
+import { env } from "./config/env"
+import { closeRedis } from "./config/redis"
+import { prisma } from "./config/prisma"
+import { logger } from "./infrastructure/logger"
+
+const startServer = async () =&gt; {
+  try {
+    const app = await buildApp()
+
+    await app.listen({ port: env.PORT, host: env.HOST })
+
+    logger.info(`Server listening on http://${env.HOST}:${env.PORT}`)
+
+    const gracefulShutdown = async (signal: string) =&gt; {
+      logger.info(`Received ${signal}, shutting down gracefully...`)
+      await app.close()
+      await prisma.$disconnect()
+      await closeRedis()
+      process.exit(0)
+    }
+
+    process.on("SIGINT", () =&gt; gracefulShutdown("SIGINT"))
+    process.on("SIGTERM", () =&gt; gracefulShutdown("SIGTERM"))
+  } catch (error) {
+    logger.error({ err: error }, "Failed to start server")
+    process.exit(1)
+  }
+}
+
+startServer()
+</code></pre>
+<p><strong>¿Qué hace este archivo?</strong></p>
+<ol>
+<li><strong><code>buildApp()</code></strong> - Llama a app.ts para configurar Fastify</li>
+<li><strong><code>app.listen({ port, host })</code></strong> - Inicia el servidor HTTP</li>
+<li><strong>Graceful shutdown</strong> - Manejo de señales del sistema:
+<ul>
+<li><code>SIGINT</code> - Ctrl+C</li>
+<li><code>SIGTERM</code> - kill command</li>
+<li>Cierra: Fastify app → Prisma → Redis → Exit(0)</li>
+</ul>
+</li>
+<li><strong>Manejo de errores</strong> - Si falla el inicio, loguea error y sale con código 1</li>
+</ol>
+<hr>
+<h3 id="28-srcappts---configuración-de-fastify"><a class="header" href="#28-srcappts---configuración-de-fastify">2.8 <code>src/app.ts</code> - Configuración de Fastify</a></h3>
+<pre><code class="language-typescript">import Fastify from "fastify"
+import helmet from "@fastify/helmet"
+import cors from "@fastify/cors"
+import compress from "@fastify/compress"
+import rateLimit from "@fastify/rate-limit"
+import { env } from "./config/env"
+import { getRedisClient } from "./config/redis"
+import { routes } from "./presentation/routes"
+
+export const buildApp = async () =&gt; {
+  const app = Fastify({
+    logger: env.NODE_ENV === 'development'
+      ? {
+          level: 'debug',
+          transport: {
+            target: 'pino-pretty',
+            options: {
+              colorize: true,
+              translateTime: 'SYS:standard',
+              ignore: 'pid,hostname',
+            },
+          },
+        }
+      : {
+          level: 'info',
+        },
+  })
+
+  getRedisClient()
+
+  // Headers de seguridad (XSS, HSTS, etc.).
+  await app.register(helmet)
+
+  await app.register(cors, {
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"]
+  })
+
+  // Comprime respuestas con gzip.
+  await app.register(compress)
+
+  // Limita a 100 requests/min por IP.
+  await app.register(rateLimit, {
+    max: 100,
+    timeWindow: "1 minute"
+  })
+
+  app.register(routes, { prefix: '/api/v1' });
+
+  app.get("/health", async () =&gt; {
+    return { status: "ok", timestamp: new Date().toISOString() }
+  })
+
+  return app
+}
+</code></pre>
+<p><strong>¿Qué hace este archivo?</strong></p>
+<ol>
+<li><strong>Logger de Fastify</strong> - Configura logging interno:
+<ul>
+<li>Development: level ‘debug’ con formato pretty</li>
+<li>Production: level ‘info’ (más silencioso)</li>
+</ul>
+</li>
+<li><strong>Inicializa Redis</strong> - <code>getRedisClient()</code> para tener listo el cache</li>
+<li><strong>Registra plugins de Fastify</strong>:</li>
+</ol>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Plugin</th><th>Función</th></tr>
+</thead>
+<tbody>
+<tr><td><code>@fastify/helmet</code></td><td>Headers de seguridad (X-Content-Type-Options, HSTS, X-Frame-Options, etc.)</td></tr>
+<tr><td><code>@fastify/cors</code></td><td>Cross-Origin Resource Sharing - permite request desde otros dominios</td></tr>
+<tr><td><code>@fastify/compress</code></td><td>Compresión gzip de respuestas</td></tr>
+<tr><td><code>@fastify/rate-limit</code></td><td>Limita requests por IP (100/min en este caso)</td></tr>
+</tbody>
+</table>
+</div>
+<ol start="4">
+<li><strong>Routes</strong> - Registra las rutas con prefijo <code>/api/v1</code></li>
+<li><strong>Health check</strong> - Endpoint <code>/health</code> que retorna <code>{ status: "ok", timestamp }</code></li>
+</ol>
+<hr>
+<h2 id="3-utils-y-helpers"><a class="header" href="#3-utils-y-helpers">3. Utils y Helpers</a></h2>
+<h3 id="31-srccoreutilscryptoutilsts---funciones-de-password"><a class="header" href="#31-srccoreutilscryptoutilsts---funciones-de-password">3.1 <code>src/core/utils/crypto.utils.ts</code> - Funciones de Password</a></h3>
+<pre><code class="language-typescript">import bcrypt from "bcrypt"
+
+export const hashPassword = async (password: string): Promise&lt;string&gt; =&gt; {
+  return await bcrypt.hash(password, 10)
+}
+
+export const comparePassword = async (password: string, hash: string): Promise&lt;boolean&gt; =&gt; {
+  return await bcrypt.compare(password, hash);
+};
+</code></pre>
+<p><strong>¿Qué hace este archivo?</strong></p>
+<ol>
+<li><strong><code>hashPassword(password)</code></strong> - Hashea un password usando bcrypt:
+<ul>
+<li>Algoritmo: bcrypt</li>
+<li>Salt rounds: 10 (256 iteraciones)</li>
+<li>Retorna: string hasheado</li>
+</ul>
+</li>
+<li><strong><code>comparePassword(password, hash)</code></strong> - Compara un password plano con su hash:
+<ul>
+<li>Retorna: <code>true</code> si coincide, <code>false</code> si no</li>
+</ul>
+</li>
+</ol>
+<p><strong>¿Por qué bcrypt?</strong> Es un algoritmo de hashing diseñado para passwords:</p>
+<ul>
+<li>Resistente a rainbow tables (usa salt)</li>
+<li>Configurable work factor (cost factor)</li>
+<li>Incorpora verificación de hash</li>
+</ul>
+<hr>
+<h3 id="32-srccoreutilstokenutilsts---generación-de-jwts"><a class="header" href="#32-srccoreutilstokenutilsts---generación-de-jwts">3.2 <code>src/core/utils/token.utils.ts</code> - Generación de JWTs</a></h3>
+<pre><code class="language-typescript">import { env } from "@/config/env"
+import type { Role } from "@/types/user"
+import type { SignOptions } from "jsonwebtoken"
+import jwt from "jsonwebtoken"
+
+interface TokenPayload {
+  userId: string
+  email: string
+  role: Role
+}
+
+export const generateTokens = (userId: string, email: string, role: Role) =&gt; {
+  const accessTokenOptions: SignOptions = {
+    expiresIn: 900  // 15 minutos en segundos
+  }
+
+  const refreshTokenOptions: SignOptions = {
+    expiresIn: 604000  // 7 días en segundos
+  }
+
+  const accessToken = jwt.sign(
+    { userId, email, role } as TokenPayload,
+    env.JWT_SECRET,
+    accessTokenOptions
+  )
+
+  const refreshToken = jwt.sign(
+    { userId },  // Solo userId, más liviano
+    env.JWT_REFRESH_SECRET,
+    refreshTokenOptions
+  )
+
+  return { accessToken, refreshToken }
+}
+</code></pre>
+<p><strong>¿Qué hace este archivo?</strong></p>
+<ol>
+<li>
+<p><strong><code>generateTokens(userId, email, role)</code></strong> - Genera dos tokens:</p>
+<p><strong>Access Token</strong> (para autenticar requests):</p>
+<ul>
+<li>Payload: <code>{ userId, email, role }</code></li>
+<li>Expira: 900 segundos (15 minutos)</li>
+<li>Firmado con: <code>JWT_SECRET</code></li>
+</ul>
+<p><strong>Refresh Token</strong> (para obtener nuevo access token):</p>
+<ul>
+<li>Payload: <code>{ userId }</code> (solo ID, más liviano)</li>
+<li>Expira: 604000 segundos (7 días)</li>
+<li>Firmado con: <code>JWT_REFRESH_SECRET</code></li>
+</ul>
+</li>
+<li>
+<p><strong>Retorna objeto</strong> con ambos tokens</p>
+</li>
+</ol>
+<p><strong>¿Por qué dos tokens?</strong></p>
+<ul>
+<li>Access token: corto (15 min) → si alguien lo roba, máximo 15 min de acceso</li>
+<li>Refresh token: largo (7 días) → el usuario no tiene que loguearse seguido</li>
+<li>Si el refresh es compromiseado, se puede revokear sin afectar el access</li>
+</ul>
+<hr>
+<h3 id="33-srctypesuserts---tipos-de-usuario"><a class="header" href="#33-srctypesuserts---tipos-de-usuario">3.3 <code>src/types/user.ts</code> - Tipos de Usuario</a></h3>
+<pre><code class="language-typescript">export type Role = "admin" | "staff"
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  role: Role;
+  deletedAt?: Date | null;
+}
+</code></pre>
+<p><strong>¿Qué hace este archivo?</strong></p>
+<ol>
+<li><strong>Define <code>Role</code></strong> - Union type con los roles posibles del sistema</li>
+<li><strong>Define <code>User</code> interface</strong> - Tipo del objeto usuario:
+<ul>
+<li><code>id</code> - UUID único</li>
+<li><code>email</code> - Email único</li>
+<li><code>name</code> - Nombre completo</li>
+<li><code>role</code> - Rol del usuario (admin/staff)</li>
+<li><code>deletedAt</code> - Soft delete timestamp (opcional)</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="4-errores"><a class="header" href="#4-errores">4. Errores</a></h2>
+<h3 id="41-srccoreerrorsapperrorts---errores-personalizados"><a class="header" href="#41-srccoreerrorsapperrorts---errores-personalizados">4.1 <code>src/core/errors/AppError.ts</code> - Errores Personalizados</a></h3>
+<pre><code class="language-typescript">export class AppError extends Error {
+  public readonly statusCode: number
+  public readonly code: string
+  public readonly isOperational: boolean
+
+  constructor(message: string, statusCode: number, code: string) {
+    super(message)
+    this.statusCode = statusCode
+    this.code = code
+    this.isOperational = true
+
+    Object.setPrototypeOf(this, new.target.prototype)
+    Error.captureStackTrace(this)
+  }
+}
+
+export class BadRequestError extends AppError {
+  constructor(message = 'Bad Request') {
+    super(message, 400, 'BAD_REQUEST')
+  }
+}
+
+export class UnauthorizedError extends AppError {
+  constructor(message = 'Unauthorized') {
+    super(message, 401, 'UNAUTHORIZED')
+  }
+}
+
+export class ForbiddenError extends AppError {
+  constructor(message = 'Forbidden') {
+    super(message, 403, 'FORBIDDEN')
+  }
+}
+
+export class NotFoundError extends AppError {
+  constructor(message = 'Not Found') {
+    super(message, 404, 'NOT_FOUND')
+  }
+}
+
+export class ConflictError extends AppError {
+  constructor(message = 'Conflict') {
+    super(message, 409, 'CONFLICT')
+  }
+}
+
+export class UnprocessableEntityError extends AppError {
+  constructor(message = 'Unprocessable Entity') {
+    super(message, 422, 'UNPROCESSABLE_ENTITY')
+  }
+}
+
+export class InternalServerError extends AppError {
+  constructor(message = 'Internal Server Error') {
+    super(message, 500, 'INPROCESSABLE_ENTITY')
+  }
+}
+
+export class TooManyRequestsError extends AppError {
+  constructor(message = 'Too Many Requests') {
+    super(message, 429, 'TOO_MANY_REQUESTS')
+  }
+}
+</code></pre>
+<p><strong>¿Qué hace este archivo?</strong></p>
+<ol>
+<li>
+<p><strong>Clase base <code>AppError</code></strong>:</p>
+<ul>
+<li>Extiende <code>Error</code> nativo de JavaScript</li>
+<li>Agrega: <code>statusCode</code> (HTTP status), <code>code</code> (error code interno), <code>isOperational</code> (si es error esperado o no)</li>
+<li><code>Object.setPrototypeOf</code> - Corrección para mantener herencia correcta en ES5</li>
+<li><code>Error.captureStackTrace</code> - Captura el stack trace completo</li>
+</ul>
+</li>
+<li>
+<p><strong>Errores específicos</strong> - Cada uno con su status code y code:</p>
+</li>
+</ol>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Error</th><th>Status</th><th>Code</th><th>Uso</th></tr>
+</thead>
+<tbody>
+<tr><td><code>BadRequestError</code></td><td>400</td><td>BAD_REQUEST</td><td>Datos inválidos</td></tr>
+<tr><td><code>UnauthorizedError</code></td><td>401</td><td>UNAUTHORIZED</td><td>No autenticado</td></tr>
+<tr><td><code>ForbiddenError</code></td><td>403</td><td>FORBIDDEN</td><td>No autorizado</td></tr>
+<tr><td><code>NotFoundError</code></td><td>404</td><td>NOT_FOUND</td><td>Recurso no existe</td></tr>
+<tr><td><code>ConflictError</code></td><td>409</td><td>CONFLICT</td><td>Conflicto (ej: email duplicado)</td></tr>
+<tr><td><code>UnprocessableEntityError</code></td><td>422</td><td>UNPROCESSABLE_ENTITY</td><td>Validación fallida</td></tr>
+<tr><td><code>InternalServerError</code></td><td>500</td><td>INTERNAL_SERVER_ERROR</td><td>Error inesperado</td></tr>
+<tr><td><code>TooManyRequestsError</code></td><td>429</td><td>TOO_MANY_REQUESTS</td><td>Rate limit excedido</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>¿Por qué crear errores personalizados?</strong></p>
+<ul>
+<li>Estandariza los errores en toda la app</li>
+<li>Agrega códigos internos para debugging</li>
+<li>Permite distinguir errores operacionales (del usuario) de bugs (del sistema)</li>
+</ul>
+<hr>
+<h2 id="5-módulo-auth"><a class="header" href="#5-módulo-auth">5. Módulo Auth</a></h2>
+<h3 id="51-domain-layer"><a class="header" href="#51-domain-layer">5.1 Domain Layer</a></h3>
+<h4 id="srcmodulesauthdomainauthinterfacets---interfaces-y-contratos"><a class="header" href="#srcmodulesauthdomainauthinterfacets---interfaces-y-contratos"><code>src/modules/auth/domain/auth.interface.ts</code> - Interfaces y Contratos</a></h4>
+<pre><code class="language-typescript">import type { Role } from "@/types/user"
+
+export interface IRegisterUser {
+  name: string
+  email: string
+  password: string
+  role?: Role
+}
+
+export interface IUserEntity {
+  id: string
+  name: string
+  email: string
+  role: Role
+  createdAt?: Date
+  updatedAt?: Date
+}
+
+export interface IAuthRepository {
+  findByEmail(email: string): Promise&lt;IUserEntity | null&gt;
+  create(data: IRegisterUser): Promise&lt;IUserEntity&gt;
+}
+</code></pre>
+<p><strong>¿Qué hace este archivo?</strong></p>
+<ol>
+<li>
+<p><strong><code>IRegisterUser</code></strong> - Interface para datos de registro:</p>
+<ul>
+<li><code>name</code>, <code>email</code>, <code>password</code> - Campos requeridos</li>
+<li><code>role</code> - Opcional (default: staff)</li>
+</ul>
+</li>
+<li>
+<p><strong><code>IUserEntity</code></strong> - Interface para el usuario persistido:</p>
+<ul>
+<li>Similar a <code>User</code> de types/user.ts pero más enfocada al dominio</li>
+<li>Incluye timestamps opcionales</li>
+</ul>
+</li>
+<li>
+<p><strong><code>IAuthRepository</code></strong> - Contrato del repository:</p>
+<ul>
+<li><code>findByEmail(email)</code> - Busca usuario por email</li>
+<li><code>create(data)</code> - Crea un nuevo usuario</li>
+</ul>
+</li>
+</ol>
+<p><strong>¿Por qué interfaces?</strong></p>
+<ul>
+<li>Define el contrato sin importar la implementación</li>
+<li>Permite cambiar de Prisma a otro ORM sin tocar el service</li>
+<li>Facilita testing (mock del repository)</li>
+</ul>
+<hr>
+<h3 id="52-application-layer"><a class="header" href="#52-application-layer">5.2 Application Layer</a></h3>
+<h4 id="srcmodulesauthapplicationauthservicets---lógica-de-negocio"><a class="header" href="#srcmodulesauthapplicationauthservicets---lógica-de-negocio"><code>src/modules/auth/application/auth.service.ts</code> - Lógica de Negocio</a></h4>
+<pre><code class="language-typescript">import { ConflictError } from "@/core/errors/AppError"
+import { hashPassword } from "@/core/utils/crypto.utils"
+import { generateTokens } from "@/core/utils/token.utils"
+import type { IRegisterUser, IAuthRepository } from "../domain/auth.interface"
+
+export const createAuthService = (repository: IAuthRepository) =&gt; ({
+  register: async (data: IRegisterUser) =&gt; {
+    const { name, email, password, role = "staff" } = data
+
+    // 1. Verificar si el usuario ya existe
+    const existingUser = await repository.findByEmail(email)
+
+    if (existingUser) {
+      throw new ConflictError("Email already registered")
+    }
+
+    // 2. Hashear el password
+    const hashedPassword = await hashPassword(password)
+
+    // 3. Crear el usuario
+    const newUser = { name, email, password: hashedPassword, role }
+    const user = await repository.create(newUser)
+
+    // 4. Generar tokens JWT
+    const { accessToken, refreshToken } = generateTokens(user.id, user.email, user.role)
+
+    // 5. Retornar respuesta
+    return {
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      },
+      accessToken,
+      refreshToken
+    }
+  }
+})
+</code></pre>
+<p><strong>¿Qué hace este archivo?</strong></p>
+<ol>
+<li>
+<p><strong><code>createAuthService(repository)</code></strong> - Factory function que recibe el repository como parámetro (inyección de dependencias)</p>
+</li>
+<li>
+<p><strong><code>register(data)</code></strong> - Lógica de registro:</p>
+<ul>
+<li>Recibe <code>data</code> con name, email, password, role</li>
+<li><strong>Step 1</strong>: Busca si el email ya existe en la BD → si existe, lanza <code>ConflictError</code></li>
+<li><strong>Step 2</strong>: Hashea el password con bcrypt (10 rounds)</li>
+<li><strong>Step 3</strong>: Crea el usuario en la BD usando el repository</li>
+<li><strong>Step 4</strong>: Genera access + refresh tokens</li>
+<li><strong>Step 5</strong>: Retorna el usuario creado + tokens</li>
+</ul>
+</li>
+</ol>
+<p><strong>Patrón usado: Dependency Inversion</strong></p>
+<ul>
+<li>El service depende de la abstracción (<code>IAuthRepository</code>), no de la implementación</li>
+<li>El controller inyecta la implementación concreta (<code>AuthRepository</code> de Prisma)</li>
+</ul>
+<hr>
+<h3 id="53-infrastructure-layer"><a class="header" href="#53-infrastructure-layer">5.3 Infrastructure Layer</a></h3>
+<h4 id="srcmodulesauthinfrastructureauthprismarepositoryts---implementación-prisma"><a class="header" href="#srcmodulesauthinfrastructureauthprismarepositoryts---implementación-prisma"><code>src/modules/auth/infrastructure/auth.prisma.repository.ts</code> - Implementación Prisma</a></h4>
+<pre><code class="language-typescript">import { prisma } from "@/config/prisma";
+import type { IAuthRepository, IRegisterUser } from "../domain/auth.interface";
+
+export const AuthRepository: IAuthRepository = {
+  async findByEmail(email: string) {
+    return await prisma.user.findFirst({
+      where: { email, deletedAt: null }
+    })
+  },
+
+  async create(data: IRegisterUser) {
+    return prisma.user.create({
+      data: {
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        role: data.role
+      }
+    })
+  }
+}
+</code></pre>
+<p><strong>¿Qué hace este archivo?</strong></p>
+<ol>
+<li>
+<p><strong>Implementa <code>IAuthRepository</code></strong> - Satisface el contrato definido en el domain</p>
+</li>
+<li>
+<p><strong><code>findByEmail(email)</code></strong> - Busca usuario por email:</p>
+<ul>
+<li>Usa <code>prisma.user.findFirst()</code></li>
+<li>Filtra por <code>email</code> Y <code>deletedAt: null</code> (soft delete)</li>
+<li>Retorna <code>null</code> si no existe</li>
+</ul>
+</li>
+<li>
+<p><strong><code>create(data)</code></strong> - Crea un nuevo usuario:</p>
+<ul>
+<li>Usa <code>prisma.user.create()</code></li>
+<li>Recibe: name, email, password (ya hasheado), role</li>
+</ul>
+</li>
+</ol>
+<p><strong>¿Por qué separados?</strong></p>
+<ul>
+<li>Si mañana usás MongoDB en vez de PostgreSQL, solo cambiás este archivo</li>
+<li>El service sigue funcionando igual porque usa la interfaz</li>
+</ul>
+<hr>
+<h3 id="54-presentation-layer"><a class="header" href="#54-presentation-layer">5.4 Presentation Layer</a></h3>
+<h4 id="srcmodulesauthpresentationauthdtots---validación-de-input"><a class="header" href="#srcmodulesauthpresentationauthdtots---validación-de-input"><code>src/modules/auth/presentation/auth.dto.ts</code> - Validación de Input</a></h4>
+<pre><code class="language-typescript">import { z } from "zod"
+
+export const RegisterUserDtoSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Invalid email format"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+  role: z.enum(["admin", "staff"]).optional()
+})
+</code></pre>
+<p><strong>¿Qué hace este archivo?</strong></p>
+<ol>
+<li>
+<p><strong>Define schema de validación</strong> con Zod para el registro:</p>
+<ul>
+<li><code>name</code>: string, mínimo 2 caracteres</li>
+<li><code>email</code>: formato válido de email</li>
+<li><code>password</code>: mínimo 8 caracteres</li>
+<li><code>role</code>: opcional, solo “admin” o “staff”</li>
+</ul>
+</li>
+<li>
+<p><strong>Retorna schema</strong> que se usa en el controller para parsear y validar el body del request</p>
+</li>
+</ol>
+<hr>
+<h4 id="srcmodulesauthpresentationauthcontrollerts---controlador"><a class="header" href="#srcmodulesauthpresentationauthcontrollerts---controlador"><code>src/modules/auth/presentation/auth.controller.ts</code> - Controlador</a></h4>
+<pre><code class="language-typescript">import type { FastifyReply, FastifyRequest } from "fastify";
+import { createAuthService } from "../application/auth.service";
+import { RegisterUserDtoSchema } from "./auth.dto";
+import { AuthRepository } from "../infrastructure/auth.prisma.repository";
+
+// Inyección de dependencias: el controller decide qué implementación usar
+const authService = createAuthService(AuthRepository)
+
+export const authController = {
+  register: async (request: FastifyRequest, reply: FastifyReply) =&gt; {
+    const data = RegisterUserDtoSchema.parse(request.body)
+    const result = await authService.register(data)
+    return reply.status(201).send(result)
+  }
+}
+</code></pre>
+<p><strong>¿Qué hace este archivo?</strong></p>
+<ol>
+<li>
+<p><strong>Inicializa el service</strong> con la implementación del repository:</p>
+<ul>
+<li><code>createAuthService(AuthRepository)</code> → inyecta la implementación de Prisma</li>
+<li>Esto permite cambiar la implementación sin tocar el controller</li>
+</ul>
+</li>
+<li>
+<p><strong><code>register(request, reply)</code></strong> - Handler del endpoint:</p>
+<ul>
+<li><strong>Step 1</strong>: Valida el body con Zod schema → si falla, lanza error</li>
+<li><strong>Step 2</strong>: Llama al service con los datos validados</li>
+<li><strong>Step 3</strong>: Retorna 201 Created con el resultado</li>
+</ul>
+</li>
+<li>
+<p><strong>Retorna objeto con controller</strong> - Expone los handlers para las rutas</p>
+</li>
+</ol>
+<p><strong>Flujo:</strong></p>
+<pre><code>HTTP Request → Controller (valida) → Service (lógica) → Repository (BD) → Response
+</code></pre>
+<hr>
+<h4 id="srcmodulesauthpresentationauthroutests---definición-de-rutas"><a class="header" href="#srcmodulesauthpresentationauthroutests---definición-de-rutas"><code>src/modules/auth/presentation/auth.routes.ts</code> - Definición de Rutas</a></h4>
+<pre><code class="language-typescript">import type { FastifyInstance } from "fastify";
+import { authController } from "./auth.controller";
+
+export const authRoutes = async (fastify: FastifyInstance, _options: any) =&gt; {
+  fastify.post("/register", authController.register)
+}
+</code></pre>
+<p><strong>¿Qué hace este archivo?</strong></p>
+<ol>
+<li>
+<p><strong>Registra rutas de auth</strong> en Fastify:</p>
+<ul>
+<li><code>POST /register</code> → <code>authController.register</code></li>
+</ul>
+</li>
+<li>
+<p><strong>Exporta función asíncrona</strong> que recibe la instancia de Fastify</p>
+</li>
+</ol>
+<hr>
+<h2 id="6-presentation-layer-global"><a class="header" href="#6-presentation-layer-global">6. Presentation Layer Global</a></h2>
+<h3 id="srcpresentationroutests---router-principal"><a class="header" href="#srcpresentationroutests---router-principal"><code>src/presentation/routes.ts</code> - Router Principal</a></h3>
+<pre><code class="language-typescript">import { authRoutes } from "@/modules/auth/presentation/auth.routes";
+import { type FastifyInstance } from "fastify";
+
+export const routes = async (fastify: FastifyInstance, _option: any) =&gt; {
+  fastify.register(authRoutes, { prefix: "/auth" })
+}
+</code></pre>
+<p><strong>¿Qué hace este archivo?</strong></p>
+<ol>
+<li><strong>Registra las rutas del módulo auth</strong> con prefijo <code>/auth</code></li>
+<li><strong>Resultado final</strong>: las rutas quedan en <code>/api/v1/auth/register</code></li>
+</ol>
+<p><strong>Estructura de prefijos:</strong></p>
+<ul>
+<li><code>app.ts</code> registra <code>routes</code> con prefijo <code>/api/v1</code></li>
+<li><code>routes.ts</code> registra <code>authRoutes</code> con prefijo <code>/auth</code></li>
+<li>Total: <code>/api/v1/auth/register</code></li>
+</ul>
+<hr>
+<h2 id="7-prisma-schema"><a class="header" href="#7-prisma-schema">7. Prisma Schema</a></h2>
+<h3 id="prismaschemaprisma---modelo-de-datos"><a class="header" href="#prismaschemaprisma---modelo-de-datos"><code>prisma/schema.prisma</code> - Modelo de Datos</a></h3>
+<pre><code class="language-prisma">generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+enum ROLE {
+  admin
+  staff
+}
+
+model user {
+  id String @id @default(uuid())
+  email String @unique
+  password String
+  name String 
+  role ROLE @default(staff)
+  deletedAt DateTime?
+  sales sale[]
+
+  @@index([email])
+  @@index([role])
+  @@map("users")
+}
+
+model medicine {
+  id            String   @id @default(uuid())
+  trade_name     String
+  generic_name   String
+  description   String?
+  price         Decimal
+  stock         Int      @default(0)
+  expiry_date    DateTime?
+  laboratory_id  String
+  category_id    String
+  laboratory    lab      @relation(fields: [laboratory_id], references: [id])
+  category      category @relation(fields: [category_id], references: [id])
+  sale_items     sale_item[]
+  deleted_at     DateTime?
+
+  @@index([trade_name])
+  @@index([generic_name])
+  @@index([laboratory_id])
+  @@index([category_id])
+  @@map("medicines")
+}
+
+model sale {
+  id           String     @id @default(uuid())
+  date         DateTime   @default(now())
+  total        Decimal
+  payment_method String
+  user_id       String
+  client_id     String?
+  user         user       @relation(fields: [user_id], references: [id])
+  client       client?    @relation(fields: [client_id], references: [id])
+  items        sale_item[]
+
+  @@index([date])
+  @@index([user_id])
+  @@index([client_id])
+  @@map("sales")
+}
+
+model sale_item {
+  id         String   @id @default(uuid())
+  sale_id     String
+  medicine_id String
+  quantity   Int
+  unit_price  Decimal
+  sale       sale     @relation(fields: [sale_id], references: [id])
+  medicine   medicine @relation(fields: [medicine_id], references: [id])
+
+  @@index([sale_id])
+  @@index([medicine_id])
+  @@map("sale_items")
+}
+
+model client {
+  id             String   @id @default(uuid())
+  name           String
+  document_number String   @unique
+  email          String?
+  phone          String?
+  address        String?
+  membership     String   @default("bronze")
+  deleted_at      DateTime?
+  sales          sale[]
+
+  @@index([document_number])
+  @@index([email])
+  @@map("clients")
+}
+
+model lab {
+  id        String     @id @default(uuid())
+  name      String
+  medicines medicine[]
+  deleted_at DateTime?
+
+  @@map("labs")
+}
+
+model supplier {
+  id        String   @id @default(uuid())
+  name      String
+  contact   String?
+  deleted_at DateTime?
+
+  @@map("suppliers")
+}
+
+model category {
+  id        String     @id @default(uuid())
+  name      String
+  medicines medicine[]
+
+  @@map("categories")
+}
+</code></pre>
+<p><strong>Explicación de las tablas:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Modelo</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><code>user</code></td><td>Usuarios del sistema (admin/staff). Relación 1:N con sales. Soft delete con <code>deletedAt</code>.</td></tr>
+<tr><td><code>medicine</code></td><td>Medicamentos. Relación N:1 con lab y category. Stock, precio, fecha de vencimiento.</td></tr>
+<tr><td><code>sale</code></td><td>Ventas realizadas. Relación N:1 con user (vendedor) y client (cliente).</td></tr>
+<tr><td><code>sale_item</code></td><td>Items de una venta. Relación N:1 con sale y medicine.</td></tr>
+<tr><td><code>client</code></td><td>Clientes de la farmacia. Membership (bronze/silver/gold). Soft delete.</td></tr>
+<tr><td><code>lab</code></td><td>Laboratorios farmacéuticos. Soft delete.</td></tr>
+<tr><td><code>supplier</code></td><td>Proveedores. Soft delete.</td></tr>
+<tr><td><code>category</code></td><td>Categorías de medicamentos.</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Características del schema:</strong></p>
+<ul>
+<li><strong>UUIDs</strong> - Todos los IDs usan <code>uuid()</code> como default</li>
+<li><strong>Soft deletes</strong> - <code>deletedAt</code> o <code>deleted_at</code> para no borrar datos</li>
+<li><strong>Índices</strong> - En campos frecuentemente buscados (email, foreign keys)</li>
+<li><strong>Enums</strong> - <code>ROLE</code> con admin/staff</li>
+<li><strong>Relaciones</strong> - Claramente definidas con <code>@relation</code></li>
+<li><strong>Map</strong> - Nombres de tabla personalizados (<code>@@map</code>)</li>
+</ul>
+<hr>
+<h2 id="resumen-del-flujo-de-una-request"><a class="header" href="#resumen-del-flujo-de-una-request">Resumen del Flujo de una Request</a></h2>
+<pre><code>1. HTTP Request → server.ts → buildApp() (app.ts)
+     ↓
+2. Fastify registra plugins (helmet, cors, compress, rate-limit)
+     ↓
+3. Routing: /api/v1/auth/register → authRoutes → authController.register
+     ↓
+4. Controller: Valida request.body con Zod (RegisterUserDtoSchema)
+     ↓
+5. Service: createAuthService(AuthRepository).register(data)
+     ↓
+6. Repository: AuthRepository.findByEmail() → prisma.user.findFirst()
+     ↓
+7. Response: { user: {...}, accessToken, refreshToken } → HTTP 201
+</code></pre>
+<hr>
+<h2 id="commands-útiles"><a class="header" href="#commands-útiles">Commands Útiles</a></h2>
+<pre><code class="language-bash"># Desarrollo (watch mode con tsx)
+bun dev
+
+# Generar cliente Prisma
+bun prisma:generate
+
+# Hacer migrate de BD
+bun prisma:migrate
+
+# Abrir Prisma Studio (UI)
+bun prisma:studio
+
+# Build para producción
+bun build
+
+# Iniciar producción
+bun start
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
 <h1 id="manual-completo--backend-farmacia-con-fastify"><a class="header" href="#manual-completo--backend-farmacia-con-fastify">Manual Completo — Backend Farmacia con Fastify</a></h1>
 <blockquote>
 <p><strong>Stack:</strong> Node.js + TypeScript + Fastify + Prisma + PostgreSQL + Redis + JWT<br><strong>Patrón:</strong> Clean Architecture (Domain-Driven) con módulos</p>
 </blockquote>
 <hr>
-<h2 id="índice"><a class="header" href="#índice">ÍNDICE</a></h2>
+<h2 id="índice-1"><a class="header" href="#índice-1">ÍNDICE</a></h2>
 <ol>
 <li><a href="#1-introducción-y-arquitectura">Introducción y Arquitectura</a></li>
 <li><a href="#2-prerequisitos">Prerequisitos</a></li>
@@ -8286,7 +9456,7 @@ npm run dev
 <h1 id="manual-de-postgresql-en-debian--instalación-y-configuración-completa"><a class="header" href="#manual-de-postgresql-en-debian--instalación-y-configuración-completa">Manual de PostgreSQL en Debian — Instalación y Configuración Completa</a></h1>
 <p>PostgreSQL es un sistema de gestión de bases de datos relacional de código abierto, conocido por su robustez, extensibilidad y cumplimiento estricto del estándar SQL. Este manual cubre la instalación completa usando el repositorio oficial de PostgreSQL, la configuración del usuario <code>dev-espada</code> y la forma de acceder directamente con <code>psql</code> sin parámetros adicionales.</p>
 <hr>
-<h2 id="índice-1"><a class="header" href="#índice-1">Índice</a></h2>
+<h2 id="índice-2"><a class="header" href="#índice-2">Índice</a></h2>
 <ol>
 <li><a href="#1-requisitos-previos-1">Requisitos Previos</a></li>
 <li><a href="#2-desinstalación-completa-hacer-primero-si-ya-tienes-postgres">Desinstalación Completa</a></li>
@@ -11830,7 +13000,7 @@ Pero lo ignora porque sender === currentUserId
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="16-introducción-a-las-redes"><a class="header" href="#16-introducción-a-las-redes">16. Introducción a las Redes</a></h1>
 <hr>
-<h2 id="índice-2"><a class="header" href="#índice-2">ÍNDICE</a></h2>
+<h2 id="índice-3"><a class="header" href="#índice-3">ÍNDICE</a></h2>
 <ul>
 <li><a href="#qué-es-una-red">¿Qué es una Red?</a></li>
 <li><a href="#ventajas-de-las-redes">Ventajas de las Redes</a></li>
@@ -12162,7 +13332,7 @@ Pero lo ignora porque sender === currentUserId
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="18-modelos-de-red"><a class="header" href="#18-modelos-de-red">18. Modelos de Red</a></h1>
 <hr>
-<h2 id="índice-3"><a class="header" href="#índice-3">ÍNDICE</a></h2>
+<h2 id="índice-4"><a class="header" href="#índice-4">ÍNDICE</a></h2>
 <ul>
 <li><a href="#qué-es-un-modelo-de-red">¿Qué es un Modelo de Red?</a></li>
 <li><a href="#importancia-de-los-modelos-de-red">Importancia de los Modelos de Red</a></li>
@@ -12520,7 +13690,7 @@ Señales eléctricas / ondas de radio
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="redes---direcciones-ip-y-subredes"><a class="header" href="#redes---direcciones-ip-y-subredes">Redes - Direcciones IP y Subredes</a></h1>
 <hr>
-<h2 id="índice-4"><a class="header" href="#índice-4">ÍNDICE</a></h2>
+<h2 id="índice-5"><a class="header" href="#índice-5">ÍNDICE</a></h2>
 <ul>
 <li><a href="#qué-es-una-dirección-ip">¿Qué es una Dirección IP?</a>
 <ul>
@@ -12830,7 +14000,7 @@ Señales eléctricas / ondas de radio
 <h2 id="introducción"><a class="header" href="#introducción">Introducción</a></h2>
 <p>Este manual te guiará paso a paso para analizar direcciones IPv4 y determinar la <strong>parte de red</strong>, la <strong>parte de host</strong>, la <strong>máscara de subred</strong>, la <strong>dirección de red</strong>, la <strong>dirección de broadcast</strong> y el <strong>rango de hosts utilizables</strong>. Este es un ejercicio fundamental para entender cómo funcionan las subredes y cómo los routers enrutan paquetes entre diferentes redes.</p>
 <hr>
-<h2 id="índice-5"><a class="header" href="#índice-5">ÍNDICE</a></h2>
+<h2 id="índice-6"><a class="header" href="#índice-6">ÍNDICE</a></h2>
 <ul>
 <li><a href="#1-conceptos-fundamentales">Conceptos Fundamentales</a></li>
 <li><a href="#2-metodología-paso-a-paso">Metodología Paso a Paso</a></li>
@@ -13649,7 +14819,7 @@ Broadcast: 192.168.10.255 (bits de host = 11111110 → 255)
 </blockquote>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="nat"><a href="#nat" class="header">NAT</a></h1>
-<h2 id="índice-6"><a class="header" href="#índice-6">ÍNDICE</a></h2>
+<h2 id="índice-7"><a class="header" href="#índice-7">ÍNDICE</a></h2>
 <ul>
 <li><a href="#qué-es-nat-y-cómo-actúa-en-nuestra-red">Qué es NAT y cómo actúa en nuestra red</a>
 <ul>
@@ -13771,7 +14941,7 @@ Broadcast: 192.168.10.255 (bits de host = 11111110 → 255)
 <h1 id="cisco-packet-tracer--manual-de-comandos"><a class="header" href="#cisco-packet-tracer--manual-de-comandos">CISCO PACKET TRACER — Manual de Comandos</a></h1>
 <p><strong>Router · Switch · DHCP · IP Routes · VLANs</strong></p>
 <hr>
-<h2 id="índice-7"><a class="header" href="#índice-7">ÍNDICE</a></h2>
+<h2 id="índice-8"><a class="header" href="#índice-8">ÍNDICE</a></h2>
 <ol>
 <li><a href="#1-configuración-del-router">Configuración del Router</a></li>
 <li><a href="#2-configuración-del-switch">Configuración del Switch</a></li>
@@ -14151,7 +15321,7 @@ S1#  show interfaces Fa0/1 switchport       ! Detalle de un puerto
 <h1 id="manual-de-docker-en-debian--instalación-desinstalación-y-reinstalación-completa"><a class="header" href="#manual-de-docker-en-debian--instalación-desinstalación-y-reinstalación-completa">Manual de Docker en Debian — Instalación, Desinstalación y Reinstalación Completa</a></h1>
 <p>Docker es una plataforma de contenedores que permite empaquetar, distribuir y ejecutar aplicaciones en entornos aislados. Este manual cubre la instalación completa usando el repositorio oficial, la desinstalación limpia sin residuos, y el procedimiento de reinstalación desde cero.</p>
 <hr>
-<h2 id="índice-8"><a class="header" href="#índice-8">Índice</a></h2>
+<h2 id="índice-9"><a class="header" href="#índice-9">Índice</a></h2>
 <ol>
 <li><a href="#1-requisitos-previos-4">Requisitos Previos</a></li>
 <li><a href="#2-desinstalación-completa-hacer-primero-si-ya-tienes-docker">Desinstalación Completa</a></li>

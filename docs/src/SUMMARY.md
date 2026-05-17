@@ -12,6 +12,7 @@
 - [Restix](./docs/12-restix.md)
 
 ## Fastify(TypeScript)
+- [Backend Fastify Primeros Pasos](./docs/19-fastify-init.md)
 - [Backend Farmacia](./docs/17-fastify-backend.md)
 
 ## Base de datos
