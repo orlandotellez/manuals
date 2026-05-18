@@ -36,7 +36,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-4adf7a0d.js";
+            window.path_to_searchindex_js = "searchindex-901eddc7.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-45a33be9.js"></script>
@@ -4258,6 +4258,7 @@ cargo run
 <li><a href="#errores">Errores</a></li>
 <li><a href="#módulo-auth">Módulo Auth</a></li>
 <li><a href="#presentation-layer">Presentation Layer</a></li>
+<li><a href="#cookies-y-autenticación">Cookies y Autenticación</a></li>
 <li><a href="#prisma-schema">Prisma Schema</a></li>
 </ol>
 <hr>
@@ -4274,7 +4275,9 @@ cargo run
 │   │   └── AppError.ts
 │   └── utils/              # Utilities genéricas
 │       ├── crypto.utils.ts  # Hash de passwords
-│       └── token.utils.ts  # Generación de JWTs
+│       ├── token.utils.ts  # Generación de JWTs
+│       ├── cookie.utils.ts  # Manejo de cookies de auth
+│       └── auth.utils.ts   # Utilidades de autenticación
 ├── types/                   # Tipos globales
 │   └── user.ts
 ├── infrastructure/          # Configuraciones de infraestructura
@@ -4299,48 +4302,8 @@ cargo run
 <h3 id="21-packagejson---dependencias-del-proyecto"><a class="header" href="#21-packagejson---dependencias-del-proyecto">2.1 <code>package.json</code> - Dependencias del Proyecto</a></h3>
 <pre><code class="language-json">{
   "name": "01",
-  "module": "index.ts",
-  "type": "module",
-  "private": true,
-  "scripts": {
-    "dev": "tsx watch src/server.ts",
-    "build": "tsup src/server.ts --format cjs --dts",
-    "start": "node dist/server.js",
-    "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev",
-    "prisma:studio": "prisma studio"
-  },
-  "dependencies": {
-    "@fastify/compress": "^8.3.1",
-    "@fastify/cors": "^11.2.0",
-    "@fastify/helmet": "^13.0.2",
-    "@fastify/jwt": "^10.0.0",
-    "@fastify/rate-limit": "^10.3.0",
-    "@prisma/client": "^5.22.0",
-    "@types/jsonwebtoken": "^9.0.10",
-    "bcrypt": "^6.0.0",
-    "dotenv": "^17.3.1",
-    "fastify": "^5.7.4",
-    "ioredis": "^5.10.0",
-    "jsonwebtoken": "^9.0.3",
-    "pino": "^10.3.1",
-    "pino-pretty": "^13.1.3",
-    "zod": "^4.3.6"
-  },
-  "devDependencies": {
-    "@types/bun": "latest",
-    "@types/bcrypt": "^6.0.0",
-    "@types/node": "^25.3.3",
-    "prisma": "^5.22.0",
-    "tsup": "^8.5.1",
-    "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
-  }
+  "type": "module"
 }
-
 </code></pre>
 <p><strong>Scripts disponibles:</strong></p>
 <div class="table-wrapper">
@@ -4640,6 +4603,7 @@ startServer()
 import helmet from "@fastify/helmet"
 import cors from "@fastify/cors"
 import compress from "@fastify/compress"
+import cookie from "@fastify/cookie"
 import rateLimit from "@fastify/rate-limit"
 import { env } from "./config/env"
 import { getRedisClient } from "./config/redis"
@@ -4683,6 +4647,9 @@ export const buildApp = async () =&gt; {
     timeWindow: "1 minute"
   })
 
+  // Cookies - permite usar request.cookies y reply.setCookie()
+  await app.register(cookie)
+
   app.register(routes, { prefix: '/api/v1' });
 
   app.get("/health", async () =&gt; {
@@ -4713,6 +4680,7 @@ export const buildApp = async () =&gt; {
 <tr><td><code>@fastify/cors</code></td><td>Cross-Origin Resource Sharing - permite request desde otros dominios</td></tr>
 <tr><td><code>@fastify/compress</code></td><td>Compresión gzip de respuestas</td></tr>
 <tr><td><code>@fastify/rate-limit</code></td><td>Limita requests por IP (100/min en este caso)</td></tr>
+<tr><td><code>@fastify/cookie</code></td><td>Permite leer y escribir cookies</td></tr>
 </tbody>
 </table>
 </div>
@@ -4819,7 +4787,134 @@ export const generateTokens = (userId: string, email: string, role: Role) =&gt; 
 <li>Si el refresh es compromiseado, se puede revokear sin afectar el access</li>
 </ul>
 <hr>
-<h3 id="33-srctypesuserts---tipos-de-usuario"><a class="header" href="#33-srctypesuserts---tipos-de-usuario">3.3 <code>src/types/user.ts</code> - Tipos de Usuario</a></h3>
+<h3 id="33-srccoreutilscookieutilsts---manejo-de-cookies-de-auth"><a class="header" href="#33-srccoreutilscookieutilsts---manejo-de-cookies-de-auth">3.3 <code>src/core/utils/cookie.utils.ts</code> - Manejo de Cookies de Auth</a></h3>
+<pre><code class="language-typescript">import type { FastifyReply } from "fastify"
+
+export const setAuthCookies = (
+  reply: FastifyReply,
+  accessToken: string,
+  refreshToken: string,
+  isProduction: boolean
+) =&gt; {
+  reply.setCookie('accessToken', accessToken, {
+    path: '/',
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: 'strict',
+    maxAge: 900  // 15 minutos
+  })
+  reply.setCookie('refreshToken', refreshToken, {
+    path: '/',
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: 'strict',
+    maxAge: 604800  // 7 días
+  })
+}
+
+export const clearAuthCookies = async (reply: FastifyReply) =&gt; {
+  reply.clearCookie('accessToken', { path: '/' })
+  reply.clearCookie('refreshToken', { path: '/' })
+}
+</code></pre>
+<p><strong>¿Qué hace este archivo?</strong></p>
+<ol>
+<li>
+<p><strong><code>setAuthCookies(reply, accessToken, refreshToken, isProduction)</code></strong> - Setea las cookies de autenticación:</p>
+<ul>
+<li><code>accessToken</code> - Cookie con el token de acceso (15 min de vida)</li>
+<li><code>refreshToken</code> - Cookie con el token de refresh (7 días de vida)</li>
+<li><strong>Opciones de seguridad</strong>:
+<ul>
+<li><code>httpOnly: true</code> - JavaScript no puede acceder a la cookie (previene XSS)</li>
+<li><code>secure: true</code> - Solo se envía por HTTPS (en producción)</li>
+<li><code>sameSite: 'strict'</code> - Previene CSRF</li>
+<li><code>path: '/'</code> - Disponible en toda la aplicación</li>
+</ul>
+</li>
+<li><code>maxAge</code> - Tiempo de vida en segundos</li>
+</ul>
+</li>
+<li>
+<p><strong><code>clearAuthCookies(reply)</code></strong> - Limpia las cookies de autenticación:</p>
+<ul>
+<li>Elimina las cookies <code>accessToken</code> y <code>refreshToken</code></li>
+<li>Usa el mismo <code>path</code> que cuando se crearon</li>
+</ul>
+</li>
+</ol>
+<p><strong>¿Por qué usar cookies httpOnly?</strong></p>
+<ul>
+<li>Más seguro que guardar tokens en localStorage/sessionStorage</li>
+<li>Protege contra XSS porque JS no puede leer las cookies</li>
+<li>El browser las envía automáticamente en cada request</li>
+</ul>
+<hr>
+<h3 id="34-srccoreutilsauthutilsts---utilidades-de-autenticación"><a class="header" href="#34-srccoreutilsauthutilsts---utilidades-de-autenticación">3.4 <code>src/core/utils/auth.utils.ts</code> - Utilidades de Autenticación</a></h3>
+<pre><code class="language-typescript">import type { FastifyReply, FastifyRequest } from "fastify"
+import { clearAuthCookies } from "./cookie.utils"
+import { env } from "@/config/env"
+import jwt, { type JwtPayload } from "jsonwebtoken"
+
+export const getUserIdFromCookies = (request: FastifyRequest): string | null =&gt; {
+  const token = request.cookies.accessToken || request.cookies.refreshToken
+  if (!token) return null
+
+  try {
+    // Intentar con JWT_SECRET primero (accessToken)
+    const decoded = jwt.verify(token, env.JWT_SECRET) as JwtPayload
+    return decoded.userId
+  } catch {
+    // Si falla, intentar con JWT_REFRESH_SECRET (refreshToken)
+    try {
+      const decoded = jwt.verify(token, env.JWT_REFRESH_SECRET) as JwtPayload
+      return decoded.userId
+    } catch {
+      return null
+    }
+  }
+}
+
+export const resolveCurrentUserId = async (
+  request: FastifyRequest,
+  reply: FastifyReply
+): Promise&lt;string | null&gt; =&gt; {
+  try {
+    return getUserIdFromCookies(request)
+  } catch {
+    await clearAuthCookies(reply)
+    return null
+  }
+}
+</code></pre>
+<p><strong>¿Qué hace este archivo?</strong></p>
+<ol>
+<li>
+<p><strong><code>getUserIdFromCookies(request)</code></strong> - Extrae el userId de las cookies:</p>
+<ul>
+<li>Obtiene el token de <code>request.cookies.accessToken</code> o <code>request.cookies.refreshToken</code></li>
+<li>Intenta verificar con <code>JWT_SECRET</code> (para accessToken)</li>
+<li>Si falla, intenta con <code>JWT_REFRESH_SECRET</code> (para refreshToken)</li>
+<li>Retorna el <code>userId</code> del payload o <code>null</code> si no es válido</li>
+</ul>
+</li>
+<li>
+<p><strong><code>resolveCurrentUserId(request, reply)</code></strong> - Resuelve el usuario actual de forma segura:</p>
+<ul>
+<li>Llama a <code>getUserIdFromCookies()</code></li>
+<li>Si hay un error (token inválido), limpia las cookies y retorna <code>null</code></li>
+<li>Retorna el userId del usuario actualmente autenticado</li>
+</ul>
+</li>
+</ol>
+<p><strong>¿Para qué sirve?</strong></p>
+<ul>
+<li>Validar si un usuario ya tiene sesión activa antes de login/register</li>
+<li>Proteger el endpoint de logout (solo usuarios autenticados)</li>
+<li>Detectar si el usuario que hace login es el mismo que ya tiene sesión</li>
+</ul>
+<hr>
+<h3 id="35-srctypesuserts---tipos-de-usuario"><a class="header" href="#35-srctypesuserts---tipos-de-usuario">3.5 <code>src/types/user.ts</code> - Tipos de Usuario</a></h3>
 <pre><code class="language-typescript">export type Role = "admin" | "staff"
 
 export interface User {
@@ -5255,6 +5350,10 @@ export const LoginPayloadDtoSchema = z.object({
 import { createAuthService } from "../application/auth.service";
 import { AuthRepository } from "../infrastructure/auth.prisma.repository";
 import { LoginPayloadDtoSchema, RegisterPayloadDtoSchema } from "./auth.dto";
+import { env } from "@/config/env";
+import { clearAuthCookies, setAuthCookies } from "@/core/utils/cookie.utils";
+import { ConflictError, UnauthorizedError } from "@/core/errors/AppError";
+import { resolveCurrentUserId } from "@/core/utils/auth.utils";
 
 // Inyección de dependencias: el controller decide qué implementación usar
 const authService = createAuthService(AuthRepository)
@@ -5262,14 +5361,82 @@ const authService = createAuthService(AuthRepository)
 export const authController = {
   register: async (request: FastifyRequest, reply: FastifyReply) =&gt; {
     const data = RegisterPayloadDtoSchema.parse(request.body)
+
+    // Verificar si ya hay sesión activa
+    const currentUserId = await resolveCurrentUserId(request, reply)
+
+    if (currentUserId) {
+      throw new ConflictError(
+        "Already logged in. Please logout before creating a new account."
+      )
+    }
+
     const result = await authService.register(data)
-    return reply.status(201).send(result)
+
+    // Setea las cookies con los tokens
+    setAuthCookies(
+      reply,
+      result.accessToken,
+      result.refreshToken,
+      env.NODE_ENV === "production"
+    )
+
+    // Retorna solo el usuario, los tokens ya están en cookies
+    const response = {
+      message: result.message,
+      user: result.user
+    }
+
+    return reply.status(201).send(response)
   },
 
   login: async (request: FastifyRequest, reply: FastifyReply) =&gt; {
     const data = LoginPayloadDtoSchema.parse(request.body)
+
+    // Obtener el usuario actual si existe sesión
+    const currentUserId = await resolveCurrentUserId(request, reply)
+
+    // Ejecutar login
     const result = await authService.login(data)
-    return reply.status(200).send(result)
+
+    // Si el mismo usuario ya está logueado, rechazar
+    if (currentUserId &amp;&amp; currentUserId === result.user.id) {
+      throw new ConflictError("Already logged in with this user. Please logout first.")
+    }
+
+    // Si hay otro usuario logueado, limpiar sus cookies antes de hacer login
+    if (currentUserId &amp;&amp; currentUserId !== result.user.id) {
+      await clearAuthCookies(reply)
+    }
+
+    // Setea las cookies con los nuevos tokens
+    setAuthCookies(reply, result.accessToken, result.refreshToken, env.NODE_ENV === "production")
+
+    // Retorna solo el usuario, los tokens ya están en cookies
+    const response = {
+      message: result.message,
+      user: result.user
+    }
+
+    return reply.status(200).send(response)
+  },
+
+  logout: async (request: FastifyRequest, reply: FastifyReply) =&gt; {
+    // Verificar que hay una sesión activa
+    const userId = await resolveCurrentUserId(request, reply)
+
+    if (!userId) {
+      throw new UnauthorizedError("No active session")
+    }
+
+    // Limpiar las cookies
+    await clearAuthCookies(reply)
+
+    const response = {
+      message: "Logged out successfully"
+    }
+
+    return reply.status(200).send(response)
   }
 }
 </code></pre>
@@ -5285,23 +5452,49 @@ export const authController = {
 <li>
 <p><strong><code>register(request, reply)</code></strong> - Handler del endpoint POST /register:</p>
 <ul>
-<li><strong>Step 1</strong>: Valida el body con Zod schema → si falla, lanza error</li>
-<li><strong>Step 2</strong>: Llama al service con los datos validados</li>
-<li><strong>Step 3</strong>: Retorna 201 Created con el resultado</li>
+<li><strong>Step 1</strong>: Valida el body con Zod schema</li>
+<li><strong>Step 2</strong>: Verifica si ya hay sesión activa → si hay, lanza <code>ConflictError</code></li>
+<li><strong>Step 3</strong>: Llama al service para crear el usuario</li>
+<li><strong>Step 4</strong>: Setea las cookies con <code>setAuthCookies()</code></li>
+<li><strong>Step 5</strong>: Retorna 201 con <code>{ message, user }</code> (sin tokens en el JSON)</li>
 </ul>
 </li>
 <li>
 <p><strong><code>login(request, reply)</code></strong> - Handler del endpoint POST /login:</p>
 <ul>
 <li><strong>Step 1</strong>: Valida el body con Zod schema</li>
-<li><strong>Step 2</strong>: Llama al service con los datos validados</li>
-<li><strong>Step 3</strong>: Retorna 200 OK con el resultado</li>
+<li><strong>Step 2</strong>: Obtiene el usuario actual logueado (si existe)</li>
+<li><strong>Step 3</strong>: Ejecuta el login normal</li>
+<li><strong>Step 4</strong>: Si el mismo usuario ya está logueado → rechaza con <code>ConflictError</code></li>
+<li><strong>Step 5</strong>: Si hay otro usuario logueado → limpia sus cookies</li>
+<li><strong>Step 6</strong>: Setea las nuevas cookies</li>
+<li><strong>Step 7</strong>: Retorna 200 con <code>{ message, user }</code> (sin tokens en el JSON)</li>
+</ul>
+</li>
+<li>
+<p><strong><code>logout(request, reply)</code></strong> - Handler del endpoint POST /logout:</p>
+<ul>
+<li><strong>Step 1</strong>: Verifica que hay una sesión activa → si no hay, lanza <code>UnauthorizedError</code></li>
+<li><strong>Step 2</strong>: Limpia las cookies con <code>clearAuthCookies()</code></li>
+<li><strong>Step 3</strong>: Retorna 200 con mensaje de éxito</li>
 </ul>
 </li>
 </ol>
-<p><strong>Flujo:</strong></p>
-<pre><code>HTTP Request → Controller (valida) → Service (lógica) → Repository (BD) → Response
+<p><strong>Flujo del login/register con cookies:</strong></p>
+<pre><code>HTTP Request → Controller (valida + verifica sesión) 
+  → Service (lógica de negocio) 
+    → Repository (BD) 
+      → Genera tokens 
+        → setAuthCookies() 
+          → Response con { message, user }
 </code></pre>
+<p><strong>Ventajas de usar cookies httpOnly:</strong></p>
+<ul>
+<li>Los tokens NO están en el JSON response (más seguro)</li>
+<li>Las cookies se envían automáticamente en cada request</li>
+<li><code>httpOnly: true</code> protege contra XSS</li>
+<li><code>sameSite: 'strict'</code> protege contra CSRF</li>
+</ul>
 <hr>
 <h4 id="srcmodulesauthpresentationauthroutests---definición-de-rutas"><a class="header" href="#srcmodulesauthpresentationauthroutests---definición-de-rutas"><code>src/modules/auth/presentation/auth.routes.ts</code> - Definición de Rutas</a></h4>
 <pre><code class="language-typescript">import type { FastifyInstance } from "fastify";
@@ -5310,6 +5503,7 @@ import { authController } from "./auth.controller";
 export const authRoutes = async (fastify: FastifyInstance, _options: any) =&gt; {
   fastify.post("/register", authController.register)
   fastify.post("/login", authController.login)
+  fastify.post("/logout", authController.logout)
 }
 </code></pre>
 <p><strong>¿Qué hace este archivo?</strong></p>
@@ -5317,8 +5511,17 @@ export const authRoutes = async (fastify: FastifyInstance, _options: any) =&gt; 
 <li>
 <p><strong>Registra rutas de auth</strong> en Fastify:</p>
 <ul>
-<li><code>POST /register</code> → <code>authController.register</code></li>
-<li><code>POST /login</code> → <code>authController.login</code></li>
+<li><code>POST /register</code> → <code>authController.register</code> - Crea nuevo usuario y setea cookies</li>
+<li><code>POST /login</code> → <code>authController.login</code> - Autentica usuario y setea cookies</li>
+<li><code>POST /logout</code> → <code>authController.logout</code> - Limpia cookies de sesión activa</li>
+</ul>
+</li>
+<li>
+<p><strong>Rutas finales</strong>:</p>
+<ul>
+<li><code>/api/v1/auth/register</code></li>
+<li><code>/api/v1/auth/login</code></li>
+<li><code>/api/v1/auth/logout</code></li>
 </ul>
 </li>
 <li>
@@ -5347,7 +5550,108 @@ export const routes = async (fastify: FastifyInstance, _option: any) =&gt; {
 <li>Total: <code>/api/v1/auth/register</code> y <code>/api/v1/auth/login</code></li>
 </ul>
 <hr>
-<h2 id="7-prisma-schema"><a class="header" href="#7-prisma-schema">7. Prisma Schema</a></h2>
+<h2 id="7-cookies-y-autenticación"><a class="header" href="#7-cookies-y-autenticación">7. Cookies y Autenticación</a></h2>
+<p>El sistema de autenticación usa cookies httpOnly en lugar de devolver los tokens en el JSON response. Esto proporciona mayor seguridad contra ataques XSS y CSRF.</p>
+<h3 id="71-flujo-de-autenticación-con-cookies"><a class="header" href="#71-flujo-de-autenticación-con-cookies">7.1 Flujo de Autenticación con Cookies</a></h3>
+<pre><code>1. Usuario envía POST /api/v1/auth/login con { email, password }
+       ↓
+2. Controller valida el body con Zod schema
+       ↓
+3. Controller verifica si ya hay sesión activa (resolveCurrentUserId)
+       ↓
+4. Service ejecuta login: busca usuario, compara password, genera tokens
+       ↓
+5. Controller setea las cookies con setAuthCookies()
+       ↓
+6. Response: { message, user } (SIN los tokens en el JSON)
+       ↓
+7. El navegador guarda automáticamente las cookies (httpOnly)
+</code></pre>
+<h3 id="72-validaciones-de-seguridad"><a class="header" href="#72-validaciones-de-seguridad">7.2 Validaciones de Seguridad</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Validación</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Register con sesión activa</strong></td><td>Si el usuario ya tiene cookies, no puede crear otra cuenta hasta hacer logout</td></tr>
+<tr><td><strong>Login con mismo usuario</strong></td><td>Si el mismo usuario ya está logueado, rechaza el nuevo login</td></tr>
+<tr><td><strong>Login con otro usuario</strong></td><td>Si hay otro usuario logueado, limpia sus cookies antes de hacer el nuevo login</td></tr>
+<tr><td><strong>Logout sin sesión</strong></td><td>Si no hay cookies válidas, lanza error “No active session”</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="73-opciones-de-seguridad-de-las-cookies"><a class="header" href="#73-opciones-de-seguridad-de-las-cookies">7.3 Opciones de Seguridad de las Cookies</a></h3>
+<pre><code class="language-typescript">{
+  path: '/',           // Disponible en toda la aplicación
+  httpOnly: true,      // JavaScript NO puede leerla (previene XSS)
+  secure: true,        // Solo HTTPS (en producción)
+  sameSite: 'strict',  // Previene CSRF
+  maxAge: 900          // 15 minutos (accessToken)
+}
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Opción</th><th>Valor</th><th>Propósito</th></tr>
+</thead>
+<tbody>
+<tr><td><code>httpOnly</code></td><td><code>true</code></td><td>Previene que scripts maliciosos roben el token</td></tr>
+<tr><td><code>secure</code></td><td><code>true</code> en prod</td><td>Solo envía cookie por HTTPS</td></tr>
+<tr><td><code>sameSite</code></td><td><code>'strict'</code></td><td>Previene ataques CSRF</td></tr>
+<tr><td><code>maxAge</code></td><td>900/604800</td><td>Tiempo de vida del token</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="74-diferencia-tokens-en-json-vs-cookies"><a class="header" href="#74-diferencia-tokens-en-json-vs-cookies">7.4 Diferencia: Tokens en JSON vs Cookies</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Aspecto</th><th>JSON (inseguro)</th><th>Cookies httpOnly (seguro)</th></tr>
+</thead>
+<tbody>
+<tr><td>XSS Protection</td><td>❌ JS puede leer tokens</td><td>✅ httpOnly bloquea JS</td></tr>
+<tr><td>CSRF Protection</td><td>❌ Depende del cliente</td><td>✅ sameSite</td></tr>
+<tr><td>Almacenamiento</td><td>localStorage/sessionStorage</td><td>Cookies del navegador</td></tr>
+<tr><td>Envío automático</td><td>❌ Manual en headers</td><td>✅ Automático</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="75-endpoints-de-auth"><a class="header" href="#75-endpoints-de-auth">7.5 Endpoints de Auth</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Endpoint</th><th>Método</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><code>/api/v1/auth/register</code></td><td>POST</td><td>Crear usuario + setear cookies</td></tr>
+<tr><td><code>/api/v1/auth/login</code></td><td>POST</td><td>Autenticar + setear cookies</td></tr>
+<tr><td><code>/api/v1/auth/logout</code></td><td>POST</td><td>Limpiar cookies</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="76-ejemplo-de-requestresponse"><a class="header" href="#76-ejemplo-de-requestresponse">7.6 Ejemplo de Request/Response</a></h3>
+<p><strong>POST /api/v1/auth/login</strong></p>
+<p>Request:</p>
+<pre><code class="language-json">{
+  "email": "user@example.com",
+  "password": "password123"
+}
+</code></pre>
+<p>Response:</p>
+<pre><code class="language-json">{
+  "message": "Login successfully",
+  "user": {
+    "id": "uuid...",
+    "name": "John Doe",
+    "email": "user@example.com",
+    "role": "admin"
+  }
+}
+</code></pre>
+<p>Los tokens <code>accessToken</code> y <code>refreshToken</code> están en las cookies, NO en el JSON.</p>
+<hr>
+<h2 id="8-prisma-schema"><a class="header" href="#8-prisma-schema">8. Prisma Schema</a></h2>
 <h3 id="prismaschemaprisma---modelo-de-datos"><a class="header" href="#prismaschemaprisma---modelo-de-datos"><code>prisma/schema.prisma</code> - Modelo de Datos</a></h3>
 <pre><code class="language-prisma">generator client {
     provider = "prisma-client-js"
@@ -5500,7 +5804,7 @@ model category {
 <li><strong>Map</strong> - Nombres de tabla personalizados (<code>@@map</code>)</li>
 </ul>
 <hr>
-<h2 id="8-flujo-completo-de-una-request"><a class="header" href="#8-flujo-completo-de-una-request">8. Flujo Completo de una Request</a></h2>
+<h2 id="9-flujo-completo-de-una-request"><a class="header" href="#9-flujo-completo-de-una-request">9. Flujo Completo de una Request</a></h2>
 <h3 id="ejemplo-post-apiv1authregister"><a class="header" href="#ejemplo-post-apiv1authregister">Ejemplo: POST /api/v1/auth/register</a></h3>
 <pre><code>1. HTTP Request
      ↓
@@ -5553,7 +5857,7 @@ model category {
    - { message, user, accessToken, refreshToken }
 </code></pre>
 <hr>
-<h2 id="9-commands-útiles"><a class="header" href="#9-commands-útiles">9. Commands Útiles</a></h2>
+<h2 id="10-commands-útiles"><a class="header" href="#10-commands-útiles">10. Commands Útiles</a></h2>
 <pre><code class="language-bash"># Desarrollo (watch mode con tsx)
 bun dev
 
@@ -5573,7 +5877,7 @@ bun build
 bun start
 </code></pre>
 <hr>
-<h2 id="10-resumen-de-patrones-usados"><a class="header" href="#10-resumen-de-patrones-usados">10. Resumen de Patrones Usados</a></h2>
+<h2 id="11-resumen-de-patrones-usados"><a class="header" href="#11-resumen-de-patrones-usados">11. Resumen de Patrones Usados</a></h2>
 <div class="table-wrapper">
 <table>
 <thead>
