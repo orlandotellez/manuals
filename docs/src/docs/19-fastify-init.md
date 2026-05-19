@@ -11,9 +11,12 @@ Este manual documenta todo el código del proyecto, explicando cada función, co
 3. [Utils y Helpers](#utils-y-helpers)
 4. [Errores](#errores)
 5. [Módulo Auth](#módulo-auth)
-6. [Presentation Layer](#presentation-layer)
-7. [Cookies y Autenticación](#cookies-y-autenticación)
-8. [Prisma Schema](#prisma-schema)
+6. [Mappers](#mappers)
+7. [Guardia de Autenticación](#guardia-de-autenticación)
+8. [Presentation Layer](#presentation-layer)
+9. [Cookies y Autenticación](#cookies-y-autenticación)
+10. [Prisma Schema](#prisma-schema)
+11. [Endpoints](#endpoints)
 
 ---
 
@@ -25,31 +28,37 @@ src/
 ├── server.ts                 # Punto de entrada, levanta el servidor
 ├── config/                   # Configuraciones externas
 │   ├── env.ts               # Variables de entorno (validación Zod)
-│   ├── prisma.ts           # Cliente Prisma
-│   └── redis.ts            # Cliente Redis (caché)
+│   ├── prisma.ts            # Cliente Prisma
+│   └── redis.ts             # Cliente Redis (caché)
 ├── core/
-│   ├── errors/             # Errores personalizados
+│   ├── errors/              # Errores personalizados
 │   │   └── AppError.ts
-│   └── utils/              # Utilities genéricas
-│       ├── crypto.utils.ts  # Hash de passwords
-│       ├── token.utils.ts  # Generación de JWTs
+│   ├── guard/               # Guardias de autenticación
+│   │   └── auth.guard.ts
+│   ├── mappers/             # Mappers transversales
+│   │   └── response.mapper.ts
+│   └── utils/               # Utilities genéricas
+│       ├── crypto.utils.ts  # Hash de passwords, generación de códigos
+│       ├── token.utils.ts   # Generación y verificación de JWTs
 │       ├── cookie.utils.ts  # Manejo de cookies de auth
-│       └── auth.utils.ts   # Utilidades de autenticación
-├── types/                   # Tipos globales
-│   └── user.ts
-├── infrastructure/          # Configuraciones de infraestructura
+│       └── auth.utils.ts    # Utilidades de autenticación
+├── types/                    # Tipos globales
+│   └── auth.d.ts            # Tipos de autenticación (Role, User, Account, Session, Verification)
+├── infrastructure/           # Configuraciones de infraestructura
 │   └── logger.ts
-└── modules/                 # Módulos de la aplicación
+└── modules/                  # Módulos de la aplicación
     └── auth/
-        ├── domain/         # Contratos, tipos y entidades
-        │   ├── auth.interface.ts  # Interfaces del repository
-        │   ├── auth.types.ts      # Tipos (payload, response)
-        │   └── auth.entities.ts   # Entidades del dominio
-        ├── application/   # Lógica de negocio (services)
+        ├── domain/          # Contratos, tipos y entidades
+        │   ├── auth.interface.ts   # Interfaces del repository (IUserRepository, IAccountRepository, etc.)
+        │   ├── auth.types.ts       # Tipos (payload, response)
+        │   └── auth.entities.ts    # Entidades del dominio (IUserEntity, IAccountEntity, etc.)
+        ├── application/    # Lógica de negocio (services)
         │   └── auth.service.ts
-        ├── infrastructure # Implementaciones (repositories)
-        │   └── auth.prisma.repository.ts
-        └── presentation   # Controladores, rutas, DTOs
+        ├── infrastructure  # Implementaciones (repositories, mappers)
+        │   ├── auth.prisma.repository.ts
+        │   └── mappers/
+        │       └── auth.prisma.mappers.ts
+        └── presentation    # Controladores, rutas, DTOs
             ├── auth.controller.ts
             ├── auth.routes.ts
             └── auth.dto.ts
@@ -213,7 +222,6 @@ export const getRedisClient = () => {
       },
     })
 
-    // Connect and log status
     redisClient.connect().then(() => {
       logger.info("Redis connected successfully")
     }).catch((error) => {
@@ -269,13 +277,9 @@ export const redis = getRedisClient()
 3. **Retry strategy** - Exponential backoff:
    - Máximo 5 reintentos
    - Delay: `min(times * 200, 2000)` ms
-4. **Event handlers** - Escucha eventos de Redis para logging:
-   - `ready` - Conexión establecida
-   - `error` - Error de conexión
-   - `reconnecting` - Intentando reconectar
-   - `close` - Conexión cerrada
+4. **Event handlers** - Escucha eventos de Redis para logging
 5. **Graceful shutdown** - `closeRedis()` para cerrar correctamente
-6. **Fallback** - Si Redis falla, la app sigue funcionando (continúa sin cache)
+6. **Fallback** - Si Redis falla, la app sigue funcionando
 
 **¿Por qué usar Redis?** Para caching de respuestas, sesiones, rate limiting, y cualquier dato que requiera acceso rápido.
 
@@ -307,7 +311,7 @@ export const logger = pino({
    - `ignore: "pid,hostname"` - Oculta info irrelevante
 3. **Production** - Logs JSON estructurados (para parseo automático)
 
-**¿Por qué pino?** Es 10x más rápido que otros loggers, soportado por Fastify natively, y produce logs JSON estructurados (ideal para log aggregation como Datadog, ELK, etc.).
+**¿Por qué pino?** Es 10x más rápido que otros loggers, soportado por Fastify natively, y produce logs JSON estructurados.
 
 ---
 
@@ -425,18 +429,16 @@ export const buildApp = async () => {
 
 **¿Qué hace este archivo?**
 
-1. **Logger de Fastify** - Configura logging interno:
-   - Development: level 'debug' con formato pretty
-   - Production: level 'info' (más silencioso)
+1. **Logger de Fastify** - Configura logging interno
 2. **Inicializa Redis** - `getRedisClient()` para tener listo el cache
 3. **Registra plugins de Fastify**:
 
 | Plugin | Función |
 |--------|---------|
-| `@fastify/helmet` | Headers de seguridad (X-Content-Type-Options, HSTS, X-Frame-Options, etc.) |
-| `@fastify/cors` | Cross-Origin Resource Sharing - permite request desde otros dominios |
+| `@fastify/helmet` | Headers de seguridad |
+| `@fastify/cors` | Cross-Origin Resource Sharing |
 | `@fastify/compress` | Compresión gzip de respuestas |
-| `@fastify/rate-limit` | Limita requests por IP (100/min en este caso) |
+| `@fastify/rate-limit` | Limita requests por IP (100/min) |
 | `@fastify/cookie` | Permite leer y escribir cookies |
 
 4. **Routes** - Registra las rutas con prefijo `/api/v1`
@@ -446,7 +448,7 @@ export const buildApp = async () => {
 
 ## 3. Utils y Helpers
 
-### 3.1 `src/core/utils/crypto.utils.ts` - Funciones de Password
+### 3.1 `src/core/utils/crypto.utils.ts` - Funciones de Password y Códigos
 
 ```typescript
 import bcrypt from "bcrypt"
@@ -458,21 +460,31 @@ export const hashPassword = async (password: string): Promise<string> => {
 export const comparePassword = async (password: string, hash: string): Promise<boolean> => {
   return await bcrypt.compare(password, hash);
 };
+
+export function generateVerificationCode(): string {
+  // Generate a 6-character alphanumeric code
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+  let code = ""
+  for (let i = 0; i < 6; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length))
+  }
+  return code
+}
 ```
 
 **¿Qué hace este archivo?**
 
 1. **`hashPassword(password)`** - Hashea un password usando bcrypt:
    - Algoritmo: bcrypt
-   - Salt rounds: 10 (256 iteraciones)
+   - Salt rounds: 10
    - Retorna: string hasheado
+
 2. **`comparePassword(password, hash)`** - Compara un password plano con su hash:
    - Retorna: `true` si coincide, `false` si no
 
-**¿Por qué bcrypt?** Es un algoritmo de hashing diseñado para passwords:
-- Resistente a rainbow tables (usa salt)
-- Configurable work factor (cost factor)
-- Incorpora verificación de hash
+3. **`generateVerificationCode()`** - Genera un código alfanumérico de 6 caracteres:
+   - Útil para verificación de email, reset de password, 2FA
+   - Caracteres: A-Z, 0-9
 
 ---
 
@@ -480,7 +492,8 @@ export const comparePassword = async (password: string, hash: string): Promise<b
 
 ```typescript
 import { env } from "@/config/env"
-import type { Role } from "@/types/user"
+import type { Role } from "@/types/auth"
+import type { FastifyRequest } from "fastify"
 import type { SignOptions } from "jsonwebtoken"
 import jwt from "jsonwebtoken"
 
@@ -506,12 +519,23 @@ export const generateTokens = (userId: string, email: string, role: Role) => {
   )
 
   const refreshToken = jwt.sign(
-    { userId },  // Solo userId, más liviano
+    { userId },
     env.JWT_REFRESH_SECRET,
     refreshTokenOptions
   )
 
   return { accessToken, refreshToken }
+}
+
+export const verifyToken = (token: string, secret: string) => {
+  return jwt.verify(token, secret)
+}
+
+export function getRefreshToken(request: FastifyRequest): string {
+  const cookieToken = request.cookies.refreshToken
+  const body = request.body as Record<string, unknown> | undefined
+  const bodyToken = typeof body?.refreshToken === "string" ? body.refreshToken : undefined
+  return cookieToken || bodyToken || ""
 }
 ```
 
@@ -529,12 +553,13 @@ export const generateTokens = (userId: string, email: string, role: Role) => {
    - Expira: 604000 segundos (7 días)
    - Firmado con: `JWT_REFRESH_SECRET`
 
-2. **Retorna objeto** con ambos tokens
+2. **`verifyToken(token, secret)`** - Verifica un token JWT
+
+3. **`getRefreshToken(request)`** - Extrae el refresh token del cookie o del body
 
 **¿Por qué dos tokens?**
 - Access token: corto (15 min) → si alguien lo roba, máximo 15 min de acceso
 - Refresh token: largo (7 días) → el usuario no tiene que loguearse seguido
-- Si el refresh es compromiseado, se puede revokear sin afectar el access
 
 ---
 
@@ -580,17 +605,8 @@ export const clearAuthCookies = async (reply: FastifyReply) => {
      - `httpOnly: true` - JavaScript no puede acceder a la cookie (previene XSS)
      - `secure: true` - Solo se envía por HTTPS (en producción)
      - `sameSite: 'strict'` - Previene CSRF
-     - `path: '/'` - Disponible en toda la aplicación
-   - `maxAge` - Tiempo de vida en segundos
 
-2. **`clearAuthCookies(reply)`** - Limpia las cookies de autenticación:
-   - Elimina las cookies `accessToken` y `refreshToken`
-   - Usa el mismo `path` que cuando se crearon
-
-**¿Por qué usar cookies httpOnly?**
-- Más seguro que guardar tokens en localStorage/sessionStorage
-- Protege contra XSS porque JS no puede leer las cookies
-- El browser las envía automáticamente en cada request
+2. **`clearAuthCookies(reply)`** - Limpia las cookies de autenticación
 
 ---
 
@@ -642,41 +658,12 @@ export const resolveCurrentUserId = async (
    - Si falla, intenta con `JWT_REFRESH_SECRET` (para refreshToken)
    - Retorna el `userId` del payload o `null` si no es válido
 
-2. **`resolveCurrentUserId(request, reply)`** - Resuelve el usuario actual de forma segura:
-   - Llama a `getUserIdFromCookies()`
-   - Si hay un error (token inválido), limpia las cookies y retorna `null`
-   - Retorna el userId del usuario actualmente autenticado
+2. **`resolveCurrentUserId(request, reply)`** - Resuelve el usuario actual de forma segura
 
 **¿Para qué sirve?**
 - Validar si un usuario ya tiene sesión activa antes de login/register
 - Proteger el endpoint de logout (solo usuarios autenticados)
 - Detectar si el usuario que hace login es el mismo que ya tiene sesión
-
----
-
-### 3.5 `src/types/user.ts` - Tipos de Usuario
-
-```typescript
-export type Role = "admin" | "staff"
-
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  role: Role;
-  deletedAt?: Date | null;
-}
-```
-
-**¿Qué hace este archivo?**
-
-1. **Define `Role`** - Union type con los roles posibles del sistema
-2. **Define `User` interface** - Tipo del objeto usuario:
-   - `id` - UUID único
-   - `email` - Email único
-   - `name` - Nombre completo
-   - `role` - Rol del usuario (admin/staff)
-   - `deletedAt` - Soft delete timestamp (opcional)
 
 ---
 
@@ -754,9 +741,7 @@ export class TooManyRequestsError extends AppError {
 
 1. **Clase base `AppError`**:
    - Extiende `Error` nativo de JavaScript
-   - Agrega: `statusCode` (HTTP status), `code` (error code interno), `isOperational` (si es error esperado o no)
-   - `Object.setPrototypeOf` - Corrección para mantener herencia correcta en ES5
-   - `Error.captureStackTrace` - Captura el stack trace completo
+   - Agrega: `statusCode` (HTTP status), `code` (error code interno), `isOperational`
 
 2. **Errores específicos** - Cada uno con su status code y code:
 
@@ -771,14 +756,223 @@ export class TooManyRequestsError extends AppError {
 | `InternalServerError` | 500 | INTERNAL_SERVER_ERROR | Error inesperado |
 | `TooManyRequestsError` | 429 | TOO_MANY_REQUESTS | Rate limit excedido |
 
-**¿Por qué crear errores personalizados?**
-- Estandariza los errores en toda la app
-- Agrega códigos internos para debugging
-- Permite distinguir errores operacionales (del usuario) de bugs (del sistema)
+---
+
+## 5. Tipos de Auth
+
+### 5.1 `src/types/auth.d.ts` - Tipos Globales de Autenticación
+
+```typescript
+import type { account, session, user, verification } from "@prisma/client"
+
+export type Role = "admin" | "staff"
+
+export interface User extends user {
+  id: string
+  name: string
+  email: string
+  email_verified: boolean
+  phone?: string
+  image?: string
+  role: Role
+  created_at: Date
+  updated_at: Date
+  deleted_at?: Date
+}
+
+export interface Account extends account {
+  id: string
+  account_id: string
+  provider_id: string
+  user_id?: string
+  access_token?: string
+  refresh_token?: string
+  id_token?: string
+  access_token_expires_at?: Date
+  refresh_token_expires_at?: Date
+  scope?: string
+  password?: string
+  created_at: Date
+  updated_at: Date
+}
+
+export interface Session extends session {
+  id: string
+  expires_at: Date
+  token: string
+  ip_address?: string
+  user_agent?: string
+  user_id: string
+  created_at: Date
+  updated_at: Date
+}
+
+export interface Verification extends verification {
+  id: string
+  identifier: string
+  value: string
+  expires_at: Date
+  created_at: Date
+  updated_at: Date
+}
+```
+
+**¿Qué hace este archivo?**
+
+- Define `Role` - Union type con los roles posibles del sistema (admin/staff)
+- Extiende los tipos de Prisma con campos adicionales
+- Proporciona tipos limpios para usar en toda la aplicación
 
 ---
 
-## 5. Módulo Auth
+## 6. Guardia de Autenticación
+
+### 6.1 `src/core/guard/auth.guard.ts` - Guardia para Rutas Protegidas
+
+```typescript
+import type { FastifyReply, FastifyRequest } from "fastify"
+import { UnauthorizedError } from "@/core/errors/AppError"
+import { getUserIdFromCookies } from "../utils/auth.utils"
+
+declare module "fastify" {
+  interface FastifyRequest {
+    userId?: string
+  }
+}
+
+export const authGuard = async (
+  request: FastifyRequest,
+  _reply: FastifyReply
+) => {
+  const userId = getUserIdFromCookies(request)
+
+  if (!userId) {
+    throw new UnauthorizedError("Authentication required")
+  }
+
+  request.userId = userId
+}
+```
+
+**¿Qué hace este archivo?**
+
+1. **Declara `userId` en FastifyRequest** - Agrega propiedad personalizada al request
+2. **`authGuard(request, reply)`** - Middleware de autenticación:
+   - Extrae el userId de las cookies
+   - Si no existe, lanza `UnauthorizedError`
+   - Si existe, lo agrega al request como `request.userId`
+
+**¿Para qué sirve?**
+- Proteger rutas que requieren autenticación
+- Agregar el userId al request para usarlo en los handlers
+
+---
+
+## 7. Mappers
+
+### 7.1 `src/modules/auth/infrastructure/mappers/auth.prisma.mappers.ts` - Mappers de Prisma
+
+```typescript
+import type { Role } from "@/types/auth"
+import type { IAccountEntity, ISessionEntity, IUserEntity, IVerificationEntity } from "../../domain/auth.entities"
+import type { account, session, user, verification } from "@prisma/client"
+
+export function mapPrismaUserToEntity(user: user): IUserEntity {
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    email_verified: user.email_verified,
+    phone: user.phone || undefined,
+    image: user.image || undefined,
+    role: user.role as Role,
+    created_at: user.created_at,
+    updated_at: user.updated_at,
+    deleted_at: user.deleted_at || undefined
+  }
+}
+
+export function mapPrismaAccountToEntity(account: account): IAccountEntity {
+  return {
+    id: account.id,
+    account_id: account.account_id,
+    provider_id: account.provider_id,
+    user_id: account.user_id || undefined,
+    access_token: account.access_token || undefined,
+    refresh_token: account.refresh_token || undefined,
+    id_token: account.id_token || undefined,
+    access_token_expires_at: account.access_token_expires_at || undefined,
+    refresh_token_expires_at: account.refresh_token_expires_at || undefined,
+    scope: account.scope || undefined,
+    password: account.password || undefined,
+    created_at: account.created_at,
+    updated_at: account.updated_at
+  }
+}
+
+export function mapPrismaSessionToEntity(session: session): ISessionEntity {
+  return {
+    id: session.id,
+    expires_at: session.expires_at,
+    token: session.token,
+    ip_address: session.ip_address || undefined,
+    user_agent: session.user_agent || undefined,
+    user_id: session.user_id,
+    created_at: session.created_at,
+    updated_at: session.updated_at
+  }
+}
+
+export function mapPrismaVerificationToEntity(verification: verification): IVerificationEntity {
+  return {
+    id: verification.id,
+    identifier: verification.identifier,
+    value: verification.value,
+    expires_at: verification.expires_at,
+    created_at: verification.created_at,
+    updated_at: verification.updated_at
+  }
+}
+```
+
+**¿Qué hacen estos mappers?**
+
+1. **Convierten tipos de Prisma a entidades del dominio**
+2. **Normalizan `null` a `undefined`** - Prisma devuelve `null`, el dominio usa `undefined` para campos opcionales
+3. **Se usan en el repository** para transformar los datos de la BD antes de retornarlos al service
+
+---
+
+### 7.2 `src/core/mappers/response.mapper.ts` - Mapper de Respuesta
+
+```typescript
+import type { Role, User } from "@/types/auth";
+
+export function mapUserToResponse(user: User): User {
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    email_verified: user.email_verified,
+    role: user.role as Role,
+    phone: user.phone || undefined,
+    image: user.image || undefined,
+    created_at: user.created_at,
+    updated_at: user.updated_at,
+    deleted_at: user.deleted_at || undefined
+  }
+}
+```
+
+**¿Qué hace este archivo?**
+
+- Transforma la entidad de usuario para la respuesta de la API
+- Normaliza `null` a `undefined`
+- Se usa en los controllers para formatear la respuesta
+
+---
+
+## 8. Módulo Auth
 
 El módulo de autenticación sigue una arquitectura limpia (Clean Architecture) con separación en capas:
 
@@ -790,7 +984,7 @@ src/modules/auth/
 └── presentation/     # Controladores, rutas, DTOs
 ```
 
-### 5.1 Domain Layer - Capa de Dominio
+### 8.1 Domain Layer - Capa de Dominio
 
 La capa de dominio contiene los contratos y tipos puros, sin dependencias de frameworks.
 
@@ -803,18 +997,91 @@ export interface IUserEntity {
   id: string
   name: string
   email: string
-  password: string
+  email_verified: boolean
+  phone?: string
+  image?: string
   role: Role
-  createdAt?: Date
-  updatedAt?: Date
+  created_at: Date
+  updated_at: Date
+  deleted_at?: Date
+}
+
+export interface IAccountEntity {
+  id: string
+  account_id: string
+  provider_id: string  // "credentials", "google", "github", etc.
+  user_id?: string
+  access_token?: string
+  refresh_token?: string
+  id_token?: string
+  access_token_expires_at?: Date
+  refresh_token_expires_at?: Date
+  scope?: string
+  password?: string
+  created_at: Date
+  updated_at: Date
+}
+
+export interface ISessionEntity {
+  id: string
+  expires_at: Date
+  token: string
+  ip_address?: string
+  user_agent?: string
+  user_id: string
+  created_at: Date
+  updated_at: Date
+}
+
+export interface IVerificationEntity {
+  id: string
+  identifier: string  // email o "reset:email"
+  value: string       // código de verificación
+  expires_at: Date
+  created_at: Date
+  updated_at: Date
+}
+
+// Tipos para crear/actualizar
+export type CreateUserData = Pick<IUserEntity, "name" | "email" | "role"> & {
+  phone?: string
+  image?: string
+  email_verified?: boolean
+}
+
+export type UpdateUserData = Partial<Pick<IUserEntity, "name" | "phone" | "image" | "role" | "email_verified">>
+
+export type CreateAccountData = Pick<IAccountEntity, "account_id" | "provider_id"> & {
+  user_id?: string
+  access_token?: string
+  refresh_token?: string
+  id_token?: string
+  access_token_expires_at?: Date
+  refresh_token_expires_at?: Date
+  scope?: string
+  password?: string
+}
+
+export type CreateSessionData = {
+  userId: string
+  token: string
+  expiresAt: Date
+  ipAddress?: string
+  userAgent?: string
+}
+
+export type CreateVerificationData = {
+  identifier: string
+  value: string
+  expiresAt: Date
 }
 ```
 
 **¿Qué hace este archivo?**
 
-- Define la interfaz `IUserEntity` - Representa el usuario persistido en la base de datos
-- Contiene todos los campos incluyendo `password` (hasheada)
-- Incluye timestamps opcionales (`createdAt`, `updatedAt`)
+- Define las interfaces de las entidades del dominio
+- Cada entidad representa una tabla en la BD
+- Define tipos para crear y actualizar datos
 
 ---
 
@@ -822,6 +1089,10 @@ export interface IUserEntity {
 
 ```typescript
 import type { Role } from "@/types/user"
+
+// ==================
+// USER TYPES
+// ==================
 
 export interface IRegisterPayload {
   name: string
@@ -835,53 +1106,176 @@ export interface ILoginPayload {
   password: string
 }
 
+export interface IVerifyEmailPayload {
+  identifier: string // email
+  code: string
+}
+
+export interface IForgotPasswordPayload {
+  email: string
+}
+
+export interface IResetPasswordPayload {
+  email: string
+  code: string
+  newPassword: string
+}
+
+// ==================
+// RESPONSE TYPES
+// ==================
+
+export interface IUserResponse {
+  id: string
+  name: string
+  email: string
+  email_verified: boolean
+  role: Role
+  phone?: string
+  image?: string
+  created_at: Date
+  updated_at: Date
+}
+
 export interface IAuthResponse {
   message: string
-  user: {
-    id: string;
-    name: string;
-    email: string;
-    role: Role;
-    createdAt?: Date;
-  };
-  accessToken: string;
-  refreshToken: string;
+  user: IUserResponse
+  accessToken: string
+  refreshToken: string
+}
+
+export interface IRefreshResponse {
+  message: string
+  accessToken: string
+  refreshToken: string
+}
+
+export interface IVerificationResponse {
+  message: string
+  expiresAt: Date
+}
+
+export interface ILogoutResponse {
+  message: string
+}
+
+// ==================
+// SESSION TYPES
+// ==================
+
+export interface ISessionResponse {
+  id: string
+  expires_at: Date
+  ip_address?: string
+  user_agent?: string
+  created_at: Date
+  updated_at: Date
+}
+
+export interface IUserSessionsResponse {
+  sessions: ISessionResponse[]
 }
 ```
 
 **¿Qué hace este archivo?**
 
-1. **`IRegisterPayload`** - Tipo para el payload de registro:
-   - `name`, `email`, `password` - Campos requeridos
-   - `role` - Opcional (default: staff)
-
-2. **`ILoginPayload`** - Tipo para el payload de login:
-   - `email` y `password` para autenticar
-
-3. **`IAuthResponse`** - Tipo para la respuesta de auth:
-   - `message` - Mensaje de éxito
-   - `user` - Datos del usuario (sin password)
-   - `accessToken` y `refreshToken` - Tokens JWT
+- Define los tipos de payloads (datos de entrada)
+- Define los tipos de responses (datos de salida)
+- Todos los tipos son independientes de la implementación
 
 ---
 
 #### `src/modules/auth/domain/auth.interface.ts` - Interfaces del Repository
 
 ```typescript
-import type { IUserEntity } from "./auth.entities"
-import type { IRegisterPayload } from "./auth.types"
+import type {
+  IUserEntity,
+  IAccountEntity,
+  ISessionEntity,
+  IVerificationEntity,
+  CreateUserData,
+  UpdateUserData,
+  CreateAccountData,
+  CreateSessionData,
+  CreateVerificationData
+} from "./auth.entities"
+
+// ==================
+// USER REPOSITORY
+// ==================
+
+export interface IUserRepository {
+  findByEmail(email: string): Promise<IUserEntity | null>
+  findById(id: string): Promise<IUserEntity | null>
+  create(data: CreateUserData): Promise<IUserEntity>
+  update(id: string, data: UpdateUserData): Promise<IUserEntity>
+  softDelete(id: string): Promise<void>
+}
+
+// ==================
+// ACCOUNT REPOSITORY
+// ==================
+
+export interface IAccountRepository {
+  findByProviderAndAccountId(providerId: string, accountId: string): Promise<IAccountEntity | null>
+  findByUserId(userId: string): Promise<IAccountEntity[]>
+  findCredentialsAccountByEmail(email: string): Promise<IAccountEntity | null>
+  create(data: CreateAccountData): Promise<IAccountEntity>
+  update(id: string, data: Partial<CreateAccountData>): Promise<IAccountEntity>
+  delete(id: string): Promise<void>
+  deleteByUserId(userId: string): Promise<void>
+}
+
+// ==================
+// SESSION REPOSITORY
+// ==================
+
+export interface ISessionRepository {
+  create(data: CreateSessionData): Promise<ISessionEntity>
+  findByToken(token: string): Promise<ISessionEntity | null>
+  findByUserId(userId: string): Promise<ISessionEntity[]>
+  delete(token: string): Promise<void>
+  deleteByUserId(userId: string): Promise<void>
+  deleteExpiredSessions(): Promise<number>
+}
+
+// ==================
+// VERIFICATION REPOSITORY
+// ==================
+
+export interface IVerificationRepository {
+  create(data: CreateVerificationData): Promise<IVerificationEntity>
+  findByIdentifier(identifier: string): Promise<IVerificationEntity | null>
+  findByIdentifierAndValue(identifier: string, value: string): Promise<IVerificationEntity | null>
+  delete(id: string): Promise<void>
+  deleteByIdentifier(identifier: string): Promise<void>
+  deleteExpired(): Promise<number>
+}
+
+// ==================
+// COMBINED AUTH REPOSITORY (convenience)
+// ==================
 
 export interface IAuthRepository {
-  findByEmail(email: string): Promise<IUserEntity | null>
-  create(data: IRegisterPayload): Promise<IUserEntity>
+  // User
+  user: IUserRepository
+  // Account
+  account: IAccountRepository
+  // Session
+  session: ISessionRepository
+  // Verification
+  verification: IVerificationRepository
 }
 ```
 
 **¿Qué hace este archivo?**
 
-- Define `IAuthRepository` - Contrato del repository que debe implementar la infraestructura
-- **`findByEmail(email)`** - Busca usuario por email
-- **`create(data)`** - Crea un nuevo usuario
+- Define las interfaces del repository para cada entidad
+- **`IUserRepository`** - Métodos para usuarios
+- **`IAccountRepository`** - Métodos para cuentas (OAuth, credentials)
+- **`ISessionRepository`** - Métodos para sesiones
+- **`IVerificationRepository`** - Métodos para verificaciones (email, password)
+- **`IAuthRepository`** - Combinación de todos los repositorios
 
 **¿Por qué interfaces?**
 - Define el contrato sin importar la implementación
@@ -890,44 +1284,100 @@ export interface IAuthRepository {
 
 ---
 
-### 5.2 Application Layer - Capa de Aplicación
+### 8.2 Application Layer - Capa de Aplicación
 
 #### `src/modules/auth/application/auth.service.ts` - Lógica de Negocio
 
 ```typescript
-import { ConflictError, UnauthorizedError } from "@/core/errors/AppError"
+import { ConflictError, NotFoundError, UnauthorizedError } from "@/core/errors/AppError"
 import { comparePassword, hashPassword } from "@/core/utils/crypto.utils"
-import { generateTokens } from "@/core/utils/token.utils"
+import { generateTokens, verifyToken } from "@/core/utils/token.utils"
 import type { IAuthRepository } from "../domain/auth.interface"
-import type { IAuthResponse, ILoginPayload, IRegisterPayload } from "../domain/auth.types"
+import type {
+  IAuthResponse,
+  IRefreshResponse,
+  IVerificationResponse,
+  ILogoutResponse,
+  IUserResponse,
+  IUserSessionsResponse,
+  ISessionResponse,
+  IVerifyEmailResponse,
+  IForgotPasswordResponse,
+  IResetPasswordResponse
+} from "../domain/auth.types"
 import type { Role } from "@/types/user"
+import { env } from "@/config/env"
+
+// HELPER FUNCTIONS
+
+function generateVerificationCode(): string {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+  let code = ""
+  for (let i = 0; i < 6; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length))
+  }
+  return code
+}
+
+// Token expiration times
+const ACCESS_TOKEN_EXPIRY = 15 * 60 * 1000 // 15 minutes
+const REFRESH_TOKEN_EXPIRY = 7 * 24 * 60 * 60 * 1000 // 7 days
+const VERIFICATION_CODE_EXPIRY = 15 * 60 * 1000 // 15 minutes
+const SESSION_EXPIRY = 7 * 24 * 60 * 60 * 1000 // 7 days
 
 export const createAuthService = (repository: IAuthRepository) => ({
-  register: async (data: IRegisterPayload): Promise<IAuthResponse> => {
+  // ==================
+  // REGISTER
+  // ==================
+  register: async (data: RegisterPayloadDto): Promise<IAuthResponse> => {
     const { name, email, password, role = "staff" } = data
 
-    const existingUser = await repository.findByEmail(email)
-
+    // Check if user already exists
+    const existingUser = await repository.user.findByEmail(email)
     if (existingUser) {
       throw new ConflictError("Email already registered")
     }
 
+    // Hash password
     const hashedPassword = await hashPassword(password)
 
-    const newUser = { name, email, password: hashedPassword, role }
+    // Create user (not verified yet)
+    const user = await repository.user.create({
+      name,
+      email,
+      role,
+      email_verified: false
+    })
 
-    const user = await repository.create(newUser)
+    // Create credentials account with password
+    await repository.account.create({
+      account_id: user.id,
+      provider_id: "credentials",
+      user_id: user.id,
+      password: hashedPassword
+    })
 
-    const { accessToken, refreshToken } = generateTokens(user.id, user.email, user.role)
+    // Generate verification code
+    const verificationCode = generateVerificationCode()
+    await repository.verification.create({
+      identifier: email,
+      value: verificationCode,
+      expiresAt: new Date(Date.now() + VERIFICATION_CODE_EXPIRY)
+    })
+
+    // Generate tokens
+    const { accessToken, refreshToken } = generateTokens(user.id, user.email, user.role as Role)
+
+    // Create session in DB
+    await repository.session.create({
+      userId: user.id,
+      token: refreshToken,
+      expiresAt: new Date(Date.now() + SESSION_EXPIRY)
+    })
 
     const response: IAuthResponse = {
-      message: "User create successfully",
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role
-      },
+      message: "User created successfully. Please verify your email.",
+      user: mapUserToResponse(user),
       accessToken,
       refreshToken
     }
@@ -935,119 +1385,703 @@ export const createAuthService = (repository: IAuthRepository) => ({
     return response
   },
 
+  // ==================
+  // LOGIN
+  // ==================
   login: async (data: ILoginPayload): Promise<IAuthResponse> => {
     const { email, password } = data
 
-    const user = await repository.findByEmail(email)
-
-    if (!user) {
+    // Find the credentials account for this email
+    const account = await repository.account.findCredentialsAccountByEmail(email)
+    if (!account) {
       throw new UnauthorizedError("Invalid credentials")
     }
 
-    const isValidPassword = await comparePassword(password, user.password)
-
+    // Verify password
+    if (!account.password) {
+      throw new UnauthorizedError("Invalid credentials")
+    }
+    const isValidPassword = await comparePassword(password, account.password)
     if (!isValidPassword) {
       throw new UnauthorizedError("Invalid credentials")
     }
 
+    // Get the user
+    const user = await repository.user.findById(account.user_id!)
+    if (!user) {
+      throw new UnauthorizedError("User not found")
+    }
+
+    // If user is soft deleted, reject
+    if (user.deleted_at) {
+      throw new UnauthorizedError("Account has been deactivated")
+    }
+
+    // Generate tokens
     const { accessToken, refreshToken } = generateTokens(user.id, user.email, user.role as Role)
+
+    // Create session in DB
+    await repository.session.create({
+      userId: user.id,
+      token: refreshToken,
+      expiresAt: new Date(Date.now() + SESSION_EXPIRY)
+    })
 
     const response: IAuthResponse = {
       message: "Login successfully",
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role
-      },
+      user: mapUserToResponse(user),
       accessToken,
       refreshToken
     }
 
     return response
-  }
-})
-```
-
-**¿Qué hace este archivo?**
-
-1. **`createAuthService(repository)`** - Factory function que recibe el repository como parámetro (inyección de dependencias)
-
-2. **`register(data)`** - Lógica de registro:
-   - Recibe `data` con name, email, password, role
-   - **Step 1**: Busca si el email ya existe en la BD → si existe, lanza `ConflictError`
-   - **Step 2**: Hashea el password con bcrypt (10 rounds)
-   - **Step 3**: Crea el usuario en la BD usando el repository
-   - **Step 4**: Genera access + refresh tokens
-   - **Step 5**: Retorna la respuesta con mensaje, usuario y tokens
-
-3. **`login(data)`** - Lógica de login:
-   - Recibe `data` con email y password
-   - **Step 1**: Busca el usuario por email → si no existe, lanza `UnauthorizedError`
-   - **Step 2**: Compara el password con el hash guardado → si no coincide, lanza `UnauthorizedError`
-   - **Step 3**: Genera access + refresh tokens
-   - **Step 4**: Retorna la respuesta con mensaje, usuario y tokens
-
-**Patrón usado: Dependency Inversion**
-- El service depende de la abstracción (`IAuthRepository`), no de la implementación
-- El controller inyecta la implementación concreta (`AuthRepository` de Prisma)
-
----
-
-### 5.3 Infrastructure Layer - Capa de Infraestructura
-
-#### `src/modules/auth/infrastructure/auth.prisma.repository.ts` - Implementación Prisma
-
-```typescript
-import { prisma } from "@/config/prisma";
-import type { IAuthRepository } from "../domain/auth.interface";
-import type { IRegisterPayload } from "../domain/auth.types";
-
-export const AuthRepository: IAuthRepository = {
-  async findByEmail(email: string) {
-    return await prisma.user.findFirst({
-      where: { email, deletedAt: null }
-    })
   },
 
-  async create(data: IRegisterPayload) {
-    return prisma.user.create({
-      data: {
-        name: data.name,
-        email: data.email,
-        password: data.password,
-        role: data.role
-      }
+  // ==================
+  // LOGOUT
+  // ==================
+  logout: async (refreshToken: string): Promise<ILogoutResponse> => {
+    // Delete the session from DB
+    await repository.session.delete(refreshToken)
+
+    return {
+      message: "Logged out successfully"
+    }
+  },
+
+  // ==================
+  // REFRESH
+  // ==================
+  refresh: async (refreshToken: string): Promise<IRefreshResponse> => {
+    let payload: { userId: string }
+
+    try {
+      payload = verifyToken(refreshToken, env.JWT_REFRESH_SECRET) as { userId: string }
+    } catch {
+      throw new UnauthorizedError("Invalid or expired refresh token")
+    }
+
+    // Find session in DB
+    const session = await repository.session.findByToken(refreshToken)
+    if (!session) {
+      throw new UnauthorizedError("Invalid refresh token")
+    }
+
+    // Check if session is expired
+    if (session.expires_at < new Date()) {
+      await repository.session.delete(refreshToken)
+      throw new UnauthorizedError("Session expired")
+    }
+
+    // Get user
+    const user = await repository.user.findById(payload.userId)
+    if (!user) {
+      throw new UnauthorizedError("User not found")
+    }
+
+    // Delete old session
+    await repository.session.delete(refreshToken)
+
+    // Generate new tokens
+    const { accessToken, refreshToken: newRefreshToken } = generateTokens(
+      user.id,
+      user.email,
+      user.role as Role
+    )
+
+    // Create new session in DB
+    await repository.session.create({
+      userId: user.id,
+      token: newRefreshToken,
+      expiresAt: new Date(Date.now() + SESSION_EXPIRY)
     })
+
+    return {
+      message: "Token refreshed successfully",
+      accessToken,
+      refreshToken: newRefreshToken
+    }
+  },
+
+  // ==================
+  // VERIFY EMAIL
+  // ==================
+  verifyEmail: async (data: IVerifyEmailPayload): Promise<IVerifyEmailResponse> => {
+    const { identifier, code } = data
+
+    // Find verification code
+    const verification = await repository.verification.findByIdentifierAndValue(
+      identifier,
+      code
+    )
+
+    if (!verification) {
+      throw new UnauthorizedError("Invalid verification code")
+    }
+
+    // Check if expired
+    if (verification.expires_at < new Date()) {
+      await repository.verification.deleteByIdentifier(identifier)
+      throw new UnauthorizedError("Verification code expired")
+    }
+
+    // Find and update user
+    const user = await repository.user.findByEmail(identifier)
+    if (!user) {
+      throw new NotFoundError("User not found")
+    }
+
+    // Mark email as verified
+    await repository.user.update(user.id, { email_verified: true })
+
+    // Delete verification code
+    await repository.verification.deleteByIdentifier(identifier)
+
+    // Generate new tokens (user is now verified)
+    const { accessToken, refreshToken } = generateTokens(
+      user.id,
+      user.email,
+      user.role as Role
+    )
+
+    // Create new session
+    await repository.session.create({
+      userId: user.id,
+      token: refreshToken,
+      expiresAt: new Date(Date.now() + SESSION_EXPIRY)
+    })
+
+    return {
+      message: "Email verified successfully",
+      accessToken,
+      refreshToken
+    }
+  },
+
+  // ==================
+  // FORGOT PASSWORD
+  // ==================
+  forgotPassword: async (data: IForgotPasswordPayload): Promise<IForgotPasswordResponse> => {
+    const { email } = data
+
+    // Check if user exists
+    const user = await repository.user.findByEmail(email)
+    if (!user) {
+      // Don't reveal if user exists or not
+      return {
+        message: "If the email exists, a reset code has been sent",
+        expires_at: new Date(Date.now() + VERIFICATION_CODE_EXPIRY)
+      }
+    }
+
+    // Generate reset code
+    const resetCode = generateVerificationCode()
+    await repository.verification.create({
+      identifier: `reset:${email}`,
+      value: resetCode,
+      expiresAt: new Date(Date.now() + VERIFICATION_CODE_EXPIRY)
+    })
+
+    // TODO: Send email with reset code
+    console.log(`Password reset code for ${email}: ${resetCode}`)
+
+    return {
+      message: "If the email exists, a reset code has been sent",
+      expires_at: new Date(Date.now() + VERIFICATION_CODE_EXPIRY)
+    }
+  },
+
+  // ==================
+  // RESET PASSWORD
+  // ==================
+  resetPassword: async (data: IResetPasswordPayload): Promise<IResetPasswordResponse> => {
+    const { email, code, newPassword } = data
+
+    // Find verification
+    const verification = await repository.verification.findByIdentifierAndValue(
+      `reset:${email}`,
+      code
+    )
+
+    if (!verification) {
+      throw new UnauthorizedError("Invalid reset code")
+    }
+
+    if (verification.expires_at < new Date()) {
+      await repository.verification.deleteByIdentifier(`reset:${email}`)
+      throw new UnauthorizedError("Reset code expired")
+    }
+
+    // Find user and account
+    const user = await repository.user.findByEmail(email)
+    if (!user) {
+      throw new NotFoundError("User not found")
+    }
+
+    // Find credentials account
+    const account = await repository.account.findCredentialsAccountByEmail(email)
+    if (!account) {
+      throw new NotFoundError("Account not found")
+    }
+
+    // Hash new password and update
+    const hashedPassword = await hashPassword(newPassword)
+    await repository.account.update(account.id, { password: hashedPassword })
+
+    // Delete all user sessions (force logout all devices)
+    await repository.session.deleteByUserId(user.id)
+
+    // Delete verification code
+    await repository.verification.deleteByIdentifier(`reset:${email}`)
+
+    return {
+      message: "Password reset successfully. Please login with your new password."
+    }
+  },
+
+  // ==================
+  // GET USER SESSIONS
+  // ==================
+  getUserSessions: async (userId: string): Promise<IUserSessionsResponse> => {
+    const sessions = await repository.session.findByUserId(userId)
+
+    // Filter out expired sessions
+    const validSessions: ISessionResponse[] = sessions
+      .filter(s => s.expires_at > new Date())
+      .map(s => ({
+        id: s.id,
+        expires_at: s.expires_at,
+        ip_address: s.ip_address,
+        user_agent: s.user_agent,
+        created_at: s.created_at,
+        updated_at: s.updated_at
+      }))
+
+    return {
+      sessions: validSessions
+    }
+  },
+
+  // ==================
+  // REVOKE SESSION
+  // ==================
+  revokeSession: async (userId: string, sessionId: string): Promise<ILogoutResponse> => {
+    const sessions = await repository.session.findByUserId(userId)
+    const session = sessions.find(s => s.id === sessionId)
+
+    if (!session) {
+      throw new NotFoundError("Session not found")
+    }
+
+    await repository.session.delete(session.token)
+
+    return {
+      message: "Session revoked successfully"
+    }
+  },
+
+  // ==================
+  // RESEND VERIFICATION EMAIL
+  // ==================
+  resendVerification: async (email: string): Promise<IVerificationResponse> => {
+    const user = await repository.user.findByEmail(email)
+
+    if (!user) {
+      // Don't reveal if user exists
+      return {
+        message: "If the email exists, a new verification code has been sent",
+        expiresAt: new Date(Date.now() + VERIFICATION_CODE_EXPIRY)
+      }
+    }
+
+    if (user.email_verified) {
+      throw new ConflictError("Email already verified")
+    }
+
+    // Delete old verification if exists
+    await repository.verification.deleteByIdentifier(email)
+
+    // Generate new code
+    const verificationCode = generateVerificationCode()
+    await repository.verification.create({
+      identifier: email,
+      value: verificationCode,
+      expiresAt: new Date(Date.now() + VERIFICATION_CODE_EXPIRY)
+    })
+
+    // TODO: Send email
+    console.log(`Verification code for ${email}: ${verificationCode}`)
+
+    return {
+      message: "New verification code sent",
+      expiresAt: new Date(Date.now() + VERIFICATION_CODE_EXPIRY)
+    }
+  }
+})
+
+// HELPER FUNCTIONS
+function mapUserToResponse(user: any): IUserResponse {
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    email_verified: user.email_verified,
+    role: user.role as Role,
+    phone: user.phone,
+    image: user.image,
+    created_at: user.createdAt,
+    updated_at: user.updatedAt
   }
 }
 ```
 
 **¿Qué hace este archivo?**
 
-1. **Implementa `IAuthRepository`** - Satisface el contrato definido en el domain
+El service contiene toda la lógica de negocio de autenticación:
 
-2. **`findByEmail(email)`** - Busca usuario por email:
-   - Usa `prisma.user.findFirst()`
-   - Filtra por `email` Y `deletedAt: null` (soft delete)
-   - Retorna `null` si no existe
+1. **`register(data)`** - Registro de usuario:
+   - Verifica si el email ya existe
+   - Crea usuario con `email_verified: false`
+   - Crea cuenta con provider "credentials" y password hasheado
+   - Genera código de verificación
+   - Crea sesión en la BD
 
-3. **`create(data)`** - Crea un nuevo usuario:
-   - Usa `prisma.user.create()`
-   - Recibe: name, email, password (ya hasheado), role
+2. **`login(data)`** - Login con credentials:
+   - Busca la cuenta por email
+   - Verifica el password
+   - Valida que el usuario no esté soft-deleted
+   - Crea sesión en la BD
 
-**¿Por qué separado?**
-- Si mañana usás MongoDB en vez de PostgreSQL, solo cambiás este archivo
-- El service sigue funcionando igual porque usa la interfaz
+3. **`logout(refreshToken)`** - Logout:
+   - Elimina la sesión de la BD
+
+4. **`refresh(refreshToken)`** - Refresh de tokens:
+   - Verifica el token
+   - Valida la sesión en la BD
+   - Genera nuevos tokens
+   - Recrea la sesión
+
+5. **`verifyEmail(data)`** - Verificación de email:
+   - Valida el código de verificación
+   - Marca `email_verified: true`
+   - Genera nuevos tokens
+
+6. **`forgotPassword(email)`** - Olvidé mi password:
+   - Genera código de verificación para reset
+
+7. **`resetPassword(data)`** - Reset de password:
+   - Valida el código
+   - Actualiza el password
+   - Elimina todas las sesiones (logout de todos los dispositivos)
+
+8. **`getUserSessions(userId)`** - Ver sesiones activas:
+   - Lista todas las sesiones del usuario
+
+9. **`revokeSession(userId, sessionId)`** - Revocar sesión:
+   - Elimina una sesión específica
+
+10. **`resendVerification(email)`** - Reenviar código de verificación
 
 ---
 
-### 5.4 Presentation Layer - Capa de Presentación
+### 8.3 Infrastructure Layer - Capa de Infraestructura
+
+#### `src/modules/auth/infrastructure/auth.prisma.repository.ts` - Implementación Prisma
+
+```typescript
+import { prisma } from "@/config/prisma"
+import type { Role } from "@/types/user"
+import type {
+  IAuthRepository,
+  IUserRepository,
+  IAccountRepository,
+  ISessionRepository,
+  IVerificationRepository
+} from "../domain/auth.interface"
+import type {
+  IUserEntity,
+  IAccountEntity,
+  ISessionEntity,
+  IVerificationEntity,
+  CreateUserData,
+  UpdateUserData,
+  CreateAccountData,
+  CreateSessionData,
+  CreateVerificationData
+} from "../domain/auth.entities"
+import {
+  mapPrismaUserToEntity,
+  mapPrismaAccountToEntity,
+  mapPrismaSessionToEntity,
+  mapPrismaVerificationToEntity
+} from "./mappers/auth.prisma.mappers"
+
+// ==================
+// USER REPOSITORY
+// ==================
+
+const UserRepository: IUserRepository = {
+  async findByEmail(email: string): Promise<IUserEntity | null> {
+    const user = await prisma.user.findFirst({
+      where: { email, deleted_at: null }
+    })
+    if (!user) return null
+    return mapPrismaUserToEntity(user)
+  },
+
+  async findById(id: string): Promise<IUserEntity | null> {
+    const user = await prisma.user.findFirst({
+      where: { id, deleted_at: null }
+    })
+    if (!user) return null
+    return mapPrismaUserToEntity(user)
+  },
+
+  async create(data: CreateUserData): Promise<IUserEntity> {
+    const user = await prisma.user.create({
+      data: {
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        image: data.image,
+        role: data.role || "staff",
+        email_verified: data.email_verified || false
+      }
+    })
+    return mapPrismaUserToEntity(user)
+  },
+
+  async update(id: string, data: UpdateUserData): Promise<IUserEntity> {
+    const user = await prisma.user.update({
+      where: { id },
+      data: data
+    })
+    return mapPrismaUserToEntity(user)
+  },
+
+  async softDelete(id: string): Promise<void> {
+    await prisma.user.update({
+      where: { id },
+      data: { deleted_at: new Date() }
+    })
+  }
+}
+
+// ==================
+// ACCOUNT REPOSITORY
+// ==================
+
+const AccountRepository: IAccountRepository = {
+  async findByProviderAndAccountId(
+    providerId: string,
+    accountId: string
+  ): Promise<IAccountEntity | null> {
+    const account = await prisma.account.findFirst({
+      where: { provider_id: providerId, account_id: accountId }
+    })
+    if (!account) return null
+    return mapPrismaAccountToEntity(account)
+  },
+
+  async findByUserId(userId: string): Promise<IAccountEntity[]> {
+    const accounts = await prisma.account.findMany({
+      where: { user_id: userId }
+    })
+    return accounts.map(mapPrismaAccountToEntity)
+  },
+
+  async findCredentialsAccountByEmail(email: string): Promise<IAccountEntity | null> {
+    // First find the user by email
+    const user = await prisma.user.findFirst({
+      where: { email, deleted_at: null }
+    })
+    if (!user) return null
+
+    // Then find the credentials account for that user
+    const account = await prisma.account.findFirst({
+      where: {
+        user_id: user.id,
+        provider_id: "credentials"
+      }
+    })
+    if (!account) return null
+    return mapPrismaAccountToEntity(account)
+  },
+
+  async create(data: CreateAccountData): Promise<IAccountEntity> {
+    const account = await prisma.account.create({
+      data: {
+        account_id: data.account_id,
+        provider_id: data.provider_id,
+        user_id: data.user_id,
+        access_token: data.access_token,
+        refresh_token: data.refresh_token,
+        id_token: data.id_token,
+        access_token_expires_at: data.access_token_expires_at,
+        refresh_token_expires_at: data.refresh_token_expires_at,
+        scope: data.scope,
+        password: data.password
+      }
+    })
+    return mapPrismaAccountToEntity(account)
+  },
+
+  async update(
+    id: string,
+    data: Partial<CreateAccountData>
+  ): Promise<IAccountEntity> {
+    const account = await prisma.account.update({
+      where: { id },
+      data: data
+    })
+    return mapPrismaAccountToEntity(account)
+  },
+
+  async delete(id: string): Promise<void> {
+    await prisma.account.delete({ where: { id } })
+  },
+
+  async deleteByUserId(userId: string): Promise<void> {
+    await prisma.account.deleteMany({ where: { user_id: userId } })
+  }
+}
+
+// ==================
+// SESSION REPOSITORY
+// ==================
+
+const SessionRepository: ISessionRepository = {
+  async create(data: CreateSessionData): Promise<ISessionEntity> {
+    const session = await prisma.session.create({
+      data: {
+        user_id: data.userId,
+        token: data.token,
+        expires_at: data.expiresAt,
+        ip_address: data.ipAddress,
+        user_agent: data.userAgent
+      }
+    })
+    return mapPrismaSessionToEntity(session)
+  },
+
+  async findByToken(token: string): Promise<ISessionEntity | null> {
+    const session = await prisma.session.findFirst({
+      where: { token }
+    })
+    if (!session) return null
+    return mapPrismaSessionToEntity(session)
+  },
+
+  async findByUserId(userId: string): Promise<ISessionEntity[]> {
+    const sessions = await prisma.session.findMany({
+      where: { user_id: userId }
+    })
+    return sessions.map(mapPrismaSessionToEntity)
+  },
+
+  async delete(token: string): Promise<void> {
+    await prisma.session.deleteMany({ where: { token } })
+  },
+
+  async deleteByUserId(userId: string): Promise<void> {
+    await prisma.session.deleteMany({ where: { user_id: userId } })
+  },
+
+  async deleteExpiredSessions(): Promise<number> {
+    const result = await prisma.session.deleteMany({
+      where: { expires_at: { lt: new Date() } }
+    })
+    return result.count
+  }
+}
+
+// ==================
+// VERIFICATION REPOSITORY
+// ==================
+
+const VerificationRepository: IVerificationRepository = {
+  async create(data: CreateVerificationData): Promise<IVerificationEntity> {
+    // Delete any existing verification for this identifier first
+    await prisma.verification.deleteMany({
+      where: { identifier: data.identifier }
+    })
+
+    const verification = await prisma.verification.create({
+      data: {
+        identifier: data.identifier,
+        value: data.value,
+        expires_at: data.expiresAt
+      }
+    })
+    return mapPrismaVerificationToEntity(verification)
+  },
+
+  async findByIdentifier(identifier: string): Promise<IVerificationEntity | null> {
+    const verification = await prisma.verification.findFirst({
+      where: { identifier }
+    })
+    if (!verification) return null
+    return mapPrismaVerificationToEntity(verification)
+  },
+
+  async findByIdentifierAndValue(
+    identifier: string,
+    value: string
+  ): Promise<IVerificationEntity | null> {
+    const verification = await prisma.verification.findFirst({
+      where: { identifier, value }
+    })
+    if (!verification) return null
+    return mapPrismaVerificationToEntity(verification)
+  },
+
+  async delete(id: string): Promise<void> {
+    await prisma.verification.delete({ where: { id } })
+  },
+
+  async deleteByIdentifier(identifier: string): Promise<void> {
+    await prisma.verification.deleteMany({ where: { identifier } })
+  },
+
+  async deleteExpired(): Promise<number> {
+    const result = await prisma.verification.deleteMany({
+      where: { expires_at: { lt: new Date() } }
+    })
+    return result.count
+  }
+}
+
+// ==================
+// COMBINED REPOSITORY
+// ==================
+
+export const AuthRepository: IAuthRepository = {
+  user: UserRepository,
+  account: AccountRepository,
+  session: SessionRepository,
+  verification: VerificationRepository
+}
+```
+
+**¿Qué hace este archivo?**
+
+- Implementa las 4 interfaces del repository
+- Usa Prisma para interacturar con la BD
+- Usa los mappers para transformar datos de Prisma a entidades del dominio
+- Maneja las 4 tablas: `user`, `account`, `session`, `verification`
+
+---
+
+### 8.4 Presentation Layer - Capa de Presentación
 
 #### `src/modules/auth/presentation/auth.dto.ts` - Validación de Input (Zod)
 
 ```typescript
 import { z } from "zod"
+
+// ==================
+// AUTH DTOs
+// ==================
 
 export const RegisterPayloadDtoSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -1058,44 +2092,108 @@ export const RegisterPayloadDtoSchema = z.object({
 
 export const LoginPayloadDtoSchema = z.object({
   email: z.string().email("Invalid email format"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
+  password: z.string().min(8, "Password must be at least 8 characters")
 })
+
+// ==================
+// VERIFICATION DTOs
+// ==================
+
+export const VerifyEmailDtoSchema = z.object({
+  identifier: z.string().email("Invalid email format"),
+  code: z.string().min(6, "Verification code must be at least 6 characters")
+})
+
+export const ResendVerificationDtoSchema = z.object({
+  email: z.string().email("Invalid email format")
+})
+
+// ==================
+// PASSWORD RESET DTOs
+// ==================
+
+export const ForgotPasswordDtoSchema = z.object({
+  email: z.string().email("Invalid email format")
+})
+
+export const ResetPasswordDtoSchema = z.object({
+  email: z.string().email("Invalid email format"),
+  code: z.string().min(6, "Reset code must be at least 6 characters"),
+  newPassword: z.string().min(8, "Password must be at least 8 characters")
+})
+
+// ==================
+// SESSION DTOs
+// ==================
+
+export const RefreshTokenDtoSchema = z.object({
+  refreshToken: z.string().min(1, "Refresh token is required")
+})
+
+export const RevokeSessionDtoSchema = z.object({
+  sessionId: z.string().uuid("Invalid session ID")
+})
+
+// ==================
+// TYPE EXPORTS
+// ==================
+
+export type RegisterPayloadDto = z.infer<typeof RegisterPayloadDtoSchema>
+export type LoginPayloadDto = z.infer<typeof LoginPayloadDtoSchema>
+export type VerifyEmailDto = z.infer<typeof VerifyEmailDtoSchema>
+export type ResendVerificationDto = z.infer<typeof ResendVerificationDtoSchema>
+export type ForgotPasswordDto = z.infer<typeof ForgotPasswordDtoSchema>
+export type ResetPasswordDto = z.infer<typeof ResetPasswordDtoSchema>
+export type RefreshTokenDto = z.infer<typeof RefreshTokenDtoSchema>
+export type RevokeSessionDto = z.infer<typeof RevokeSessionDtoSchema>
 ```
 
 **¿Qué hace este archivo?**
 
-1. **`RegisterPayloadDtoSchema`** - Schema de validación para registro:
-   - `name`: string, mínimo 2 caracteres
-   - `email`: formato válido de email
-   - `password`: mínimo 8 caracteres
-   - `role`: opcional, solo "admin" o "staff"
-
-2. **`LoginPayloadDtoSchema`** - Schema de validación para login:
-   - `email`: formato válido de email
-   - `password`: mínimo 8 caracteres
+- Define schemas de validación Zod para cada endpoint
+- Exporta los tipos inferidos de los schemas
 
 ---
 
 #### `src/modules/auth/presentation/auth.controller.ts` - Controlador
 
 ```typescript
-import type { FastifyReply, FastifyRequest } from "fastify";
-import { createAuthService } from "../application/auth.service";
-import { AuthRepository } from "../infrastructure/auth.prisma.repository";
-import { LoginPayloadDtoSchema, RegisterPayloadDtoSchema } from "./auth.dto";
-import { env } from "@/config/env";
-import { clearAuthCookies, setAuthCookies } from "@/core/utils/cookie.utils";
-import { ConflictError, UnauthorizedError } from "@/core/errors/AppError";
-import { resolveCurrentUserId } from "@/core/utils/auth.utils";
+import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
+import { createAuthService } from "../application/auth.service"
+import { AuthRepository } from "../infrastructure/auth.prisma.repository"
+import {
+  LoginPayloadDtoSchema,
+  RegisterPayloadDtoSchema,
+  VerifyEmailDtoSchema,
+  ForgotPasswordDtoSchema,
+  ResetPasswordDtoSchema,
+  ResendVerificationDtoSchema,
+  RefreshTokenDtoSchema,
+  RevokeSessionDtoSchema
+} from "./auth.dto"
+import { env } from "@/config/env"
+import { clearAuthCookies, setAuthCookies } from "@/core/utils/cookie.utils"
+import { ConflictError, UnauthorizedError, BadRequestError } from "@/core/errors/AppError"
+import { resolveCurrentUserId, getUserIdFromCookies } from "@/core/utils/auth.utils"
 
 // Inyección de dependencias: el controller decide qué implementación usar
 const authService = createAuthService(AuthRepository)
 
+// Helper para obtener refresh token del cookie o body
+function getRefreshToken(request: FastifyRequest): string {
+  const cookieToken = request.cookies.refreshToken
+  const body = request.body as Record<string, unknown> | undefined
+  const bodyToken = typeof body?.refreshToken === "string" ? body.refreshToken : undefined
+  return cookieToken || bodyToken || ""
+}
+
 export const authController = {
+  // ==================
+  // REGISTER
+  // ==================
   register: async (request: FastifyRequest, reply: FastifyReply) => {
     const data = RegisterPayloadDtoSchema.parse(request.body)
 
-    // Verificar si ya hay sesión activa
     const currentUserId = await resolveCurrentUserId(request, reply)
 
     if (currentUserId) {
@@ -1106,7 +2204,6 @@ export const authController = {
 
     const result = await authService.register(data)
 
-    // Setea las cookies con los tokens
     setAuthCookies(
       reply,
       result.accessToken,
@@ -1114,7 +2211,6 @@ export const authController = {
       env.NODE_ENV === "production"
     )
 
-    // Retorna solo el usuario, los tokens ya están en cookies
     const response = {
       message: result.message,
       user: result.user
@@ -1123,29 +2219,26 @@ export const authController = {
     return reply.status(201).send(response)
   },
 
+  // ==================
+  // LOGIN
+  // ==================
   login: async (request: FastifyRequest, reply: FastifyReply) => {
     const data = LoginPayloadDtoSchema.parse(request.body)
 
-    // Obtener el usuario actual si existe sesión
     const currentUserId = await resolveCurrentUserId(request, reply)
 
-    // Ejecutar login
     const result = await authService.login(data)
 
-    // Si el mismo usuario ya está logueado, rechazar
     if (currentUserId && currentUserId === result.user.id) {
       throw new ConflictError("Already logged in with this user. Please logout first.")
     }
 
-    // Si hay otro usuario logueado, limpiar sus cookies antes de hacer login
     if (currentUserId && currentUserId !== result.user.id) {
       await clearAuthCookies(reply)
     }
 
-    // Setea las cookies con los nuevos tokens
     setAuthCookies(reply, result.accessToken, result.refreshToken, env.NODE_ENV === "production")
 
-    // Retorna solo el usuario, los tokens ya están en cookies
     const response = {
       message: result.message,
       user: result.user
@@ -1154,101 +2247,202 @@ export const authController = {
     return reply.status(200).send(response)
   },
 
+  // ==================
+  // LOGOUT
+  // ==================
   logout: async (request: FastifyRequest, reply: FastifyReply) => {
-    // Verificar que hay una sesión activa
-    const userId = await resolveCurrentUserId(request, reply)
+    const refreshToken = getRefreshToken(request)
 
-    if (!userId) {
-      throw new UnauthorizedError("No active session")
+    if (!refreshToken) {
+      throw new UnauthorizedError("Refresh token required")
     }
 
-    // Limpiar las cookies
-    await clearAuthCookies(reply)
+    const result = await authService.logout(refreshToken)
+
+    clearAuthCookies(reply)
+
+    return reply.status(200).send(result)
+  },
+
+  // ==================
+  // REFRESH
+  // ==================
+  refresh: async (request: FastifyRequest, reply: FastifyReply) => {
+    const refreshToken = getRefreshToken(request)
+
+    if (!refreshToken) {
+      throw new UnauthorizedError("Refresh token required")
+    }
+
+    const result = await authService.refresh(refreshToken)
+
+    setAuthCookies(reply, result.accessToken, result.refreshToken, env.NODE_ENV === "production")
 
     const response = {
-      message: "Logged out successfully"
+      message: result.message
     }
 
     return reply.status(200).send(response)
+  },
+
+  // ==================
+  // VERIFY EMAIL
+  // ==================
+  verifyEmail: async (request: FastifyRequest, reply: FastifyReply) => {
+    const data = VerifyEmailDtoSchema.parse(request.body)
+
+    const result = await authService.verifyEmail(data)
+
+    setAuthCookies(reply, result.accessToken, result.refreshToken, env.NODE_ENV === "production")
+
+    const response = {
+      message: result.message
+    }
+
+    return reply.status(200).send(response)
+  },
+
+  // ==================
+  // RESEND VERIFICATION
+  // ==================
+  resendVerification: async (request: FastifyRequest, reply: FastifyReply) => {
+    const data = ResendVerificationDtoSchema.parse(request.body)
+
+    const result = await authService.resendVerification(data.email)
+
+    const response = {
+      message: result.message
+    }
+
+    return reply.status(200).send(response)
+  },
+
+  // ==================
+  // FORGOT PASSWORD
+  // ==================
+  forgotPassword: async (request: FastifyRequest, reply: FastifyReply) => {
+    // Check if user is already logged in
+    const currentUserId = await resolveCurrentUserId(request, reply)
+    if (currentUserId) {
+      throw new ConflictError("Please logout before requesting password reset")
+    }
+
+    const data = ForgotPasswordDtoSchema.parse(request.body)
+
+    const result = await authService.forgotPassword(data)
+
+    return reply.status(200).send(result)
+  },
+
+  // ==================
+  // RESET PASSWORD
+  // ==================
+  resetPassword: async (request: FastifyRequest, reply: FastifyReply) => {
+    // Check if user is already logged in
+    const currentUserId = await resolveCurrentUserId(request, reply)
+    if (currentUserId) {
+      throw new ConflictError("Please logout before resetting password")
+    }
+
+    const data = ResetPasswordDtoSchema.parse(request.body)
+
+    const result = await authService.resetPassword(data)
+
+    clearAuthCookies(reply)
+
+    return reply.status(200).send(result)
+  },
+
+  // ==================
+  // GET USER SESSIONS (Protected)
+  // ==================
+  getUserSessions: async (request: FastifyRequest, reply: FastifyReply) => {
+    const userId = await resolveCurrentUserId(request, reply)
+
+    if (!userId) {
+      throw new UnauthorizedError("Authentication required")
+    }
+
+    const result = await authService.getUserSessions(userId)
+
+    return reply.status(200).send(result)
+  },
+
+  // ==================
+  // REVOKE SESSION (Protected)
+  // ==================
+  revokeSession: async (request: FastifyRequest, reply: FastifyReply) => {
+    const userId = await resolveCurrentUserId(request, reply)
+
+    if (!userId) {
+      throw new UnauthorizedError("Authentication required")
+    }
+
+    const params = request.params as { sessionId: string }
+    const { sessionId } = RevokeSessionDtoSchema.parse(params)
+
+    const result = await authService.revokeSession(userId, sessionId)
+
+    return reply.status(200).send(result)
   }
 }
 ```
 
 **¿Qué hace este archivo?**
 
-1. **Inicializa el service** con la implementación del repository:
-   - `createAuthService(AuthRepository)` → inyecta la implementación de Prisma
-   - Esto permite cambiar la implementación sin tocar el controller
-
-2. **`register(request, reply)`** - Handler del endpoint POST /register:
-   - **Step 1**: Valida el body con Zod schema
-   - **Step 2**: Verifica si ya hay sesión activa → si hay, lanza `ConflictError`
-   - **Step 3**: Llama al service para crear el usuario
-   - **Step 4**: Setea las cookies con `setAuthCookies()`
-   - **Step 5**: Retorna 201 con `{ message, user }` (sin tokens en el JSON)
-
-3. **`login(request, reply)`** - Handler del endpoint POST /login:
-   - **Step 1**: Valida el body con Zod schema
-   - **Step 2**: Obtiene el usuario actual logueado (si existe)
-   - **Step 3**: Ejecuta el login normal
-   - **Step 4**: Si el mismo usuario ya está logueado → rechaza con `ConflictError`
-   - **Step 5**: Si hay otro usuario logueado → limpia sus cookies
-   - **Step 6**: Setea las nuevas cookies
-   - **Step 7**: Retorna 200 con `{ message, user }` (sin tokens en el JSON)
-
-4. **`logout(request, reply)`** - Handler del endpoint POST /logout:
-   - **Step 1**: Verifica que hay una sesión activa → si no hay, lanza `UnauthorizedError`
-   - **Step 2**: Limpia las cookies con `clearAuthCookies()`
-   - **Step 3**: Retorna 200 con mensaje de éxito
-
-**Flujo del login/register con cookies:**
-```
-HTTP Request → Controller (valida + verifica sesión) 
-  → Service (lógica de negocio) 
-    → Repository (BD) 
-      → Genera tokens 
-        → setAuthCookies() 
-          → Response con { message, user }
-```
-
-**Ventajas de usar cookies httpOnly:**
-- Los tokens NO están en el JSON response (más seguro)
-- Las cookies se envían automáticamente en cada request
-- `httpOnly: true` protege contra XSS
-- `sameSite: 'strict'` protege contra CSRF
+- Maneja todos los endpoints de autenticación
+- Valida los datos de entrada con Zod
+- Gestiona las cookies de autenticación
+- Delega la lógica al service
 
 ---
 
 #### `src/modules/auth/presentation/auth.routes.ts` - Definición de Rutas
 
 ```typescript
-import type { FastifyInstance } from "fastify";
-import { authController } from "./auth.controller";
+import type { FastifyInstance } from "fastify"
+import { authController } from "./auth.controller"
+import { authGuard } from "@/core/guard/auth.guard"
 
 export const authRoutes = async (fastify: FastifyInstance, _options: any) => {
+  // PUBLIC ROUTES
+  // Auth
   fastify.post("/register", authController.register)
   fastify.post("/login", authController.login)
+  fastify.post("/refresh", authController.refresh)
   fastify.post("/logout", authController.logout)
+
+  // Email Verification
+  fastify.post("/verify-email", authController.verifyEmail)
+  fastify.post("/resend-verification", authController.resendVerification)
+
+  // Password Reset
+  fastify.post("/forgot-password", authController.forgotPassword)
+  fastify.post("/reset-password", authController.resetPassword)
+
+  // PROTECTED ROUTES
+  // Session Management
+  fastify.get(
+    "/sessions",
+    {
+      preHandler: authGuard
+    },
+    authController.getUserSessions
+  )
+
+  fastify.delete(
+    "/sessions/:sessionId",
+    {
+      preHandler: authGuard
+    },
+    authController.revokeSession
+  )
 }
 ```
 
-**¿Qué hace este archivo?**
-
-1. **Registra rutas de auth** en Fastify:
-   - `POST /register` → `authController.register` - Crea nuevo usuario y setea cookies
-   - `POST /login` → `authController.login` - Autentica usuario y setea cookies
-   - `POST /logout` → `authController.logout` - Limpia cookies de sesión activa
-
-2. **Rutas finales**:
-   - `/api/v1/auth/register`
-   - `/api/v1/auth/login`
-   - `/api/v1/auth/logout`
-
-3. **Exporta función asíncrona** que recibe la instancia de Fastify
-
 ---
 
-## 6. Presentation Layer Global
+## 9. Presentation Layer Global
 
 ### `src/presentation/routes.ts` - Router Principal
 
@@ -1264,20 +2458,15 @@ export const routes = async (fastify: FastifyInstance, _option: any) => {
 **¿Qué hace este archivo?**
 
 1. **Registra las rutas del módulo auth** con prefijo `/auth`
-2. **Resultado final**: las rutas quedan en `/api/v1/auth/register` y `/api/v1/auth/login`
-
-**Estructura de prefijos:**
-- `app.ts` registra `routes` con prefijo `/api/v1`
-- `routes.ts` registra `authRoutes` con prefijo `/auth`
-- Total: `/api/v1/auth/register` y `/api/v1/auth/login`
+2. **Resultado final**: las rutas quedan en `/api/v1/auth/*`
 
 ---
 
-## 7. Cookies y Autenticación
+## 10. Cookies y Autenticación
 
-El sistema de autenticación usa cookies httpOnly en lugar de devolver los tokens en el JSON response. Esto proporciona mayor seguridad contra ataques XSS y CSRF.
+El sistema de autenticación usa cookies httpOnly en lugar de devolver los tokens en el JSON response.
 
-### 7.1 Flujo de Autenticación con Cookies
+### Flujo de Autenticación con Cookies
 
 ```
 1. Usuario envía POST /api/v1/auth/login con { email, password }
@@ -1295,81 +2484,9 @@ El sistema de autenticación usa cookies httpOnly en lugar de devolver los token
 7. El navegador guarda automáticamente las cookies (httpOnly)
 ```
 
-### 7.2 Validaciones de Seguridad
-
-| Validación | Descripción |
-|------------|-------------|
-| **Register con sesión activa** | Si el usuario ya tiene cookies, no puede crear otra cuenta hasta hacer logout |
-| **Login con mismo usuario** | Si el mismo usuario ya está logueado, rechaza el nuevo login |
-| **Login con otro usuario** | Si hay otro usuario logueado, limpia sus cookies antes de hacer el nuevo login |
-| **Logout sin sesión** | Si no hay cookies válidas, lanza error "No active session" |
-
-### 7.3 Opciones de Seguridad de las Cookies
-
-```typescript
-{
-  path: '/',           // Disponible en toda la aplicación
-  httpOnly: true,      // JavaScript NO puede leerla (previene XSS)
-  secure: true,        // Solo HTTPS (en producción)
-  sameSite: 'strict',  // Previene CSRF
-  maxAge: 900          // 15 minutos (accessToken)
-}
-```
-
-| Opción | Valor | Propósito |
-|--------|-------|-----------|
-| `httpOnly` | `true` | Previene que scripts maliciosos roben el token |
-| `secure` | `true` en prod | Solo envía cookie por HTTPS |
-| `sameSite` | `'strict'` | Previene ataques CSRF |
-| `maxAge` | 900/604800 | Tiempo de vida del token |
-
-### 7.4 Diferencia: Tokens en JSON vs Cookies
-
-| Aspecto | JSON (inseguro) | Cookies httpOnly (seguro) |
-|---------|-----------------|-------------------------|
-| XSS Protection | ❌ JS puede leer tokens | ✅ httpOnly bloquea JS |
-| CSRF Protection | ❌ Depende del cliente | ✅ sameSite |
-| Almacenamiento | localStorage/sessionStorage | Cookies del navegador |
-| Envío automático | ❌ Manual en headers | ✅ Automático |
-
-### 7.5 Endpoints de Auth
-
-| Endpoint | Método | Descripción |
-|----------|--------|-------------|
-| `/api/v1/auth/register` | POST | Crear usuario + setear cookies |
-| `/api/v1/auth/login` | POST | Autenticar + setear cookies |
-| `/api/v1/auth/logout` | POST | Limpiar cookies |
-
-### 7.6 Ejemplo de Request/Response
-
-**POST /api/v1/auth/login**
-
-Request:
-```json
-{
-  "email": "user@example.com",
-  "password": "password123"
-}
-```
-
-Response:
-```json
-{
-  "message": "Login successfully",
-  "user": {
-    "id": "uuid...",
-    "name": "John Doe",
-    "email": "user@example.com",
-    "role": "admin"
-  }
-}
-```
-
-Los tokens `accessToken` y `refreshToken` están en las cookies, NO en el JSON.
-
 ---
 
-## 8. Prisma Schema
+## 11. Prisma Schema
 
 ### `prisma/schema.prisma` - Modelo de Datos
 
@@ -1389,33 +2506,100 @@ enum ROLE {
 }
 
 model user {
-  id String @id @default(uuid())
-  email String @unique
-  password String
-  name String 
-  role ROLE @default(staff)
-  deletedAt DateTime?
-  sales sale[]
+  id             String    @id @default(uuid())
+  name           String
+  email          String    @unique
+  email_verified Boolean   @default(false)
+  phone          String?
+  image          String?
+  role           ROLE      @default(staff)
+
+  created_at     DateTime  @default(now()) @db.Timestamptz
+  updated_at     DateTime  @updatedAt @db.Timestamptz
+  deleted_at     DateTime? @db.Timestamptz
+
+  sessions       session[]
+  accounts       account[]
+  sales          sale[]
 
   @@index([email])
   @@index([role])
   @@map("users")
 }
 
+model session {
+  id          String   @id @default(uuid())
+  expires_at  DateTime @db.Timestamptz
+  token       String
+  ip_address  String?
+  user_agent  String?
+  user_id     String
+
+  created_at  DateTime @default(now()) @db.Timestamptz
+  updated_at  DateTime @updatedAt @db.Timestamptz
+
+  user        user @relation(fields: [user_id], references: [id])
+
+  @@index([user_id])
+  @@map("session")
+}
+
+model account {
+  id                        String    @id @default(uuid())
+  account_id                String
+  provider_id               String
+  user_id                   String?
+
+  access_token              String?
+  refresh_token             String?
+  id_token                  String?
+
+  access_token_expires_at   DateTime? @db.Timestamptz
+  refresh_token_expires_at  DateTime? @db.Timestamptz
+
+  scope                     String?
+  password                  String?
+
+  created_at                DateTime  @default(now()) @db.Timestamptz
+  updated_at                DateTime  @updatedAt @db.Timestamptz
+
+  user                      user? @relation(fields: [user_id], references: [id])
+
+  @@index([user_id])
+  @@map("account")
+}
+
+model verification {
+  id          String   @id @default(uuid())
+  identifier  String
+  value       String
+  expires_at  DateTime @db.Timestamptz
+
+  created_at  DateTime @default(now()) @db.Timestamptz
+  updated_at  DateTime @updatedAt @db.Timestamptz
+
+  @@map("verification")
+}
+
 model medicine {
-  id            String   @id @default(uuid())
+  id             String    @id @default(uuid())
   trade_name     String
   generic_name   String
-  description   String?
-  price         Decimal
-  stock         Int      @default(0)
-  expiry_date    DateTime?
+  description    String?
+  price          Decimal
+  stock          Int       @default(0)
+  expiry_date    DateTime? @db.Timestamptz
+
   laboratory_id  String
   category_id    String
-  laboratory    lab      @relation(fields: [laboratory_id], references: [id])
-  category      category @relation(fields: [category_id], references: [id])
+
+  created_at     DateTime  @default(now()) @db.Timestamptz
+  updated_at     DateTime  @updatedAt @db.Timestamptz
+  deleted_at     DateTime? @db.Timestamptz
+
+  laboratory     lab       @relation(fields: [laboratory_id], references: [id])
+  category       category  @relation(fields: [category_id], references: [id])
   sale_items     sale_item[]
-  deleted_at     DateTime?
 
   @@index([trade_name])
   @@index([generic_name])
@@ -1425,15 +2609,20 @@ model medicine {
 }
 
 model sale {
-  id           String     @id @default(uuid())
-  date         DateTime   @default(now())
-  total        Decimal
-  payment_method String
-  user_id       String
-  client_id     String?
-  user         user       @relation(fields: [user_id], references: [id])
-  client       client?    @relation(fields: [client_id], references: [id])
-  items        sale_item[]
+  id              String    @id @default(uuid())
+  date            DateTime  @default(now()) @db.Timestamptz
+  total           Decimal
+  payment_method  String
+
+  user_id         String
+  client_id       String?
+
+  created_at      DateTime  @default(now()) @db.Timestamptz
+  updated_at      DateTime  @updatedAt @db.Timestamptz
+
+  user            user      @relation(fields: [user_id], references: [id])
+  client          client?   @relation(fields: [client_id], references: [id])
+  items           sale_item[]
 
   @@index([date])
   @@index([user_id])
@@ -1442,13 +2631,17 @@ model sale {
 }
 
 model sale_item {
-  id         String   @id @default(uuid())
-  sale_id     String
-  medicine_id String
-  quantity   Int
-  unit_price  Decimal
-  sale       sale     @relation(fields: [sale_id], references: [id])
-  medicine   medicine @relation(fields: [medicine_id], references: [id])
+  id           String   @id @default(uuid())
+  sale_id      String
+  medicine_id  String
+  quantity     Int
+  unit_price   Decimal
+
+  created_at   DateTime @default(now()) @db.Timestamptz
+  updated_at   DateTime @updatedAt @db.Timestamptz
+
+  sale         sale     @relation(fields: [sale_id], references: [id])
+  medicine     medicine @relation(fields: [medicine_id], references: [id])
 
   @@index([sale_id])
   @@index([medicine_id])
@@ -1456,15 +2649,19 @@ model sale_item {
 }
 
 model client {
-  id             String   @id @default(uuid())
-  name           String
-  document_number String   @unique
-  email          String?
-  phone          String?
-  address        String?
-  membership     String   @default("bronze")
-  deleted_at      DateTime?
-  sales          sale[]
+  id               String    @id @default(uuid())
+  name             String
+  document_number  String    @unique
+  email            String?
+  phone            String?
+  address          String?
+  membership       String    @default("bronze")
+
+  created_at       DateTime  @default(now()) @db.Timestamptz
+  updated_at       DateTime  @updatedAt @db.Timestamptz
+  deleted_at       DateTime? @db.Timestamptz
+
+  sales            sale[]
 
   @@index([document_number])
   @@index([email])
@@ -1472,27 +2669,39 @@ model client {
 }
 
 model lab {
-  id        String     @id @default(uuid())
-  name      String
-  medicines medicine[]
-  deleted_at DateTime?
+  id          String    @id @default(uuid())
+  name        String
+
+  created_at  DateTime  @default(now()) @db.Timestamptz
+  updated_at  DateTime  @updatedAt @db.Timestamptz
+  deleted_at  DateTime? @db.Timestamptz
+
+  medicines   medicine[]
 
   @@map("labs")
 }
 
 model supplier {
-  id        String   @id @default(uuid())
-  name      String
-  contact   String?
-  deleted_at DateTime?
+  id          String    @id @default(uuid())
+  name        String
+  contact     String?
+
+  created_at  DateTime  @default(now()) @db.Timestamptz
+  updated_at  DateTime  @updatedAt @db.Timestamptz
+  deleted_at  DateTime? @db.Timestamptz
 
   @@map("suppliers")
 }
 
 model category {
-  id        String     @id @default(uuid())
-  name      String
-  medicines medicine[]
+  id          String    @id @default(uuid())
+  name        String
+
+  created_at  DateTime  @default(now()) @db.Timestamptz
+  updated_at  DateTime  @updatedAt @db.Timestamptz
+  deleted_at  DateTime? @db.Timestamptz
+
+  medicines   medicine[]
 
   @@map("categories")
 }
@@ -1502,88 +2711,84 @@ model category {
 
 | Modelo | Descripción |
 |--------|-------------|
-| `user` | Usuarios del sistema (admin/staff). Relación 1:N con sales. Soft delete con `deletedAt`. |
-| `medicine` | Medicamentos. Relación N:1 con lab y category. Stock, precio, fecha de vencimiento. |
-| `sale` | Ventas realizadas. Relación N:1 con user (vendedor) y client (cliente). |
-| `sale_item` | Items de una venta. Relación N:1 con sale y medicine. |
-| `client` | Clientes de la farmacia. Membership (bronze/silver/gold). Soft delete. |
-| `lab` | Laboratorios farmacéuticos. Soft delete. |
-| `supplier` | Proveedores. Soft delete. |
+| `user` | Usuarios del sistema (admin/staff). Relación 1:N con sales, sessions, accounts. Soft delete con `deleted_at`. |
+| `session` | Sesiones activas de usuarios. Cada login crea una sesión. |
+| `account` | Cuentas de autenticación (OAuth, credentials). Permite múltiples providers por usuario. |
+| `verification` | Códigos de verificación (email, password reset). |
+| `medicine` | Medicamentos. Relación N:1 con lab y category. |
+| `sale` | Ventas realizadas. Relación N:1 con user (vendedor) y client. |
+| `sale_item` | Items de una venta. |
+| `client` | Clientes de la farmacia. Membership (bronze/silver/gold). |
+| `lab` | Laboratorios farmacéuticos. |
+| `supplier` | Proveedores. |
 | `category` | Categorías de medicamentos. |
 
-**Características del schema:**
-
-- **UUIDs** - Todos los IDs usan `uuid()` como default
-- **Soft deletes** - `deletedAt` o `deleted_at` para no borrar datos
-- **Índices** - En campos frecuentemente buscados (email, foreign keys)
-- **Enums** - `ROLE` con admin/staff
-- **Relaciones** - Claramente definidas con `@relation`
-- **Map** - Nombres de tabla personalizados (`@@map`)
-
 ---
 
-## 9. Flujo Completo de una Request
+## 12. Endpoints
 
-### Ejemplo: POST /api/v1/auth/register
+### Endpoints de Auth
 
-```
-1. HTTP Request
-     ↓
-2. server.ts → buildApp() (app.ts)
-     ↓
-3. Fastify registra plugins (helmet, cors, compress, rate-limit)
-     ↓
-4. Routing: /api/v1/auth/register
-   → routes.ts (/api/v1 prefix)
-   → authRoutes.ts (/auth prefix)
-   → POST /register → authController.register
-     ↓
-5. Controller:
-   - Valida request.body con RegisterPayloadDtoSchema (Zod)
-   - Llama a authService.register(data)
-     ↓
-6. Service (createAuthService):
-   - repository.findByEmail(email) → Busca si existe
-   - Si existe → throw ConflictError
-   - hashPassword(password) → Hashea el password
-   - repository.create(newUser) → Crea en BD
-   - generateTokens(user.id, ...) → Genera JWTs
-   - Retorna IAuthResponse
-     ↓
-7. Repository (Prisma):
-   - prisma.user.findFirst({ where: {...} })
-   - prisma.user.create({ data: {...} })
-     ↓
-8. Response:
-   - HTTP 201 Created
-   - { message, user, accessToken, refreshToken }
+| Endpoint | Método | Descripción | Requiere Auth |
+|----------|--------|-------------|---------------|
+| `/api/v1/auth/register` | POST | Crear usuario nuevo | No |
+| `/api/v1/auth/login` | POST | Iniciar sesión | No |
+| `/api/v1/auth/logout` | POST | Cerrar sesión | No |
+| `/api/v1/auth/refresh` | POST | Refrescar tokens | No |
+| `/api/v1/auth/verify-email` | POST | Verificar email con código | No |
+| `/api/v1/auth/resend-verification` | POST | Reenviar código de verificación | No |
+| `/api/v1/auth/forgot-password` | POST | Solicitar reset de password | No |
+| `/api/v1/auth/reset-password` | POST | Resetear password con código | No |
+| `/api/v1/auth/sessions` | GET | Listar sesiones activas | Sí |
+| `/api/v1/auth/sessions/:sessionId` | DELETE | Revocar sesión específica | Sí |
+
+### Ejemplos de Request
+
+**POST /api/v1/auth/register**
+```json
+{
+  "email": "testuser@agenciapro.com",
+  "name": "Test User",
+  "password": "password123",
+  "role": "staff"
+}
 ```
 
-### Ejemplo: POST /api/v1/auth/login
-
+**POST /api/v1/auth/login**
+```json
+{
+  "email": "testuser@agenciapro.com",
+  "password": "password123"
+}
 ```
-1. HTTP Request con { email, password }
-     ↓
-2. Controller:
-   - Valida con LoginPayloadDtoSchema
-   - Llama authService.login(data)
-     ↓
-3. Service:
-   - repository.findByEmail(email)
-   - Si no existe → throw UnauthorizedError
-   - comparePassword(password, user.password)
-   - Si no coincide → throw UnauthorizedError
-   - generateTokens(user.id, ...) → Genera JWTs
-   - Retorna IAuthResponse
-     ↓
-4. Response:
-   - HTTP 200 OK
-   - { message, user, accessToken, refreshToken }
+
+**POST /api/v1/auth/verify-email**
+```json
+{
+  "identifier": "testuser@agenciapro.com",
+  "code": "XXXXXX"
+}
+```
+
+**POST /api/v1/auth/forgot-password**
+```json
+{
+  "email": "testuser@agenciapro.com"
+}
+```
+
+**POST /api/v1/auth/reset-password**
+```json
+{
+  "email": "testuser@agenciapro.com",
+  "code": "XXXXXX",
+  "newPassword": "newpassword123"
+}
 ```
 
 ---
 
-## 10. Commands Útiles
+## 13. Commands Útiles
 
 ```bash
 # Desarrollo (watch mode con tsx)
@@ -1607,7 +2812,7 @@ bun start
 
 ---
 
-## 11. Resumen de Patrones Usados
+## 14. Resumen de Patrones Usados
 
 | Patrón | Aplicación |
 |--------|------------|
@@ -1616,6 +2821,9 @@ bun start
 | **Factory Pattern** | `createAuthService(repository)` crea el service con dependencias |
 | **Singleton** | `prisma`, `redisClient`, `logger` - una sola instancia global |
 | **Error Handling** | Errores custom con statusCode y código interno |
-| **Soft Delete** | Campos `deletedAt` en vez de borrar registros |
+| **Soft Delete** | Campos `deleted_at` en vez de borrar registros |
 | **Value Objects** | Zod schemas para validar DTOs en la capa de presentación |
+| **Mappers** | Transformación de tipos Prisma a entidades del dominio |
+| **Session in DB** | Las sesiones se almacenan en la base de datos |
+| **Credentials Provider** | Sistema de login con email/password usando tabla "account" |
 
