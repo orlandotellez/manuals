@@ -1,0 +1,2234 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>NextJs - Manuales</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-62ba98d6.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-6fc508fd.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Manuales</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="nextjs-init--manual-técnico-completo"><a class="header" href="#nextjs-init--manual-técnico-completo">Next.js Init — Manual Técnico Completo</a></h1>
+<blockquote>
+<p><strong>Stack:</strong> Next.js 16+ · React 19+ · TypeScript 5+ · Tailwind CSS 4+ · Zustand 5+ · pnpm<br><strong>Patrón:</strong> Feature-First Architecture · Container-Presentational · CSS Modules + Tailwind</p>
+</blockquote>
+<p>Manual de referencia para iniciar proyectos frontend con Next.js, basado en la arquitectura y convenciones establecidas en el proyecto.</p>
+<hr>
+<h2 id="índice"><a class="header" href="#índice">Índice</a></h2>
+<ol>
+<li><a href="#1-stack-principal">Stack Principal</a></li>
+<li><a href="#2-creación-del-proyecto">Creación del Proyecto</a></li>
+<li><a href="#3-estructura-de-carpetas">Estructura de Carpetas</a></li>
+<li><a href="#4-arquitectura-y-patrones">Arquitectura y Patrones</a></li>
+<li><a href="#5-configuraciones">Configuraciones</a></li>
+<li><a href="#6-app-router--route-groups-y-layouts">App Router — Route Groups y Layouts</a></li>
+<li><a href="#7-server-vs-client-components">Server vs Client Components</a></li>
+<li><a href="#8-sistema-de-estado">Sistema de Estado</a></li>
+<li><a href="#9-componentes-y-ui">Componentes y UI</a></li>
+<li><a href="#10-api-y-servicios">API y Servicios</a></li>
+<li><a href="#11-dependencias">Dependencias</a></li>
+<li><a href="#12-snippets-clave">Snippets Clave</a></li>
+<li><a href="#13-convenciones-de-nomenclatura">Convenciones de Nomenclatura</a></li>
+<li><a href="#14-resumen-de-patrones">Resumen de Patrones</a></li>
+</ol>
+<hr>
+<h2 id="1-stack-principal"><a class="header" href="#1-stack-principal">1. Stack Principal</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Tecnología</th><th>Versión</th><th>Propósito</th></tr>
+</thead>
+<tbody>
+<tr><td>Next.js</td><td>16+</td><td>Framework fullstack React (App Router)</td></tr>
+<tr><td>React</td><td>19+</td><td>UI Library</td></tr>
+<tr><td>TypeScript</td><td>5+</td><td>Tipado estático</td></tr>
+<tr><td>Tailwind CSS</td><td>4+</td><td>Utility-first CSS (PostCSS)</td></tr>
+<tr><td>Zustand</td><td>5+</td><td>Estado global liviano</td></tr>
+<tr><td>pnpm</td><td>latest</td><td>Package manager (workspace-ready)</td></tr>
+<tr><td>Turbopack</td><td>built-in</td><td>Bundler de desarrollo</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="decisiones-técnicas-clave"><a class="header" href="#decisiones-técnicas-clave">Decisiones Técnicas Clave</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Decisión</th><th>Elegido</th><th>Por qué</th></tr>
+</thead>
+<tbody>
+<tr><td>Framework</td><td>Next.js</td><td>SSR, SEO, App Router, ecosistema</td></tr>
+<tr><td>Routing</td><td>App Router</td><td>Server Components, layouts anidados</td></tr>
+<tr><td>Estado global</td><td>Zustand</td><td>~1KB, sin Provider, persist built-in</td></tr>
+<tr><td>Estado feature</td><td>Context + useReducer</td><td>Scope limitado, sin dependencias extra</td></tr>
+<tr><td>Estado local</td><td>useState</td><td>Simple, directo</td></tr>
+<tr><td>CSS</td><td>Tailwind + CSS Modules</td><td>Flexibilidad + scoped styles</td></tr>
+<tr><td>Iconos</td><td>lucide-react</td><td>Árbol de iconos, tree-shakeable</td></tr>
+<tr><td>API calls</td><td>fetch nativo</td><td>0KB, tree-shakeable, suficiente</td></tr>
+<tr><td>Charts</td><td>Recharts</td><td>Declarativo, React-friendly</td></tr>
+<tr><td>Package manager</td><td>pnpm</td><td>Rápido, eficiente, workspace-ready</td></tr>
+<tr><td>Bundler</td><td>Turbopack</td><td>Built-in con Next.js 16</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="2-creación-del-proyecto"><a class="header" href="#2-creación-del-proyecto">2. Creación del Proyecto</a></h2>
+<h3 id="21-inicializar-con-create-next-app"><a class="header" href="#21-inicializar-con-create-next-app">2.1 Inicializar con create-next-app</a></h3>
+<pre><code class="language-bash">pnpm create next-app@latest mi-proyecto --typescript --app --src-dir --turbo
+cd mi-proyecto
+</code></pre>
+<p>Flags:</p>
+<ul>
+<li><code>--typescript</code> — TypeScript configurado out of the box</li>
+<li><code>--app</code> — App Router (no Pages Router)</li>
+<li><code>--src-dir</code> — Código fuente en <code>src/</code></li>
+<li><code>--turbo</code> — Turbopack como bundler de desarrollo</li>
+</ul>
+<h3 id="22-dependencias-base"><a class="header" href="#22-dependencias-base">2.2 Dependencias Base</a></h3>
+<pre><code class="language-bash"># Producción
+pnpm add zustand lucide-react recharts
+
+# Desarrollo
+pnpm add -D tailwindcss @tailwindcss/postcss
+</code></pre>
+<p><strong>Dependencias opcionales (agregar según necesidad):</strong></p>
+<pre><code class="language-bash"># Stripe (pagos)
+pnpm add stripe @stripe/stripe-js
+
+# PDF
+pnpm add jspdf jspdf-autotable
+
+# Excel
+pnpm add xlsx
+</code></pre>
+<h3 id="23-estructura-inicial-de-carpetas"><a class="header" href="#23-estructura-inicial-de-carpetas">2.3 Estructura Inicial de Carpetas</a></h3>
+<pre><code class="language-bash">mkdir -p src/{features,shared/{api,components,hooks,lib,store,types,utils}}
+mkdir -p src/features/{admin,cart,product,shop}
+</code></pre>
+<h3 id="24-tailwind-css-v4"><a class="header" href="#24-tailwind-css-v4">2.4 Tailwind CSS v4</a></h3>
+<pre><code class="language-bash"># postcss.config.mjs ya se crea con create-next-app
+# Solo hay que asegurarse de que use @tailwindcss/postcss
+</code></pre>
+<pre><code class="language-javascript">// postcss.config.mjs
+const config = {
+  plugins: {
+    "@tailwindcss/postcss": {},
+  },
+};
+export default config;
+</code></pre>
+<pre><code class="language-css">/* src/app/globals.css */
+@import "tailwindcss";
+
+:root {
+  --primary-color: #f8fafc;
+  --secondary-color: #fff;
+  --card-color: #fff;
+  --font-color-title: #000;
+  --font-color-text: #000;
+  --border-color: #e5e7eb;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-geist-sans);
+  background: #f8fafc;
+}
+</code></pre>
+<blockquote>
+<p><strong>Nota sobre Tailwind v4:</strong> Cambió respecto a v3. Ahora se configura con <code>@tailwindcss/postcss</code> en lugar de <code>tailwindcss</code> + <code>autoprefixer</code>. Y la configuración va en CSS (no en <code>tailwind.config.js</code>). Se usa <code>@import "tailwindcss"</code> en globals.css.</p>
+</blockquote>
+<h3 id="25-variables-de-entorno"><a class="header" href="#25-variables-de-entorno">2.5 Variables de Entorno</a></h3>
+<pre><code class="language-bash">echo "NEXT_PUBLIC_API_URL=http://localhost:3001/api/v1" &gt; .env.local
+</code></pre>
+<pre><code class="language-bash"># .env.example
+# API
+NEXT_PUBLIC_API_URL=http://localhost:3001/api/v1
+
+# Stripe (opcional)
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
+STRIPE_SECRET_KEY=sk_test_...
+</code></pre>
+<p><strong>Regla:</strong> Variables con prefijo <code>NEXT_PUBLIC_</code> se exponen al cliente (JavaScript). Las que no tienen prefijo son solo servidor.</p>
+<hr>
+<h2 id="3-estructura-de-carpetas"><a class="header" href="#3-estructura-de-carpetas">3. Estructura de Carpetas</a></h2>
+<h3 id="31-árbol-completo-de-alto-nivel"><a class="header" href="#31-árbol-completo-de-alto-nivel">3.1 Árbol Completo de Alto Nivel</a></h3>
+<pre><code>frontend/
+├── app/                  → Next.js App Router (rutas y layouts)
+├── src/                  → Código fuente de la aplicación
+│   ├── features/         → Features de negocio
+│   └── shared/           → Código compartido (columna vertebral)
+├── public/               → Assets estáticos
+├── package.json
+├── next.config.ts
+├── tsconfig.json
+├── postcss.config.mjs
+├── pnpm-workspace.yaml
+└── .env.example
+</code></pre>
+<h3 id="32-estructura-detallada-de-app-app-router"><a class="header" href="#32-estructura-detallada-de-app-app-router">3.2 Estructura Detallada de <code>app/</code> (App Router)</a></h3>
+<pre><code>app/
+├── globals.css                       # Estilos globales, variables CSS, reset
+├── layout.tsx                        # Root Layout (wrap providers globales)
+│
+├── (shop)/                           # Route Group — Tienda pública
+│   ├── layout.tsx                    # Layout con Navbar + Footer
+│   ├── layout.module.css
+│   ├── page.tsx                      # Home page (hero, categorías, destacados)
+│   ├── page.module.css
+│   ├── cart/
+│   │   ├── page.tsx
+│   │   └── page.module.css
+│   ├── checkout/
+│   │   ├── page.tsx
+│   │   └── page.module.css
+│   ├── product/
+│   │   └── [slug]/
+│   │       ├── page.tsx
+│   │       └── page.module.css
+│   ├── profile/
+│   │   ├── page.tsx
+│   │   └── page.module.css
+│   └── shop/
+│       ├── page.tsx
+│       ├── page.module.css
+│       ├── ShopClient.tsx
+│       └── ShopClient.module.css
+│
+├── (auth)/                           # Route Group — Autenticación
+│   ├── layout.tsx
+│   ├── layout.module.css
+│   ├── login/
+│   │   ├── page.tsx
+│   │   └── page.module.css
+│   └── register/
+│       ├── page.tsx
+│       └── page.module.css
+│
+└── (admin)/                          # Route Group — Panel Admin
+    ├── layout.tsx                    # Layout con Sidebar + auth check
+    ├── layout.module.css
+    └── admin/
+        ├── page.tsx                  # Dashboard principal
+        ├── page.module.css
+        ├── orders/                   # Gestión de pedidos
+        │   ├── page.tsx
+        │   └── page.module.css
+        ├── products/                 # Gestión de productos
+        │   ├── page.tsx
+        │   └── page.module.css
+        ├── sales/                    # Reportes de ventas
+        │   └── page.tsx
+        ├── users/                    # Gestión de usuarios
+        │   ├── page.tsx
+        │   └── page.module.css
+        └── settings/                 # Configuración
+            ├── page.tsx
+            └── page.module.css
+</code></pre>
+<h3 id="33-estructura-detallada-de-srcfeatures"><a class="header" href="#33-estructura-detallada-de-srcfeatures">3.3 Estructura Detallada de <code>src/features/</code></a></h3>
+<p>Cada feature es <strong>autocontenida</strong>: componentes, lógica, estilos y datos mock.</p>
+<pre><code>src/features/
+├── admin/                        # Feature: Admin Panel
+│   ├── Sidebar.tsx
+│   ├── Sidebar.module.css
+│   ├── orders/                   # Sub-feature
+│   │   ├── Filters.tsx
+│   │   ├── Filters.module.css
+│   │   ├── Header.tsx
+│   │   ├── Header.module.css
+│   │   ├── OrdersTable.tsx
+│   │   ├── OrdersTable.module.css
+│   │   ├── Pagination.tsx
+│   │   ├── Pagination.module.css
+│   │   ├── ResultsInfo.tsx
+│   │   ├── ResultsInfo.module.css
+│   │   └── modals/
+│   │       ├── ViewOrderModal.tsx
+│   │       └── ViewOrderModal.module.css
+│   ├── products/
+│   │   └── ... (misma estructura que orders)
+│   ├── sales/
+│   │   ├── Header.tsx
+│   │   ├── Header.module.css
+│   │   ├── KPIsection.tsx
+│   │   ├── KPIsection.module.css
+│   │   ├── SalesChart.tsx
+│   │   └── SalesChart.module.css
+│   └── users/
+│       └── ... (misma estructura que orders)
+│
+├── cart/                         # Feature: Carrito
+│   ├── components/
+│   │   ├── EmptyCart.tsx
+│   │   ├── EmptyCart.module.css
+│   │   ├── ItemsCart.tsx
+│   │   ├── ItemsCart.module.css
+│   │   ├── Summary.tsx
+│   │   └── Summary.module.css
+│   └── context/
+│       └── CartContext.tsx
+│
+├── product/                      # Feature: Producto
+│   ├── components/
+│   │   ├── BreadCrumb.tsx
+│   │   ├── BreadCrumb.module.css
+│   │   ├── ProductCard.tsx
+│   │   ├── ProductCard.module.css
+│   │   ├── ProductDetail.tsx
+│   │   ├── ProductDetail.module.css
+│   │   ├── ProductNotFound.tsx
+│   │   ├── ProductNotFound.module.css
+│   │   ├── ProductRelated.tsx
+│   │   └── ProductRelated.module.css
+│   └── data/
+│       ├── categories.ts
+│       └── products.ts
+│
+└── shop/                         # Feature: Tienda/Catálogo
+    └── components/
+        ├── BreadCrumb.tsx
+        ├── BreadCrumb.module.css
+        ├── Sidebar.tsx
+        ├── Sidebar.module.css
+        ├── TopBar.tsx
+        └── TopBar.module.css
+</code></pre>
+<h3 id="34-estructura-detallada-de-srcshared-columna-vertebral"><a class="header" href="#34-estructura-detallada-de-srcshared-columna-vertebral">3.4 Estructura Detallada de <code>src/shared/</code> (Columna Vertebral)</a></h3>
+<pre><code>src/shared/
+├── api/                          # Capa HTTP
+│   ├── categories.ts
+│   ├── dashboard.ts
+│   ├── orders.ts
+│   ├── products.ts
+│   ├── profile.ts
+│   └── users.ts
+│
+├── components/                   # Componentes compartidos
+│   ├── ErrorState.tsx
+│   ├── ErrorState.module.css
+│   ├── Footer.tsx
+│   ├── Footer.module.css
+│   ├── LoadingState.tsx
+│   ├── LoadingState.module.css
+│   ├── StoreNavbar.tsx
+│   └── StoreNavbar.module.css
+│
+├── hooks/                        # Hooks compartidos
+│   ├── useAuth.ts
+│   ├── useCategories.ts
+│   ├── useOrders.ts
+│   ├── useProducts.ts
+│   ├── useSales.ts
+│   └── useUsers.ts
+│
+├── lib/                          # Configuración y constantes
+│   ├── constants.ts
+│   ├── data.ts
+│   └── mappers.ts
+│
+├── store/                        # Estado global (Zustand)
+│   └── useSidebarStore.ts
+│
+├── types/                        # Tipos compartidos
+│   └── index.ts
+│
+└── utils/                        # Funciones puras helper
+    ├── auth.ts
+    ├── format.ts
+    └── invoice.ts
+</code></pre>
+<h3 id="35-responsabilidad-de-cada-subcarpeta-en-shared"><a class="header" href="#35-responsabilidad-de-cada-subcarpeta-en-shared">3.5 Responsabilidad de Cada Subcarpeta en <code>shared/</code></a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Subcarpeta</th><th>Propósito</th><th>Regla</th></tr>
+</thead>
+<tbody>
+<tr><td><code>api/</code></td><td>Llamadas HTTP</td><td>Solo fetch, sin JSX, sin hooks</td></tr>
+<tr><td><code>components/</code></td><td>UI components reutilizables</td><td>Sin lógica de negocio</td></tr>
+<tr><td><code>hooks/</code></td><td>Hooks compartidos</td><td>Lógica + estado reutilizable</td></tr>
+<tr><td><code>lib/</code></td><td>Config, constantes, mappers</td><td>Sin side effects</td></tr>
+<tr><td><code>store/</code></td><td>Estado global (Zustand)</td><td>Solo un store por archivo</td></tr>
+<tr><td><code>types/</code></td><td>Interfaces compartidas</td><td>Solo tipos, sin código runtime</td></tr>
+<tr><td><code>utils/</code></td><td>Funciones puras</td><td>Sin dependencias, sin side effects</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="4-arquitectura-y-patrones"><a class="header" href="#4-arquitectura-y-patrones">4. Arquitectura y Patrones</a></h2>
+<h3 id="41-feature-first--capas"><a class="header" href="#41-feature-first--capas">4.1 Feature-First + Capas</a></h3>
+<pre><code>┌─────────────────────────────────────────────┐
+│                  app/                        │
+│  Next.js App Router (rutas + layouts)        │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  │
+│  │  (shop)  │  │  (auth)  │  │ (admin)  │  │
+│  └────┬─────┘  └────┬─────┘  └────┬─────┘  │
+└───────┼──────────────┼──────────────┼────────┘
+        │              │              │
+┌───────┴──────────────┴──────────────┴────────┐
+│              src/features/                    │
+│  ┌──────────┐ ┌──────────┐ ┌──────────────┐  │
+│  │ product  │ │  cart   │ │    admin     │  │
+│  │ components│ │components│ │  components  │  │
+│  │ data/    │ │ context │ │  modals/     │  │
+│  └──────────┘ └──────────┘ └──────────────┘  │
+└──────────────────────┬────────────────────────┘
+                       │
+┌──────────────────────┴────────────────────────┐
+│              src/shared/                       │
+│  ┌──────┐ ┌──────┐ ┌────┐ ┌────┐ ┌───────┐   │
+│  │ api  │ │hooks │ │lib │ │store│ │types  │   │
+│  └──────┘ └──────┘ └────┘ └────┘ └───────┘   │
+└────────────────────────────────────────────────┘
+</code></pre>
+<p><strong>Flujo de datos:</strong></p>
+<pre><code>pages/app → hooks (lógica) → api (HTTP) → Backend
+         ↘ components (UI) ↗
+</code></pre>
+<h3 id="42-patrón-container-presentational"><a class="header" href="#42-patrón-container-presentational">4.2 Patrón Container-Presentational</a></h3>
+<p>Los <strong>hooks</strong> son los containers (tienen la lógica, el estado, las funciones).
+Los <strong>componentes</strong> son presentacionales (reciben props, renderizan UI).</p>
+<pre><code>┌──────────────────┐      props       ┌──────────────────┐
+│   Hook (Container) │ ──────────────&gt; │ Component (View) │
+│   - useState       │                 │   - Renderiza    │
+│   - useEffect      │  callbacks      │   - Estilos      │
+│   - fetch          │ &lt;────────────── │   - Eventos      │
+│   - handlers       │                 │                  │
+└──────────────────┘                   └──────────────────┘
+</code></pre>
+<p><strong>EJEMPLO:</strong></p>
+<pre><code class="language-typescript">// ✗ MAL: Lógica dentro del componente
+export function OrdersPage() {
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() =&gt; {
+    fetchOrders().then(data =&gt; { ... });
+  }, []);
+
+  return &lt;div&gt;{orders.map(...)}&lt;/div&gt;;
+}
+
+// ✓ BIEN: Hook container + Componente presentacional
+
+// Hook: shared/hooks/useOrders.ts
+export function useOrders() {
+  const [orders, setOrders] = useState([]);
+  // ... toda la lógica acá
+  return { orders, loading, error, ... };
+}
+
+// Page: app/(admin)/admin/orders/page.tsx
+export default function OrdersPage() {
+  const { orders, loading } = useOrders();
+  return &lt;OrdersTable orders={orders} loading={loading} /&gt;;
+}
+</code></pre>
+<h3 id="43-co-location-de-css-modules"><a class="header" href="#43-co-location-de-css-modules">4.3 Co-location de CSS Modules</a></h3>
+<p>Cada componente tiene su archivo <code>.module.css</code> al lado:</p>
+<pre><code>OrdersTable.tsx          ← Componente
+OrdersTable.module.css   ← Estilos exclusivos del componente
+</code></pre>
+<p><strong>Ventajas:</strong></p>
+<ul>
+<li>Scoped styles (no hay colisiones de clases)</li>
+<li>Sin runtime (se compilan a clases únicas)</li>
+<li>Co-location: todo lo que necesita el componente está cerca</li>
+</ul>
+<h3 id="44-estados-de-ui-loading-empty-error-success"><a class="header" href="#44-estados-de-ui-loading-empty-error-success">4.4 Estados de UI (Loading, Empty, Error, Success)</a></h3>
+<p>Todo componente que carga datos debe manejar estos 4 estados:</p>
+<pre><code class="language-typescript">function OrdersList() {
+  const { orders, loading, error, fetchOrders } = useOrders();
+
+  if (loading) return &lt;LoadingState /&gt;;
+  if (error) return &lt;ErrorState error={error} fetch={fetchOrders} /&gt;;
+  if (orders.length === 0) return &lt;p&gt;No hay pedidos&lt;/p&gt;;
+
+  return &lt;OrdersTable orders={orders} /&gt;;
+}
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Estado</th><th>Componente</th><th>Acción</th></tr>
+</thead>
+<tbody>
+<tr><td>Loading</td><td><code>LoadingState</code> (spinner)</td><td>-</td></tr>
+<tr><td>Error</td><td><code>ErrorState</code> (mensaje + botón reintentar)</td><td><code>fetch()</code></td></tr>
+<tr><td>Empty</td><td>Mensaje contextual</td><td>CTA para crear/agregar</td></tr>
+<tr><td>Success</td><td>Datos renderizados</td><td>-</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="45-data-flow-unidireccional"><a class="header" href="#45-data-flow-unidireccional">4.5 Data Flow Unidireccional</a></h3>
+<pre><code>User Action
+    │
+    ▼
+Component (onClick, onChange, etc.)
+    │
+    ▼
+Hook Handler (handleCreate, handleDelete, etc.)
+    │
+    ├── API call (shared/api/xxx.ts)
+    │       │
+    │       ▼
+    │   Response → error?
+    │       │         │
+    │      sí        no
+    │       │         │
+    │       ▼         ▼
+    │   setError   setData (actualizar estado)
+    │
+    └── refetch (opcional)
+</code></pre>
+<p><strong>NUNCA:</strong></p>
+<ul>
+<li>Llamar a <code>fetch()</code> directamente en el componente</li>
+<li>Poner lógica de negocio en el JSX</li>
+<li>Mutar el estado directamente</li>
+</ul>
+<h3 id="46-modales-por-feature"><a class="header" href="#46-modales-por-feature">4.6 Modales por Feature</a></h3>
+<p>Los modales viven DENTRO de la feature a la que pertenecen:</p>
+<pre><code>src/features/admin/orders/modals/
+├── ViewOrderModal.tsx
+└── ViewOrderModal.module.css
+
+src/features/admin/products/modals/
+├── CreateProductModal.tsx
+├── EditProductModal.tsx
+├── ViewProductModal.tsx
+└── Modal.module.css
+</code></pre>
+<p><strong>Regla:</strong> Si un modal solo se usa en una feature, vive EN ESA FEATURE. Si un modal se usa en múltiples features, va a <code>shared/components/</code>.</p>
+<h3 id="47-protección-de-rutas-admin"><a class="header" href="#47-protección-de-rutas-admin">4.7 Protección de Rutas (Admin)</a></h3>
+<p>El layout admin verifica autenticación y rol:</p>
+<pre><code class="language-typescript">// app/(admin)/layout.tsx
+'use client';
+
+export default function AdminLayout({ children }) {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() =&gt; {
+    const token = localStorage.getItem('access_token');
+    const userStr = localStorage.getItem('user');
+
+    if (!token) {
+      router.push('/login');
+      return;
+    }
+
+    const user = JSON.parse(userStr);
+    if (user.role === 'customer') {
+      router.push('/');
+      return;
+    }
+
+    setIsLoading(false);
+  }, [router]);
+
+  if (isLoading) return &lt;Loader2 /&gt;;
+
+  return (
+    &lt;div className={styles.container}&gt;
+      &lt;SideBar /&gt;
+      &lt;main&gt;{children}&lt;/main&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<hr>
+<h2 id="5-configuraciones"><a class="header" href="#5-configuraciones">5. Configuraciones</a></h2>
+<h3 id="51-packagejson"><a class="header" href="#51-packagejson">5.1 <code>package.json</code></a></h3>
+<pre><code class="language-json">{
+  "name": "mi-proyecto",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "next": "^16.2.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "zustand": "^5.0.12",
+    "lucide-react": "^0.577.0",
+    "recharts": "^3.8.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "^16.1.7",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
+</code></pre>
+<p><strong>Dependencias opcionales:</strong></p>
+<pre><code class="language-json">"dependencies": {
+  "@stripe/stripe-js": "^8.11.0",
+  "stripe": "^20.4.1",
+  "jspdf": "^4.2.1",
+  "jspdf-autotable": "^5.0.7",
+  "xlsx": "^0.18.5"
+}
+</code></pre>
+<h3 id="52-tsconfigjson"><a class="header" href="#52-tsconfigjson">5.2 <code>tsconfig.json</code></a></h3>
+<pre><code class="language-json">{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "plugins": [{ "name": "next" }],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": ["node_modules"]
+}
+</code></pre>
+<p><strong>Puntos clave:</strong></p>
+<ul>
+<li><code>"strict": true</code> — No negociable</li>
+<li><code>"paths": { "@/*": ["./src/*"] }</code> — Alias <code>@/</code> apunta a <code>src/</code></li>
+<li><code>"moduleResolution": "bundler"</code> — Requerido por Next.js</li>
+<li><code>"plugins": [{ "name": "next" }]</code> — Plugin de TypeScript para Next.js</li>
+</ul>
+<h3 id="53-nextconfigts"><a class="header" href="#53-nextconfigts">5.3 <code>next.config.ts</code></a></h3>
+<pre><code class="language-typescript">import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  turbopack: {},
+};
+
+export default nextConfig;
+</code></pre>
+<p><strong>Configuraciones adicionales comunes:</strong></p>
+<pre><code class="language-typescript">const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+    ],
+  },
+};
+</code></pre>
+<h3 id="54-postcssconfigmjs-tailwind-css-v4"><a class="header" href="#54-postcssconfigmjs-tailwind-css-v4">5.4 <code>postcss.config.mjs</code> (Tailwind CSS v4)</a></h3>
+<pre><code class="language-javascript">const config = {
+  plugins: {
+    "@tailwindcss/postcss": {},
+  },
+};
+
+export default config;
+</code></pre>
+<h3 id="55-pnpm-workspaceyaml"><a class="header" href="#55-pnpm-workspaceyaml">5.5 <code>pnpm-workspace.yaml</code></a></h3>
+<pre><code class="language-yaml">ignoredBuiltDependencies:
+  - sharp
+  - unrs-resolver
+</code></pre>
+<h3 id="56-eslintconfigmjs"><a class="header" href="#56-eslintconfigmjs">5.6 <code>eslint.config.mjs</code></a></h3>
+<pre><code class="language-javascript">import { dirname } from "path";
+import { fileURLToPath } from "url";
+import { FlatCompat } from "@eslint/eslintrc";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const compat = new FlatCompat({ baseDirectory: __dirname });
+
+const eslintConfig = [
+  ...compat.extends("next/core-web-vitals"),
+];
+
+export default eslintConfig;
+</code></pre>
+<p>Esta es la configuración flat (nuevo formato ESLint v9). Next.js 16 usa este formato por defecto.</p>
+<h3 id="57-gitignore"><a class="header" href="#57-gitignore">5.7 <code>.gitignore</code></a></h3>
+<pre><code># dependencies
+/node_modules
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# env
+.env.local
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+*.log
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# vercel
+.vercel
+</code></pre>
+<hr>
+<h2 id="6-app-router--route-groups-y-layouts"><a class="header" href="#6-app-router--route-groups-y-layouts">6. App Router — Route Groups y Layouts</a></h2>
+<h3 id="61-qué-son-los-route-groups"><a class="header" href="#61-qué-son-los-route-groups">6.1 ¿Qué son los Route Groups?</a></h3>
+<p>Next.js App Router permite agrupar rutas <strong>sin afectar la URL</strong> usando paréntesis <code>()</code>. Esto permite tener layouts diferentes para distintos grupos de rutas.</p>
+<pre><code>app/
+├── layout.tsx          ← Root: CartProvider, fonts, metadata
+├── (shop)/
+│   ├── layout.tsx      ← Shop: Navbar + Footer
+│   ├── page.tsx        ← Home: /
+│   ├── cart/page.tsx   ← /cart
+│   └── ...
+├── (auth)/
+│   ├── layout.tsx      ← Auth: fondo limpio
+│   ├── login/page.tsx  ← /login
+│   └── register/page.tsx ← /register
+└── (admin)/
+    ├── layout.tsx      ← Admin: Sidebar + auth check
+    └── admin/
+        ├── page.tsx    ← /admin (dashboard)
+        └── orders/page.tsx ← /admin/orders
+</code></pre>
+<p><strong>¿Por qué Route Groups?</strong></p>
+<ul>
+<li>Cada grupo tiene su propio layout sin anidar URLs</li>
+<li>El layout admin puede verificar auth sin afectar otras rutas</li>
+<li>El layout shop puede tener Navbar sin que el admin lo herede</li>
+</ul>
+<h3 id="62-root-layout"><a class="header" href="#62-root-layout">6.2 Root Layout</a></h3>
+<pre><code class="language-typescript">// app/layout.tsx
+import { CartProvider } from "@/features/cart/context/CartContext";
+
+export default function RootLayout({ children }) {
+  return (
+    &lt;html lang="en"&gt;
+      &lt;body className={`${fonts} antialiased`}&gt;
+        &lt;CartProvider&gt;
+          {children}
+        &lt;/CartProvider&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  );
+}
+</code></pre>
+<h3 id="63-shop-layout"><a class="header" href="#63-shop-layout">6.3 Shop Layout</a></h3>
+<pre><code class="language-typescript">// app/(shop)/layout.tsx
+export default function ShopLayout({ children }) {
+  return (
+    &lt;div className={styles.container}&gt;
+      &lt;StoreNavbar /&gt;
+      &lt;main&gt;{children}&lt;/main&gt;
+      &lt;Footer /&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<h3 id="64-admin-layout-con-auth-check"><a class="header" href="#64-admin-layout-con-auth-check">6.4 Admin Layout (con auth check)</a></h3>
+<pre><code class="language-typescript">// app/(admin)/layout.tsx
+'use client';
+
+export default function AdminLayout({ children }) {
+  const router = useRouter();
+  const { collapsed } = useSideBarStore();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() =&gt; {
+    // Verificar auth + role admin
+  }, []);
+
+  if (isLoading) return &lt;Loader2 /&gt;;
+
+  return (
+    &lt;div className={`${styles.container} ${collapsed ? styles.collapsed : styles.expanded}`}&gt;
+      &lt;SideBar /&gt;
+      &lt;main className={styles.content}&gt;{children}&lt;/main&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<h3 id="65-convenciones-de-nextjs-app-router"><a class="header" href="#65-convenciones-de-nextjs-app-router">6.5 Convenciones de Next.js App Router</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Archivo</th><th>Propósito</th></tr>
+</thead>
+<tbody>
+<tr><td><code>page.tsx</code></td><td>Contenido de la ruta</td></tr>
+<tr><td><code>layout.tsx</code></td><td>Layout compartido entre rutas hijas</td></tr>
+<tr><td><code>loading.tsx</code></td><td>UI de carga</td></tr>
+<tr><td><code>error.tsx</code></td><td>UI de error</td></tr>
+<tr><td><code>not-found.tsx</code></td><td>Página 404</td></tr>
+<tr><td><code>[slug]/</code></td><td>Ruta dinámica</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="7-server-vs-client-components"><a class="header" href="#7-server-vs-client-components">7. Server vs Client Components</a></h2>
+<h3 id="71-regla-práctica"><a class="header" href="#71-regla-práctica">7.1 Regla Práctica</a></h3>
+<p>Si el componente necesita <code>useState</code>, <code>useEffect</code>, <code>onClick</code>, <code>localStorage</code>, o cualquier interacción del usuario → <code>'use client'</code>. Caso contrario, dejarlo como Server Component.</p>
+<h3 id="72-tabla-de-referencia"><a class="header" href="#72-tabla-de-referencia">7.2 Tabla de Referencia</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Tipo</th><th><code>'use client'</code>?</th><th>Cuándo usarlo</th></tr>
+</thead>
+<tbody>
+<tr><td>Layout root</td><td>❌ No</td><td>Metadata, providers globales</td></tr>
+<tr><td>Layout shop</td><td>❌ No</td><td>Solo HTML estático</td></tr>
+<tr><td>Layout auth</td><td>❌ No</td><td>Solo HTML estático</td></tr>
+<tr><td>Layout admin</td><td>✅ Sí</td><td>Auth check, hooks, localStorage</td></tr>
+<tr><td>Página home</td><td>✅ Sí</td><td>Estado, efectos, interacciones</td></tr>
+<tr><td>Página catálogo</td><td>✅ Sí</td><td>Filtros, búsqueda</td></tr>
+<tr><td>Componente UI</td><td>✅ Sí</td><td>useState, onClick, etc.</td></tr>
+<tr><td>API functions</td><td>N/A</td><td>Funciones puras, sin JSX</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="8-sistema-de-estado"><a class="header" href="#8-sistema-de-estado">8. Sistema de Estado</a></h2>
+<h3 id="81-estrategia-general--tres-capas-de-estado"><a class="header" href="#81-estrategia-general--tres-capas-de-estado">8.1 Estrategia General — Tres Capas de Estado</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Capa</th><th>Herramienta</th><th>Para qué</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Estado local</strong></td><td><code>useState</code> / <code>useReducer</code></td><td>Estado de un componente específico</td></tr>
+<tr><td><strong>Estado de feature</strong></td><td><code>Context</code> + <code>useReducer</code></td><td>Estado compartido dentro de una feature</td></tr>
+<tr><td><strong>Estado global</strong></td><td><strong>Zustand</strong></td><td>Estado compartido entre features</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="82-estado-local-usestate"><a class="header" href="#82-estado-local-usestate">8.2 Estado Local (useState)</a></h3>
+<p>Para estado que solo afecta a UN componente:</p>
+<pre><code class="language-typescript">const [searchTerm, setSearchTerm] = useState("");
+const [showFilters, setShowFilters] = useState(false);
+const [mounted, setMounted] = useState(false);
+</code></pre>
+<p><strong>Regla:</strong> Si solo un componente y sus hijos directos usan este estado → <code>useState</code>.</p>
+<h3 id="83-estado-de-feature-context--usereducer"><a class="header" href="#83-estado-de-feature-context--usereducer">8.3 Estado de Feature (Context + useReducer)</a></h3>
+<p>Para estado que necesita ser compartido DENTRO de una feature:</p>
+<pre><code class="language-typescript">// features/cart/context/CartContext.tsx
+'use client';
+
+interface CartState {
+  items: CartItem[];
+}
+
+type CartAction =
+  | { type: 'ADD_ITEM'; product: Product; quantity?: number }
+  | { type: 'REMOVE_ITEM'; productId: string }
+  | { type: 'UPDATE_QUANTITY'; productId: string; quantity: number }
+  | { type: 'CLEAR_CART' }
+  | { type: 'LOAD_CART'; items: CartItem[] };
+
+function cartReducer(state: CartState, action: CartAction): CartState {
+  switch (action.type) {
+    case 'ADD_ITEM': {
+      const existingItem = state.items.find(
+        item =&gt; item.product.id === action.product.id
+      );
+      if (existingItem) {
+        return {
+          ...state,
+          items: state.items.map(item =&gt;
+            item.product.id === action.product.id
+              ? { ...item, quantity: item.quantity + (action.quantity || 1) }
+              : item
+          ),
+        };
+      }
+      return {
+        ...state,
+        items: [...state.items, { product: action.product, quantity: action.quantity || 1 }],
+      };
+    }
+    case 'REMOVE_ITEM':
+      return {
+        ...state,
+        items: state.items.filter(item =&gt; item.product.id !== action.productId),
+      };
+    case 'UPDATE_QUANTITY':
+      if (action.quantity &lt;= 0) {
+        return {
+          ...state,
+          items: state.items.filter(item =&gt; item.product.id !== action.productId),
+        };
+      }
+      return {
+        ...state,
+        items: state.items.map(item =&gt;
+          item.product.id === action.productId
+            ? { ...item, quantity: action.quantity }
+            : item
+        ),
+      };
+    case 'CLEAR_CART':
+      return { ...state, items: [] };
+    case 'LOAD_CART':
+      return { ...state, items: action.items };
+    default:
+      return state;
+  }
+}
+</code></pre>
+<p><strong>Provider global (desde root layout):</strong></p>
+<pre><code class="language-typescript">// app/layout.tsx
+export default function RootLayout({ children }) {
+  return (
+    &lt;html&gt;
+      &lt;body&gt;
+        &lt;CartProvider&gt;
+          {children}
+        &lt;/CartProvider&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  );
+}
+</code></pre>
+<p><strong>Uso desde cualquier componente:</strong></p>
+<pre><code class="language-typescript">import { useCart } from '@/features/cart/context/CartContext';
+
+function CartSummary() {
+  const { items, subtotal, tax, total, itemCount } = useCart();
+  return &lt;div&gt;Total: ${total}&lt;/div&gt;;
+}
+</code></pre>
+<h3 id="84-estado-global-zustand"><a class="header" href="#84-estado-global-zustand">8.4 Estado Global (Zustand)</a></h3>
+<p>Para estado que necesita ser compartido ENTRE features. Usamos <strong>Zustand</strong> porque:</p>
+<ul>
+<li>Sin boilerplate (no Provider, no reducer, no actions)</li>
+<li>Persistencia built-in (localStorage, sessionStorage)</li>
+<li>TypeScript first</li>
+<li>Bundle pequeño (~1KB)</li>
+<li>Funciona fuera de React (ideal para services/utils)</li>
+</ul>
+<pre><code class="language-typescript">// shared/store/useSidebarStore.ts
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+
+interface SidebarStore {
+  collapsed: boolean;
+  setCollapsed: () =&gt; void;
+}
+
+export const useSideBarStore = create&lt;SidebarStore&gt;()(
+  persist(
+    (set) =&gt; ({
+      collapsed: false,
+      setCollapsed: () =&gt; {
+        set((state) =&gt; ({ collapsed: !state.collapsed }));
+      },
+    }),
+    {
+      name: "sidebar-storage", // key en localStorage
+    }
+  )
+);
+</code></pre>
+<p><strong>Uso:</strong></p>
+<pre><code class="language-typescript">import { useSideBarStore } from "@/shared/store/useSidebarStore";
+
+function Sidebar() {
+  const { collapsed, setCollapsed } = useSideBarStore();
+
+  return (
+    &lt;aside className={collapsed ? styles.collapsed : styles.expanded}&gt;
+      &lt;button onClick={setCollapsed}&gt;
+        {collapsed ? &lt;ChevronRight /&gt; : &lt;ChevronLeft /&gt;}
+      &lt;/button&gt;
+    &lt;/aside&gt;
+  );
+}
+</code></pre>
+<p><strong>Patrón Zustand:</strong></p>
+<ul>
+<li>1 store = 1 archivo</li>
+<li>Store en <code>shared/store/</code></li>
+<li>Nombre: <code>useNombreStore.ts</code></li>
+<li>Usar <code>persist</code> middleware para persistencia automática</li>
+</ul>
+<h3 id="85-data-fetching-con-hooks-patrón-crud-completo"><a class="header" href="#85-data-fetching-con-hooks-patrón-crud-completo">8.5 Data Fetching con Hooks (Patrón CRUD Completo)</a></h3>
+<p>Cada entidad tiene un hook que encapsula:</p>
+<ul>
+<li>Estado (<code>data</code>, <code>loading</code>, <code>error</code>)</li>
+<li>Fetch automático (useEffect)</li>
+<li>Handlers (CRUD)</li>
+<li>Debounce para búsqueda</li>
+<li>Paginación</li>
+</ul>
+<pre><code class="language-typescript">// shared/hooks/useProducts.ts
+export function useProducts() {
+  const [products, setProducts] = useState&lt;AdminProduct[]&gt;([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState&lt;string | null&gt;(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  // 1. Debounce
+  useEffect(() =&gt; {
+    const timer = setTimeout(() =&gt; {
+      setDebouncedSearch(searchTerm);
+    }, 300);
+    return () =&gt; clearTimeout(timer);
+  }, [searchTerm]);
+
+  // 2. Fetch
+  const fetchProducts = useCallback(async () =&gt; {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await listProducts({ search: debouncedSearch });
+      setProducts(data.map(mapToAdminProduct));
+    } catch {
+      setError("Error al cargar productos");
+    } finally {
+      setLoading(false);
+    }
+  }, [debouncedSearch]);
+
+  // 3. Auto-fetch en mount
+  useEffect(() =&gt; {
+    fetchProducts();
+  }, [fetchProducts]);
+
+  // 4. Handlers CRUD
+  const handleCreate = async (payload: CreateProductPayload) =&gt; {
+    await createProduct(payload);
+    await fetchProducts(); // refetch
+  };
+
+  const handleUpdate = async (id: string, payload: Partial&lt;CreateProductPayload&gt;) =&gt; {
+    await updateProduct(id, payload);
+    await fetchProducts();
+  };
+
+  const handleDelete = async (id: string) =&gt; {
+    if (!confirm("¿Estás seguro de eliminar este producto?")) return;
+    await deleteProduct(id);
+    await fetchProducts();
+  };
+
+  // 5. Return
+  return {
+    products, loading, error,
+    searchTerm, setSearchTerm,
+    fetchProducts,
+    handleCreate, handleUpdate, handleDelete,
+  };
+}
+</code></pre>
+<h3 id="86-debounce-pattern"><a class="header" href="#86-debounce-pattern">8.6 Debounce Pattern</a></h3>
+<p>Siempre que hay búsqueda en texto, aplicamos debounce de 300ms:</p>
+<pre><code class="language-typescript">// Opción 1: En el hook (estado separado)
+const [searchTerm, setSearchTerm] = useState("");
+const [debouncedSearch, setDebouncedSearch] = useState("");
+
+useEffect(() =&gt; {
+  const timer = setTimeout(() =&gt; {
+    setDebouncedSearch(searchTerm);
+  }, 300);
+  return () =&gt; clearTimeout(timer);
+}, [searchTerm]);
+
+// Opción 2: En el fetch (cuando hay múltiples filtros)
+useEffect(() =&gt; {
+  const id = setTimeout(() =&gt; {
+    fetchOrders({ search: searchTerm, ... });
+  }, searchTerm ? 300 : 0); // Solo debounce cuando hay texto
+
+  return () =&gt; clearTimeout(id);
+}, [searchTerm, ...otrosFiltros]);
+</code></pre>
+<h3 id="87-pagination-pattern"><a class="header" href="#87-pagination-pattern">8.7 Pagination Pattern</a></h3>
+<pre><code class="language-typescript">const ITEMS_PER_PAGE = 10;
+
+// En el hook
+const [currentPage, setCurrentPage] = useState(1);
+const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
+
+// En el componente
+&lt;Pagination
+  currentPage={currentPage}
+  totalPages={totalPages}
+  onPageChange={setCurrentPage}
+/&gt;
+</code></pre>
+<h3 id="88-reseteo-de-estados-en-filtros"><a class="header" href="#88-reseteo-de-estados-en-filtros">8.8 Reseteo de Estados en Filtros</a></h3>
+<p>Cuando cambian filtros, la página debe resetearse a 1:</p>
+<pre><code class="language-typescript">// ✓ BIEN
+&lt;input onChange={(e) =&gt; {
+  setSearchTerm(e.target.value);
+  setCurrentPage(1); // ← SIEMPRE resetear página
+}} /&gt;
+</code></pre>
+<p>Este patrón se repite en TODOS los inputs de filtros.</p>
+<h3 id="89-persistencia-de-estado"><a class="header" href="#89-persistencia-de-estado">8.9 Persistencia de Estado</a></h3>
+<p><strong>Carrito (localStorage manual):</strong></p>
+<pre><code class="language-typescript">// Load on mount
+useEffect(() =&gt; {
+  const savedCart = localStorage.getItem('cart');
+  if (savedCart) {
+    dispatch({ type: 'LOAD_CART', items: JSON.parse(savedCart) });
+  }
+}, []);
+
+// Save on change
+useEffect(() =&gt; {
+  localStorage.setItem('cart', JSON.stringify(state.items));
+}, [state.items]);
+</code></pre>
+<p><strong>Sidebar (Zustand persist):</strong> El middleware <code>persist</code> de Zustand escribe automáticamente a localStorage.</p>
+<p><strong>Auth (localStorage manual):</strong></p>
+<pre><code class="language-typescript">localStorage.setItem('access_token', data.access_token);
+localStorage.setItem('user', JSON.stringify(data.user));
+localStorage.setItem('user_id', data.user.id);
+</code></pre>
+<hr>
+<h2 id="9-componentes-y-ui"><a class="header" href="#9-componentes-y-ui">9. Componentes y UI</a></h2>
+<h3 id="91-sistema-de-css-tailwind--css-modules"><a class="header" href="#91-sistema-de-css-tailwind--css-modules">9.1 Sistema de CSS: Tailwind + CSS Modules</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Situación</th><th>Usar</th></tr>
+</thead>
+<tbody>
+<tr><td>Layouts, spacing, flex/grid</td><td>Tailwind utility classes</td></tr>
+<tr><td>Componentes complejos con estilo único</td><td>CSS Modules</td></tr>
+<tr><td>Variables globales (colores, fuentes)</td><td><code>globals.css</code> con custom properties</td></tr>
+<tr><td>Animaciones</td><td>CSS Modules</td></tr>
+<tr><td>Responsive</td><td>Tailwind (<code>sm:</code>, <code>md:</code>, <code>lg:</code>)</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="92-css-modules--patrón"><a class="header" href="#92-css-modules--patrón">9.2 CSS Modules — Patrón</a></h3>
+<pre><code class="language-css">/* OrdersTable.module.css */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.header {
+  background: #f9fafb;
+  font-weight: 600;
+}
+
+.row {
+  border-bottom: 1px solid #e5e7eb;
+  transition: background 0.2s;
+}
+
+.row:hover {
+  background: #f9fafb;
+}
+
+.cell {
+  padding: 12px 16px;
+  font-size: 14px;
+}
+</code></pre>
+<pre><code class="language-typescript">// OrdersTable.tsx
+import styles from './OrdersTable.module.css';
+
+export function OrdersTable({ orders }: Props) {
+  return (
+    &lt;table className={styles.table}&gt;
+      &lt;thead&gt;
+        &lt;tr className={styles.header}&gt;
+          &lt;th className={styles.cell}&gt;ID&lt;/th&gt;
+          &lt;th className={styles.cell}&gt;Cliente&lt;/th&gt;
+        &lt;/tr&gt;
+      &lt;/thead&gt;
+      &lt;tbody&gt;
+        {orders.map(order =&gt; (
+          &lt;tr key={order.id} className={styles.row}&gt;
+            &lt;td className={styles.cell}&gt;{order.id}&lt;/td&gt;
+            &lt;td className={styles.cell}&gt;{order.customer}&lt;/td&gt;
+          &lt;/tr&gt;
+        ))}
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+  );
+}
+</code></pre>
+<h3 id="93-responsive-design"><a class="header" href="#93-responsive-design">9.3 Responsive Design</a></h3>
+<pre><code class="language-css">/* StoreNavbar.module.css */
+.searchDesktop {
+  display: block;
+}
+
+.searchMobile {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .searchDesktop {
+    display: none;
+  }
+  .searchMobile {
+    display: block;
+  }
+}
+</code></pre>
+<p>O Tailwind para cosas más rápidas:</p>
+<pre><code class="language-html">&lt;div className="hidden md:block"&gt;Desktop only&lt;/div&gt;
+&lt;div className="block md:hidden"&gt;Mobile only&lt;/div&gt;
+</code></pre>
+<h3 id="94-iconos-lucide-react"><a class="header" href="#94-iconos-lucide-react">9.4 Iconos (Lucide React)</a></h3>
+<p>Usamos <strong>lucide-react</strong> para todos los iconos.</p>
+<pre><code class="language-typescript">import { ShoppingCart, Search, Menu, X, User, AlertCircle, Loader2 } from 'lucide-react';
+
+// Uso típico
+&lt;button className={styles.iconBtn}&gt;
+  &lt;Search size={20} /&gt;
+&lt;/button&gt;
+</code></pre>
+<p><strong>Iconos comunes:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Icono</th><th>Uso</th></tr>
+</thead>
+<tbody>
+<tr><td><code>ShoppingCart</code></td><td>Carrito</td></tr>
+<tr><td><code>Search</code></td><td>Búsqueda</td></tr>
+<tr><td><code>Menu</code> / <code>X</code></td><td>Menú mobile</td></tr>
+<tr><td><code>User</code></td><td>Perfil</td></tr>
+<tr><td><code>AlertCircle</code></td><td>Error</td></tr>
+<tr><td><code>Loader2</code></td><td>Loading spinner</td></tr>
+<tr><td><code>ChevronLeft</code> / <code>ChevronRight</code></td><td>Sidebar collapse</td></tr>
+<tr><td><code>LayoutDashboard</code></td><td>Dashboard</td></tr>
+<tr><td><code>Package</code></td><td>Productos</td></tr>
+<tr><td><code>TrendingUp</code></td><td>Ventas</td></tr>
+<tr><td><code>Users</code></td><td>Usuarios</td></tr>
+<tr><td><code>Settings</code></td><td>Configuración</td></tr>
+<tr><td><code>LogOut</code></td><td>Cerrar sesión</td></tr>
+<tr><td><code>ArrowRight</code></td><td>Links “Ver más”</td></tr>
+<tr><td><code>Filter</code></td><td>Filtros</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="95-componentes-compartidos-sharedcomponents"><a class="header" href="#95-componentes-compartidos-sharedcomponents">9.5 Componentes Compartidos (shared/components/)</a></h3>
+<p><strong>ErrorState:</strong></p>
+<pre><code class="language-typescript">interface ErrorStateProps {
+  error: string;
+  fetch: () =&gt; void;  // callback para reintentar
+}
+
+export const ErrorState = ({ error, fetch }: ErrorStateProps) =&gt; {
+  return (
+    &lt;div className={styles.errorState}&gt;
+      &lt;AlertCircle className={styles.errorIcon} /&gt;
+      &lt;span&gt;{error}&lt;/span&gt;
+      &lt;button onClick={fetch} className={styles.retryButton}&gt;
+        Reintentar
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+};
+</code></pre>
+<p><strong>LoadingState:</strong> Spinner de carga (normalmente usando <code>Loader2</code> de lucide-react).</p>
+<h3 id="96-admin-crud-pattern"><a class="header" href="#96-admin-crud-pattern">9.6 Admin CRUD Pattern</a></h3>
+<p>Cada entidad admin (orders, products, users) sigue el mismo patrón:</p>
+<pre><code>feature/
+├── Header.tsx           → Título + botón de acción
+├── Filters.tsx          → Búsqueda + filtros avanzados
+├── ResultsInfo.tsx      → "Mostrando X de Y resultados"
+├── Table.tsx            → Tabla de datos
+├── Pagination.tsx       → Paginación
+└── modals/
+    ├── ViewModal.tsx    → Ver detalle
+    ├── CreateModal.tsx  → Crear (si aplica)
+    └── EditModal.tsx    → Editar (si aplica)
+</code></pre>
+<hr>
+<h2 id="10-api-y-servicios"><a class="header" href="#10-api-y-servicios">10. API y Servicios</a></h2>
+<h3 id="101-filosofía"><a class="header" href="#101-filosofía">10.1 Filosofía</a></h3>
+<ul>
+<li><strong>Sin axios:</strong> fetch nativo es suficiente + tree-shakeable</li>
+<li><strong>Sin React Query:</strong> los hooks manejan el estado de fetching manualmente (más control, menos magic)</li>
+<li><strong>Sin capa de servicios OOP:</strong> funciones independientes, no instancias de clases</li>
+<li><strong>Cada archivo = un recurso</strong></li>
+</ul>
+<h3 id="102-estructura"><a class="header" href="#102-estructura">10.2 Estructura</a></h3>
+<pre><code>src/shared/api/
+├── categories.ts     → CRUD categorías
+├── dashboard.ts      → Dashboard KPIs + charts
+├── orders.ts         → CRUD pedidos
+├── products.ts       → CRUD productos
+├── profile.ts        → Perfil de usuario
+└── users.ts          → Usuarios
+</code></pre>
+<p><strong>Regla:</strong> 1 archivo por recurso. Si el proyecto crece, se agrupan por dominio.</p>
+<h3 id="103-patrón-de-api-calls"><a class="header" href="#103-patrón-de-api-calls">10.3 Patrón de API Calls</a></h3>
+<pre><code class="language-typescript">// shared/api/products.ts
+import { API_URL } from "../lib/constants";
+import { CreateProductPayload, ListProductsParams, ProductResponse } from "../types";
+import { getAuthHeaders } from "../utils/auth";
+
+// GET con query params
+export async function listProducts(params: ListProductsParams = {}): Promise&lt;ProductResponse[]&gt; {
+  const searchParams = new URLSearchParams();
+
+  if (params.search) searchParams.set('search', params.search);
+  if (params.category_id) searchParams.set('category_id', params.category_id);
+  if (params.page) searchParams.set('page', String(params.page));
+  if (params.limit) searchParams.set('limit', String(params.limit));
+
+  const query = searchParams.toString();
+  const url = `${API_URL}/products${query ? `?${query}` : ''}`;
+
+  const res = await fetch(url, {
+    credentials: 'include',
+    cache: 'no-store',
+  });
+
+  if (!res.ok) {
+    throw new Error('Failed to fetch products');
+  }
+
+  return res.json();
+}
+
+// POST (create)
+export async function createProduct(payload: CreateProductPayload): Promise&lt;ProductResponse&gt; {
+  const res = await fetch(`${API_URL}/products`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    credentials: 'include',
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    const error = await res.json().catch(() =&gt; ({ message: 'Failed to create product' }));
+    throw new Error(error.message || 'Failed to create product');
+  }
+
+  return res.json();
+}
+
+// PUT (update)
+export async function updateProduct(id: string, payload: Partial&lt;CreateProductPayload&gt;): Promise&lt;ProductResponse&gt; {
+  const res = await fetch(`${API_URL}/products/${id}`, {
+    method: 'PUT',
+    headers: getAuthHeaders(),
+    credentials: 'include',
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) throw new Error('Failed to update product');
+  return res.json();
+}
+
+// DELETE
+export async function deleteProduct(id: string): Promise&lt;{ success: boolean }&gt; {
+  const res = await fetch(`${API_URL}/products/${id}`, {
+    method: 'DELETE',
+    credentials: 'include',
+  });
+
+  if (!res.ok) throw new Error('Failed to delete product');
+  return res.json();
+}
+</code></pre>
+<h3 id="104-manejo-de-errores"><a class="header" href="#104-manejo-de-errores">10.4 Manejo de Errores</a></h3>
+<p>Siempre lanzar errores con mensajes claros:</p>
+<pre><code class="language-typescript">// ✗ MAL
+if (!res.ok) throw new Error('Error');
+
+// ✓ BIEN: mensaje genérico
+if (!res.ok) throw new Error('Failed to fetch orders');
+
+// ✓ MEJOR: intentar obtener mensaje del backend
+if (!res.ok) {
+  const error = await res.json().catch(() =&gt; ({ message: 'Failed to update order' }));
+  throw new Error(error.message || 'Failed to update order');
+}
+</code></pre>
+<p>Los errores se capturan en los hooks:</p>
+<pre><code class="language-typescript">try {
+  const data = await listProducts();
+  setProducts(data);
+} catch (err) {
+  setError(err instanceof Error ? err.message : "Error desconocido");
+}
+</code></pre>
+<h3 id="105-headers-de-autenticación"><a class="header" href="#105-headers-de-autenticación">10.5 Headers de Autenticación</a></h3>
+<p>Helper centralizado en <code>shared/utils/auth.ts</code>:</p>
+<pre><code class="language-typescript">// shared/utils/auth.ts
+export function getAuthHeaders(): HeadersInit {
+  const token = localStorage.getItem('access_token');
+  return {
+    'Content-Type': 'application/json',
+    ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+  };
+}
+</code></pre>
+<p><strong>Uso:</strong></p>
+<pre><code class="language-typescript">import { getAuthHeaders } from "../utils/auth";
+
+const res = await fetch(url, {
+  method: 'POST',
+  headers: getAuthHeaders(),
+  body: JSON.stringify(payload),
+});
+</code></pre>
+<h3 id="106-url-base"><a class="header" href="#106-url-base">10.6 URL Base</a></h3>
+<pre><code class="language-typescript">// shared/lib/constants.ts
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api/v1";
+</code></pre>
+<h3 id="107-convenciones-de-nombres-de-funciones"><a class="header" href="#107-convenciones-de-nombres-de-funciones">10.7 Convenciones de Nombres de Funciones</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>Propósito</th><th>Códigos esperados</th><th>Función</th></tr>
+</thead>
+<tbody>
+<tr><td>GET</td><td>Obtener datos</td><td>200 OK</td><td><code>listXxx(params)</code></td></tr>
+<tr><td>GET</td><td>Obtener uno</td><td>200 OK</td><td><code>getXxx(id)</code></td></tr>
+<tr><td>POST</td><td>Crear recurso</td><td>201 Created</td><td><code>createXxx(payload)</code></td></tr>
+<tr><td>PUT</td><td>Actualizar recurso</td><td>200 OK</td><td><code>updateXxx(id, payload)</code></td></tr>
+<tr><td>DELETE</td><td>Eliminar recurso</td><td>200 OK / 204</td><td><code>deleteXxx(id)</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>Siempre incluir <code>credentials: 'include'</code> para cookies de sesión.</p>
+<h3 id="108-mappers-api--ui"><a class="header" href="#108-mappers-api--ui">10.8 Mappers: API → UI</a></h3>
+<p>Cuando el backend devuelve snake_case y el frontend usa camelCase:</p>
+<pre><code class="language-typescript">// shared/lib/mappers.ts
+
+// API Response → Frontend type
+export function mapToAdminProduct(p: any): AdminProduct {
+  return {
+    id: p.id,
+    name: p.name,
+    slug: p.slug,
+    category: p.category_name || p.category_id || "sin-categoria",
+    categoryName: p.category_name,
+    categoryId: p.category_id,
+    stock: p.stock,
+    price: p.price,
+    originalPrice: p.original_price,   // snake_case → camelCase
+    status: p.active ? "active" : "inactive",
+    image: p.image,
+    brand: p.brand,
+    description: p.description,
+    featured: p.featured,
+  };
+}
+
+// OrderResponse → Order
+export function mapApiOrderToUi(apiOrder: OrderResponse): Order {
+  return {
+    id: apiOrder.id,
+    customer: apiOrder.customer_name || "Guest",
+    email: apiOrder.customer_email || "",
+    total: apiOrder.total,
+    status: apiOrder.status as OrderStatus,
+    date: apiOrder.created_at?.split("T")[0] || "",
+    items: apiOrder.items?.length || 0,
+  };
+}
+</code></pre>
+<p><strong>¿Por qué mappers y no transformar en el hook?</strong></p>
+<ul>
+<li>Separación de responsabilidades</li>
+<li>Reutilizable (varios hooks pueden usar el mismo mapper)</li>
+<li>Testeable</li>
+<li>El hook se queda con lógica de estado, no de transformación</li>
+</ul>
+<hr>
+<h2 id="11-dependencias"><a class="header" href="#11-dependencias">11. Dependencias</a></h2>
+<h3 id="111-dependencias-de-producción"><a class="header" href="#111-dependencias-de-producción">11.1 Dependencias de Producción</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Paquete</th><th>Versión</th><th>Propósito</th><th>Alternativas</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>next</strong></td><td>^16.2.0</td><td>Framework fullstack (App Router)</td><td>Remix, Astro, Vite+SPA</td></tr>
+<tr><td><strong>react</strong></td><td>^19.2.3</td><td>UI Library</td><td>—</td></tr>
+<tr><td><strong>react-dom</strong></td><td>^19.2.3</td><td>Renderizado DOM</td><td>—</td></tr>
+<tr><td><strong>zustand</strong></td><td>^5.0.12</td><td>Estado global liviano</td><td>Redux, Jotai, Valtio</td></tr>
+<tr><td><strong>lucide-react</strong></td><td>^0.577.0</td><td>Iconos SVG</td><td>Heroicons, Phosphor</td></tr>
+<tr><td><strong>recharts</strong></td><td>^3.8.1</td><td>Gráficos y charts</td><td>Chart.js, Nivo, D3</td></tr>
+<tr><td><strong>jspdf</strong></td><td>^4.2.1</td><td>Generación de PDFs</td><td>pdfmake, react-pdf</td></tr>
+<tr><td><strong>jspdf-autotable</strong></td><td>^5.0.7</td><td>Tablas en PDF</td><td>—</td></tr>
+<tr><td><strong>xlsx</strong></td><td>^0.18.5</td><td>Exportar a Excel</td><td>exceljs, sheetjs</td></tr>
+<tr><td><strong>stripe</strong></td><td>^20.4.1</td><td>Stripe server-side</td><td>—</td></tr>
+<tr><td><strong>@stripe/stripe-js</strong></td><td>^8.11.0</td><td>Stripe client-side</td><td>—</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="112-dependencias-de-desarrollo"><a class="header" href="#112-dependencias-de-desarrollo">11.2 Dependencias de Desarrollo</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Paquete</th><th>Versión</th><th>Propósito</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>typescript</strong></td><td>^5</td><td>Tipado estático</td></tr>
+<tr><td><strong>tailwindcss</strong></td><td>^4</td><td>Utility-first CSS</td></tr>
+<tr><td><strong>@tailwindcss/postcss</strong></td><td>^4</td><td>Plugin PostCSS para Tailwind</td></tr>
+<tr><td><strong>eslint</strong></td><td>^9</td><td>Linting</td></tr>
+<tr><td><strong>eslint-config-next</strong></td><td>^16.1.7</td><td>Config ESLint para Next.js</td></tr>
+<tr><td><strong>@types/node</strong></td><td>^20</td><td>Tipos Node.js</td></tr>
+<tr><td><strong>@types/react</strong></td><td>^19</td><td>Tipos React</td></tr>
+<tr><td><strong>@types/react-dom</strong></td><td>^19</td><td>Tipos React DOM</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="113-herramientas-de-sistema"><a class="header" href="#113-herramientas-de-sistema">11.3 Herramientas de Sistema</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Herramienta</th><th>Propósito</th><th>Instalación</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>pnpm</strong></td><td>Package manager</td><td><code>npm i -g pnpm</code></td></tr>
+<tr><td><strong>Turbopack</strong></td><td>Bundler de Next.js (built-in)</td><td>Viene con Next.js 16</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="114-scripts-de-packagejson"><a class="header" href="#114-scripts-de-packagejson">11.4 Scripts de package.json</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Script</th><th>Comando</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td>dev</td><td><code>next dev</code></td><td>Desarrollo con Turbopack</td></tr>
+<tr><td>build</td><td><code>next build</code></td><td>Build producción</td></tr>
+<tr><td>start</td><td><code>next start</code></td><td>Servir producción</td></tr>
+<tr><td>lint</td><td><code>eslint</code></td><td>Linting</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="12-snippets-clave"><a class="header" href="#12-snippets-clave">12. Snippets Clave</a></h2>
+<h3 id="121-template-de-hook-crud-completo"><a class="header" href="#121-template-de-hook-crud-completo">12.1 Template de Hook CRUD Completo</a></h3>
+<pre><code class="language-typescript">// shared/hooks/use[Recurso].ts
+'use client';
+
+import { useCallback, useEffect, useState } from "react";
+import { list[Recurso], create[Recurso], update[Recurso], delete[Recurso] } from "../api/[recurso]";
+
+const ITEMS_PER_PAGE = 10;
+
+export function use[Recurso]() {
+  // --- Estado ---
+  const [items, setItems] = useState&lt;any[]&gt;([]);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState&lt;string | null&gt;(null);
+
+  // --- Filtros ---
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState&lt;string&gt;("all");
+
+  // --- Debounce ---
+  useEffect(() =&gt; {
+    const timer = setTimeout(() =&gt; {
+      setDebouncedSearch(searchTerm);
+    }, 300);
+    return () =&gt; clearTimeout(timer);
+  }, [searchTerm]);
+
+  // --- Fetch ---
+  const fetchItems = useCallback(async () =&gt; {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await list[Recurso]({
+        page: currentPage,
+        limit: ITEMS_PER_PAGE,
+        search: debouncedSearch || undefined,
+        ...(statusFilter !== "all" &amp;&amp; { status: statusFilter }),
+      });
+      setItems(data.items || data);
+      setTotal(data.total ?? data.length);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error al cargar datos");
+    } finally {
+      setLoading(false);
+    }
+  }, [currentPage, debouncedSearch, statusFilter]);
+
+  useEffect(() =&gt; {
+    fetchItems();
+  }, [fetchItems]);
+
+  // Reset page cuando cambian filtros
+  useEffect(() =&gt; {
+    setCurrentPage(1);
+  }, [debouncedSearch, statusFilter]);
+
+  // --- Handlers CRUD ---
+  const handleCreate = async (payload: any) =&gt; {
+    await create[Recurso](payload);
+    await fetchItems();
+  };
+
+  const handleUpdate = async (id: string, payload: any) =&gt; {
+    await update[Recurso](id, payload);
+    await fetchItems();
+  };
+
+  const handleDelete = async (id: string) =&gt; {
+    if (!confirm("¿Estás seguro de eliminar?")) return;
+    await delete[Recurso](id);
+    await fetchItems();
+  };
+
+  const clearFilters = () =&gt; {
+    setSearchTerm("");
+    setStatusFilter("all");
+    setCurrentPage(1);
+  };
+
+  // --- Computed ---
+  const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
+  const activeFiltersCount = [statusFilter !== "all"].filter(Boolean).length;
+
+  return {
+    items, loading, error, total, totalPages,
+    currentPage, setCurrentPage,
+    searchTerm, setSearchTerm,
+    statusFilter, setStatusFilter,
+    activeFiltersCount, clearFilters,
+    fetchItems, handleCreate, handleUpdate, handleDelete,
+  };
+}
+</code></pre>
+<h3 id="122-template-de-api-layer"><a class="header" href="#122-template-de-api-layer">12.2 Template de API Layer</a></h3>
+<pre><code class="language-typescript">// shared/api/[recurso].ts
+import { API_URL } from "../lib/constants";
+import { getAuthHeaders } from "../utils/auth";
+
+export interface List[Recurso]Params {
+  search?: string;
+  status?: string;
+  page?: number;
+  limit?: number;
+}
+
+export async function list[Recurso](params: List[Recurso]Params = {}): Promise&lt;any[]&gt; {
+  const searchParams = new URLSearchParams();
+  if (params.search) searchParams.set('search', params.search);
+  if (params.status) searchParams.set('status', params.status);
+  if (params.page) searchParams.set('page', String(params.page));
+  if (params.limit) searchParams.set('limit', String(params.limit));
+
+  const query = searchParams.toString();
+  const url = `${API_URL}/[recurso]${query ? `?${query}` : ''}`;
+
+  const res = await fetch(url, { credentials: 'include' });
+  if (!res.ok) {
+    const error = await res.json().catch(() =&gt; ({ message: `Failed to fetch [recurso]` }));
+    throw new Error(error.message || `Failed to fetch [recurso]`);
+  }
+  return res.json();
+}
+
+export async function get[Recurso](id: string): Promise&lt;any&gt; {
+  const res = await fetch(`${API_URL}/[recurso]/${id}`, { credentials: 'include' });
+  if (!res.ok) throw new Error(`Failed to fetch [recurso]`);
+  return res.json();
+}
+
+export async function create[Recurso](payload: any): Promise&lt;any&gt; {
+  const res = await fetch(`${API_URL}/[recurso]`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    credentials: 'include',
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error(`Failed to create [recurso]`);
+  return res.json();
+}
+
+export async function update[Recurso](id: string, payload: any): Promise&lt;any&gt; {
+  const res = await fetch(`${API_URL}/[recurso]/${id}`, {
+    method: 'PUT',
+    headers: getAuthHeaders(),
+    credentials: 'include',
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error(`Failed to update [recurso]`);
+  return res.json();
+}
+
+export async function delete[Recurso](id: string): Promise&lt;{ success: boolean }&gt; {
+  const res = await fetch(`${API_URL}/[recurso]/${id}`, {
+    method: 'DELETE',
+    credentials: 'include',
+  });
+  if (!res.ok) throw new Error(`Failed to delete [recurso]`);
+  return res.json();
+}
+</code></pre>
+<h3 id="123-template-de-zustand-store"><a class="header" href="#123-template-de-zustand-store">12.3 Template de Zustand Store</a></h3>
+<pre><code class="language-typescript">// shared/store/use[Nombre]Store.ts
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+
+interface [Nombre]Store {
+  someValue: boolean;
+  toggleValue: () =&gt; void;
+  setValue: (value: boolean) =&gt; void;
+}
+
+export const use[Nombre]Store = create&lt;[Nombre]Store&gt;()(
+  persist(
+    (set) =&gt; ({
+      someValue: false,
+      toggleValue: () =&gt; {
+        set((state) =&gt; ({ someValue: !state.someValue }));
+      },
+      setValue: (value: boolean) =&gt; {
+        set({ someValue: value });
+      },
+    }),
+    {
+      name: "[nombre]-storage",
+    }
+  )
+);
+</code></pre>
+<h3 id="124-template-de-filtros-con-búsqueda"><a class="header" href="#124-template-de-filtros-con-búsqueda">12.4 Template de Filtros con Búsqueda</a></h3>
+<pre><code class="language-typescript">export function Filters({
+  searchTerm, setSearchTerm, setCurrentPage,
+  showFilters, setShowFilters,
+  activeFiltersCount, statusFilter, setStatusFilter, clearFilters,
+}: FiltersProps) {
+  return (
+    &lt;&gt;
+      &lt;div className={styles.filtersSection}&gt;
+        &lt;div className={styles.searchWrapper}&gt;
+          &lt;Search className={styles.searchIcon} /&gt;
+          &lt;input
+            type="text"
+            placeholder="Buscar..."
+            value={searchTerm}
+            onChange={(e) =&gt; {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1); // ← SIEMPRE resetear página
+            }}
+          /&gt;
+        &lt;/div&gt;
+        &lt;button onClick={() =&gt; setShowFilters(!showFilters)}&gt;
+          &lt;Filter /&gt; Filtros
+          {activeFiltersCount &gt; 0 &amp;&amp; (
+            &lt;span className={styles.badge}&gt;{activeFiltersCount}&lt;/span&gt;
+          )}
+        &lt;/button&gt;
+      &lt;/div&gt;
+
+      {showFilters &amp;&amp; (
+        &lt;div className={styles.advancedFilters}&gt;
+          &lt;select
+            value={statusFilter}
+            onChange={(e) =&gt; {
+              setStatusFilter(e.target.value);
+              setCurrentPage(1);
+            }}
+          &gt;
+            &lt;option value="all"&gt;Todos&lt;/option&gt;
+            &lt;option value="active"&gt;Activo&lt;/option&gt;
+            &lt;option value="inactive"&gt;Inactivo&lt;/option&gt;
+          &lt;/select&gt;
+          &lt;button onClick={clearFilters}&gt;Limpiar filtros&lt;/button&gt;
+        &lt;/div&gt;
+      )}
+    &lt;/&gt;
+  );
+}
+</code></pre>
+<h3 id="125-template-de-modal"><a class="header" href="#125-template-de-modal">12.5 Template de Modal</a></h3>
+<pre><code class="language-typescript">// features/[feature]/modals/Create[Entity]Modal.tsx
+'use client';
+
+export function Create[Entity]Modal({ isOpen, onClose, onSubmit }: Props) {
+  const [formData, setFormData] = useState(defaultValues);
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) =&gt; {
+    e.preventDefault();
+    setSubmitting(true);
+    try {
+      await onSubmit(formData);
+      onClose();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Error al crear");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    &lt;div className={styles.overlay} onClick={onClose}&gt;
+      &lt;div className={styles.modal} onClick={e =&gt; e.stopPropagation()}&gt;
+        &lt;div className={styles.header}&gt;
+          &lt;h2&gt;Crear [Entidad]&lt;/h2&gt;
+          &lt;button onClick={onClose}&gt;&lt;X size={20} /&gt;&lt;/button&gt;
+        &lt;/div&gt;
+        &lt;form onSubmit={handleSubmit}&gt;
+          {/* Campos del formulario */}
+          &lt;div className={styles.actions}&gt;
+            &lt;button type="button" onClick={onClose}&gt;Cancelar&lt;/button&gt;
+            &lt;button type="submit" disabled={submitting}&gt;
+              {submitting ? 'Creando...' : 'Crear'}
+            &lt;/button&gt;
+          &lt;/div&gt;
+        &lt;/form&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<h3 id="126-template-de-estados-ui"><a class="header" href="#126-template-de-estados-ui">12.6 Template de Estados UI</a></h3>
+<pre><code class="language-typescript">function [Recurso]List() {
+  const { items, loading, error, fetchItems } = use[Recurso]();
+
+  if (loading) {
+    return (
+      &lt;div className="flex items-center justify-center py-12"&gt;
+        &lt;Loader2 className="animate-spin" size={24} /&gt;
+      &lt;/div&gt;
+    );
+  }
+
+  if (error) {
+    return &lt;ErrorState error={error} fetch={fetchItems} /&gt;;
+  }
+
+  if (items.length === 0) {
+    return (
+      &lt;div className="text-center py-12"&gt;
+        &lt;p className="text-gray-500"&gt;No hay [recursos] disponibles&lt;/p&gt;
+      &lt;/div&gt;
+    );
+  }
+
+  return (
+    &lt;div&gt;
+      &lt;ResultsInfo total={total} current={items.length} /&gt;
+      &lt;Table data={items} /&gt;
+      &lt;Pagination currentPage={currentPage} totalPages={totalPages} /&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<h3 id="127-auth-helpers"><a class="header" href="#127-auth-helpers">12.7 Auth Helpers</a></h3>
+<pre><code class="language-typescript">// shared/utils/auth.ts
+export function getAuthHeaders(): HeadersInit {
+  const token = localStorage.getItem('access_token');
+  return {
+    'Content-Type': 'application/json',
+    ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+  };
+}
+</code></pre>
+<pre><code class="language-typescript">// shared/hooks/useAuth.ts
+export function useAuth() {
+  const router = useRouter();
+  const [user, setUser] = useState&lt;User | null&gt;(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() =&gt; {
+    const token = localStorage.getItem('access_token');
+    const userData = localStorage.getItem('user');
+    if (token &amp;&amp; userData) {
+      setUser(JSON.parse(userData));
+    }
+    setIsLoading(false);
+  }, []);
+
+  const login = useCallback(async (email: string, password: string) =&gt; {
+    const res = await fetch(`${API_URL}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.message || 'Error al iniciar sesión');
+    }
+
+    const data = await res.json();
+    localStorage.setItem('access_token', data.access_token);
+    localStorage.setItem('user', JSON.stringify(data.user));
+    localStorage.setItem('user_id', data.user.id);
+    setUser(data.user);
+    return data.user;
+  }, []);
+
+  const logout = useCallback(() =&gt; {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('user_id');
+    setUser(null);
+    router.push('/login');
+  }, [router]);
+
+  return { user, isAuthenticated: !!user, isLoading, login, logout };
+}
+</code></pre>
+<h3 id="128-generación-de-slug"><a class="header" href="#128-generación-de-slug">12.8 Generación de Slug</a></h3>
+<pre><code class="language-typescript">// shared/utils/format.ts
+export function generateSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')  // quitar acentos
+    .replace(/[^a-z0-9\s-]/g, '')     // quitar caracteres especiales
+    .replace(/\s+/g, '-')             // espacios → guiones
+    .replace(/-+/g, '-')              // guiones múltiples → uno solo
+    .trim();
+}
+
+export const getInitials = (name: string) =&gt; {
+  return name
+    .split(" ")
+    .map((n) =&gt; n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+};
+</code></pre>
+<hr>
+<h2 id="13-convenciones-de-nomenclatura"><a class="header" href="#13-convenciones-de-nomenclatura">13. Convenciones de Nomenclatura</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Elemento</th><th>Convención</th><th>Ejemplo</th></tr>
+</thead>
+<tbody>
+<tr><td>Carpetas de features</td><td><code>kebab-case</code></td><td><code>admin/</code>, <code>product/</code>, <code>shop/</code></td></tr>
+<tr><td>Carpetas de sub-features</td><td><code>kebab-case</code></td><td><code>orders/</code>, <code>products/</code>, <code>sales/</code></td></tr>
+<tr><td>Componentes</td><td><code>PascalCase</code></td><td><code>ProductCard.tsx</code>, <code>StoreNavbar.tsx</code></td></tr>
+<tr><td>Hooks</td><td><code>usePascalCase</code></td><td><code>useProducts.ts</code>, <code>useAuth.ts</code></td></tr>
+<tr><td>APIs</td><td><code>kebab-case</code></td><td><code>products.ts</code>, <code>categories.ts</code></td></tr>
+<tr><td>Tipos</td><td><code>PascalCase</code></td><td><code>Product</code>, <code>OrderStatus</code></td></tr>
+<tr><td>Constantes</td><td><code>UPPER_SNAKE_CASE</code></td><td><code>API_URL</code>, <code>ITEMS_PER_PAGE</code></td></tr>
+<tr><td>Funciones helper</td><td><code>camelCase</code></td><td><code>getInitials()</code>, <code>generateSlug()</code></td></tr>
+<tr><td>CSS Modules</td><td><code>Nombre.module.css</code></td><td><code>ProductCard.module.css</code></td></tr>
+<tr><td>Stores</td><td><code>useNombreStore</code></td><td><code>useSidebarStore</code></td></tr>
+<tr><td>Context</td><td><code>NombreContext</code></td><td><code>CartContext</code></td></tr>
+<tr><td>Modales</td><td><code>VerboNombreModal</code></td><td><code>CreateProductModal</code></td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="14-resumen-de-patrones"><a class="header" href="#14-resumen-de-patrones">14. Resumen de Patrones</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Patrón</th><th>Aplicación</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Feature-First Architecture</strong></td><td>Cada feature autocontenida en <code>src/features/</code></td></tr>
+<tr><td><strong>Container-Presentational</strong></td><td>Hooks como containers, componentes como vistas</td></tr>
+<tr><td><strong>Route Groups</strong></td><td>Layouts diferentes para auth/shop/admin sin anidar URLs</td></tr>
+<tr><td><strong>Co-location</strong></td><td>CSS Modules, tests y datos viven junto al componente</td></tr>
+<tr><td><strong>Estados de UI</strong></td><td>Loading / Empty / Error / Success en toda la app</td></tr>
+<tr><td><strong>Data Flow Unidireccional</strong></td><td>Component → Hook → API → Estado → Re-render</td></tr>
+<tr><td><strong>Modales por Feature</strong></td><td>Modales dentro de la feature que los usa</td></tr>
+<tr><td><strong>Debounce Pattern</strong></td><td>300ms de debounce en búsquedas</td></tr>
+<tr><td><strong>Reset de Paginación</strong></td><td>Reset a página 1 al cambiar filtros</td></tr>
+<tr><td><strong>Fetch nativo</strong></td><td>Sin axios, sin React Query, fetch directamente</td></tr>
+<tr><td><strong>Mappers API → UI</strong></td><td>Transformación de datos entre backend y frontend</td></tr>
+<tr><td><strong>Zustand + persist</strong></td><td>Estado global con persistencia automática</td></tr>
+<tr><td><strong>Context + useReducer</strong></td><td>Estado compartido dentro de una feature</td></tr>
+<tr><td><strong>CSS Modules + Tailwind</strong></td><td>Scoped styles para componentes, utility para layouts</td></tr>
+<tr><td><strong>Protección de Rutas</strong></td><td>Auth check en layout admin con redirect</td></tr>
+<tr><td><strong>Credential Cookies</strong></td><td><code>credentials: 'include'</code> en todos los fetch</td></tr>
+<tr><td><strong>Co-location de Estilos</strong></td><td><code>.module.css</code> junto al componente</td></tr>
+<tr><td><strong>Single Responsibility</strong></td><td>Cada archivo tiene UN solo propósito</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<blockquote>
+<p><strong>Nota:</strong> Este manual se actualiza con cada proyecto. No es una verdad absoluta, es una base desde la cual iterar.</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../docs/17-fastify-backend.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../docs/14-postgres-installation.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../docs/17-fastify-backend.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../docs/14-postgres-installation.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

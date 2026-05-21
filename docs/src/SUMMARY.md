@@ -15,6 +15,9 @@
 - [Backend Fastify Primeros Pasos](./docs/19-fastify-init.md)
 - [Backend Farmacia](./docs/17-fastify-backend.md)
 
+## NextJs(Typescript)
+- [NextJs](./docs/20-nextjs-init.md)
+
 ## Base de datos
 - [Postgres](./docs/14-postgres-installation.md)
 - [SQLx](./docs/03-sqlx.md)
