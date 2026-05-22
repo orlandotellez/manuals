@@ -36,10 +36,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-62ba98d6.js";
+            window.path_to_searchindex_js = "searchindex-13f8ea00.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-6fc508fd.js"></script>
+        <script src="toc-6dbc2f32.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -200,6 +200,10 @@
 <li><a href="#1-instalar-sqlx-cli">SQLx</a></li>
 <li><a href="#redis">Redis</a></li>
 <li><a href="#guía-completa-de-prisma-6">Prisma</a></li>
+</ul>
+<h2 id="aspnetc"><a class="header" href="#aspnetc">ASPNET(C#)</a></h2>
+<ul>
+<li><a href="#aspnet-core-init---manual-técnico-completo">ASPNET Primeros Pasos</a></li>
 </ul>
 <h2 id="react-native"><a class="header" href="#react-native">React Native</a></h2>
 <ul>
@@ -14249,6 +14253,2677 @@ pnpm prisma migrate dev --name sync_current_state
 </code></pre>
 <p>¡Con esto ya sabés lo básico de Prisma para trabajar! 🚀</p>
 <div style="break-before: page; page-break-before: always;"></div>
+<h1 id="aspnet-core-init---manual-técnico-completo"><a class="header" href="#aspnet-core-init---manual-técnico-completo">ASP.NET Core Init - Manual Técnico Completo</a></h1>
+<p>Manual completo para instalar y desarrollar con <strong>.NET 10</strong> en <strong>Debian 13 (Trixie)</strong>, incluyendo instalación, creación de API con Clean Architecture, Entity Framework Core, autenticación JWT, y comandos de administración.</p>
+<hr>
+<h2 id="índice-4"><a class="header" href="#índice-4">Índice</a></h2>
+<ol>
+<li><a href="#1-instalación-de-net-10-en-debian-13">Instalación de .NET 10 en Debian 13</a></li>
+<li><a href="#2-verificar-instalación">Verificar Instalación</a></li>
+<li><a href="#3-desinstalar-net">Desinstalar .NET</a></li>
+<li><a href="#4-estructura-del-proyecto">Estructura del Proyecto</a></li>
+<li><a href="#5-configuración-principal">Configuración Principal</a></li>
+<li><a href="#6-capa-de-dominio">Capa de Dominio</a></li>
+<li><a href="#7-capa-de-aplicación">Capa de Aplicación</a></li>
+<li><a href="#8-capa-de-infraestructura">Capa de Infraestructura</a></li>
+<li><a href="#9-capa-de-presentación">Capa de Presentación</a></li>
+<li><a href="#10-entity-framework-core---orm">Entity Framework Core - ORM</a></li>
+<li><a href="#11-migraciones">Migraciones</a></li>
+<li><a href="#12-endpoints-1">Endpoints</a></li>
+<li><a href="#13-comandos-útiles">Comandos Útiles</a></li>
+<li><a href="#14-resumen-de-patrones-1">Resumen de Patrones</a></li>
+</ol>
+<hr>
+<h2 id="1-instalación-de-net-10-en-debian-13"><a class="header" href="#1-instalación-de-net-10-en-debian-13">1. Instalación de .NET 10 en Debian 13</a></h2>
+<h3 id="11-requisitos-del-sistema"><a class="header" href="#11-requisitos-del-sistema">1.1 Requisitos del Sistema</a></h3>
+<ul>
+<li><strong>Debian 13 (Trixie)</strong> - amd64 o arm64</li>
+<li>2 GB RAM (mínimo), 4 GB recomendado</li>
+<li>5 GB de espacio libre en disco</li>
+<li>Conexión a Internet</li>
+</ul>
+<h3 id="12-instalación-por-apt-recomendada"><a class="header" href="#12-instalación-por-apt-recomendada">1.2 Instalación por APT (recomendada)</a></h3>
+<pre><code class="language-bash"># 1. Registrar el repositorio de Microsoft
+wget https://packages.microsoft.com/config/debian/13/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+rm packages-microsoft-prod.deb
+
+# 2. Actualizar índices de paquetes
+sudo apt update
+
+# 3. Instalar .NET SDK 10 (incluye runtime y ASP.NET Core)
+sudo apt install -y dotnet-sdk-10.0
+</code></pre>
+<p><strong>¿Qué instala esto?</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Componente</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><code>dotnet-sdk-10.0</code></td><td>SDK completo: compilador C#, runtime, herramientas CLI</td></tr>
+<tr><td><code>aspnetcore-runtime-10.0</code></td><td>Runtime de ASP.NET Core (incluido en el SDK)</td></tr>
+<tr><td><code>dotnet-runtime-10.0</code></td><td>Runtime base de .NET (incluido en el SDK)</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="13-instalación-solo-runtime-para-producción"><a class="header" href="#13-instalación-solo-runtime-para-producción">1.3 Instalación Solo Runtime (para producción)</a></h3>
+<p>Si solo necesitas <strong>ejecutar</strong> aplicaciones (no desarrollarlas):</p>
+<pre><code class="language-bash">sudo apt install -y aspnetcore-runtime-10.0
+</code></pre>
+<h3 id="14-instalación-por-script-alternativa"><a class="header" href="#14-instalación-por-script-alternativa">1.4 Instalación por Script (alternativa)</a></h3>
+<pre><code class="language-bash"># Descargar e instalar con script oficial
+wget https://dot.net/v1/dotnet-install.sh
+chmod +x dotnet-install.sh
+./dotnet-install.sh --channel 10.0
+
+# Agregar al PATH (bash)
+echo 'export DOTNET_ROOT=$HOME/.dotnet' &gt;&gt; ~/.bashrc
+echo 'export PATH=$PATH:$DOTNET_ROOT:$DOTNET_ROOT/tools' &gt;&gt; ~/.bashrc
+source ~/.bashrc
+</code></pre>
+<h3 id="15-instalación-de-dependencias-adicionales"><a class="header" href="#15-instalación-de-dependencias-adicionales">1.5 Instalación de Dependencias Adicionales</a></h3>
+<pre><code class="language-bash"># PostgreSQL (para producción)
+sudo apt install -y postgresql postgresql-contrib
+
+# Redis (para caché/sesiones)
+sudo apt install -y redis-server
+
+# Herramientas de desarrollo
+sudo apt install -y git curl build-essential
+</code></pre>
+<hr>
+<h2 id="2-verificar-instalación"><a class="header" href="#2-verificar-instalación">2. Verificar Instalación</a></h2>
+<pre><code class="language-bash"># Versión del SDK instalado
+dotnet --version
+# Output esperado: 10.0.xxx
+
+# Listar todos los SDKs instalados
+dotnet --list-sdks
+# Output esperado: 10.0.xxx [/usr/share/dotnet/sdk]
+
+# Listar todos los runtimes instalados
+dotnet --list-runtimes
+# Output esperado:
+# Microsoft.AspNetCore.App 10.0.xxx [/usr/share/dotnet/shared/Microsoft.AspNetCore.App]
+# Microsoft.NETCore.App 10.0.xxx [/usr/share/dotnet/shared/Microsoft.NETCore.App]
+
+# Info completa
+dotnet --info
+
+# Verificar que funciona
+dotnet new console -n hola-mundo
+cd hola-mundo
+dotnet run
+</code></pre>
+<hr>
+<h2 id="3-desinstalar-net"><a class="header" href="#3-desinstalar-net">3. Desinstalar .NET</a></h2>
+<h3 id="31-desinstalar-por-apt-instalación-por-paquetes"><a class="header" href="#31-desinstalar-por-apt-instalación-por-paquetes">3.1 Desinstalar por APT (instalación por paquetes)</a></h3>
+<pre><code class="language-bash"># Desinstalar SDK
+sudo apt remove -y dotnet-sdk-10.0
+
+# Desinstalar runtimes
+sudo apt remove -y aspnetcore-runtime-10.0
+sudo apt remove -y dotnet-runtime-10.0
+
+# Opcional: eliminar paquetes no usados
+sudo apt autoremove -y
+
+# Opcional: eliminar el repositorio de Microsoft
+sudo dpkg -r packages-microsoft-prod
+
+# Eliminar el archivo de lista del repositorio
+sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
+sudo apt update
+</code></pre>
+<h3 id="32-desinstalar-instalación-por-script"><a class="header" href="#32-desinstalar-instalación-por-script">3.2 Desinstalar Instalación por Script</a></h3>
+<pre><code class="language-bash"># Eliminar directorio de instalación
+rm -rf $HOME/.dotnet
+
+# Limpiar del PATH (editar ~/.bashrc o ~/.zshrc)
+# Eliminar o comentar las líneas:
+# export DOTNET_ROOT=$HOME/.dotnet
+# export PATH=$PATH:$DOTNET_ROOT:$DOTNET_ROOT/tools
+</code></pre>
+<h3 id="33-desinstalar-versiones-específicas"><a class="header" href="#33-desinstalar-versiones-específicas">3.3 Desinstalar Versiones Específicas</a></h3>
+<pre><code class="language-bash"># Listar SDKs instalados
+dotnet --list-sdks
+
+# Eliminar manualmente versiones específicas
+sudo rm -rf /usr/share/dotnet/sdk/&lt;version&gt;
+sudo rm -rf /usr/share/dotnet/shared/Microsoft.AspNetCore.App/&lt;version&gt;
+sudo rm -rf /usr/share/dotnet/shared/Microsoft.NETCore.App/&lt;version&gt;
+
+# Ejemplo: eliminar .NET 8.0
+sudo rm -rf /usr/share/dotnet/sdk/8.0.*
+sudo rm -rf /usr/share/dotnet/shared/Microsoft.AspNetCore.App/8.0.*
+sudo rm -rf /usr/share/dotnet/shared/Microsoft.NETCore.App/8.0.*
+</code></pre>
+<h3 id="34-desinstalar-todo-net-limpieza-completa"><a class="header" href="#34-desinstalar-todo-net-limpieza-completa">3.4 Desinstalar TODO .NET (limpieza completa)</a></h3>
+<pre><code class="language-bash"># Eliminar todos los SDKs y runtimes
+sudo rm -rf /usr/share/dotnet
+
+# Eliminar repositorio Microsoft
+sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
+sudo apt update
+
+# Limpiar paquetes huérfanos
+sudo apt autoremove --purge -y
+
+# Verificar que no queda nada
+dotnet --version  # Debería dar: command not found
+</code></pre>
+<hr>
+<h2 id="4-estructura-del-proyecto"><a class="header" href="#4-estructura-del-proyecto">4. Estructura del Proyecto</a></h2>
+<pre><code>src/
+├── Domain/                               # Capa de dominio (entidades puras)
+│   ├── Entities/
+│   │   ├── User.cs
+│   │   ├── Account.cs
+│   │   ├── Session.cs
+│   │   └── Verification.cs
+│   ├── Enums/
+│   │   └── Role.cs
+│   ├── ValueObjects/                     # Objetos de valor
+│   └── Exceptions/
+│       └── AppException.cs              # Errores personalizados
+│
+├── Application/                          # Capa de aplicación (casos de uso)
+│   ├── Common/
+│   │   ├── Interfaces/
+│   │   │   ├── IUserRepository.cs
+│   │   │   ├── IAccountRepository.cs
+│   │   │   ├── ISessionRepository.cs
+│   │   │   ├── IVerificationRepository.cs
+│   │   │   ├── ITokenService.cs
+│   │   │   └── IPasswordService.cs
+│   │   └── Mapping/
+│   │       └── MappingProfile.cs
+│   └── Features/
+│       └── Auth/
+│           ├── Commands/                 # Comandos CQRS
+│           │   ├── RegisterCommand.cs
+│           │   ├── LoginCommand.cs
+│           │   ├── RefreshTokenCommand.cs
+│           │   ├── VerifyEmailCommand.cs
+│           │   ├── ForgotPasswordCommand.cs
+│           │   └── ResetPasswordCommand.cs
+│           ├── Queries/                  # Queries CQRS
+│           │   ├── GetUserSessionsQuery.cs
+│           │   └── RevokeSessionQuery.cs
+│           └── AuthService.cs           # Servicio de autenticación
+│
+├── Infrastructure/                       # Capa de infraestructura
+│   ├── Persistence/
+│   │   ├── ApplicationDbContext.cs       # Contexto de EF Core
+│   │   ├── Configurations/              # Configuración de entidades EF
+│   │   │   ├── UserConfiguration.cs
+│   │   │   ├── AccountConfiguration.cs
+│   │   │   └── SessionConfiguration.cs
+│   │   └── Repositories/                # Implementaciones de repositorios
+│   │       ├── UserRepository.cs
+│   │       ├── AccountRepository.cs
+│   │       ├── SessionRepository.cs
+│   │       └── VerificationRepository.cs
+│   └── Services/
+│       ├── TokenService.cs              # JWT tokens
+│       └── PasswordService.cs           # BCrypt hashing
+│
+└── Api/                                  # Capa de presentación (API)
+    ├── Controllers/
+    │   └── AuthController.cs
+    ├── DTOs/
+    │   ├── RegisterRequest.cs
+    │   ├── LoginRequest.cs
+    │   └── AuthResponse.cs
+    ├── Middleware/
+    │   └── ErrorHandlingMiddleware.cs
+    ├── Filters/
+    │   └── AuthGuardAttribute.cs
+    └── Program.cs                       # Punto de entrada
+</code></pre>
+<h3 id="correspondencia-fastify--aspnet-core"><a class="header" href="#correspondencia-fastify--aspnet-core">Correspondencia Fastify → ASP.NET Core</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Fastify</th><th>ASP.NET Core</th></tr>
+</thead>
+<tbody>
+<tr><td>Fastify framework</td><td>ASP.NET Core Minimal/Controller APIs</td></tr>
+<tr><td>Prisma ORM</td><td>Entity Framework Core 10</td></tr>
+<tr><td>pino logger</td><td>Serilog</td></tr>
+<tr><td>Zod validation</td><td>FluentValidation</td></tr>
+<tr><td>bcrypt</td><td>BCrypt.Net-Next</td></tr>
+<tr><td>jsonwebtoken</td><td>System.IdentityModel.Tokens.Jwt</td></tr>
+<tr><td>ioredis</td><td>StackExchange.Redis</td></tr>
+<tr><td>Decorators/Plugins</td><td>Middleware</td></tr>
+<tr><td>Routes</td><td>Controllers / Minimal APIs</td></tr>
+<tr><td>DTOs</td><td>Record classes</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="5-configuración-principal"><a class="header" href="#5-configuración-principal">5. Configuración Principal</a></h2>
+<h3 id="51-crear-el-proyecto"><a class="header" href="#51-crear-el-proyecto">5.1 Crear el Proyecto</a></h3>
+<pre><code class="language-bash"># Crear solución
+dotnet new sln -n Cursinet
+
+# Crear proyectos para cada capa
+dotnet new classlib -n Cursinet.Domain
+dotnet new classlib -n Cursinet.Application
+dotnet new classlib -n Cursinet.Infrastructure
+dotnet new webapi -n Cursinet.Api
+
+# Agregar proyectos a la solución
+dotnet sln add Cursinet.Domain/Cursinet.Domain.csproj
+dotnet sln add Cursinet.Application/Cursinet.Application.csproj
+dotnet sln add Cursinet.Infrastructure/Cursinet.Infrastructure.csproj
+dotnet sln add Cursinet.Api/Cursinet.Api.csproj
+
+# Agregar referencias entre capas
+dotnet add Cursinet.Application/Cursinet.Application.csproj reference Cursinet.Domain/Cursinet.Domain.csproj
+dotnet add Cursinet.Infrastructure/Cursinet.Infrastructure.csproj reference Cursinet.Application/Cursinet.Application.csproj
+dotnet add Cursinet.Api/Cursinet.Api.csproj reference Cursinet.Infrastructure/Cursinet.Infrastructure.csproj
+dotnet add Cursinet.Api/Cursinet.Api.csproj reference Cursinet.Application/Cursinet.Application.csproj
+
+
+--- opcion alternativa más rapida
+dotnet new sln -n MiProyecto
+
+mkdir src
+
+dotnet new classlib -o src/Domain
+dotnet new classlib -o src/Application
+dotnet new classlib -o src/Infrastructure
+dotnet new webapi -o src/Api
+
+dotnet sln add src/Domain
+dotnet sln add src/Application
+dotnet sln add src/Infrastructure
+dotnet sln add src/Api
+</code></pre>
+<h3 id="52-dependencies---cursinetapicsproj"><a class="header" href="#52-dependencies---cursinetapicsproj">5.2 Dependencies - Cursinet.Api.csproj</a></h3>
+<pre><code class="language-xml">&lt;Project Sdk="Microsoft.NET.Sdk.Web"&gt;
+
+  &lt;PropertyGroup&gt;
+    &lt;TargetFramework&gt;net10.0&lt;/TargetFramework&gt;
+    &lt;Nullable&gt;enable&lt;/Nullable&gt;
+    &lt;ImplicitUsings&gt;enable&lt;/ImplicitUsings&gt;
+  &lt;/PropertyGroup&gt;
+
+  &lt;ItemGroup&gt;
+    &lt;PackageReference Include="Serilog.AspNetCore" Version="9.0.*" /&gt;
+    &lt;PackageReference Include="FluentValidation.AspNetCore" Version="11.4.*" /&gt;
+  &lt;/ItemGroup&gt;
+
+&lt;/Project&gt;
+</code></pre>
+<h3 id="53-dependencies---cursinetinfrastructurecsproj"><a class="header" href="#53-dependencies---cursinetinfrastructurecsproj">5.3 Dependencies - Cursinet.Infrastructure.csproj</a></h3>
+<pre><code class="language-xml">&lt;Project Sdk="Microsoft.NET.Sdk"&gt;
+
+  &lt;PropertyGroup&gt;
+    &lt;TargetFramework&gt;net10.0&lt;/TargetFramework&gt;
+    &lt;Nullable&gt;enable&lt;/Nullable&gt;
+    &lt;ImplicitUsings&gt;enable&lt;/ImplicitUsings&gt;
+  &lt;/PropertyGroup&gt;
+
+  &lt;ItemGroup&gt;
+    &lt;PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.*" /&gt;
+    &lt;PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.*" /&gt;
+    &lt;PackageReference Include="BCrypt.Net-Next" Version="4.0.*" /&gt;
+    &lt;PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.*" /&gt;
+    &lt;PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.*" /&gt;
+  &lt;/ItemGroup&gt;
+
+&lt;/Project&gt;
+</code></pre>
+<h3 id="54-appsettingsjson---variables-de-entorno"><a class="header" href="#54-appsettingsjson---variables-de-entorno">5.4 appsettings.json - Variables de Entorno</a></h3>
+<pre><code class="language-json">{
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=localhost;Database=cursinet;Username=postgres;Password=postgres"
+  },
+  "Redis": {
+    "Connection": "localhost:6379"
+  },
+  "Jwt": {
+    "Secret": "your-super-secret-jwt-key-min-32-chars-long",
+    "RefreshSecret": "your-super-secret-refresh-key-min-32-chars",
+    "AccessTokenExpiry": "00:15:00",
+    "RefreshTokenExpiry": "7.00:00:00"
+  },
+  "Serilog": {
+    "MinimumLevel": {
+      "Default": "Information",
+      "Override": {
+        "Microsoft": "Warning",
+        "Microsoft.EntityFrameworkCore": "Information"
+      }
+    },
+    "WriteTo": [
+      { "Name": "Console" }
+    ]
+  }
+}
+</code></pre>
+<p><strong>¿Qué hace cada sección?</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Sección</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><code>ConnectionStrings.DefaultConnection</code></td><td>Cadena de conexión a PostgreSQL</td></tr>
+<tr><td><code>Redis.Connection</code></td><td>URL de conexión a Redis (caché opcional)</td></tr>
+<tr><td><code>Jwt.Secret</code></td><td>Clave secreta para firmar access tokens</td></tr>
+<tr><td><code>Jwt.RefreshSecret</code></td><td>Clave secreta para firmar refresh tokens</td></tr>
+<tr><td><code>Jwt.AccessTokenExpiry</code></td><td>Tiempo de vida del access token</td></tr>
+<tr><td><code>Jwt.RefreshTokenExpiry</code></td><td>Tiempo de vida del refresh token</td></tr>
+<tr><td><code>Serilog</code></td><td>Configuración del logger</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="55-appsettingsdevelopmentjson"><a class="header" href="#55-appsettingsdevelopmentjson">5.5 appsettings.Development.json</a></h3>
+<pre><code class="language-json">{
+  "Serilog": {
+    "MinimumLevel": {
+      "Default": "Debug",
+      "Override": {
+        "Microsoft": "Information",
+        "Microsoft.EntityFrameworkCore.Database.Command": "Information"
+      }
+    }
+  }
+}
+</code></pre>
+<h3 id="56-programcs---punto-de-entrada"><a class="header" href="#56-programcs---punto-de-entrada">5.6 Program.cs - Punto de Entrada</a></h3>
+<pre><code class="language-csharp">using Serilog;
+using Microsoft.EntityFrameworkCore;
+using Cursinet.Infrastructure.Persistence;
+using Cursinet.Infrastructure.Services;
+using Cursinet.Application.Common.Interfaces;
+using Cursinet.Api.Middleware;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateLogger();
+
+try
+{
+    var builder = WebApplication.CreateBuilder(args);
+
+    // Logger
+    builder.Host.UseSerilog();
+
+    // Database - PostgreSQL con EF Core 10
+    builder.Services.AddDbContext&lt;ApplicationDbContext&gt;(options =&gt;
+        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+    // Services - DI
+    builder.Services.AddScoped&lt;IPasswordService, PasswordService&gt;();
+    builder.Services.AddScoped&lt;ITokenService, TokenService&gt;();
+    builder.Services.AddScoped&lt;IAuthService, AuthService&gt;();
+    builder.Services.AddScoped&lt;IUserRepository, UserRepository&gt;();
+    builder.Services.AddScoped&lt;IAccountRepository, AccountRepository&gt;();
+    builder.Services.AddScoped&lt;ISessionRepository, SessionRepository&gt;();
+    builder.Services.AddScoped&lt;IVerificationRepository, VerificationRepository&gt;();
+
+    // JWT Authentication
+    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(options =&gt;
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]!))
+            };
+        });
+
+    builder.Services.AddAuthorization();
+
+    // Controllers + Validación
+    builder.Services.AddControllers();
+
+    // OpenAPI / Swagger
+    builder.Services.AddOpenApi();
+
+    var app = builder.Build();
+
+    // Middleware pipeline
+    app.UseSerilogRequestLogging();
+    app.UseMiddleware&lt;ErrorHandlingMiddleware&gt;();
+
+    if (app.Environment.IsDevelopment())
+    {
+        app.MapOpenApi();
+    }
+
+    app.UseAuthentication();
+    app.UseAuthorization();
+    app.MapControllers();
+
+    // Health check
+    app.MapGet("/health", () =&gt; Results.Ok(new
+    {
+        status = "ok",
+        timestamp = DateTime.UtcNow
+    }));
+
+    Log.Information("Server starting on http://localhost:5000");
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Application terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
+</code></pre>
+<p><strong>¿Qué hace este archivo?</strong></p>
+<ol>
+<li><strong>Configura Serilog</strong> - Logger estructurado para toda la app</li>
+<li><strong>Registra DbContext</strong> - EF Core 10 con PostgreSQL</li>
+<li><strong>Registra servicios en DI</strong> - PasswordService, TokenService, AuthService, repositorios</li>
+<li><strong>Configura JWT</strong> - Autenticación con tokens JWT Bearer</li>
+<li><strong>Agrega controllers</strong> - APIs con atributos <code>[ApiController]</code></li>
+<li><strong>Pipeline de middleware</strong> - Logging → Error Handling → Auth → Authorization → Controllers</li>
+<li><strong>Health check</strong> - Endpoint <code>/health</code> para monitoreo</li>
+<li><strong>Graceful shutdown</strong> - Serilog cierra correctamente</li>
+</ol>
+<p><strong>¿Por qué usar Serilog?</strong> Logger estructurado de alto rendimiento, soporta múltiples destinos (archivos, consola, Elasticsearch, etc.) y se integra nativamente con ASP.NET Core.</p>
+<h3 id="57-launchsettingsjson"><a class="header" href="#57-launchsettingsjson">5.7 launchSettings.json</a></h3>
+<pre><code class="language-json">{
+  "profiles": {
+    "http": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:5000",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
+</code></pre>
+<hr>
+<h2 id="6-capa-de-dominio"><a class="header" href="#6-capa-de-dominio">6. Capa de Dominio</a></h2>
+<p>La capa de dominio contiene las entidades puras, sin dependencias de frameworks externos.</p>
+<h3 id="61-enumsrolecs"><a class="header" href="#61-enumsrolecs">6.1 Enums/Role.cs</a></h3>
+<pre><code class="language-csharp">namespace Cursinet.Domain.Enums;
+
+public enum Role
+{
+    Staff,
+    Admin
+}
+</code></pre>
+<p>Equivalente a TypeScript: <code>type Role = "admin" | "staff"</code></p>
+<h3 id="62-entitiesusercs"><a class="header" href="#62-entitiesusercs">6.2 Entities/User.cs</a></h3>
+<pre><code class="language-csharp">using Cursinet.Domain.Enums;
+
+namespace Cursinet.Domain.Entities;
+
+public class User
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public bool EmailVerified { get; set; }
+    public string? Phone { get; set; }
+    public string? Image { get; set; }
+    public Role Role { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
+    public DateTime? DeletedAt { get; set; }
+
+    // Navigation properties (para EF Core)
+    public ICollection&lt;Account&gt; Accounts { get; set; } = new List&lt;Account&gt;();
+    public ICollection&lt;Session&gt; Sessions { get; set; } = new List&lt;Session&gt;();
+}
+</code></pre>
+<h3 id="63-entitiesaccountcs"><a class="header" href="#63-entitiesaccountcs">6.3 Entities/Account.cs</a></h3>
+<pre><code class="language-csharp">namespace Cursinet.Domain.Entities;
+
+public class Account
+{
+    public Guid Id { get; set; }
+    public string AccountId { get; set; } = string.Empty;
+    public string ProviderId { get; set; } = string.Empty;  // "credentials", "google", etc.
+    public Guid? UserId { get; set; }
+    public string? AccessToken { get; set; }
+    public string? RefreshToken { get; set; }
+    public string? IdToken { get; set; }
+    public DateTime? AccessTokenExpiresAt { get; set; }
+    public DateTime? RefreshTokenExpiresAt { get; set; }
+    public string? Scope { get; set; }
+    public string? Password { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
+
+    // Navigation
+    public User? User { get; set; }
+}
+</code></pre>
+<h3 id="64-entitiessessioncs"><a class="header" href="#64-entitiessessioncs">6.4 Entities/Session.cs</a></h3>
+<pre><code class="language-csharp">namespace Cursinet.Domain.Entities;
+
+public class Session
+{
+    public Guid Id { get; set; }
+    public DateTime ExpiresAt { get; set; }
+    public string Token { get; set; } = string.Empty;
+    public string? IpAddress { get; set; }
+    public string? UserAgent { get; set; }
+    public Guid UserId { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
+
+    // Navigation
+    public User? User { get; set; }
+}
+</code></pre>
+<h3 id="65-entitiesverificationcs"><a class="header" href="#65-entitiesverificationcs">6.5 Entities/Verification.cs</a></h3>
+<pre><code class="language-csharp">namespace Cursinet.Domain.Entities;
+
+public class Verification
+{
+    public Guid Id { get; set; }
+    public string Identifier { get; set; } = string.Empty;   // email o "reset:email"
+    public string Value { get; set; } = string.Empty;         // código de verificación
+    public DateTime ExpiresAt { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
+}
+</code></pre>
+<h3 id="66-exceptionsappexceptioncs"><a class="header" href="#66-exceptionsappexceptioncs">6.6 Exceptions/AppException.cs</a></h3>
+<pre><code class="language-csharp">namespace Cursinet.Domain.Exceptions;
+
+public class AppException : Exception
+{
+    public int StatusCode { get; }
+    public string Code { get; }
+    public bool IsOperational { get; }
+
+    public AppException(string message, int statusCode, string code)
+        : base(message)
+    {
+        StatusCode = statusCode;
+        Code = code;
+        IsOperational = true;
+    }
+}
+
+// Helper methods para crear excepciones rápidamente
+public static class AppExceptions
+{
+    public static AppException BadRequest(string message = "Bad Request")
+        =&gt; new(message, 400, "BAD_REQUEST");
+
+    public static AppException Unauthorized(string message = "Unauthorized")
+        =&gt; new(message, 401, "UNAUTHORIZED");
+
+    public static AppException Forbidden(string message = "Forbidden")
+        =&gt; new(message, 403, "FORBIDDEN");
+
+    public static AppException NotFound(string message = "Not Found")
+        =&gt; new(message, 404, "NOT_FOUND");
+
+    public static AppException Conflict(string message = "Conflict")
+        =&gt; new(message, 409, "CONFLICT");
+
+    public static AppException UnprocessableEntity(string message = "Unprocessable Entity")
+        =&gt; new(message, 422, "UNPROCESSABLE_ENTITY");
+
+    public static AppException TooManyRequests(string message = "Too Many Requests")
+        =&gt; new(message, 429, "TOO_MANY_REQUESTS");
+
+    public static AppException InternalError(string message = "Internal Server Error")
+        =&gt; new(message, 500, "INTERNAL_SERVER_ERROR");
+}
+</code></pre>
+<p><strong>¿Qué hace este archivo?</strong></p>
+<ul>
+<li><strong><code>AppException</code></strong> - Clase base para errores operacionales con <code>StatusCode</code> y <code>Code</code></li>
+<li><strong><code>AppExceptions</code></strong> - Helper estático para crear excepciones rápidamente</li>
+</ul>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Error</th><th>Status</th><th>Code</th><th>Uso</th></tr>
+</thead>
+<tbody>
+<tr><td>BadRequest</td><td>400</td><td>BAD_REQUEST</td><td>Datos inválidos</td></tr>
+<tr><td>Unauthorized</td><td>401</td><td>UNAUTHORIZED</td><td>No autenticado</td></tr>
+<tr><td>Forbidden</td><td>403</td><td>FORBIDDEN</td><td>Sin permisos</td></tr>
+<tr><td>NotFound</td><td>404</td><td>NOT_FOUND</td><td>Recurso no existe</td></tr>
+<tr><td>Conflict</td><td>409</td><td>CONFLICT</td><td>Email duplicado</td></tr>
+<tr><td>UnprocessableEntity</td><td>422</td><td>UNPROCESSABLE_ENTITY</td><td>Validación fallida</td></tr>
+<tr><td>TooManyRequests</td><td>429</td><td>TOO_MANY_REQUESTS</td><td>Rate limit</td></tr>
+<tr><td>InternalError</td><td>500</td><td>INTERNAL_SERVER_ERROR</td><td>Error inesperado</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="7-capa-de-aplicación"><a class="header" href="#7-capa-de-aplicación">7. Capa de Aplicación</a></h2>
+<p>La capa de aplicación define los <strong>contratos</strong> (interfaces) y la <strong>lógica de negocio</strong>, sin dependencias de frameworks externos.</p>
+<h3 id="71-interfaces-de-repositorios"><a class="header" href="#71-interfaces-de-repositorios">7.1 Interfaces de Repositorios</a></h3>
+<h4 id="iuserrepositorycs"><a class="header" href="#iuserrepositorycs">IUserRepository.cs</a></h4>
+<pre><code class="language-csharp">using Cursinet.Domain.Entities;
+
+namespace Cursinet.Application.Common.Interfaces;
+
+public interface IUserRepository
+{
+    Task&lt;User?&gt; GetByEmailAsync(string email);
+    Task&lt;User?&gt; GetByIdAsync(Guid id);
+    Task&lt;User&gt; CreateAsync(User user);
+    Task&lt;User&gt; UpdateAsync(User user);
+    Task SoftDeleteAsync(Guid id);
+}
+</code></pre>
+<h4 id="iaccountrepositorycs"><a class="header" href="#iaccountrepositorycs">IAccountRepository.cs</a></h4>
+<pre><code class="language-csharp">using Cursinet.Domain.Entities;
+
+namespace Cursinet.Application.Common.Interfaces;
+
+public interface IAccountRepository
+{
+    Task&lt;Account?&gt; GetByProviderAndAccountIdAsync(string providerId, string accountId);
+    Task&lt;List&lt;Account&gt;&gt; GetByUserIdAsync(Guid userId);
+    Task&lt;Account?&gt; GetCredentialsByEmailAsync(string email);
+    Task&lt;Account&gt; CreateAsync(Account account);
+    Task&lt;Account&gt; UpdateAsync(Account account);
+    Task DeleteAsync(Guid id);
+    Task DeleteByUserIdAsync(Guid userId);
+}
+</code></pre>
+<h4 id="isessionrepositorycs"><a class="header" href="#isessionrepositorycs">ISessionRepository.cs</a></h4>
+<pre><code class="language-csharp">using Cursinet.Domain.Entities;
+
+namespace Cursinet.Application.Common.Interfaces;
+
+public interface ISessionRepository
+{
+    Task&lt;Session&gt; CreateAsync(Session session);
+    Task&lt;Session?&gt; GetByTokenAsync(string token);
+    Task&lt;List&lt;Session&gt;&gt; GetByUserIdAsync(Guid userId);
+    Task DeleteAsync(string token);
+    Task DeleteByUserIdAsync(Guid userId);
+    Task&lt;int&gt; DeleteExpiredAsync();
+}
+</code></pre>
+<h4 id="iverificationrepositorycs"><a class="header" href="#iverificationrepositorycs">IVerificationRepository.cs</a></h4>
+<pre><code class="language-csharp">using Cursinet.Domain.Entities;
+
+namespace Cursinet.Application.Common.Interfaces;
+
+public interface IVerificationRepository
+{
+    Task&lt;Verification&gt; CreateAsync(Verification verification);
+    Task&lt;Verification?&gt; GetByIdentifierAsync(string identifier);
+    Task&lt;Verification?&gt; GetByIdentifierAndValueAsync(string identifier, string value);
+    Task DeleteAsync(Guid id);
+    Task DeleteByIdentifierAsync(string identifier);
+    Task&lt;int&gt; DeleteExpiredAsync();
+}
+</code></pre>
+<h3 id="72-interfaces-de-servicios"><a class="header" href="#72-interfaces-de-servicios">7.2 Interfaces de Servicios</a></h3>
+<h4 id="ipasswordservicecs"><a class="header" href="#ipasswordservicecs">IPasswordService.cs</a></h4>
+<pre><code class="language-csharp">namespace Cursinet.Application.Common.Interfaces;
+
+public interface IPasswordService
+{
+    string HashPassword(string password);
+    bool VerifyPassword(string password, string hash);
+}
+</code></pre>
+<h4 id="itokenservicecs"><a class="header" href="#itokenservicecs">ITokenService.cs</a></h4>
+<pre><code class="language-csharp">using System.Security.Claims;
+using Cursinet.Domain.Enums;
+
+namespace Cursinet.Application.Common.Interfaces;
+
+public interface ITokenService
+{
+    (string accessToken, string refreshToken) GenerateTokens(Guid userId, string email, Role role);
+    ClaimsPrincipal? ValidateAccessToken(string token);
+    ClaimsPrincipal? ValidateRefreshToken(string token);
+}
+</code></pre>
+<h3 id="73-authservicecs---lógica-de-negocio"><a class="header" href="#73-authservicecs---lógica-de-negocio">7.3 AuthService.cs - Lógica de Negocio</a></h3>
+<pre><code class="language-csharp">using Cursinet.Application.Common.Interfaces;
+using Cursinet.Domain.Entities;
+using Cursinet.Domain.Enums;
+using static Cursinet.Domain.Exceptions.AppExceptions;
+using Cursinet.Api.DTOs;
+
+namespace Cursinet.Application.Features.Auth;
+
+public interface IAuthService
+{
+    Task&lt;AuthResponse&gt; RegisterAsync(RegisterRequest request);
+    Task&lt;AuthResponse&gt; LoginAsync(LoginRequest request);
+    Task&lt;RefreshResponse&gt; RefreshAsync(string refreshToken);
+    Task LogoutAsync(string refreshToken);
+    Task&lt;AuthResponse&gt; VerifyEmailAsync(string identifier, string code);
+    Task&lt;ForgotPasswordResponse&gt; ForgotPasswordAsync(string email);
+    Task&lt;ResetPasswordResponse&gt; ResetPasswordAsync(string email, string code, string newPassword);
+    Task&lt;List&lt;SessionResponse&gt;&gt; GetUserSessionsAsync(Guid userId);
+    Task RevokeSessionAsync(Guid userId, Guid sessionId);
+    Task ResendVerificationAsync(string email);
+}
+
+public class AuthService : IAuthService
+{
+    private readonly IUserRepository _userRepository;
+    private readonly IAccountRepository _accountRepository;
+    private readonly ISessionRepository _sessionRepository;
+    private readonly IVerificationRepository _verificationRepository;
+    private readonly IPasswordService _passwordService;
+    private readonly ITokenService _tokenService;
+
+    private static readonly TimeSpan AccessTokenExpiry = TimeSpan.FromMinutes(15);
+    private static readonly TimeSpan RefreshTokenExpiry = TimeSpan.FromDays(7);
+    private static readonly TimeSpan VerificationCodeExpiry = TimeSpan.FromMinutes(15);
+    private static readonly TimeSpan SessionExpiry = TimeSpan.FromDays(7);
+
+    public AuthService(
+        IUserRepository userRepository,
+        IAccountRepository accountRepository,
+        ISessionRepository sessionRepository,
+        IVerificationRepository verificationRepository,
+        IPasswordService passwordService,
+        ITokenService tokenService)
+    {
+        _userRepository = userRepository;
+        _accountRepository = accountRepository;
+        _sessionRepository = sessionRepository;
+        _verificationRepository = verificationRepository;
+        _passwordService = passwordService;
+        _tokenService = tokenService;
+    }
+
+    // ==================
+    // REGISTER
+    // ==================
+
+    public async Task&lt;AuthResponse&gt; RegisterAsync(RegisterRequest request)
+    {
+        // Verificar si el email ya existe
+        var existingUser = await _userRepository.GetByEmailAsync(request.Email);
+        if (existingUser != null)
+            throw Conflict("Email already registered");
+
+        // Hashear password
+        var hashedPassword = _passwordService.HashPassword(request.Password);
+
+        // Crear usuario
+        var user = new User
+        {
+            Id = Guid.NewGuid(),
+            Name = request.Name,
+            Email = request.Email,
+            Role = request.Role ?? Role.Staff,
+            EmailVerified = false,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+        user = await _userRepository.CreateAsync(user);
+
+        // Crear cuenta credentials
+        var account = new Account
+        {
+            Id = Guid.NewGuid(),
+            AccountId = user.Id.ToString(),
+            ProviderId = "credentials",
+            UserId = user.Id,
+            Password = hashedPassword,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+        await _accountRepository.CreateAsync(account);
+
+        // Generar código de verificación
+        var verificationCode = GenerateVerificationCode();
+        var verification = new Verification
+        {
+            Id = Guid.NewGuid(),
+            Identifier = user.Email,
+            Value = verificationCode,
+            ExpiresAt = DateTime.UtcNow.Add(VerificationCodeExpiry),
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+        await _verificationRepository.CreateAsync(verification);
+
+        // Generar tokens
+        var (accessToken, refreshToken) = _tokenService.GenerateTokens(user.Id, user.Email, user.Role);
+
+        // Crear sesión
+        var session = new Session
+        {
+            Id = Guid.NewGuid(),
+            UserId = user.Id,
+            Token = refreshToken,
+            ExpiresAt = DateTime.UtcNow.Add(SessionExpiry),
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+        await _sessionRepository.CreateAsync(session);
+
+        // TODO: Enviar email con código de verificación
+        Console.WriteLine($"Verification code for {user.Email}: {verificationCode}");
+
+        return new AuthResponse
+        {
+            Message = "User created successfully. Please verify your email.",
+            User = MapUserToDto(user),
+            AccessToken = accessToken,
+            RefreshToken = refreshToken
+        };
+    }
+
+    // ==================
+    // LOGIN
+    // ==================
+
+    public async Task&lt;AuthResponse&gt; LoginAsync(LoginRequest request)
+    {
+        // Buscar cuenta credentials por email
+        var account = await _accountRepository.GetCredentialsByEmailAsync(request.Email);
+        if (account == null)
+            throw Unauthorized("Invalid credentials");
+
+        // Verificar password
+        if (account.Password == null || !_passwordService.VerifyPassword(request.Password, account.Password))
+            throw Unauthorized("Invalid credentials");
+
+        // Obtener usuario
+        if (account.UserId == null)
+            throw Unauthorized("Invalid credentials");
+
+        var user = await _userRepository.GetByIdAsync(account.UserId.Value);
+        if (user == null)
+            throw Unauthorized("User not found");
+
+        // Verificar soft delete
+        if (user.DeletedAt != null)
+            throw Unauthorized("Account has been deactivated");
+
+        // Generar tokens
+        var (accessToken, refreshToken) = _tokenService.GenerateTokens(user.Id, user.Email, user.Role);
+
+        // Crear sesión
+        var session = new Session
+        {
+            Id = Guid.NewGuid(),
+            UserId = user.Id,
+            Token = refreshToken,
+            ExpiresAt = DateTime.UtcNow.Add(SessionExpiry),
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+        await _sessionRepository.CreateAsync(session);
+
+        return new AuthResponse
+        {
+            Message = "Login successful",
+            User = MapUserToDto(user),
+            AccessToken = accessToken,
+            RefreshToken = refreshToken
+        };
+    }
+
+    // ==================
+    // LOGOUT
+    // ==================
+
+    public async Task LogoutAsync(string refreshToken)
+    {
+        await _sessionRepository.DeleteAsync(refreshToken);
+    }
+
+    // ==================
+    // REFRESH
+    // ==================
+
+    public async Task&lt;RefreshResponse&gt; RefreshAsync(string refreshToken)
+    {
+        // Validar token
+        var principal = _tokenService.ValidateRefreshToken(refreshToken);
+        if (principal == null)
+            throw Unauthorized("Invalid or expired refresh token");
+
+        var userIdClaim = principal.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (userIdClaim == null || !Guid.TryParse(userIdClaim, out var userId))
+            throw Unauthorized("Invalid refresh token");
+
+        // Buscar sesión
+        var session = await _sessionRepository.GetByTokenAsync(refreshToken);
+        if (session == null)
+            throw Unauthorized("Invalid refresh token");
+
+        // Verificar expiración
+        if (session.ExpiresAt &lt; DateTime.UtcNow)
+        {
+            await _sessionRepository.DeleteAsync(refreshToken);
+            throw Unauthorized("Session expired");
+        }
+
+        // Obtener usuario
+        var user = await _userRepository.GetByIdAsync(userId);
+        if (user == null)
+            throw Unauthorized("User not found");
+
+        // Eliminar sesión vieja
+        await _sessionRepository.DeleteAsync(refreshToken);
+
+        // Generar nuevos tokens
+        var (accessToken, newRefreshToken) = _tokenService.GenerateTokens(user.Id, user.Email, user.Role);
+
+        // Crear nueva sesión
+        var newSession = new Session
+        {
+            Id = Guid.NewGuid(),
+            UserId = user.Id,
+            Token = newRefreshToken,
+            ExpiresAt = DateTime.UtcNow.Add(SessionExpiry),
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+        await _sessionRepository.CreateAsync(newSession);
+
+        return new RefreshResponse
+        {
+            Message = "Token refreshed successfully",
+            AccessToken = accessToken,
+            RefreshToken = newRefreshToken
+        };
+    }
+
+    // ==================
+    // VERIFY EMAIL
+    // ==================
+
+    public async Task&lt;AuthResponse&gt; VerifyEmailAsync(string identifier, string code)
+    {
+        // Buscar código de verificación
+        var verification = await _verificationRepository.GetByIdentifierAndValueAsync(identifier, code);
+        if (verification == null)
+            throw Unauthorized("Invalid verification code");
+
+        // Verificar expiración
+        if (verification.ExpiresAt &lt; DateTime.UtcNow)
+        {
+            await _verificationRepository.DeleteByIdentifierAsync(identifier);
+            throw Unauthorized("Verification code expired");
+        }
+
+        // Buscar y actualizar usuario
+        var user = await _userRepository.GetByEmailAsync(identifier);
+        if (user == null)
+            throw NotFound("User not found");
+
+        user.EmailVerified = true;
+        user.UpdatedAt = DateTime.UtcNow;
+        await _userRepository.UpdateAsync(user);
+
+        // Eliminar código de verificación
+        await _verificationRepository.DeleteByIdentifierAsync(identifier);
+
+        // Generar nuevos tokens
+        var (accessToken, refreshToken) = _tokenService.GenerateTokens(user.Id, user.Email, user.Role);
+
+        // Crear sesión
+        var session = new Session
+        {
+            Id = Guid.NewGuid(),
+            UserId = user.Id,
+            Token = refreshToken,
+            ExpiresAt = DateTime.UtcNow.Add(SessionExpiry),
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+        await _sessionRepository.CreateAsync(session);
+
+        return new AuthResponse
+        {
+            Message = "Email verified successfully",
+            User = MapUserToDto(user),
+            AccessToken = accessToken,
+            RefreshToken = refreshToken
+        };
+    }
+
+    // ==================
+    // FORGOT PASSWORD
+    // ==================
+
+    public async Task&lt;ForgotPasswordResponse&gt; ForgotPasswordAsync(string email)
+    {
+        var user = await _userRepository.GetByEmailAsync(email);
+        if (user == null)
+        {
+            // No revelar si el usuario existe o no
+            return new ForgotPasswordResponse
+            {
+                Message = "If the email exists, a reset code has been sent",
+                ExpiresAt = DateTime.UtcNow.Add(VerificationCodeExpiry)
+            };
+        }
+
+        // Generar código de reset
+        var resetCode = GenerateVerificationCode();
+        var verification = new Verification
+        {
+            Id = Guid.NewGuid(),
+            Identifier = $"reset:{email}",
+            Value = resetCode,
+            ExpiresAt = DateTime.UtcNow.Add(VerificationCodeExpiry),
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+        await _verificationRepository.CreateAsync(verification);
+
+        // TODO: Enviar email con código de reset
+        Console.WriteLine($"Password reset code for {email}: {resetCode}");
+
+        return new ForgotPasswordResponse
+        {
+            Message = "If the email exists, a reset code has been sent",
+            ExpiresAt = DateTime.UtcNow.Add(VerificationCodeExpiry)
+        };
+    }
+
+    // ==================
+    // RESET PASSWORD
+    // ==================
+
+    public async Task&lt;ResetPasswordResponse&gt; ResetPasswordAsync(string email, string code, string newPassword)
+    {
+        // Buscar verificación
+        var verification = await _verificationRepository.GetByIdentifierAndValueAsync($"reset:{email}", code);
+        if (verification == null)
+            throw Unauthorized("Invalid reset code");
+
+        if (verification.ExpiresAt &lt; DateTime.UtcNow)
+        {
+            await _verificationRepository.DeleteByIdentifierAsync($"reset:{email}");
+            throw Unauthorized("Reset code expired");
+        }
+
+        // Buscar usuario
+        var user = await _userRepository.GetByEmailAsync(email);
+        if (user == null)
+            throw NotFound("User not found");
+
+        // Buscar cuenta credentials
+        var account = await _accountRepository.GetCredentialsByEmailAsync(email);
+        if (account == null)
+            throw NotFound("Account not found");
+
+        // Hashear nuevo password y actualizar
+        var hashedPassword = _passwordService.HashPassword(newPassword);
+        account.Password = hashedPassword;
+        account.UpdatedAt = DateTime.UtcNow;
+        await _accountRepository.UpdateAsync(account);
+
+        // Eliminar todas las sesiones del usuario (logout forzado)
+        await _sessionRepository.DeleteByUserIdAsync(user.Id);
+
+        // Eliminar código de verificación
+        await _verificationRepository.DeleteByIdentifierAsync($"reset:{email}");
+
+        return new ResetPasswordResponse
+        {
+            Message = "Password reset successfully. Please login with your new password."
+        };
+    }
+
+    // ==================
+    // GET USER SESSIONS
+    // ==================
+
+    public async Task&lt;List&lt;SessionResponse&gt;&gt; GetUserSessionsAsync(Guid userId)
+    {
+        var sessions = await _sessionRepository.GetByUserIdAsync(userId);
+
+        return sessions
+            .Where(s =&gt; s.ExpiresAt &gt; DateTime.UtcNow)
+            .Select(s =&gt; new SessionResponse
+            {
+                Id = s.Id,
+                ExpiresAt = s.ExpiresAt,
+                IpAddress = s.IpAddress,
+                UserAgent = s.UserAgent,
+                CreatedAt = s.CreatedAt,
+                UpdatedAt = s.UpdatedAt
+            })
+            .ToList();
+    }
+
+    // ==================
+    // REVOKE SESSION
+    // ==================
+
+    public async Task RevokeSessionAsync(Guid userId, Guid sessionId)
+    {
+        var sessions = await _sessionRepository.GetByUserIdAsync(userId);
+        var session = sessions.FirstOrDefault(s =&gt; s.Id == sessionId);
+
+        if (session == null)
+            throw NotFound("Session not found");
+
+        await _sessionRepository.DeleteAsync(session.Token);
+    }
+
+    // ==================
+    // RESEND VERIFICATION
+    // ==================
+
+    public async Task ResendVerificationAsync(string email)
+    {
+        var user = await _userRepository.GetByEmailAsync(email);
+        if (user == null) return; // No revelar si existe
+
+        if (user.EmailVerified)
+            throw Conflict("Email already verified");
+
+        // Eliminar código anterior
+        await _verificationRepository.DeleteByIdentifierAsync(email);
+
+        // Generar nuevo código
+        var verificationCode = GenerateVerificationCode();
+        var verification = new Verification
+        {
+            Id = Guid.NewGuid(),
+            Identifier = email,
+            Value = verificationCode,
+            ExpiresAt = DateTime.UtcNow.Add(VerificationCodeExpiry),
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+        await _verificationRepository.CreateAsync(verification);
+
+        // TODO: Enviar email
+        Console.WriteLine($"New verification code for {email}: {verificationCode}");
+    }
+
+    // ==================
+    // HELPERS
+    // ==================
+
+    private static string GenerateVerificationCode()
+    {
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        var random = Random.Shared;
+        var code = new char[6];
+        for (int i = 0; i &lt; 6; i++)
+            code[i] = chars[random.Next(chars.Length)];
+        return new string(code);
+    }
+
+    private static UserDto MapUserToDto(User user)
+    {
+        return new UserDto
+        {
+            Id = user.Id,
+            Name = user.Name,
+            Email = user.Email,
+            EmailVerified = user.EmailVerified,
+            Role = user.Role.ToString().ToLower(),
+            Phone = user.Phone,
+            Image = user.Image,
+            CreatedAt = user.CreatedAt,
+            UpdatedAt = user.UpdatedAt
+        };
+    }
+}
+</code></pre>
+<p><strong>¿Qué hace este archivo?</strong></p>
+<p>El service contiene toda la lógica de negocio de autenticación:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><code>RegisterAsync</code></td><td>Registro: verifica email único, hashea password, crea usuario + cuenta + código + sesión</td></tr>
+<tr><td><code>LoginAsync</code></td><td>Login: busca cuenta, verifica password, genera tokens, crea sesión</td></tr>
+<tr><td><code>LogoutAsync</code></td><td>Logout: elimina la sesión de la BD</td></tr>
+<tr><td><code>RefreshAsync</code></td><td>Refresh: valida token, elimina sesión vieja, genera nuevos tokens</td></tr>
+<tr><td><code>VerifyEmailAsync</code></td><td>Verifica email con código, marca <code>EmailVerified</code>, genera nuevos tokens</td></tr>
+<tr><td><code>ForgotPasswordAsync</code></td><td>Genera código de reset, no revela si el email existe</td></tr>
+<tr><td><code>ResetPasswordAsync</code></td><td>Valida código, actualiza password, elimina TODAS las sesiones</td></tr>
+<tr><td><code>GetUserSessionsAsync</code></td><td>Lista sesiones activas del usuario</td></tr>
+<tr><td><code>RevokeSessionAsync</code></td><td>Revoca una sesión específica</td></tr>
+<tr><td><code>ResendVerificationAsync</code></td><td>Reenvía código de verificación</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="8-capa-de-infraestructura"><a class="header" href="#8-capa-de-infraestructura">8. Capa de Infraestructura</a></h2>
+<h3 id="81-applicationdbcontextcs---contexto-de-ef-core-10"><a class="header" href="#81-applicationdbcontextcs---contexto-de-ef-core-10">8.1 ApplicationDbContext.cs - Contexto de EF Core 10</a></h3>
+<pre><code class="language-csharp">using Microsoft.EntityFrameworkCore;
+using Cursinet.Domain.Entities;
+
+namespace Cursinet.Infrastructure.Persistence;
+
+public class ApplicationDbContext : DbContext
+{
+    public ApplicationDbContext(DbContextOptions&lt;ApplicationDbContext&gt; options)
+        : base(options) { }
+
+    public DbSet&lt;User&gt; Users =&gt; Set&lt;User&gt;();
+    public DbSet&lt;Account&gt; Accounts =&gt; Set&lt;Account&gt;();
+    public DbSet&lt;Session&gt; Sessions =&gt; Set&lt;Session&gt;();
+    public DbSet&lt;Verification&gt; Verifications =&gt; Set&lt;Verification&gt;();
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        // Aplica todas las configuraciones del ensamblado
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+    }
+}
+</code></pre>
+<p><strong>¿Qué hace DbContext en EF Core 10?</strong></p>
+<ul>
+<li><strong>DbSet</strong> - Representa una tabla en la BD. Cada propiedad <code>DbSet&lt;T&gt;</code> es una tabla.</li>
+<li><strong><code>OnModelCreating</code></strong> - Configura el esquema de la BD (fluent API).</li>
+<li><strong><code>ApplyConfigurationsFromAssembly</code></strong> - Escanea y aplica todas las configuraciones en el ensamblado.</li>
+</ul>
+<h3 id="82-configuraciones-de-entidades-fluent-api"><a class="header" href="#82-configuraciones-de-entidades-fluent-api">8.2 Configuraciones de Entidades (Fluent API)</a></h3>
+<h4 id="userconfigurationcs"><a class="header" href="#userconfigurationcs">UserConfiguration.cs</a></h4>
+<pre><code class="language-csharp">using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Cursinet.Domain.Entities;
+
+namespace Cursinet.Infrastructure.Persistence.Configurations;
+
+public class UserConfiguration : IEntityTypeConfiguration&lt;User&gt;
+{
+    public void Configure(EntityTypeBuilder&lt;User&gt; builder)
+    {
+        builder.ToTable("users");
+
+        builder.HasKey(u =&gt; u.Id);
+        builder.Property(u =&gt; u.Id)
+            .HasDefaultValueSql("gen_random_uuid()");
+
+        builder.Property(u =&gt; u.Name)
+            .IsRequired()
+            .HasMaxLength(255);
+
+        builder.Property(u =&gt; u.Email)
+            .IsRequired()
+            .HasMaxLength(255);
+
+        builder.HasIndex(u =&gt; u.Email)
+            .IsUnique();
+
+        builder.Property(u =&gt; u.Role)
+            .HasConversion&lt;string&gt;()
+            .HasMaxLength(50);
+
+        builder.Property(u =&gt; u.CreatedAt)
+            .HasDefaultValueSql("NOW()");
+
+        builder.Property(u =&gt; u.UpdatedAt)
+            .HasDefaultValueSql("NOW()");
+
+        builder.Property(u =&gt; u.DeletedAt)
+            .IsRequired(false);
+
+        // Soft delete filter
+        builder.HasQueryFilter(u =&gt; u.DeletedAt == null);
+
+        // Relationships
+        builder.HasMany(u =&gt; u.Accounts)
+            .WithOne(a =&gt; a.User)
+            .HasForeignKey(a =&gt; a.UserId);
+
+        builder.HasMany(u =&gt; u.Sessions)
+            .WithOne(s =&gt; s.User)
+            .HasForeignKey(s =&gt; s.UserId);
+    }
+}
+</code></pre>
+<h4 id="accountconfigurationcs"><a class="header" href="#accountconfigurationcs">AccountConfiguration.cs</a></h4>
+<pre><code class="language-csharp">using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Cursinet.Domain.Entities;
+
+namespace Cursinet.Infrastructure.Persistence.Configurations;
+
+public class AccountConfiguration : IEntityTypeConfiguration&lt;Account&gt;
+{
+    public void Configure(EntityTypeBuilder&lt;Account&gt; builder)
+    {
+        builder.ToTable("accounts");
+
+        builder.HasKey(a =&gt; a.Id);
+        builder.Property(a =&gt; a.Id)
+            .HasDefaultValueSql("gen_random_uuid()");
+
+        builder.Property(a =&gt; a.ProviderId)
+            .IsRequired()
+            .HasMaxLength(50);
+
+        builder.Property(a =&gt; a.CreatedAt)
+            .HasDefaultValueSql("NOW()");
+
+        builder.Property(a =&gt; a.UpdatedAt)
+            .HasDefaultValueSql("NOW()");
+
+        builder.HasIndex(a =&gt; new { a.ProviderId, a.AccountId });
+    }
+}
+</code></pre>
+<h4 id="sessionconfigurationcs"><a class="header" href="#sessionconfigurationcs">SessionConfiguration.cs</a></h4>
+<pre><code class="language-csharp">using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Cursinet.Domain.Entities;
+
+namespace Cursinet.Infrastructure.Persistence.Configurations;
+
+public class SessionConfiguration : IEntityTypeConfiguration&lt;Session&gt;
+{
+    public void Configure(EntityTypeBuilder&lt;Session&gt; builder)
+    {
+        builder.ToTable("sessions");
+
+        builder.HasKey(s =&gt; s.Id);
+        builder.Property(s =&gt; s.Id)
+            .HasDefaultValueSql("gen_random_uuid()");
+
+        builder.Property(s =&gt; s.Token)
+            .IsRequired();
+
+        builder.HasIndex(s =&gt; s.Token)
+            .IsUnique();
+
+        builder.HasIndex(s =&gt; s.UserId);
+
+        builder.Property(s =&gt; s.CreatedAt)
+            .HasDefaultValueSql("NOW()");
+
+        builder.Property(s =&gt; s.UpdatedAt)
+            .HasDefaultValueSql("NOW()");
+    }
+}
+</code></pre>
+<h3 id="83-repositorios"><a class="header" href="#83-repositorios">8.3 Repositorios</a></h3>
+<h4 id="userrepositorycs"><a class="header" href="#userrepositorycs">UserRepository.cs</a></h4>
+<pre><code class="language-csharp">using Microsoft.EntityFrameworkCore;
+using Cursinet.Application.Common.Interfaces;
+using Cursinet.Domain.Entities;
+using Cursinet.Infrastructure.Persistence;
+
+namespace Cursinet.Infrastructure.Persistence.Repositories;
+
+public class UserRepository : IUserRepository
+{
+    private readonly ApplicationDbContext _context;
+
+    public UserRepository(ApplicationDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task&lt;User?&gt; GetByEmailAsync(string email)
+    {
+        return await _context.Users
+            .FirstOrDefaultAsync(u =&gt; u.Email == email);
+    }
+
+    public async Task&lt;User?&gt; GetByIdAsync(Guid id)
+    {
+        return await _context.Users
+            .FirstOrDefaultAsync(u =&gt; u.Id == id);
+    }
+
+    public async Task&lt;User&gt; CreateAsync(User user)
+    {
+        _context.Users.Add(user);
+        await _context.SaveChangesAsync();
+        return user;
+    }
+
+    public async Task&lt;User&gt; UpdateAsync(User user)
+    {
+        user.UpdatedAt = DateTime.UtcNow;
+        _context.Users.Update(user);
+        await _context.SaveChangesAsync();
+        return user;
+    }
+
+    public async Task SoftDeleteAsync(Guid id)
+    {
+        var user = await _context.Users.FindAsync(id);
+        if (user != null)
+        {
+            user.DeletedAt = DateTime.UtcNow;
+            user.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+        }
+    }
+}
+</code></pre>
+<h4 id="accountrepositorycs"><a class="header" href="#accountrepositorycs">AccountRepository.cs</a></h4>
+<pre><code class="language-csharp">using Microsoft.EntityFrameworkCore;
+using Cursinet.Application.Common.Interfaces;
+using Cursinet.Domain.Entities;
+using Cursinet.Infrastructure.Persistence;
+
+namespace Cursinet.Infrastructure.Persistence.Repositories;
+
+public class AccountRepository : IAccountRepository
+{
+    private readonly ApplicationDbContext _context;
+
+    public AccountRepository(ApplicationDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task&lt;Account?&gt; GetByProviderAndAccountIdAsync(string providerId, string accountId)
+    {
+        return await _context.Accounts
+            .FirstOrDefaultAsync(a =&gt; a.ProviderId == providerId &amp;&amp; a.AccountId == accountId);
+    }
+
+    public async Task&lt;List&lt;Account&gt;&gt; GetByUserIdAsync(Guid userId)
+    {
+        return await _context.Accounts
+            .Where(a =&gt; a.UserId == userId)
+            .ToListAsync();
+    }
+
+    public async Task&lt;Account?&gt; GetCredentialsByEmailAsync(string email)
+    {
+        // Buscar usuario por email primero
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u =&gt; u.Email == email &amp;&amp; u.DeletedAt == null);
+
+        if (user == null) return null;
+
+        // Buscar cuenta credentials
+        return await _context.Accounts
+            .FirstOrDefaultAsync(a =&gt; a.UserId == user.Id &amp;&amp; a.ProviderId == "credentials");
+    }
+
+    public async Task&lt;Account&gt; CreateAsync(Account account)
+    {
+        _context.Accounts.Add(account);
+        await _context.SaveChangesAsync();
+        return account;
+    }
+
+    public async Task&lt;Account&gt; UpdateAsync(Account account)
+    {
+        account.UpdatedAt = DateTime.UtcNow;
+        _context.Accounts.Update(account);
+        await _context.SaveChangesAsync();
+        return account;
+    }
+
+    public async Task DeleteAsync(Guid id)
+    {
+        var account = await _context.Accounts.FindAsync(id);
+        if (account != null)
+        {
+            _context.Accounts.Remove(account);
+            await _context.SaveChangesAsync();
+        }
+    }
+
+    public async Task DeleteByUserIdAsync(Guid userId)
+    {
+        var accounts = await _context.Accounts
+            .Where(a =&gt; a.UserId == userId)
+            .ToListAsync();
+
+        _context.Accounts.RemoveRange(accounts);
+        await _context.SaveChangesAsync();
+    }
+}
+</code></pre>
+<h4 id="sessionrepositorycs"><a class="header" href="#sessionrepositorycs">SessionRepository.cs</a></h4>
+<pre><code class="language-csharp">using Microsoft.EntityFrameworkCore;
+using Cursinet.Application.Common.Interfaces;
+using Cursinet.Domain.Entities;
+using Cursinet.Infrastructure.Persistence;
+
+namespace Cursinet.Infrastructure.Persistence.Repositories;
+
+public class SessionRepository : ISessionRepository
+{
+    private readonly ApplicationDbContext _context;
+
+    public SessionRepository(ApplicationDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task&lt;Session&gt; CreateAsync(Session session)
+    {
+        _context.Sessions.Add(session);
+        await _context.SaveChangesAsync();
+        return session;
+    }
+
+    public async Task&lt;Session?&gt; GetByTokenAsync(string token)
+    {
+        return await _context.Sessions
+            .FirstOrDefaultAsync(s =&gt; s.Token == token);
+    }
+
+    public async Task&lt;List&lt;Session&gt;&gt; GetByUserIdAsync(Guid userId)
+    {
+        return await _context.Sessions
+            .Where(s =&gt; s.UserId == userId)
+            .OrderByDescending(s =&gt; s.CreatedAt)
+            .ToListAsync();
+    }
+
+    public async Task DeleteAsync(string token)
+    {
+        var session = await _context.Sessions
+            .FirstOrDefaultAsync(s =&gt; s.Token == token);
+
+        if (session != null)
+        {
+            _context.Sessions.Remove(session);
+            await _context.SaveChangesAsync();
+        }
+    }
+
+    public async Task DeleteByUserIdAsync(Guid userId)
+    {
+        var sessions = await _context.Sessions
+            .Where(s =&gt; s.UserId == userId)
+            .ToListAsync();
+
+        _context.Sessions.RemoveRange(sessions);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task&lt;int&gt; DeleteExpiredAsync()
+    {
+        var expired = await _context.Sessions
+            .Where(s =&gt; s.ExpiresAt &lt; DateTime.UtcNow)
+            .ExecuteDeleteAsync();  // EF Core 10 bulk delete
+
+        return expired;
+    }
+}
+</code></pre>
+<h4 id="verificationrepositorycs"><a class="header" href="#verificationrepositorycs">VerificationRepository.cs</a></h4>
+<pre><code class="language-csharp">using Microsoft.EntityFrameworkCore;
+using Cursinet.Application.Common.Interfaces;
+using Cursinet.Domain.Entities;
+using Cursinet.Infrastructure.Persistence;
+
+namespace Cursinet.Infrastructure.Persistence.Repositories;
+
+public class VerificationRepository : IVerificationRepository
+{
+    private readonly ApplicationDbContext _context;
+
+    public VerificationRepository(ApplicationDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task&lt;Verification&gt; CreateAsync(Verification verification)
+    {
+        // Eliminar cualquier verificación previa para este identifier
+        var existing = await _context.Verifications
+            .Where(v =&gt; v.Identifier == verification.Identifier)
+            .ExecuteDeleteAsync();  // EF Core 10 bulk delete
+
+        _context.Verifications.Add(verification);
+        await _context.SaveChangesAsync();
+        return verification;
+    }
+
+    public async Task&lt;Verification?&gt; GetByIdentifierAsync(string identifier)
+    {
+        return await _context.Verifications
+            .FirstOrDefaultAsync(v =&gt; v.Identifier == identifier);
+    }
+
+    public async Task&lt;Verification?&gt; GetByIdentifierAndValueAsync(string identifier, string value)
+    {
+        return await _context.Verifications
+            .FirstOrDefaultAsync(v =&gt; v.Identifier == identifier &amp;&amp; v.Value == value);
+    }
+
+    public async Task DeleteAsync(Guid id)
+    {
+        var verification = await _context.Verifications.FindAsync(id);
+        if (verification != null)
+        {
+            _context.Verifications.Remove(verification);
+            await _context.SaveChangesAsync();
+        }
+    }
+
+    public async Task DeleteByIdentifierAsync(string identifier)
+    {
+        await _context.Verifications
+            .Where(v =&gt; v.Identifier == identifier)
+            .ExecuteDeleteAsync();  // EF Core 10 bulk delete
+    }
+
+    public async Task&lt;int&gt; DeleteExpiredAsync()
+    {
+        return await _context.Verifications
+            .Where(v =&gt; v.ExpiresAt &lt; DateTime.UtcNow)
+            .ExecuteDeleteAsync();  // EF Core 10 bulk delete
+    }
+}
+</code></pre>
+<h3 id="84-servicios"><a class="header" href="#84-servicios">8.4 Servicios</a></h3>
+<h4 id="passwordservicecs"><a class="header" href="#passwordservicecs">PasswordService.cs</a></h4>
+<pre><code class="language-csharp">using Cursinet.Application.Common.Interfaces;
+
+namespace Cursinet.Infrastructure.Services;
+
+public class PasswordService : IPasswordService
+{
+    public string HashPassword(string password)
+    {
+        return BCrypt.Net.BCrypt.HashPassword(password, workFactor: 10);
+    }
+
+    public bool VerifyPassword(string password, string hash)
+    {
+        return BCrypt.Net.BCrypt.Verify(password, hash);
+    }
+}
+</code></pre>
+<p><strong>¿Qué hace PasswordService?</strong></p>
+<p>Equivalente a <code>crypto.utils.ts</code> en Fastify:</p>
+<ul>
+<li><code>HashPassword</code> → <code>hashPassword()</code></li>
+<li><code>VerifyPassword</code> → <code>comparePassword()</code></li>
+</ul>
+<h4 id="tokenservicecs"><a class="header" href="#tokenservicecs">TokenService.cs</a></h4>
+<pre><code class="language-csharp">using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using Cursinet.Application.Common.Interfaces;
+using Cursinet.Domain.Enums;
+
+namespace Cursinet.Infrastructure.Services;
+
+public class TokenService : ITokenService
+{
+    private readonly IConfiguration _configuration;
+
+    public TokenService(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
+
+    public (string accessToken, string refreshToken) GenerateTokens(Guid userId, string email, Role role)
+    {
+        var accessToken = GenerateJwtToken(userId, email, role, isRefresh: false);
+        var refreshToken = GenerateJwtToken(userId, email, role, isRefresh: true);
+
+        return (accessToken, refreshToken);
+    }
+
+    private string GenerateJwtToken(Guid userId, string email, Role role, bool isRefresh)
+    {
+        var secret = isRefresh
+            ? _configuration["Jwt:RefreshSecret"]!
+            : _configuration["Jwt:Secret"]!;
+
+        var expiry = isRefresh
+            ? TimeSpan.Parse(_configuration["Jwt:RefreshTokenExpiry"]!)
+            : TimeSpan.Parse(_configuration["Jwt:AccessTokenExpiry"]!);
+
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
+        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        var claims = new[]
+        {
+            new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
+            new Claim(ClaimTypes.Email, email),
+            new Claim(ClaimTypes.Role, role.ToString())
+        };
+
+        var token = new JwtSecurityToken(
+            issuer: "Cursinet",
+            audience: "Cursinet",
+            claims: claims,
+            expires: DateTime.UtcNow.Add(expiry),
+            signingCredentials: credentials
+        );
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    public ClaimsPrincipal? ValidateAccessToken(string token)
+    {
+        return ValidateToken(token, _configuration["Jwt:Secret"]!);
+    }
+
+    public ClaimsPrincipal? ValidateRefreshToken(string token)
+    {
+        return ValidateToken(token, _configuration["Jwt:RefreshSecret"]!);
+    }
+
+    private static ClaimsPrincipal? ValidateToken(string token, string secret)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.UTF8.GetBytes(secret);
+
+        try
+        {
+            var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ClockSkew = TimeSpan.Zero
+            }, out _);
+
+            return principal;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+}
+</code></pre>
+<p><strong>¿Qué hace TokenService?</strong></p>
+<p>Equivalente a <code>token.utils.ts</code> en Fastify:</p>
+<ul>
+<li><strong>GenerateTokens</strong> → <code>generateTokens()</code>: genera access y refresh tokens</li>
+<li><strong>ValidateAccessToken</strong> → <code>verifyToken(secret)</code>: valida el access token</li>
+<li><strong>ValidateRefreshToken</strong> → <code>verifyToken(refreshSecret)</code>: valida el refresh token</li>
+</ul>
+<p><strong>¿Por qué dos tokens?</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Token</th><th>Duración</th><th>Propósito</th></tr>
+</thead>
+<tbody>
+<tr><td>Access Token</td><td>15 minutos</td><td>Autenticar requests. Si lo roban, máximo 15 min de acceso</td></tr>
+<tr><td>Refresh Token</td><td>7 días</td><td>Obtener nuevos access tokens sin re-autenticar</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="9-capa-de-presentación"><a class="header" href="#9-capa-de-presentación">9. Capa de Presentación</a></h2>
+<h3 id="91-dtos---data-transfer-objects"><a class="header" href="#91-dtos---data-transfer-objects">9.1 DTOs - Data Transfer Objects</a></h3>
+<pre><code class="language-csharp">// AuthDTOs.cs
+namespace Cursinet.Api.DTOs;
+
+// ==================
+// REQUEST DTOs
+// ==================
+
+public record RegisterRequest(
+    string Name,
+    string Email,
+    string Password,
+    string? Role = null
+);
+
+public record LoginRequest(
+    string Email,
+    string Password
+);
+
+public record RefreshRequest(
+    string RefreshToken
+);
+
+public record VerifyEmailRequest(
+    string Identifier,
+    string Code
+);
+
+public record ForgotPasswordRequest(
+    string Email
+);
+
+public record ResetPasswordRequest(
+    string Email,
+    string Code,
+    string NewPassword
+);
+
+public record ResendVerificationRequest(
+    string Email
+);
+
+// ==================
+// RESPONSE DTOs
+// ==================
+
+public record AuthResponse
+{
+    public string Message { get; init; } = string.Empty;
+    public UserDto? User { get; init; }
+    public string AccessToken { get; init; } = string.Empty;
+    public string RefreshToken { get; init; } = string.Empty;
+}
+
+public record RefreshResponse
+{
+    public string Message { get; init; } = string.Empty;
+    public string AccessToken { get; init; } = string.Empty;
+    public string RefreshToken { get; init; } = string.Empty;
+}
+
+public record ForgotPasswordResponse
+{
+    public string Message { get; init; } = string.Empty;
+    public DateTime ExpiresAt { get; init; }
+}
+
+public record ResetPasswordResponse
+{
+    public string Message { get; init; } = string.Empty;
+}
+
+public record SessionResponse
+{
+    public Guid Id { get; init; }
+    public DateTime ExpiresAt { get; init; }
+    public string? IpAddress { get; init; }
+    public string? UserAgent { get; init; }
+    public DateTime CreatedAt { get; init; }
+    public DateTime UpdatedAt { get; init; }
+}
+
+public record UserDto
+{
+    public Guid Id { get; init; }
+    public string Name { get; init; } = string.Empty;
+    public string Email { get; init; } = string.Empty;
+    public bool EmailVerified { get; init; }
+    public string? Phone { get; init; }
+    public string? Image { get; init; }
+    public string Role { get; init; } = string.Empty;
+    public DateTime CreatedAt { get; init; }
+    public DateTime UpdatedAt { get; init; }
+}
+</code></pre>
+<p><strong>¿Qué son los records en C#?</strong></p>
+<ul>
+<li>Inmutables por defecto (<code>init</code> setters)</li>
+<li>Comparación por valor (equality)</li>
+<li>Ideales para DTOs, similar a las interfaces de TypeScript</li>
+</ul>
+<h3 id="92-authcontrollercs"><a class="header" href="#92-authcontrollercs">9.2 AuthController.cs</a></h3>
+<pre><code class="language-csharp">using Microsoft.AspNetCore.Mvc;
+using Cursinet.Api.DTOs;
+using Cursinet.Application.Features.Auth;
+using Cursinet.Domain.Exceptions;
+using static Cursinet.Domain.Exceptions.AppExceptions;
+
+namespace Cursinet.Api.Controllers;
+
+[ApiController]
+[Route("api/v1/auth")]
+public class AuthController : ControllerBase
+{
+    private readonly IAuthService _authService;
+    private readonly IConfiguration _configuration;
+
+    public AuthController(IAuthService authService, IConfiguration configuration)
+    {
+        _authService = authService;
+        _configuration = configuration;
+    }
+
+    /// &lt;summary&gt;
+    /// Registrar un nuevo usuario
+    /// &lt;/summary&gt;
+    [HttpPost("register")]
+    public async Task&lt;ActionResult&lt;AuthResponse&gt;&gt; Register([FromBody] RegisterRequest request)
+    {
+        var currentUserId = await ResolveCurrentUserId();
+        if (currentUserId.HasValue)
+            throw Conflict("Already logged in. Please logout before creating a new account.");
+
+        var result = await _authService.RegisterAsync(request);
+
+        SetAuthCookies(result.AccessToken, result.RefreshToken);
+
+        return CreatedAtAction(null, new
+        {
+            message = result.Message,
+            user = result.User
+        });
+    }
+
+    /// &lt;summary&gt;
+    /// Iniciar sesión
+    /// &lt;/summary&gt;
+    [HttpPost("login")]
+    public async Task&lt;ActionResult&lt;AuthResponse&gt;&gt; Login([FromBody] LoginRequest request)
+    {
+        var currentUserId = await ResolveCurrentUserId();
+
+        var result = await _authService.LoginAsync(request);
+
+        if (currentUserId.HasValue &amp;&amp; currentUserId != result.User?.Id)
+        {
+            ClearAuthCookies();
+        }
+
+        SetAuthCookies(result.AccessToken, result.RefreshToken);
+
+        return Ok(new
+        {
+            message = result.Message,
+            user = result.User
+        });
+    }
+
+    /// &lt;summary&gt;
+    /// Refrescar tokens de acceso
+    /// &lt;/summary&gt;
+    [HttpPost("refresh")]
+    public async Task&lt;ActionResult&lt;RefreshResponse&gt;&gt; Refresh()
+    {
+        var refreshToken = GetRefreshToken();
+        if (string.IsNullOrEmpty(refreshToken))
+            throw Unauthorized("Refresh token required");
+
+        var result = await _authService.RefreshAsync(refreshToken);
+
+        SetAuthCookies(result.AccessToken, result.RefreshToken);
+
+        return Ok(new { message = result.Message });
+    }
+
+    /// &lt;summary&gt;
+    /// Cerrar sesión
+    /// &lt;/summary&gt;
+    [HttpPost("logout")]
+    public async Task&lt;ActionResult&gt; Logout()
+    {
+        var refreshToken = GetRefreshToken();
+        if (!string.IsNullOrEmpty(refreshToken))
+        {
+            await _authService.LogoutAsync(refreshToken);
+        }
+
+        ClearAuthCookies();
+
+        return Ok(new { message = "Logged out successfully" });
+    }
+
+    /// &lt;summary&gt;
+    /// Verificar email con código
+    /// &lt;/summary&gt;
+    [HttpPost("verify-email")]
+    public async Task&lt;ActionResult&lt;AuthResponse&gt;&gt; VerifyEmail([FromBody] VerifyEmailRequest request)
+    {
+        var result = await _authService.VerifyEmailAsync(request.Identifier, request.Code);
+
+        SetAuthCookies(result.AccessToken, result.RefreshToken);
+
+        return Ok(new { message = result.Message });
+    }
+
+    /// &lt;summary&gt;
+    /// Reenviar código de verificación
+    /// &lt;/summary&gt;
+    [HttpPost("resend-verification")]
+    public async Task&lt;ActionResult&gt; ResendVerification([FromBody] ResendVerificationRequest request)
+    {
+        await _authService.ResendVerificationAsync(request.Email);
+        return Ok(new { message = "If the email exists, a new verification code has been sent" });
+    }
+
+    /// &lt;summary&gt;
+    /// Solicitar reset de password
+    /// &lt;/summary&gt;
+    [HttpPost("forgot-password")]
+    public async Task&lt;ActionResult&lt;ForgotPasswordResponse&gt;&gt; ForgotPassword([FromBody] ForgotPasswordRequest request)
+    {
+        var currentUserId = await ResolveCurrentUserId();
+        if (currentUserId.HasValue)
+            throw Conflict("Please logout before requesting password reset");
+
+        var result = await _authService.ForgotPasswordAsync(request.Email);
+        return Ok(result);
+    }
+
+    /// &lt;summary&gt;
+    /// Resetear password con código
+    /// &lt;/summary&gt;
+    [HttpPost("reset-password")]
+    public async Task&lt;ActionResult&lt;ResetPasswordResponse&gt;&gt; ResetPassword([FromBody] ResetPasswordRequest request)
+    {
+        var currentUserId = await ResolveCurrentUserId();
+        if (currentUserId.HasValue)
+            throw Conflict("Please logout before resetting password");
+
+        var result = await _authService.ResetPasswordAsync(request.Email, request.Code, request.NewPassword);
+        ClearAuthCookies();
+        return Ok(result);
+    }
+
+    /// &lt;summary&gt;
+    /// Obtener sesiones activas (requiere auth)
+    /// &lt;/summary&gt;
+    [HttpGet("sessions")]
+    [AuthGuard]
+    public async Task&lt;ActionResult&lt;List&lt;SessionResponse&gt;&gt;&gt; GetSessions()
+    {
+        var userId = GetCurrentUserId();
+        if (!userId.HasValue)
+            throw Unauthorized("Authentication required");
+
+        var sessions = await _authService.GetUserSessionsAsync(userId.Value);
+        return Ok(sessions);
+    }
+
+    /// &lt;summary&gt;
+    /// Revocar sesión específica (requiere auth)
+    /// &lt;/summary&gt;
+    [HttpDelete("sessions/{sessionId:guid}")]
+    [AuthGuard]
+    public async Task&lt;ActionResult&gt; RevokeSession(Guid sessionId)
+    {
+        var userId = GetCurrentUserId();
+        if (!userId.HasValue)
+            throw Unauthorized("Authentication required");
+
+        await _authService.RevokeSessionAsync(userId.Value, sessionId);
+        return Ok(new { message = "Session revoked successfully" });
+    }
+
+    // ==================
+    // COOKIE HELPERS
+    // ==================
+
+    private string? GetRefreshToken()
+    {
+        var cookieToken = Request.Cookies["refreshToken"];
+        return cookieToken;
+    }
+
+    private void SetAuthCookies(string accessToken, string refreshToken)
+    {
+        var isProduction = !_configuration.GetValue&lt;bool&gt;("IsDevelopment");
+
+        Response.Cookies.Append("accessToken", accessToken, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = isProduction,
+            SameSite = SameSiteMode.Strict,
+            Path = "/",
+            MaxAge = TimeSpan.FromMinutes(15)
+        });
+
+        Response.Cookies.Append("refreshToken", refreshToken, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = isProduction,
+            SameSite = SameSiteMode.Strict,
+            Path = "/",
+            MaxAge = TimeSpan.FromDays(7)
+        });
+    }
+
+    private void ClearAuthCookies()
+    {
+        Response.Cookies.Delete("accessToken", new CookieOptions { Path = "/" });
+        Response.Cookies.Delete("refreshToken", new CookieOptions { Path = "/" });
+    }
+
+    private async Task&lt;Guid?&gt; ResolveCurrentUserId()
+    {
+        try
+        {
+            return GetCurrentUserId();
+        }
+        catch
+        {
+            ClearAuthCookies();
+            return null;
+        }
+    }
+
+    private Guid? GetCurrentUserId()
+    {
+        var userIdClaim = User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userIdClaim)) return null;
+        if (Guid.TryParse(userIdClaim, out var userId)) return userId;
+        return null;
+    }
+}
+</code></pre>
+<h3 id="93-authguardattributecs---filtro-de-autenticación"><a class="header" href="#93-authguardattributecs---filtro-de-autenticación">9.3 AuthGuardAttribute.cs - Filtro de Autenticación</a></h3>
+<pre><code class="language-csharp">using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using System.Security.Claims;
+
+namespace Cursinet.Api.Filters;
+
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
+public class AuthGuardAttribute : Attribute, IAuthorizationFilter
+{
+    public void OnAuthorization(AuthorizationFilterContext context)
+    {
+        var userId = context.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(userId))
+        {
+            context.Result = new UnauthorizedObjectResult(new
+            {
+                message = "Authentication required",
+                code = "UNAUTHORIZED"
+            });
+        }
+    }
+}
+</code></pre>
+<p><strong>¿Cómo usarlo?</strong></p>
+<pre><code class="language-csharp">[HttpPost("sessions")]
+[AuthGuard]
+public async Task&lt;ActionResult&gt; GetSessions() { ... }
+</code></pre>
+<p>Equivalente a: <code>auth.guard.ts</code> + <code>preHandler</code> de Fastify</p>
+<h3 id="94-errorhandlingmiddlewarecs"><a class="header" href="#94-errorhandlingmiddlewarecs">9.4 ErrorHandlingMiddleware.cs</a></h3>
+<pre><code class="language-csharp">using System.Net;
+using System.Text.Json;
+using Cursinet.Domain.Exceptions;
+
+namespace Cursinet.Api.Middleware;
+
+public class ErrorHandlingMiddleware
+{
+    private readonly RequestDelegate _next;
+    private readonly ILogger&lt;ErrorHandlingMiddleware&gt; _logger;
+
+    public ErrorHandlingMiddleware(RequestDelegate next, ILogger&lt;ErrorHandlingMiddleware&gt; logger)
+    {
+        _next = next;
+        _logger = logger;
+    }
+
+    public async Task InvokeAsync(HttpContext context)
+    {
+        try
+        {
+            await _next(context);
+        }
+        catch (AppException ex)
+        {
+            _logger.LogWarning("Operational error: {Code} - {Message}", ex.Code, ex.Message);
+
+            context.Response.StatusCode = ex.StatusCode;
+            context.Response.ContentType = "application/json";
+
+            var response = new
+            {
+                message = ex.Message,
+                code = ex.Code,
+                statusCode = ex.StatusCode
+            };
+
+            await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+        }
+        catch (FluentValidation.ValidationException ex)
+        {
+            context.Response.StatusCode = 422;
+            context.Response.ContentType = "application/json";
+
+            var response = new
+            {
+                message = "Validation failed",
+                code = "VALIDATION_ERROR",
+                statusCode = 422,
+                errors = ex.Errors.Select(e =&gt; new
+                {
+                    field = e.PropertyName,
+                    message = e.ErrorMessage
+                })
+            };
+
+            await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unhandled exception");
+
+            context.Response.StatusCode = 500;
+            context.Response.ContentType = "application/json";
+
+            var response = new
+            {
+                message = "Internal Server Error",
+                code = "INTERNAL_SERVER_ERROR",
+                statusCode = 500
+            };
+
+            await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+        }
+    }
+}
+</code></pre>
+<p><strong>¿Qué hace este middleware?</strong></p>
+<ol>
+<li><strong>Atrapa <code>AppException</code></strong> - Errores operacionales controlados (400, 401, 404, etc.)</li>
+<li><strong>Atrapa <code>ValidationException</code></strong> - Errores de validación de FluentValidation (422)</li>
+<li><strong>Atrapa <code>Exception</code> genérica</strong> - Errores no esperados (500)</li>
+<li><strong>Siempre retorna JSON</strong> - Formato consistente en todas las respuestas de error</li>
+</ol>
+<p>Equivalente a: error handler de Fastify + <code>AppError.ts</code></p>
+<hr>
+<h2 id="10-entity-framework-core---orm"><a class="header" href="#10-entity-framework-core---orm">10. Entity Framework Core - ORM</a></h2>
+<h3 id="101-qué-es-ef-core"><a class="header" href="#101-qué-es-ef-core">10.1 ¿Qué es EF Core?</a></h3>
+<p>Entity Framework Core 10 es el ORM (Object-Relational Mapper) oficial de .NET. Permite trabajar con bases de datos usando objetos C# sin escribir SQL manualmente.</p>
+<p><strong>Equivalencia con Prisma (Fastify):</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Concepto Prisma</th><th>EF Core 10</th></tr>
+</thead>
+<tbody>
+<tr><td><code>prisma/schema.prisma</code></td><td>Clases C# + Configuraciones Fluent API</td></tr>
+<tr><td><code>prisma.client</code></td><td><code>ApplicationDbContext</code></td></tr>
+<tr><td><code>prisma.user.findFirst()</code></td><td><code>_context.Users.FirstOrDefaultAsync()</code></td></tr>
+<tr><td><code>prisma.user.create()</code></td><td><code>_context.Users.Add()</code> + <code>SaveChangesAsync()</code></td></tr>
+<tr><td>Migraciones CLI</td><td><code>dotnet ef migrations</code></td></tr>
+<tr><td>Prisma Studio</td><td><code>dotnet ef database</code> o herramientas visuales</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="102-características-de-ef-core-10-nuevo-en-net-10"><a class="header" href="#102-características-de-ef-core-10-nuevo-en-net-10">10.2 Características de EF Core 10 (nuevo en .NET 10)</a></h3>
+<p>EF Core 10 trae mejoras importantes:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Feature</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Bulk operations</strong></td><td><code>ExecuteDeleteAsync()</code> y <code>ExecuteUpdateAsync()</code> con delegates</td></tr>
+<tr><td><strong>JSON columns</strong></td><td>Soporte nativo para columnas JSON en SQL Server 2025+</td></tr>
+<tr><td><strong>Vector Search</strong></td><td><code>SqlVector&lt;float&gt;</code> para búsquedas semánticas (RAG)</td></tr>
+<tr><td><strong>LeftJoin/RightJoin</strong></td><td>Joins directos en LINQ</td></tr>
+<tr><td><strong>Named Query Filters</strong></td><td>Filtros reutilizables con nombre</td></tr>
+<tr><td><strong>Complex properties</strong></td><td>Mapeo de objetos complejos a JSON</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="103-flujo-de-trabajo-con-ef-core"><a class="header" href="#103-flujo-de-trabajo-con-ef-core">10.3 Flujo de Trabajo con EF Core</a></h3>
+<pre><code>1. Definir entidades (clases C#)
+        ↓
+2. Configurar entidades (Fluent API o Data Annotations)
+        ↓
+3. Crear DbContext
+        ↓
+4. Crear migración → dotnet ef migrations add InitialCreate
+        ↓
+5. Aplicar migración → dotnet ef database update
+        ↓
+6. Usar DbContext en repositorios
+</code></pre>
+<h3 id="104-comandos-de-ef-core-cli"><a class="header" href="#104-comandos-de-ef-core-cli">10.4 Comandos de EF Core CLI</a></h3>
+<pre><code class="language-bash"># Instalar herramienta EF Core (si no está instalada)
+dotnet tool install --global dotnet-ef
+
+# Crear migración inicial
+dotnet ef migrations add InitialCreate
+
+# Crear migración con nombre
+dotnet ef migrations add AddUserSoftDelete
+
+# Aplicar migraciones a la BD
+dotnet ef database update
+
+# Revertir migración
+dotnet ef database update PreviousMigrationName
+
+# Eliminar última migración (no aplicada)
+dotnet ef migrations remove
+
+# Listar migraciones
+dotnet ef migrations list
+
+# Generar script SQL de migraciones
+dotnet ef migrations script -o migracion.sql
+
+# Aplicar migraciones desde código (en Program.cs)
+# await using var context = new ApplicationDbContext(options);
+# await context.Database.MigrateAsync();
+</code></pre>
+<h3 id="105-migraciones---explicación"><a class="header" href="#105-migraciones---explicación">10.5 Migraciones - Explicación</a></h3>
+<pre><code class="language-bash"># 1. Crear la migración (genera archivos C# en Migrations/)
+dotnet ef migrations add InitialCreate
+
+# Esto crea:
+# Migrations/
+# ├── 20260521000000_InitialCreate.cs    # Up() y Down()
+# └── ApplicationDbContextModelSnapshot.cs  # Snapshot del modelo
+
+# 2. Aplicar a la BD
+dotnet ef database update
+
+# 3. Para desarrollo: aplicar automáticamente al iniciar
+# Agregar en Program.cs:
+# using (var scope = app.Services.CreateScope())
+# {
+#     var db = scope.ServiceProvider.GetRequiredService&lt;ApplicationDbContext&gt;();
+#     await db.Database.MigrateAsync();
+# }
+</code></pre>
+<h3 id="106-soft-delete-con-ef-core-10"><a class="header" href="#106-soft-delete-con-ef-core-10">10.6 Soft Delete con EF Core 10</a></h3>
+<pre><code class="language-csharp">// En UserConfiguration.cs ya configuramos:
+builder.HasQueryFilter(u =&gt; u.DeletedAt == null);
+
+// Esto significa que TODAS las consultas a Users
+// automáticamente excluyen usuarios borrados
+// _context.Users.ToListAsync()  →  SELECT * FROM users WHERE deleted_at IS NULL
+</code></pre>
+<h3 id="107-bulk-operations-en-ef-core-10"><a class="header" href="#107-bulk-operations-en-ef-core-10">10.7 Bulk Operations en EF Core 10</a></h3>
+<pre><code class="language-csharp">// Antes (EF Core 8/9):
+var expired = await _context.Sessions
+    .Where(s =&gt; s.ExpiresAt &lt; DateTime.UtcNow)
+    .ToListAsync();
+_context.Sessions.RemoveRange(expired);
+await _context.SaveChangesAsync();
+// → Generaba N+1 DELETE statements
+
+// Ahora (EF Core 10):
+var deleted = await _context.Sessions
+    .Where(s =&gt; s.ExpiresAt &lt; DateTime.UtcNow)
+    .ExecuteDeleteAsync();
+// → Genera: DELETE FROM sessions WHERE expires_at &lt; NOW()
+// → Una sola query, muchísimo más rápido
+</code></pre>
+<hr>
+<h2 id="11-base-de-datos"><a class="header" href="#11-base-de-datos">11. Base de Datos</a></h2>
+<h3 id="111-configurar-postgresql"><a class="header" href="#111-configurar-postgresql">11.1 Configurar PostgreSQL</a></h3>
+<pre><code class="language-bash"># Iniciar PostgreSQL
+sudo systemctl start postgresql
+sudo systemctl enable postgresql
+
+# Crear base de datos
+sudo -u postgres psql -c "CREATE DATABASE cursinet;"
+sudo -u postgres psql -c "CREATE USER cursinet WITH PASSWORD 'cursinet123';"
+sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE cursinet TO cursinet;"
+</code></pre>
+<h3 id="112-configurar-redis-opcional"><a class="header" href="#112-configurar-redis-opcional">11.2 Configurar Redis (opcional)</a></h3>
+<pre><code class="language-bash"># Iniciar Redis
+sudo systemctl start redis-server
+sudo systemctl enable redis-server
+
+# Verificar que funciona
+redis-cli ping
+# Output: PONG
+</code></pre>
+<hr>
+<h2 id="12-endpoints-1"><a class="header" href="#12-endpoints-1">12. Endpoints</a></h2>
+<h3 id="endpoints-de-auth-1"><a class="header" href="#endpoints-de-auth-1">Endpoints de Auth</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Endpoint</th><th>Método</th><th>Descripción</th><th>Requiere Auth</th></tr>
+</thead>
+<tbody>
+<tr><td><code>/api/v1/auth/register</code></td><td>POST</td><td>Crear usuario nuevo</td><td>No</td></tr>
+<tr><td><code>/api/v1/auth/login</code></td><td>POST</td><td>Iniciar sesión</td><td>No</td></tr>
+<tr><td><code>/api/v1/auth/logout</code></td><td>POST</td><td>Cerrar sesión</td><td>No</td></tr>
+<tr><td><code>/api/v1/auth/refresh</code></td><td>POST</td><td>Refrescar tokens</td><td>No</td></tr>
+<tr><td><code>/api/v1/auth/verify-email</code></td><td>POST</td><td>Verificar email con código</td><td>No</td></tr>
+<tr><td><code>/api/v1/auth/resend-verification</code></td><td>POST</td><td>Reenviar código de verificación</td><td>No</td></tr>
+<tr><td><code>/api/v1/auth/forgot-password</code></td><td>POST</td><td>Solicitar reset de password</td><td>No</td></tr>
+<tr><td><code>/api/v1/auth/reset-password</code></td><td>POST</td><td>Resetear password con código</td><td>No</td></tr>
+<tr><td><code>/api/v1/auth/sessions</code></td><td>GET</td><td>Listar sesiones activas</td><td>Sí</td></tr>
+<tr><td><code>/api/v1/auth/sessions/{sessionId}</code></td><td>DELETE</td><td>Revocar sesión específica</td><td>Sí</td></tr>
+<tr><td><code>/health</code></td><td>GET</td><td>Health check</td><td>No</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="ejemplos-de-request-1"><a class="header" href="#ejemplos-de-request-1">Ejemplos de Request</a></h3>
+<p><strong>POST /api/v1/auth/register</strong></p>
+<pre><code class="language-json">{
+  "email": "testuser@example.com",
+  "name": "Test User",
+  "password": "password123",
+  "role": "staff"
+}
+</code></pre>
+<p><strong>POST /api/v1/auth/login</strong></p>
+<pre><code class="language-json">{
+  "email": "testuser@example.com",
+  "password": "password123"
+}
+</code></pre>
+<p><strong>POST /api/v1/auth/verify-email</strong></p>
+<pre><code class="language-json">{
+  "identifier": "testuser@example.com",
+  "code": "XXXXXX"
+}
+</code></pre>
+<p><strong>POST /api/v1/auth/forgot-password</strong></p>
+<pre><code class="language-json">{
+  "email": "testuser@example.com"
+}
+</code></pre>
+<p><strong>POST /api/v1/auth/reset-password</strong></p>
+<pre><code class="language-json">{
+  "email": "testuser@example.com",
+  "code": "XXXXXX",
+  "newPassword": "newpassword123"
+}
+</code></pre>
+<hr>
+<h2 id="13-comandos-útiles"><a class="header" href="#13-comandos-útiles">13. Comandos Útiles</a></h2>
+<h3 id="desarrollo"><a class="header" href="#desarrollo">Desarrollo</a></h3>
+<pre><code class="language-bash"># Iniciar en modo desarrollo (hot reload)
+dotnet watch run --project src/Api/Cursinet.Api/
+
+# Build del proyecto
+dotnet build
+
+# Publicar para producción
+dotnet publish -c Release -o ./publish
+
+# Ejecutar en producción
+dotnet ./publish/Cursinet.Api.dll
+
+# Limpiar build
+dotnet clean
+</code></pre>
+<h3 id="entity-framework"><a class="header" href="#entity-framework">Entity Framework</a></h3>
+<pre><code class="language-bash"># Listar herramientas instaladas
+dotnet tool list --global
+
+# Instalar/actualizar EF tool
+dotnet tool install --global dotnet-ef
+dotnet tool update --global dotnet-ef
+
+# Migraciones
+dotnet ef migrations add NombreMigracion
+dotnet ef database update
+dotnet ef migrations list
+dotnet ef migrations remove
+dotnet ef migrations script -o script.sql
+
+# Ver SQL que genera EF Core (development)
+# En appsettings.Development.json, agregar:
+# "Microsoft.EntityFrameworkCore.Database.Command": "Information"
+</code></pre>
+<h3 id="net-sdk"><a class="header" href="#net-sdk">.NET SDK</a></h3>
+<pre><code class="language-bash"># Listar SDKs instalados
+dotnet --list-sdks
+
+# Listar runtimes instalados
+dotnet --list-runtimes
+
+# Info completa del SDK
+dotnet --info
+
+# Ver templates disponibles
+dotnet new list
+
+# Ver ayuda de un comando
+dotnet help
+
+# Crear nuevo proyecto
+dotnet new webapi -n MiApi
+dotnet new sln -n MiSolucion
+dotnet new classlib -n MiLib
+</code></pre>
+<h3 id="herramientas-de-desarrollo"><a class="header" href="#herramientas-de-desarrollo">Herramientas de Desarrollo</a></h3>
+<pre><code class="language-bash"># Ver procesos en puerto 5000
+sudo lsof -i :5000
+
+# Logs de PostgreSQL
+sudo journalctl -u postgresql -f
+
+# Logs de Redis
+sudo journalctl -u redis-server -f
+
+# Monitorear PostgreSQL en tiempo real
+sudo -u postgres psql -c "SELECT * FROM pg_stat_activity;"
+</code></pre>
+<h3 id="script-completo-de-instalación-desde-cero"><a class="header" href="#script-completo-de-instalación-desde-cero">Script Completo de Instalación desde Cero</a></h3>
+<pre><code class="language-bash">#!/bin/bash
+# install-dotnet10-debian13.sh
+
+set -e
+
+echo "=== Instalando .NET SDK 10 en Debian 13 ==="
+
+# 1. Registrar repositorio Microsoft
+wget https://packages.microsoft.com/config/debian/13/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+rm packages-microsoft-prod.deb
+
+# 2. Actualizar e instalar
+sudo apt update
+sudo apt install -y dotnet-sdk-10.0
+
+# 3. PostgreSQL (opcional)
+sudo apt install -y postgresql postgresql-contrib
+
+# 4. Redis (opcional)
+sudo apt install -y redis-server
+
+# 5. Herramientas EF
+dotnet tool install --global dotnet-ef
+
+# 6. Verificar
+echo ""
+echo "=== Verificación ==="
+dotnet --version
+dotnet --list-sdks
+
+echo ""
+echo "=== Instalación completa ==="
+echo "SDK: $(dotnet --version)"
+echo ""
+echo "Para empezar:"
+echo "  dotnet new webapi -n MiApi"
+echo "  cd MiApi"
+echo "  dotnet run"
+</code></pre>
+<hr>
+<h2 id="14-resumen-de-patrones-1"><a class="header" href="#14-resumen-de-patrones-1">14. Resumen de Patrones</a></h2>
+<h3 id="mapa-de-correspondencia-fastify--aspnet-core"><a class="header" href="#mapa-de-correspondencia-fastify--aspnet-core">Mapa de Correspondencia Fastify → ASP.NET Core</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Concepto Fastify</th><th>ASP.NET Core</th></tr>
+</thead>
+<tbody>
+<tr><td><code>hashPassword()</code></td><td><code>PasswordService.HashPassword()</code></td></tr>
+<tr><td><code>comparePassword()</code></td><td><code>PasswordService.VerifyPassword()</code></td></tr>
+<tr><td><code>generateTokens()</code></td><td><code>TokenService.GenerateTokens()</code></td></tr>
+<tr><td><code>verifyToken()</code></td><td><code>TokenService.ValidateAccessToken()</code></td></tr>
+<tr><td><code>setAuthCookies()</code></td><td><code>Response.Cookies.Append()</code></td></tr>
+<tr><td><code>authGuard</code></td><td><code>AuthGuardAttribute</code> filter</td></tr>
+<tr><td><code>AppError</code></td><td><code>AppException</code></td></tr>
+<tr><td>Prisma + mappers</td><td>EF Core + Configurations</td></tr>
+<tr><td>Routes + controller</td><td>Controller + Actions</td></tr>
+<tr><td>pino</td><td>Serilog</td></tr>
+<tr><td>Zod</td><td>FluentValidation</td></tr>
+<tr><td><code>findByEmail()</code></td><td><code>_userRepository.GetByEmailAsync()</code></td></tr>
+<tr><td><code>create(data)</code></td><td><code>_context.Users.Add()</code> + <code>SaveChangesAsync()</code></td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="clean-architecture---flujo-de-una-request"><a class="header" href="#clean-architecture---flujo-de-una-request">Clean Architecture - Flujo de una Request</a></h3>
+<pre><code>HTTP Request
+    ↓
+[Controller] → Valida input (FluentValidation/DataAnnotations)
+    ↓
+[AuthService] → Lógica de negocio
+    ↓
+[Repository]   → Acceso a datos (EF Core)
+    ↓
+[Database]     → PostgreSQL
+    ↓
+[Repository]   → Mapea resultados
+    ↓
+[AuthService]  → Procesa respuesta + Genera tokens
+    ↓
+[Controller]   → Setea cookies + Retorna respuesta JSON
+</code></pre>
+<h3 id="patrones-implementados"><a class="header" href="#patrones-implementados">Patrones Implementados</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Patrón</th><th>Aplicación</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Clean Architecture</strong></td><td>Separación en Domain/Application/Infrastructure/Api</td></tr>
+<tr><td><strong>Dependency Inversion</strong></td><td>Service depende de interfaces, no de implementaciones concretas</td></tr>
+<tr><td><strong>Repository Pattern</strong></td><td>Abstracción de acceso a datos con interfaces</td></tr>
+<tr><td><strong>DI (Dependency Injection)</strong></td><td>Inyección de dependencias nativa de ASP.NET Core</td></tr>
+<tr><td><strong>Fluent API</strong></td><td>Configuración de EF Core con <code>IEntityTypeConfiguration&lt;T&gt;</code></td></tr>
+<tr><td><strong>Soft Delete</strong></td><td>Filtro global <code>HasQueryFilter(u =&gt; u.DeletedAt == null)</code></td></tr>
+<tr><td><strong>JWT Authentication</strong></td><td>Access + Refresh tokens con cookies httpOnly</td></tr>
+<tr><td><strong>Error Handling</strong></td><td>Middleware centralizado con errores tipados</td></tr>
+<tr><td><strong>Bulk Operations</strong></td><td><code>ExecuteDeleteAsync()</code> / <code>ExecuteUpdateAsync()</code> de EF Core 10</td></tr>
+<tr><td><strong>Record Classes</strong></td><td>DTOs inmutables con <code>record</code> de C#</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<blockquote>
+<p><strong>Nota final:</strong> Este manual cubre .NET 10 (LTS) sobre Debian 13 (Trixie).<br>Los comandos de instalación pueden variar si usas otra versión de .NET o Debian.<br>Para versiones futuras, consulta: https://learn.microsoft.com/en-us/dotnet/core/install/linux-debian</p>
+</blockquote>
+<div style="break-before: page; page-break-before: always;"></div>
 <h1 id="primeros-pasos---react-native"><a class="header" href="#primeros-pasos---react-native">Primeros pasos - React Native</a></h1>
 <p>Este manual te guiará paso a paso para entender y desarrollar una aplicación de React Native desde 0. Usamos <strong>Expo</strong> con <strong>expo-router</strong>, que es la forma más moderna y recomendada de crear apps con React Native.</p>
 <hr>
@@ -14331,7 +17006,7 @@ pnpm start --clear
 </code></pre>
 <p>La app se abrirá en tu navegador (funcionalidad limitada, no todas las APIs nativas funcionan).</p>
 <hr>
-<h2 id="4-estructura-del-proyecto"><a class="header" href="#4-estructura-del-proyecto">4. Estructura del Proyecto</a></h2>
+<h2 id="4-estructura-del-proyecto-1"><a class="header" href="#4-estructura-del-proyecto-1">4. Estructura del Proyecto</a></h2>
 <p>Este proyecto sigue la <strong>File-based Routing</strong> (enrutamiento basado en archivos) de expo-router. La estructura es fundamental entenderla:</p>
 <pre><code>mobile-app/
 ├── app/                      # Directorio de rutas (expo-router)
@@ -16615,7 +19290,7 @@ Pero lo ignora porque sender === currentUserId
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="16-introducción-a-las-redes"><a class="header" href="#16-introducción-a-las-redes">16. Introducción a las Redes</a></h1>
 <hr>
-<h2 id="índice-4"><a class="header" href="#índice-4">ÍNDICE</a></h2>
+<h2 id="índice-5"><a class="header" href="#índice-5">ÍNDICE</a></h2>
 <ul>
 <li><a href="#qué-es-una-red">¿Qué es una Red?</a></li>
 <li><a href="#ventajas-de-las-redes">Ventajas de las Redes</a></li>
@@ -16947,7 +19622,7 @@ Pero lo ignora porque sender === currentUserId
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="18-modelos-de-red"><a class="header" href="#18-modelos-de-red">18. Modelos de Red</a></h1>
 <hr>
-<h2 id="índice-5"><a class="header" href="#índice-5">ÍNDICE</a></h2>
+<h2 id="índice-6"><a class="header" href="#índice-6">ÍNDICE</a></h2>
 <ul>
 <li><a href="#qué-es-un-modelo-de-red">¿Qué es un Modelo de Red?</a></li>
 <li><a href="#importancia-de-los-modelos-de-red">Importancia de los Modelos de Red</a></li>
@@ -17305,7 +19980,7 @@ Señales eléctricas / ondas de radio
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="redes---direcciones-ip-y-subredes"><a class="header" href="#redes---direcciones-ip-y-subredes">Redes - Direcciones IP y Subredes</a></h1>
 <hr>
-<h2 id="índice-6"><a class="header" href="#índice-6">ÍNDICE</a></h2>
+<h2 id="índice-7"><a class="header" href="#índice-7">ÍNDICE</a></h2>
 <ul>
 <li><a href="#qué-es-una-dirección-ip">¿Qué es una Dirección IP?</a>
 <ul>
@@ -17615,7 +20290,7 @@ Señales eléctricas / ondas de radio
 <h2 id="introducción"><a class="header" href="#introducción">Introducción</a></h2>
 <p>Este manual te guiará paso a paso para analizar direcciones IPv4 y determinar la <strong>parte de red</strong>, la <strong>parte de host</strong>, la <strong>máscara de subred</strong>, la <strong>dirección de red</strong>, la <strong>dirección de broadcast</strong> y el <strong>rango de hosts utilizables</strong>. Este es un ejercicio fundamental para entender cómo funcionan las subredes y cómo los routers enrutan paquetes entre diferentes redes.</p>
 <hr>
-<h2 id="índice-7"><a class="header" href="#índice-7">ÍNDICE</a></h2>
+<h2 id="índice-8"><a class="header" href="#índice-8">ÍNDICE</a></h2>
 <ul>
 <li><a href="#1-conceptos-fundamentales">Conceptos Fundamentales</a></li>
 <li><a href="#2-metodología-paso-a-paso">Metodología Paso a Paso</a></li>
@@ -18434,7 +21109,7 @@ Broadcast: 192.168.10.255 (bits de host = 11111110 → 255)
 </blockquote>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="nat"><a href="#nat" class="header">NAT</a></h1>
-<h2 id="índice-8"><a class="header" href="#índice-8">ÍNDICE</a></h2>
+<h2 id="índice-9"><a class="header" href="#índice-9">ÍNDICE</a></h2>
 <ul>
 <li><a href="#qué-es-nat-y-cómo-actúa-en-nuestra-red">Qué es NAT y cómo actúa en nuestra red</a>
 <ul>
@@ -18556,7 +21231,7 @@ Broadcast: 192.168.10.255 (bits de host = 11111110 → 255)
 <h1 id="cisco-packet-tracer--manual-de-comandos"><a class="header" href="#cisco-packet-tracer--manual-de-comandos">CISCO PACKET TRACER — Manual de Comandos</a></h1>
 <p><strong>Router · Switch · DHCP · IP Routes · VLANs</strong></p>
 <hr>
-<h2 id="índice-9"><a class="header" href="#índice-9">ÍNDICE</a></h2>
+<h2 id="índice-10"><a class="header" href="#índice-10">ÍNDICE</a></h2>
 <ol>
 <li><a href="#1-configuración-del-router">Configuración del Router</a></li>
 <li><a href="#2-configuración-del-switch">Configuración del Switch</a></li>
@@ -18936,7 +21611,7 @@ S1#  show interfaces Fa0/1 switchport       ! Detalle de un puerto
 <h1 id="manual-de-docker-en-debian--instalación-desinstalación-y-reinstalación-completa"><a class="header" href="#manual-de-docker-en-debian--instalación-desinstalación-y-reinstalación-completa">Manual de Docker en Debian — Instalación, Desinstalación y Reinstalación Completa</a></h1>
 <p>Docker es una plataforma de contenedores que permite empaquetar, distribuir y ejecutar aplicaciones en entornos aislados. Este manual cubre la instalación completa usando el repositorio oficial, la desinstalación limpia sin residuos, y el procedimiento de reinstalación desde cero.</p>
 <hr>
-<h2 id="índice-10"><a class="header" href="#índice-10">Índice</a></h2>
+<h2 id="índice-11"><a class="header" href="#índice-11">Índice</a></h2>
 <ol>
 <li><a href="#1-requisitos-previos-4">Requisitos Previos</a></li>
 <li><a href="#2-desinstalación-completa-hacer-primero-si-ya-tienes-docker">Desinstalación Completa</a></li>
