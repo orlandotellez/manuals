@@ -40,6 +40,7 @@
 - [Direcciones ip](./docs/09-direcciones-ip.md)
 - [Redes ejercicios](./docs/10-redes-ejercicio-analisis-ipv4.md)
 - [NAT](./docs/11-nat.md)
+- [MAC](./docs/22-mac-redes.md)
 - [Comandos Packet Tracer](./docs/15-comandos-packet-tracer.md)
 
 ## Docker
