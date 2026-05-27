@@ -1,0 +1,827 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Entity Framework Core - Manuales</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-31be9c5b.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-5c76d780.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Manuales</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="guía-completa-de-entity-framework-core"><a class="header" href="#guía-completa-de-entity-framework-core">Guía completa de Entity Framework Core</a></h1>
+<h2 id="índice"><a class="header" href="#índice">Índice</a></h2>
+<ul>
+<li><a href="#qué-es-ef-core">¿Qué es EF Core?</a></li>
+<li><a href="#arquitectura-del-proyecto-cursinet">Arquitectura del proyecto (Cursinet)</a></li>
+<li><a href="#instalación-inicial-desde-0">Instalación inicial (desde 0)</a></li>
+<li><a href="#dependencias-entre-proyectos">Dependencias entre proyectos</a></li>
+<li><a href="#el-dbcontext">El DbContext</a></li>
+<li><a href="#configuración-de-entidades-fluent-api">Configuración de entidades (Fluent API)</a></li>
+<li><a href="#migraciones">Migraciones</a></li>
+<li><a href="#postgresql-funciones-uuid">PostgreSQL: funciones UUID</a></li>
+<li><a href="#crud-básico-con-ef-core">CRUD básico con EF Core</a></li>
+<li><a href="#relaciones-entre-entidades">Relaciones entre entidades</a></li>
+<li><a href="#consultas-con-linq">Consultas con LINQ</a></li>
+<li><a href="#resolución-de-problemas-comunes">Resolución de problemas comunes</a></li>
+<li><a href="#inyección-de-dependencias">Inyección de dependencias</a></li>
+<li><a href="#buenas-prácticas">Buenas prácticas</a></li>
+<li><a href="#resumen-del-flujo-de-desarrollo">Resumen del flujo de desarrollo</a></li>
+<li><a href="#referencia-rápida-de-comandos">Referencia rápida de comandos</a></li>
+</ul>
+<hr>
+<h2 id="qué-es-ef-core"><a class="header" href="#qué-es-ef-core">¿Qué es EF Core?</a></h2>
+<p>Entity Framework Core (EF Core) es un ORM (Object-Relational Mapper) que te permite trabajar con bases de datos relacionales usando objetos de C#. En lugar de escribir SQL puro, trabajas con <code>DbSet&lt;T&gt;</code>, LINQ, y tus entidades de dominio.</p>
+<hr>
+<h2 id="arquitectura-del-proyecto-cursinet"><a class="header" href="#arquitectura-del-proyecto-cursinet">Arquitectura del proyecto (Cursinet)</a></h2>
+<pre><code>backend/
+├── src/
+│   ├── Domain/                   ← Entidades (POCOs, sin EF)
+│   │   └── Entities/
+│   │       ├── User.cs
+│   │       ├── Account.cs
+│   │       ├── Session.cs
+│   │       └── Verification.cs
+│   │
+│   ├── Infrastructure/           ← EF Core, DbContext, migraciones
+│   │   └── Persistence/
+│   │       ├── ApplicationDbContext.cs
+│   │       ├── Configurations/   ← Fluent API (IEntityTypeConfiguration)
+│   │       │   ├── UserConfiguration.cs
+│   │       │   ├── AccountConfiguration.cs
+│   │       │   ├── SessionConfiguration.cs
+│   │       │   └── VerificationConfiguration.cs
+│   │       ├── Repositories/     ← Repositorios que usan DbContext
+│   │       └── Migrations/       ← Archivos de migración generados
+│   │
+│   ├── Api/                      ← Startup, DI, Program.cs
+│   └── Application/              ← Servicios, interfaces
+│
+├── ef.md                         ← Esta guía
+</code></pre>
+<p><strong>Regla de oro:</strong> Domain NO conoce EF. Infrastructure implementa los repositorios y tiene el DbContext. Api registra todo en DI.</p>
+<hr>
+<h2 id="instalación-inicial-desde-0"><a class="header" href="#instalación-inicial-desde-0">Instalación inicial (desde 0)</a></h2>
+<h3 id="1-instalar-los-paquetes-nuget"><a class="header" href="#1-instalar-los-paquetes-nuget">1. Instalar los paquetes NuGet</a></h3>
+<p>En el proyecto de <strong>Infrastructure</strong> (donde va el DbContext):</p>
+<pre><code class="language-bash">dotnet add src/Infrastructure/Infrastructure.csproj package Microsoft.EntityFrameworkCore
+dotnet add src/Infrastructure/Infrastructure.csproj package Npgsql.EntityFrameworkCore.PostgreSQL
+</code></pre>
+<p>En el proyecto de <strong>Api</strong> (startup, para herramientas de diseño):</p>
+<pre><code class="language-bash">dotnet add src/Api/Api.csproj package Microsoft.EntityFrameworkCore.Design
+</code></pre>
+<blockquote>
+<p><strong>⚠️ Importante:</strong> <code>Microsoft.EntityFrameworkCore.Design</code> solo va en el startup project (Api), con <code>PrivateAssets=all</code> para que no se propague como dependencia.</p>
+</blockquote>
+<h3 id="2-configurar-la-connection-string"><a class="header" href="#2-configurar-la-connection-string">2. Configurar la connection string</a></h3>
+<p><code>src/Api/appsettings.json</code>:</p>
+<pre><code class="language-json">{
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=localhost;Database=cursinet_db;Username=dev-espada;Password=espadaPOSTGRES"
+  }
+}
+</code></pre>
+<p>Formato de connection string para PostgreSQL:</p>
+<pre><code>Host=localhost;Database=nombre_bd;Username=tu_usuario;Password=tu_password
+</code></pre>
+<h3 id="3-registrar-dbcontext-en-di"><a class="header" href="#3-registrar-dbcontext-en-di">3. Registrar DbContext en DI</a></h3>
+<p><code>src/Api/Program.cs</code>:</p>
+<pre><code class="language-csharp">var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? "Host=localhost;Database=cursinet_db;Username=dev-espada;Password=espadaPOSTGRES";
+
+builder.Services.AddDbContext&lt;ApplicationDbContext&gt;(options =&gt;
+    options.UseNpgsql(connectionString, b =&gt; b.MigrationsAssembly("Infrastructure")));
+</code></pre>
+<blockquote>
+<p><strong>⚠️ El parámetro <code>MigrationsAssembly</code></strong> debe ser el <strong>nombre del assembly</strong> (nombre del <code>.csproj</code>), NO el namespace. Si tu proyecto se llama <code>Infrastructure.csproj</code>, el assembly es <code>"Infrastructure"</code>, aunque el <code>RootNamespace</code> sea <code>Cursinet.Infrastructure</code>.</p>
+</blockquote>
+<hr>
+<h2 id="dependencias-entre-proyectos"><a class="header" href="#dependencias-entre-proyectos">Dependencias entre proyectos</a></h2>
+<p>Para que las migraciones funcionen, los proyectos tienen que referenciarse así:</p>
+<pre><code>Api ───→ Infrastructure ───→ Application ───→ Domain
+  │                            │
+  └──→ Application ────────────┘
+</code></pre>
+<ul>
+<li><strong>Infrastructure</strong> necesita referencia a Application (para las interfaces de repositorios) y Domain (para las entidades)</li>
+<li><strong>Api</strong> necesita referencia a Infrastructure (para el DbContext) y Application (para los servicios)</li>
+<li><strong>Application</strong> solo referencia a Domain</li>
+</ul>
+<hr>
+<h2 id="el-dbcontext"><a class="header" href="#el-dbcontext">El DbContext</a></h2>
+<p><code>src/Infrastructure/Persistence/ApplicationDbContext.cs</code>:</p>
+<pre><code class="language-csharp">public class ApplicationDbContext : DbContext
+{
+    public ApplicationDbContext(DbContextOptions&lt;ApplicationDbContext&gt; options)
+        : base(options) { }
+
+    // DbSet por cada entidad → una tabla
+    public DbSet&lt;User&gt; Users =&gt; Set&lt;User&gt;();
+    public DbSet&lt;Account&gt; Accounts =&gt; Set&lt;Account&gt;();
+    public DbSet&lt;Session&gt; Sessions =&gt; Set&lt;Session&gt;();
+    public DbSet&lt;Verification&gt; Verifications =&gt; Set&lt;Verification&gt;();
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        // Escanea el assembly y aplica TODAS las IEntityTypeConfiguration
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+    }
+}
+</code></pre>
+<blockquote>
+<p><code>ApplyConfigurationsFromAssembly</code> busca todas las clases que implementan <code>IEntityTypeConfiguration&lt;T&gt;</code> en ese assembly y las aplica automáticamente. No hace falta registrarlas una por una.</p>
+</blockquote>
+<hr>
+<h2 id="configuración-de-entidades-fluent-api"><a class="header" href="#configuración-de-entidades-fluent-api">Configuración de entidades (Fluent API)</a></h2>
+<p>En lugar de usar Data Annotations (<code>[Required]</code>, <code>[MaxLength]</code>) en las entidades de Domain, separamos la configuración en archivos dedicados. Esto mantiene Domain limpio de dependencias de infraestructura.</p>
+<h3 id="estructura-de-una-configuración"><a class="header" href="#estructura-de-una-configuración">Estructura de una configuración</a></h3>
+<p><code>UserConfiguration.cs</code>:</p>
+<pre><code class="language-csharp">public class UserConfiguration : IEntityTypeConfiguration&lt;User&gt;
+{
+    public void Configure(EntityTypeBuilder&lt;User&gt; builder)
+    {
+        // 1. Nombre de la tabla
+        builder.ToTable("Users");
+
+        // 2. Llave primaria
+        builder.HasKey(u =&gt; u.Id);
+
+        // 3. Propiedades
+        builder.Property(u =&gt; u.Id).HasDefaultValueSql("uuid_generate_v4()");
+        builder.Property(u =&gt; u.Name).IsRequired().HasColumnName("name").HasMaxLength(255);
+        builder.Property(u =&gt; u.Email).IsRequired().HasColumnName("email").HasMaxLength(255);
+        builder.Property(u =&gt; u.Role).HasColumnName("role").HasConversion&lt;int&gt;().HasDefaultValue(UserRole.Student);
+
+        // 4. Índices
+        builder.HasIndex(u =&gt; u.Email).IsUnique();
+        builder.HasIndex(u =&gt; u.Role);
+        builder.HasIndex(u =&gt; u.CreatedAt).HasDatabaseName("idx_users_created_at");
+
+        // 5. Default values
+        builder.Property(u =&gt; u.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+        builder.Property(u =&gt; u.IsActive).HasDefaultValue(true);
+        builder.Property(u =&gt; u.EmailVerified).HasDefaultValue(false);
+    }
+}
+</code></pre>
+<h3 id="guía-rápida-de-métodos-de-configuración"><a class="header" href="#guía-rápida-de-métodos-de-configuración">Guía rápida de métodos de configuración</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>Para qué sirve</th></tr>
+</thead>
+<tbody>
+<tr><td><code>.ToTable("nombre")</code></td><td>Define el nombre de la tabla en la DB</td></tr>
+<tr><td><code>.HasKey(x =&gt; x.Id)</code></td><td>Define la llave primaria</td></tr>
+<tr><td><code>.Property(x =&gt; x.Nombre)</code></td><td>Configura una columna</td></tr>
+<tr><td><code>.IsRequired()</code></td><td>NOT NULL</td></tr>
+<tr><td><code>.HasColumnName("name")</code></td><td>Nombre de la columna en la DB (snake_case)</td></tr>
+<tr><td><code>.HasMaxLength(255)</code></td><td>VARCHAR(255)</td></tr>
+<tr><td><code>.HasDefaultValue(true)</code></td><td>DEFAULT con valor fijo</td></tr>
+<tr><td><code>.HasDefaultValueSql("CURRENT_TIMESTAMP")</code></td><td>DEFAULT con expresión SQL</td></tr>
+<tr><td><code>.HasConversion&lt;int&gt;()</code></td><td>Guarda un enum como int</td></tr>
+<tr><td><code>.ValueGeneratedOnAdd()</code></td><td>Valor generado al insertar</td></tr>
+<tr><td><code>.HasIndex(x =&gt; x.Email)</code></td><td>Crea un índice</td></tr>
+<tr><td><code>.IsUnique()</code></td><td>Índice único (se aplica al HasIndex)</td></tr>
+<tr><td><code>.HasDatabaseName("idx_nombre")</code></td><td>Nombre personalizado para el índice</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="convención-de-nombres-en-la-db"><a class="header" href="#convención-de-nombres-en-la-db">Convención de nombres en la DB</a></h3>
+<p>En C# usamos <strong>PascalCase</strong> (<code>CreatedAt</code>), pero en PostgreSQL usamos <strong>snake_case</strong> (<code>created_at</code>). Mapeamos con <code>.HasColumnName()</code>:</p>
+<pre><code class="language-csharp">builder.Property(u =&gt; u.CreatedAt).HasColumnName("created_at");
+builder.Property(u =&gt; u.StripeCustomerId).HasColumnName("stripe_customer_id");
+</code></pre>
+<hr>
+<h2 id="migraciones"><a class="header" href="#migraciones">Migraciones</a></h2>
+<h3 id="flujo-de-trabajo"><a class="header" href="#flujo-de-trabajo">Flujo de trabajo</a></h3>
+<pre><code>1. Modificás entidades en Domain
+2. Creás/configurás Configurations en Infrastructure
+3. Ejecutás migrations add
+4. Revisás el archivo generado
+5. Ejecutás database update
+</code></pre>
+<h3 id="comandos-esenciales"><a class="header" href="#comandos-esenciales">Comandos esenciales</a></h3>
+<pre><code class="language-bash"># Todos los comandos se ejecutan desde backend/
+# -s : startup project (donde está Program.cs)
+# -p : target project (donde está el DbContext)
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Comando</th><th>Para qué sirve</th></tr>
+</thead>
+<tbody>
+<tr><td><code>dotnet ef migrations add Nombre -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj</code></td><td>Crea archivos de migración (NO toca la DB)</td></tr>
+<tr><td><code>dotnet ef database update -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj</code></td><td>Aplica las migraciones pendientes a la DB</td></tr>
+<tr><td><code>dotnet ef migrations remove -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj</code></td><td>Borra la última migración (si no se aplicó)</td></tr>
+<tr><td><code>dotnet ef migrations list -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj</code></td><td>Lista las migraciones y su estado</td></tr>
+<tr><td><code>dotnet ef database drop -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj</code></td><td>ELIMINA la base de datos (cuidado)</td></tr>
+<tr><td><code>dotnet ef migrations script -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj</code></td><td>Genera el script SQL de las migraciones</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="qué-pasa-con-cada-comando"><a class="header" href="#qué-pasa-con-cada-comando">¿Qué pasa con cada comando?</a></h3>
+<p><strong><code>migrations add InitialCreate</code></strong>:</p>
+<ul>
+<li>Escanea las entidades y configuraciones</li>
+<li>Compara con el snapshot (modelo previo)</li>
+<li>Genera:
+<ul>
+<li><code>Migrations/20260527053502_InitialCreate.cs</code> ← código C# con Up() y Down()</li>
+<li><code>Migrations/20260527053502_InitialCreate.Designer.cs</code> ← metadatos</li>
+<li><code>Migrations/ApplicationDbContextModelSnapshot.cs</code> ← snapshot del modelo actual</li>
+</ul>
+</li>
+<li>NO toca la base de datos</li>
+</ul>
+<p><strong><code>database update</code></strong>:</p>
+<ul>
+<li>Conecta a PostgreSQL</li>
+<li>Revisa <code>__EFMigrationsHistory</code> para ver qué migraciones ya se aplicaron</li>
+<li>Ejecuta las pendientes en orden</li>
+<li>Crea la base de datos si no existe</li>
+</ul>
+<h3 id="qué-es-__efmigrationshistory"><a class="header" href="#qué-es-__efmigrationshistory">¿Qué es <code>__EFMigrationsHistory</code>?</a></h3>
+<p>Es una tabla que EF Core crea automáticamente en la DB para llevar el control de qué migraciones se aplicaron:</p>
+<pre><code class="language-sql">TABLE "__EFMigrationsHistory" (
+    "MigrationId"    VARCHAR(150) PRIMARY KEY,
+    "ProductVersion" VARCHAR(32)
+);
+</code></pre>
+<h3 id="error-común-the-model-has-pending-changes"><a class="header" href="#error-común-the-model-has-pending-changes">Error común: “The model has pending changes”</a></h3>
+<pre><code>The model for context 'ApplicationDbContext' has pending changes.
+Add a new migration before updating the database.
+</code></pre>
+<p><strong>Por qué pasa:</strong> El snapshot del modelo no coincide con el estado actual de las entidades/configuraciones. Esto puede pasar cuando:</p>
+<ul>
+<li>Modificaste entidades pero no creaste una migración</li>
+<li>Removiste migraciones manualmente</li>
+<li>Editaste archivos de migración a mano</li>
+</ul>
+<p><strong>Solución:</strong></p>
+<pre><code class="language-bash"># Crear una nueva migración que capture los cambios
+dotnet ef migrations add SyncModel -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj
+dotnet ef database update -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj
+</code></pre>
+<hr>
+<h2 id="postgresql-funciones-uuid"><a class="header" href="#postgresql-funciones-uuid">PostgreSQL: funciones UUID</a></h2>
+<p>En PostgreSQL hay <strong>dos formas</strong> de generar UUIDs automáticos:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Función</th><th>Requisito</th><th>Disponible desde</th></tr>
+</thead>
+<tbody>
+<tr><td><code>uuid_generate_v4()</code></td><td>Extensión <code>uuid-ossp</code></td><td>PG 8.2+</td></tr>
+<tr><td><code>gen_random_uuid()</code></td><td><strong>Nativo</strong> (sin extensiones)</td><td>PG 13+</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="para-usar-gen_random_uuid-recomendado-en-pg-13"><a class="header" href="#para-usar-gen_random_uuid-recomendado-en-pg-13">Para usar <code>gen_random_uuid()</code> (recomendado en PG 13+)</a></h3>
+<p>Cambiá en los archivos de configuración:</p>
+<pre><code class="language-csharp">builder.Property(u =&gt; u.Id).HasDefaultValueSql("gen_random_uuid()");
+</code></pre>
+<h3 id="para-usar-uuid_generate_v4"><a class="header" href="#para-usar-uuid_generate_v4">Para usar <code>uuid_generate_v4()</code></a></h3>
+<p>Habilitá la extensión en PostgreSQL:</p>
+<pre><code class="language-sql">CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+</code></pre>
+<blockquote>
+<p><strong>⚠️ Importante:</strong> Si cambiás el <code>HasDefaultValueSql</code> en las configuraciones, tenés que crear una NUEVA migración (<code>migrations add</code>) para que se refleje el cambio. Editar la migración a mano funciona pero es mala práctica.</p>
+</blockquote>
+<hr>
+<h2 id="crud-básico-con-ef-core"><a class="header" href="#crud-básico-con-ef-core">CRUD básico con EF Core</a></h2>
+<p>Los repositorios reciben <code>ApplicationDbContext</code> por inyección de dependencias.</p>
+<h3 id="create-insert"><a class="header" href="#create-insert">Create (INSERT)</a></h3>
+<pre><code class="language-csharp">public async Task&lt;User&gt; CreateAsync(User user)
+{
+    await _context.Users.AddAsync(user);
+    await _context.SaveChangesAsync();
+    return user;
+}
+</code></pre>
+<h3 id="read-select"><a class="header" href="#read-select">Read (SELECT)</a></h3>
+<pre><code class="language-csharp">// Obtener todos
+var users = await _context.Users.ToListAsync();
+
+// Obtener uno por ID
+var user = await _context.Users.FindAsync(id);
+
+// Obtener uno con filtro (FirstOrDefault)
+var user = await _context.Users.FirstOrDefaultAsync(u =&gt; u.Email == email);
+
+// Filtrar con Where
+var activeUsers = await _context.Users.Where(u =&gt; u.DeletedAt == null).ToListAsync();
+
+// Proyección (SELECT específico)
+var emails = await _context.Users
+    .Where(u =&gt; u.IsActive)
+    .Select(u =&gt; u.Email)
+    .ToListAsync();
+</code></pre>
+<h3 id="update-update"><a class="header" href="#update-update">Update (UPDATE)</a></h3>
+<pre><code class="language-csharp">// Opción 1: Marcar como modificado
+var user = await _context.Users.FindAsync(id);
+user.Name = "Nuevo nombre";
+await _context.SaveChangesAsync();
+
+// Opción 2: Update explícito
+_context.Users.Update(user);
+await _context.SaveChangesAsync();
+</code></pre>
+<h3 id="delete-delete"><a class="header" href="#delete-delete">Delete (DELETE)</a></h3>
+<pre><code class="language-csharp">// Físico (borra de verdad)
+_context.Users.Remove(user);
+await _context.SaveChangesAsync();
+
+// Soft-delete (marca como borrado)
+user.DeletedAt = DateTime.UtcNow;
+_context.Users.Update(user);
+await _context.SaveChangesAsync();
+</code></pre>
+<h3 id="asnotracking-solo-lectura"><a class="header" href="#asnotracking-solo-lectura">AsNoTracking (solo lectura)</a></h3>
+<p>Cuando solo necesitás leer datos sin trackear cambios (más rápido):</p>
+<pre><code class="language-csharp">var users = await _context.Users
+    .AsNoTracking()
+    .Where(u =&gt; u.IsActive)
+    .ToListAsync();
+</code></pre>
+<hr>
+<h2 id="relaciones-entre-entidades"><a class="header" href="#relaciones-entre-entidades">Relaciones entre entidades</a></h2>
+<h3 id="uno-a-muchos-user--session-user--account"><a class="header" href="#uno-a-muchos-user--session-user--account">Uno a muchos (User → Session, User → Account)</a></h3>
+<p>En <code>Session.cs</code> (entidad hija):</p>
+<pre><code class="language-csharp">public Guid UserId { get; set; }
+public User User { get; set; } = null!;
+</code></pre>
+<p>En <code>SessionConfiguration.cs</code>:</p>
+<pre><code class="language-csharp">builder.HasOne(s =&gt; s.User)        // Session tiene un User
+    .WithMany()                    // User tiene muchas Sessions
+    .HasForeignKey(s =&gt; s.UserId)  // FK: Session.UserId → User.Id
+    .OnDelete(DeleteBehavior.Cascade);
+</code></pre>
+<h3 id="withmany-o-withmanyu--usessions"><a class="header" href="#withmany-o-withmanyu--usessions">¿<code>WithMany()</code> o <code>WithMany(u =&gt; u.Sessions)</code>?</a></h3>
+<ul>
+<li><strong><code>WithMany()</code></strong> sin parámetro: la entidad padre NO tiene una colección de navegación (User no tiene <code>List&lt;Session&gt;</code>)</li>
+<li><strong><code>WithMany(u =&gt; u.Sessions)</code></strong>: la entidad padre tiene una colección de navegación</li>
+</ul>
+<h3 id="deletebehavior"><a class="header" href="#deletebehavior">DeleteBehavior</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Comportamiento</th><th>Efecto</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Cascade</code></td><td>Borra usuario → borra sus sessions</td></tr>
+<tr><td><code>Restrict</code></td><td>No deja borrar usuario si tiene sessions</td></tr>
+<tr><td><code>SetNull</code></td><td>Borra usuario → pone UserId = NULL</td></tr>
+<tr><td><code>NoAction</code></td><td>No hace nada (puede dar error de FK)</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="consultas-con-linq"><a class="header" href="#consultas-con-linq">Consultas con LINQ</a></h2>
+<h3 id="operadores-básicos"><a class="header" href="#operadores-básicos">Operadores básicos</a></h3>
+<pre><code class="language-csharp">// WHERE
+_context.Users.Where(u =&gt; u.Role == UserRole.Admin)
+
+// ORDER BY
+_context.Users.OrderBy(u =&gt; u.CreatedAt)
+_context.Users.OrderByDescending(u =&gt; u.LastSeenAt)
+
+// SKIP / TAKE (paginación)
+_context.Users.Skip(10).Take(20)
+
+// COUNT
+await _context.Users.CountAsync()
+await _context.Users.CountAsync(u =&gt; u.IsActive)
+
+// ANY / ALL
+await _context.Users.AnyAsync(u =&gt; u.Email == email)
+await _context.Users.AllAsync(u =&gt; u.EmailVerified)
+
+// SELECT específico
+_context.Users.Select(u =&gt; new { u.Id, u.Email })
+</code></pre>
+<h3 id="filtros-comunes"><a class="header" href="#filtros-comunes">Filtros comunes</a></h3>
+<pre><code class="language-csharp">// Contains (LIKE '%texto%')
+_context.Users.Where(u =&gt; u.Name.Contains("García"))
+
+// StartsWith / EndsWith
+_context.Users.Where(u =&gt; u.Name.StartsWith("Mar"))
+_context.Users.Where(u =&gt; u.Email.EndsWith("@gmail.com"))
+
+// Comparación de fechas
+_context.Users.Where(u =&gt; u.CreatedAt &gt;= DateTime.UtcNow.AddDays(-7))
+
+// Múltiples condiciones
+_context.Users.Where(u =&gt; u.IsActive &amp;&amp; u.DeletedAt == null &amp;&amp; u.Role == UserRole.Student)
+</code></pre>
+<hr>
+<h2 id="resolución-de-problemas-comunes"><a class="header" href="#resolución-de-problemas-comunes">Resolución de problemas comunes</a></h2>
+<h3 id="could-not-load-file-or-assembly-cursinetinfrastructure"><a class="header" href="#could-not-load-file-or-assembly-cursinetinfrastructure">“Could not load file or assembly ‘Cursinet.Infrastructure’”</a></h3>
+<pre><code>Could not load file or assembly 'Cursinet.Infrastructure'
+</code></pre>
+<p><strong>Causa:</strong> El <code>MigrationsAssembly</code> apunta a un nombre de assembly incorrecto.</p>
+<p><strong>Solución:</strong> En <code>Program.cs</code>:</p>
+<pre><code class="language-csharp">// ❌ MAL - RootNamespace no es el assembly name
+options.UseNpgsql(cs, b =&gt; b.MigrationsAssembly("Cursinet.Infrastructure"));
+
+// ✅ BIEN - Nombre del archivo .csproj (sin extensión)
+options.UseNpgsql(cs, b =&gt; b.MigrationsAssembly("Infrastructure"));
+</code></pre>
+<h3 id="uuid_generate_v4-does-not-exist"><a class="header" href="#uuid_generate_v4-does-not-exist">“uuid_generate_v4() does not exist”</a></h3>
+<pre><code>42883: no existe la función uuid_generate_v4()
+</code></pre>
+<p><strong>Causa:</strong> La extensión <code>uuid-ossp</code> no está instalada en PostgreSQL.</p>
+<p><strong>Solución 1 — Instalar la extensión (recomendado si ya tenés migraciones con <code>uuid_generate_v4()</code>):</strong></p>
+<pre><code class="language-sql">psql -U tu_usuario -d tu_base -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
+</code></pre>
+<p><strong>Solución 2 — Usar <code>gen_random_uuid()</code> (NGATIVO en PG 13+, sin extensiones):</strong>
+En cada configuración:</p>
+<pre><code class="language-csharp">builder.Property(x =&gt; x.Id).HasDefaultValueSql("gen_random_uuid()");
+</code></pre>
+<p>Y crear una nueva migración.</p>
+<h3 id="some-services-are-not-able-to-be-constructed"><a class="header" href="#some-services-are-not-able-to-be-constructed">“Some services are not able to be constructed”</a></h3>
+<pre><code>Some services are not able to be constructed
+(Error while validating the service descriptor 'ServiceType: IAuthService...'
+ Unable to resolve service for type 'IPasswordService'...)
+</code></pre>
+<p><strong>Causa:</strong> Un servicio registrado en DI tiene dependencias que NO están registradas.</p>
+<p><strong>Solución:</strong> Registrar la dependencia faltante:</p>
+<pre><code class="language-csharp">builder.Services.AddScoped&lt;IPasswordService, PasswordService&gt;();
+</code></pre>
+<p>O un mock temporal mientras desarrollás:</p>
+<pre><code class="language-csharp">builder.Services.AddScoped&lt;IPasswordService, TemporaryPasswordMock&gt;();
+</code></pre>
+<h3 id="cannot-be-resolved-dbcontextoptions"><a class="header" href="#cannot-be-resolved-dbcontextoptions">“Cannot be resolved… DbContextOptions”</a></h3>
+<pre><code>Unable to resolve service for type 'DbContextOptions&lt;ApplicationDbContext&gt;'
+while attempting to activate 'ApplicationDbContext'
+</code></pre>
+<p><strong>Causa CASI SIEMPRE es cascada de otro error.</strong> El DI container no pudo construirse por otro problema (servicio faltante), y EF Core no puede resolver el DbContext.</p>
+<p><strong>Solución:</strong> Fijate en el error de arriba — hay un error previo de “Some services are not able to be constructed”. Arreglá ESE y este se resuelve solo.</p>
+<h3 id="error-al-remover-migración"><a class="header" href="#error-al-remover-migración">Error al remover migración</a></h3>
+<p>Cuando corrés <code>migrations remove</code> y falla porque la migración ya se aplicó a la DB:</p>
+<pre><code class="language-bash"># Forzar remover (solo borra los archivos, no toca la DB)
+dotnet ef migrations remove --force -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj
+</code></pre>
+<p>Después, si querés revertir la DB:</p>
+<pre><code class="language-bash"># Volver a la migración anterior
+dotnet ef database update NombreMigracionAnterior -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj
+</code></pre>
+<h3 id="resetear-todas-las-migraciones-desarrollo"><a class="header" href="#resetear-todas-las-migraciones-desarrollo">Resetear todas las migraciones (desarrollo)</a></h3>
+<p>⚠️ <strong>Esto borra TODOS los datos de la base de datos.</strong></p>
+<pre><code class="language-bash"># 1. Dropear la base de datos
+dotnet ef database drop --force -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj
+
+# 2. Borrar carpeta de migraciones
+rm -rf src/Infrastructure/Migrations
+
+# 3. Crear migración desde cero
+dotnet ef migrations add InitialCreate -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj
+
+# 4. Aplicar
+dotnet ef database update -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj
+</code></pre>
+<hr>
+<h2 id="inyección-de-dependencias"><a class="header" href="#inyección-de-dependencias">Inyección de dependencias</a></h2>
+<p>El DbContext se inyecta automáticamente gracias al <code>AddDbContext</code> en Program.cs.</p>
+<h3 id="en-repositorios"><a class="header" href="#en-repositorios">En repositorios</a></h3>
+<pre><code class="language-csharp">public class UserRepository : IUserRepository
+{
+    private readonly ApplicationDbContext _context;
+
+    public UserRepository(ApplicationDbContext context)
+    {
+        _context = context;
+    }
+}
+</code></pre>
+<h3 id="en-servicios-de-aplicación"><a class="header" href="#en-servicios-de-aplicación">En servicios de aplicación</a></h3>
+<pre><code class="language-csharp">public class AuthService : IAuthService
+{
+    private readonly IUserRepository _userRepository;
+    private readonly IPasswordService _passwordService;
+
+    public AuthService(
+        IUserRepository userRepository,
+        IPasswordService passwordService)
+    {
+        _userRepository = userRepository;
+        _passwordService = passwordService;
+    }
+}
+</code></pre>
+<h3 id="registro-en-programcs"><a class="header" href="#registro-en-programcs">Registro en Program.cs</a></h3>
+<pre><code class="language-csharp">builder.Services.AddScoped&lt;IUserRepository, UserRepository&gt;();
+builder.Services.AddScoped&lt;IAuthService, AuthService&gt;();
+</code></pre>
+<p>Todos los servicios que se inyectan deben estar registrados, directa o indirectamente.</p>
+<hr>
+<h2 id="buenas-prácticas"><a class="header" href="#buenas-prácticas">Buenas prácticas</a></h2>
+<ol>
+<li>
+<p><strong>Las entidades en Domain NO deben tener decoraciones de EF</strong> (ni <code>[Key]</code>, <code>[Required]</code>, etc.). Usá Fluent API en configuraciones separadas.</p>
+</li>
+<li>
+<p><strong>Usá <code>SaveChangesAsync()</code></strong> siempre, no la versión sync. EF Core soporta batch saves, pero solo con la versión async.</p>
+</li>
+<li>
+<p><strong><code>AsNoTracking()</code> para consultas de solo lectura</strong>. Mejora performance porque EF no trackea los objetos.</p>
+</li>
+<li>
+<p><strong>No edites migraciones a mano</strong>. Si necesitás cambiar algo, creá una nueva migración o modificá la configuración de la entidad y creá una migración nueva.</p>
+</li>
+<li>
+<p><strong>Snake_case en la DB, PascalCase en C#</strong>. Usá <code>.HasColumnName("snake_case")</code> consistentemente.</p>
+</li>
+<li>
+<p><strong><code>FindAsync(id)</code> &gt; <code>FirstOrDefaultAsync(x =&gt; x.Id == id)</code></strong>. <code>FindAsync</code> primero revisa el cache del contexto, es más rápido.</p>
+</li>
+<li>
+<p><strong>Nombrá las migraciones descriptivamente</strong>: <code>AddUserProfileFields</code>, <code>AddCourseTable</code>, <code>FixSessionIndex</code>. No uses <code>InitialCreate</code> dos veces.</p>
+</li>
+<li>
+<p><strong><code>Add-Migration</code> en inglés, consistente</strong>. Todas las migraciones con nombres en inglés.</p>
+</li>
+<li>
+<p><strong>Siempre revisá la migración generada</strong> antes de hacer <code>database update</code>. Revisá que <code>Up()</code> cree/altere lo que esperás.</p>
+</li>
+<li>
+<p><strong>DbContext es scoped</strong> (una instancia por request). No lo guardes en variables estáticas ni singleton.</p>
+</li>
+</ol>
+<hr>
+<h2 id="resumen-del-flujo-de-desarrollo"><a class="header" href="#resumen-del-flujo-de-desarrollo">Resumen del flujo de desarrollo</a></h2>
+<pre><code>1. Creás/modificás una entidad en Domain/Entities/
+2. Creás/modificás su Configuration en Infrastructure/Persistence/Configurations/
+3. Agregás el DbSet en ApplicationDbContext si es nueva
+4. Ejecutás:
+     dotnet ef migrations add NombreDescriptivo -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj
+5. Revisás el archivo generado en Migrations/
+6. Ejecutás:
+     dotnet ef database update -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj
+7. Usás el repositorio en tu servicio
+</code></pre>
+<hr>
+<h2 id="referencia-rápida-de-comandos"><a class="header" href="#referencia-rápida-de-comandos">Referencia rápida de comandos</a></h2>
+<pre><code class="language-bash"># Crear migración
+dotnet ef migrations add Nombre -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj
+
+# Aplicar migraciones
+dotnet ef database update -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj
+
+# Remover última migración (no aplicada)
+dotnet ef migrations remove -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj
+
+# Remover migración forzada (ya aplicada)
+dotnet ef migrations remove --force -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj
+
+# Listar migraciones
+dotnet ef migrations list -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj
+
+# Generar script SQL
+dotnet ef migrations script -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj
+
+# Dropear base de datos
+dotnet ef database drop --force -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../docs/06-prisma.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../docs/21-aspnet-init.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../docs/06-prisma.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../docs/21-aspnet-init.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

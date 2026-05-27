@@ -23,6 +23,7 @@
 - [SQLx](./docs/03-sqlx.md)
 - [Redis](./docs/04-redis.md)
 - [Prisma](./docs/06-prisma.md)
+- [Entity Framework Core](./docs/23-ef-core.md)
 
 ## ASPNET(C#)
 - [ASPNET Primeros Pasos](./docs/21-aspnet-init.md)

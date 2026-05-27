@@ -36,10 +36,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-697854f9.js";
+            window.path_to_searchindex_js = "searchindex-31be9c5b.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-c005061c.js"></script>
+        <script src="toc-5c76d780.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -200,6 +200,7 @@
 <li><a href="#1-instalar-sqlx-cli">SQLx</a></li>
 <li><a href="#redis">Redis</a></li>
 <li><a href="#guía-completa-de-prisma-6">Prisma</a></li>
+<li><a href="#guía-completa-de-entity-framework-core">Entity Framework Core</a></li>
 </ul>
 <h2 id="aspnetc"><a class="header" href="#aspnetc">ASPNET(C#)</a></h2>
 <ul>
@@ -14254,10 +14255,588 @@ pnpm prisma migrate dev --name sync_current_state
 </code></pre>
 <p>¡Con esto ya sabés lo básico de Prisma para trabajar! 🚀</p>
 <div style="break-before: page; page-break-before: always;"></div>
+<h1 id="guía-completa-de-entity-framework-core"><a class="header" href="#guía-completa-de-entity-framework-core">Guía completa de Entity Framework Core</a></h1>
+<h2 id="índice-4"><a class="header" href="#índice-4">Índice</a></h2>
+<ul>
+<li><a href="#qué-es-ef-core">¿Qué es EF Core?</a></li>
+<li><a href="#arquitectura-del-proyecto-cursinet">Arquitectura del proyecto (Cursinet)</a></li>
+<li><a href="#instalación-inicial-desde-0-1">Instalación inicial (desde 0)</a></li>
+<li><a href="#dependencias-entre-proyectos">Dependencias entre proyectos</a></li>
+<li><a href="#el-dbcontext">El DbContext</a></li>
+<li><a href="#configuración-de-entidades-fluent-api">Configuración de entidades (Fluent API)</a></li>
+<li><a href="#migraciones">Migraciones</a></li>
+<li><a href="#postgresql-funciones-uuid">PostgreSQL: funciones UUID</a></li>
+<li><a href="#crud-básico-con-ef-core">CRUD básico con EF Core</a></li>
+<li><a href="#relaciones-entre-entidades">Relaciones entre entidades</a></li>
+<li><a href="#consultas-con-linq">Consultas con LINQ</a></li>
+<li><a href="#resolución-de-problemas-comunes">Resolución de problemas comunes</a></li>
+<li><a href="#inyección-de-dependencias">Inyección de dependencias</a></li>
+<li><a href="#buenas-prácticas-1">Buenas prácticas</a></li>
+<li><a href="#resumen-del-flujo-de-desarrollo-1">Resumen del flujo de desarrollo</a></li>
+<li><a href="#referencia-rápida-de-comandos">Referencia rápida de comandos</a></li>
+</ul>
+<hr>
+<h2 id="qué-es-ef-core"><a class="header" href="#qué-es-ef-core">¿Qué es EF Core?</a></h2>
+<p>Entity Framework Core (EF Core) es un ORM (Object-Relational Mapper) que te permite trabajar con bases de datos relacionales usando objetos de C#. En lugar de escribir SQL puro, trabajas con <code>DbSet&lt;T&gt;</code>, LINQ, y tus entidades de dominio.</p>
+<hr>
+<h2 id="arquitectura-del-proyecto-cursinet"><a class="header" href="#arquitectura-del-proyecto-cursinet">Arquitectura del proyecto (Cursinet)</a></h2>
+<pre><code>backend/
+├── src/
+│   ├── Domain/                   ← Entidades (POCOs, sin EF)
+│   │   └── Entities/
+│   │       ├── User.cs
+│   │       ├── Account.cs
+│   │       ├── Session.cs
+│   │       └── Verification.cs
+│   │
+│   ├── Infrastructure/           ← EF Core, DbContext, migraciones
+│   │   └── Persistence/
+│   │       ├── ApplicationDbContext.cs
+│   │       ├── Configurations/   ← Fluent API (IEntityTypeConfiguration)
+│   │       │   ├── UserConfiguration.cs
+│   │       │   ├── AccountConfiguration.cs
+│   │       │   ├── SessionConfiguration.cs
+│   │       │   └── VerificationConfiguration.cs
+│   │       ├── Repositories/     ← Repositorios que usan DbContext
+│   │       └── Migrations/       ← Archivos de migración generados
+│   │
+│   ├── Api/                      ← Startup, DI, Program.cs
+│   └── Application/              ← Servicios, interfaces
+│
+├── ef.md                         ← Esta guía
+</code></pre>
+<p><strong>Regla de oro:</strong> Domain NO conoce EF. Infrastructure implementa los repositorios y tiene el DbContext. Api registra todo en DI.</p>
+<hr>
+<h2 id="instalación-inicial-desde-0-1"><a class="header" href="#instalación-inicial-desde-0-1">Instalación inicial (desde 0)</a></h2>
+<h3 id="1-instalar-los-paquetes-nuget"><a class="header" href="#1-instalar-los-paquetes-nuget">1. Instalar los paquetes NuGet</a></h3>
+<p>En el proyecto de <strong>Infrastructure</strong> (donde va el DbContext):</p>
+<pre><code class="language-bash">dotnet add src/Infrastructure/Infrastructure.csproj package Microsoft.EntityFrameworkCore
+dotnet add src/Infrastructure/Infrastructure.csproj package Npgsql.EntityFrameworkCore.PostgreSQL
+</code></pre>
+<p>En el proyecto de <strong>Api</strong> (startup, para herramientas de diseño):</p>
+<pre><code class="language-bash">dotnet add src/Api/Api.csproj package Microsoft.EntityFrameworkCore.Design
+</code></pre>
+<blockquote>
+<p><strong>⚠️ Importante:</strong> <code>Microsoft.EntityFrameworkCore.Design</code> solo va en el startup project (Api), con <code>PrivateAssets=all</code> para que no se propague como dependencia.</p>
+</blockquote>
+<h3 id="2-configurar-la-connection-string"><a class="header" href="#2-configurar-la-connection-string">2. Configurar la connection string</a></h3>
+<p><code>src/Api/appsettings.json</code>:</p>
+<pre><code class="language-json">{
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=localhost;Database=cursinet_db;Username=dev-espada;Password=espadaPOSTGRES"
+  }
+}
+</code></pre>
+<p>Formato de connection string para PostgreSQL:</p>
+<pre><code>Host=localhost;Database=nombre_bd;Username=tu_usuario;Password=tu_password
+</code></pre>
+<h3 id="3-registrar-dbcontext-en-di"><a class="header" href="#3-registrar-dbcontext-en-di">3. Registrar DbContext en DI</a></h3>
+<p><code>src/Api/Program.cs</code>:</p>
+<pre><code class="language-csharp">var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? "Host=localhost;Database=cursinet_db;Username=dev-espada;Password=espadaPOSTGRES";
+
+builder.Services.AddDbContext&lt;ApplicationDbContext&gt;(options =&gt;
+    options.UseNpgsql(connectionString, b =&gt; b.MigrationsAssembly("Infrastructure")));
+</code></pre>
+<blockquote>
+<p><strong>⚠️ El parámetro <code>MigrationsAssembly</code></strong> debe ser el <strong>nombre del assembly</strong> (nombre del <code>.csproj</code>), NO el namespace. Si tu proyecto se llama <code>Infrastructure.csproj</code>, el assembly es <code>"Infrastructure"</code>, aunque el <code>RootNamespace</code> sea <code>Cursinet.Infrastructure</code>.</p>
+</blockquote>
+<hr>
+<h2 id="dependencias-entre-proyectos"><a class="header" href="#dependencias-entre-proyectos">Dependencias entre proyectos</a></h2>
+<p>Para que las migraciones funcionen, los proyectos tienen que referenciarse así:</p>
+<pre><code>Api ───→ Infrastructure ───→ Application ───→ Domain
+  │                            │
+  └──→ Application ────────────┘
+</code></pre>
+<ul>
+<li><strong>Infrastructure</strong> necesita referencia a Application (para las interfaces de repositorios) y Domain (para las entidades)</li>
+<li><strong>Api</strong> necesita referencia a Infrastructure (para el DbContext) y Application (para los servicios)</li>
+<li><strong>Application</strong> solo referencia a Domain</li>
+</ul>
+<hr>
+<h2 id="el-dbcontext"><a class="header" href="#el-dbcontext">El DbContext</a></h2>
+<p><code>src/Infrastructure/Persistence/ApplicationDbContext.cs</code>:</p>
+<pre><code class="language-csharp">public class ApplicationDbContext : DbContext
+{
+    public ApplicationDbContext(DbContextOptions&lt;ApplicationDbContext&gt; options)
+        : base(options) { }
+
+    // DbSet por cada entidad → una tabla
+    public DbSet&lt;User&gt; Users =&gt; Set&lt;User&gt;();
+    public DbSet&lt;Account&gt; Accounts =&gt; Set&lt;Account&gt;();
+    public DbSet&lt;Session&gt; Sessions =&gt; Set&lt;Session&gt;();
+    public DbSet&lt;Verification&gt; Verifications =&gt; Set&lt;Verification&gt;();
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        // Escanea el assembly y aplica TODAS las IEntityTypeConfiguration
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+    }
+}
+</code></pre>
+<blockquote>
+<p><code>ApplyConfigurationsFromAssembly</code> busca todas las clases que implementan <code>IEntityTypeConfiguration&lt;T&gt;</code> en ese assembly y las aplica automáticamente. No hace falta registrarlas una por una.</p>
+</blockquote>
+<hr>
+<h2 id="configuración-de-entidades-fluent-api"><a class="header" href="#configuración-de-entidades-fluent-api">Configuración de entidades (Fluent API)</a></h2>
+<p>En lugar de usar Data Annotations (<code>[Required]</code>, <code>[MaxLength]</code>) en las entidades de Domain, separamos la configuración en archivos dedicados. Esto mantiene Domain limpio de dependencias de infraestructura.</p>
+<h3 id="estructura-de-una-configuración"><a class="header" href="#estructura-de-una-configuración">Estructura de una configuración</a></h3>
+<p><code>UserConfiguration.cs</code>:</p>
+<pre><code class="language-csharp">public class UserConfiguration : IEntityTypeConfiguration&lt;User&gt;
+{
+    public void Configure(EntityTypeBuilder&lt;User&gt; builder)
+    {
+        // 1. Nombre de la tabla
+        builder.ToTable("Users");
+
+        // 2. Llave primaria
+        builder.HasKey(u =&gt; u.Id);
+
+        // 3. Propiedades
+        builder.Property(u =&gt; u.Id).HasDefaultValueSql("uuid_generate_v4()");
+        builder.Property(u =&gt; u.Name).IsRequired().HasColumnName("name").HasMaxLength(255);
+        builder.Property(u =&gt; u.Email).IsRequired().HasColumnName("email").HasMaxLength(255);
+        builder.Property(u =&gt; u.Role).HasColumnName("role").HasConversion&lt;int&gt;().HasDefaultValue(UserRole.Student);
+
+        // 4. Índices
+        builder.HasIndex(u =&gt; u.Email).IsUnique();
+        builder.HasIndex(u =&gt; u.Role);
+        builder.HasIndex(u =&gt; u.CreatedAt).HasDatabaseName("idx_users_created_at");
+
+        // 5. Default values
+        builder.Property(u =&gt; u.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+        builder.Property(u =&gt; u.IsActive).HasDefaultValue(true);
+        builder.Property(u =&gt; u.EmailVerified).HasDefaultValue(false);
+    }
+}
+</code></pre>
+<h3 id="guía-rápida-de-métodos-de-configuración"><a class="header" href="#guía-rápida-de-métodos-de-configuración">Guía rápida de métodos de configuración</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>Para qué sirve</th></tr>
+</thead>
+<tbody>
+<tr><td><code>.ToTable("nombre")</code></td><td>Define el nombre de la tabla en la DB</td></tr>
+<tr><td><code>.HasKey(x =&gt; x.Id)</code></td><td>Define la llave primaria</td></tr>
+<tr><td><code>.Property(x =&gt; x.Nombre)</code></td><td>Configura una columna</td></tr>
+<tr><td><code>.IsRequired()</code></td><td>NOT NULL</td></tr>
+<tr><td><code>.HasColumnName("name")</code></td><td>Nombre de la columna en la DB (snake_case)</td></tr>
+<tr><td><code>.HasMaxLength(255)</code></td><td>VARCHAR(255)</td></tr>
+<tr><td><code>.HasDefaultValue(true)</code></td><td>DEFAULT con valor fijo</td></tr>
+<tr><td><code>.HasDefaultValueSql("CURRENT_TIMESTAMP")</code></td><td>DEFAULT con expresión SQL</td></tr>
+<tr><td><code>.HasConversion&lt;int&gt;()</code></td><td>Guarda un enum como int</td></tr>
+<tr><td><code>.ValueGeneratedOnAdd()</code></td><td>Valor generado al insertar</td></tr>
+<tr><td><code>.HasIndex(x =&gt; x.Email)</code></td><td>Crea un índice</td></tr>
+<tr><td><code>.IsUnique()</code></td><td>Índice único (se aplica al HasIndex)</td></tr>
+<tr><td><code>.HasDatabaseName("idx_nombre")</code></td><td>Nombre personalizado para el índice</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="convención-de-nombres-en-la-db"><a class="header" href="#convención-de-nombres-en-la-db">Convención de nombres en la DB</a></h3>
+<p>En C# usamos <strong>PascalCase</strong> (<code>CreatedAt</code>), pero en PostgreSQL usamos <strong>snake_case</strong> (<code>created_at</code>). Mapeamos con <code>.HasColumnName()</code>:</p>
+<pre><code class="language-csharp">builder.Property(u =&gt; u.CreatedAt).HasColumnName("created_at");
+builder.Property(u =&gt; u.StripeCustomerId).HasColumnName("stripe_customer_id");
+</code></pre>
+<hr>
+<h2 id="migraciones"><a class="header" href="#migraciones">Migraciones</a></h2>
+<h3 id="flujo-de-trabajo"><a class="header" href="#flujo-de-trabajo">Flujo de trabajo</a></h3>
+<pre><code>1. Modificás entidades en Domain
+2. Creás/configurás Configurations en Infrastructure
+3. Ejecutás migrations add
+4. Revisás el archivo generado
+5. Ejecutás database update
+</code></pre>
+<h3 id="comandos-esenciales"><a class="header" href="#comandos-esenciales">Comandos esenciales</a></h3>
+<pre><code class="language-bash"># Todos los comandos se ejecutan desde backend/
+# -s : startup project (donde está Program.cs)
+# -p : target project (donde está el DbContext)
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Comando</th><th>Para qué sirve</th></tr>
+</thead>
+<tbody>
+<tr><td><code>dotnet ef migrations add Nombre -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj</code></td><td>Crea archivos de migración (NO toca la DB)</td></tr>
+<tr><td><code>dotnet ef database update -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj</code></td><td>Aplica las migraciones pendientes a la DB</td></tr>
+<tr><td><code>dotnet ef migrations remove -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj</code></td><td>Borra la última migración (si no se aplicó)</td></tr>
+<tr><td><code>dotnet ef migrations list -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj</code></td><td>Lista las migraciones y su estado</td></tr>
+<tr><td><code>dotnet ef database drop -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj</code></td><td>ELIMINA la base de datos (cuidado)</td></tr>
+<tr><td><code>dotnet ef migrations script -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj</code></td><td>Genera el script SQL de las migraciones</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="qué-pasa-con-cada-comando"><a class="header" href="#qué-pasa-con-cada-comando">¿Qué pasa con cada comando?</a></h3>
+<p><strong><code>migrations add InitialCreate</code></strong>:</p>
+<ul>
+<li>Escanea las entidades y configuraciones</li>
+<li>Compara con el snapshot (modelo previo)</li>
+<li>Genera:
+<ul>
+<li><code>Migrations/20260527053502_InitialCreate.cs</code> ← código C# con Up() y Down()</li>
+<li><code>Migrations/20260527053502_InitialCreate.Designer.cs</code> ← metadatos</li>
+<li><code>Migrations/ApplicationDbContextModelSnapshot.cs</code> ← snapshot del modelo actual</li>
+</ul>
+</li>
+<li>NO toca la base de datos</li>
+</ul>
+<p><strong><code>database update</code></strong>:</p>
+<ul>
+<li>Conecta a PostgreSQL</li>
+<li>Revisa <code>__EFMigrationsHistory</code> para ver qué migraciones ya se aplicaron</li>
+<li>Ejecuta las pendientes en orden</li>
+<li>Crea la base de datos si no existe</li>
+</ul>
+<h3 id="qué-es-__efmigrationshistory"><a class="header" href="#qué-es-__efmigrationshistory">¿Qué es <code>__EFMigrationsHistory</code>?</a></h3>
+<p>Es una tabla que EF Core crea automáticamente en la DB para llevar el control de qué migraciones se aplicaron:</p>
+<pre><code class="language-sql">TABLE "__EFMigrationsHistory" (
+    "MigrationId"    VARCHAR(150) PRIMARY KEY,
+    "ProductVersion" VARCHAR(32)
+);
+</code></pre>
+<h3 id="error-común-the-model-has-pending-changes"><a class="header" href="#error-común-the-model-has-pending-changes">Error común: “The model has pending changes”</a></h3>
+<pre><code>The model for context 'ApplicationDbContext' has pending changes.
+Add a new migration before updating the database.
+</code></pre>
+<p><strong>Por qué pasa:</strong> El snapshot del modelo no coincide con el estado actual de las entidades/configuraciones. Esto puede pasar cuando:</p>
+<ul>
+<li>Modificaste entidades pero no creaste una migración</li>
+<li>Removiste migraciones manualmente</li>
+<li>Editaste archivos de migración a mano</li>
+</ul>
+<p><strong>Solución:</strong></p>
+<pre><code class="language-bash"># Crear una nueva migración que capture los cambios
+dotnet ef migrations add SyncModel -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj
+dotnet ef database update -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj
+</code></pre>
+<hr>
+<h2 id="postgresql-funciones-uuid"><a class="header" href="#postgresql-funciones-uuid">PostgreSQL: funciones UUID</a></h2>
+<p>En PostgreSQL hay <strong>dos formas</strong> de generar UUIDs automáticos:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Función</th><th>Requisito</th><th>Disponible desde</th></tr>
+</thead>
+<tbody>
+<tr><td><code>uuid_generate_v4()</code></td><td>Extensión <code>uuid-ossp</code></td><td>PG 8.2+</td></tr>
+<tr><td><code>gen_random_uuid()</code></td><td><strong>Nativo</strong> (sin extensiones)</td><td>PG 13+</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="para-usar-gen_random_uuid-recomendado-en-pg-13"><a class="header" href="#para-usar-gen_random_uuid-recomendado-en-pg-13">Para usar <code>gen_random_uuid()</code> (recomendado en PG 13+)</a></h3>
+<p>Cambiá en los archivos de configuración:</p>
+<pre><code class="language-csharp">builder.Property(u =&gt; u.Id).HasDefaultValueSql("gen_random_uuid()");
+</code></pre>
+<h3 id="para-usar-uuid_generate_v4"><a class="header" href="#para-usar-uuid_generate_v4">Para usar <code>uuid_generate_v4()</code></a></h3>
+<p>Habilitá la extensión en PostgreSQL:</p>
+<pre><code class="language-sql">CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+</code></pre>
+<blockquote>
+<p><strong>⚠️ Importante:</strong> Si cambiás el <code>HasDefaultValueSql</code> en las configuraciones, tenés que crear una NUEVA migración (<code>migrations add</code>) para que se refleje el cambio. Editar la migración a mano funciona pero es mala práctica.</p>
+</blockquote>
+<hr>
+<h2 id="crud-básico-con-ef-core"><a class="header" href="#crud-básico-con-ef-core">CRUD básico con EF Core</a></h2>
+<p>Los repositorios reciben <code>ApplicationDbContext</code> por inyección de dependencias.</p>
+<h3 id="create-insert-1"><a class="header" href="#create-insert-1">Create (INSERT)</a></h3>
+<pre><code class="language-csharp">public async Task&lt;User&gt; CreateAsync(User user)
+{
+    await _context.Users.AddAsync(user);
+    await _context.SaveChangesAsync();
+    return user;
+}
+</code></pre>
+<h3 id="read-select-1"><a class="header" href="#read-select-1">Read (SELECT)</a></h3>
+<pre><code class="language-csharp">// Obtener todos
+var users = await _context.Users.ToListAsync();
+
+// Obtener uno por ID
+var user = await _context.Users.FindAsync(id);
+
+// Obtener uno con filtro (FirstOrDefault)
+var user = await _context.Users.FirstOrDefaultAsync(u =&gt; u.Email == email);
+
+// Filtrar con Where
+var activeUsers = await _context.Users.Where(u =&gt; u.DeletedAt == null).ToListAsync();
+
+// Proyección (SELECT específico)
+var emails = await _context.Users
+    .Where(u =&gt; u.IsActive)
+    .Select(u =&gt; u.Email)
+    .ToListAsync();
+</code></pre>
+<h3 id="update-update-1"><a class="header" href="#update-update-1">Update (UPDATE)</a></h3>
+<pre><code class="language-csharp">// Opción 1: Marcar como modificado
+var user = await _context.Users.FindAsync(id);
+user.Name = "Nuevo nombre";
+await _context.SaveChangesAsync();
+
+// Opción 2: Update explícito
+_context.Users.Update(user);
+await _context.SaveChangesAsync();
+</code></pre>
+<h3 id="delete-delete-1"><a class="header" href="#delete-delete-1">Delete (DELETE)</a></h3>
+<pre><code class="language-csharp">// Físico (borra de verdad)
+_context.Users.Remove(user);
+await _context.SaveChangesAsync();
+
+// Soft-delete (marca como borrado)
+user.DeletedAt = DateTime.UtcNow;
+_context.Users.Update(user);
+await _context.SaveChangesAsync();
+</code></pre>
+<h3 id="asnotracking-solo-lectura"><a class="header" href="#asnotracking-solo-lectura">AsNoTracking (solo lectura)</a></h3>
+<p>Cuando solo necesitás leer datos sin trackear cambios (más rápido):</p>
+<pre><code class="language-csharp">var users = await _context.Users
+    .AsNoTracking()
+    .Where(u =&gt; u.IsActive)
+    .ToListAsync();
+</code></pre>
+<hr>
+<h2 id="relaciones-entre-entidades"><a class="header" href="#relaciones-entre-entidades">Relaciones entre entidades</a></h2>
+<h3 id="uno-a-muchos-user--session-user--account"><a class="header" href="#uno-a-muchos-user--session-user--account">Uno a muchos (User → Session, User → Account)</a></h3>
+<p>En <code>Session.cs</code> (entidad hija):</p>
+<pre><code class="language-csharp">public Guid UserId { get; set; }
+public User User { get; set; } = null!;
+</code></pre>
+<p>En <code>SessionConfiguration.cs</code>:</p>
+<pre><code class="language-csharp">builder.HasOne(s =&gt; s.User)        // Session tiene un User
+    .WithMany()                    // User tiene muchas Sessions
+    .HasForeignKey(s =&gt; s.UserId)  // FK: Session.UserId → User.Id
+    .OnDelete(DeleteBehavior.Cascade);
+</code></pre>
+<h3 id="withmany-o-withmanyu--usessions"><a class="header" href="#withmany-o-withmanyu--usessions">¿<code>WithMany()</code> o <code>WithMany(u =&gt; u.Sessions)</code>?</a></h3>
+<ul>
+<li><strong><code>WithMany()</code></strong> sin parámetro: la entidad padre NO tiene una colección de navegación (User no tiene <code>List&lt;Session&gt;</code>)</li>
+<li><strong><code>WithMany(u =&gt; u.Sessions)</code></strong>: la entidad padre tiene una colección de navegación</li>
+</ul>
+<h3 id="deletebehavior"><a class="header" href="#deletebehavior">DeleteBehavior</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Comportamiento</th><th>Efecto</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Cascade</code></td><td>Borra usuario → borra sus sessions</td></tr>
+<tr><td><code>Restrict</code></td><td>No deja borrar usuario si tiene sessions</td></tr>
+<tr><td><code>SetNull</code></td><td>Borra usuario → pone UserId = NULL</td></tr>
+<tr><td><code>NoAction</code></td><td>No hace nada (puede dar error de FK)</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="consultas-con-linq"><a class="header" href="#consultas-con-linq">Consultas con LINQ</a></h2>
+<h3 id="operadores-básicos"><a class="header" href="#operadores-básicos">Operadores básicos</a></h3>
+<pre><code class="language-csharp">// WHERE
+_context.Users.Where(u =&gt; u.Role == UserRole.Admin)
+
+// ORDER BY
+_context.Users.OrderBy(u =&gt; u.CreatedAt)
+_context.Users.OrderByDescending(u =&gt; u.LastSeenAt)
+
+// SKIP / TAKE (paginación)
+_context.Users.Skip(10).Take(20)
+
+// COUNT
+await _context.Users.CountAsync()
+await _context.Users.CountAsync(u =&gt; u.IsActive)
+
+// ANY / ALL
+await _context.Users.AnyAsync(u =&gt; u.Email == email)
+await _context.Users.AllAsync(u =&gt; u.EmailVerified)
+
+// SELECT específico
+_context.Users.Select(u =&gt; new { u.Id, u.Email })
+</code></pre>
+<h3 id="filtros-comunes"><a class="header" href="#filtros-comunes">Filtros comunes</a></h3>
+<pre><code class="language-csharp">// Contains (LIKE '%texto%')
+_context.Users.Where(u =&gt; u.Name.Contains("García"))
+
+// StartsWith / EndsWith
+_context.Users.Where(u =&gt; u.Name.StartsWith("Mar"))
+_context.Users.Where(u =&gt; u.Email.EndsWith("@gmail.com"))
+
+// Comparación de fechas
+_context.Users.Where(u =&gt; u.CreatedAt &gt;= DateTime.UtcNow.AddDays(-7))
+
+// Múltiples condiciones
+_context.Users.Where(u =&gt; u.IsActive &amp;&amp; u.DeletedAt == null &amp;&amp; u.Role == UserRole.Student)
+</code></pre>
+<hr>
+<h2 id="resolución-de-problemas-comunes"><a class="header" href="#resolución-de-problemas-comunes">Resolución de problemas comunes</a></h2>
+<h3 id="could-not-load-file-or-assembly-cursinetinfrastructure"><a class="header" href="#could-not-load-file-or-assembly-cursinetinfrastructure">“Could not load file or assembly ‘Cursinet.Infrastructure’”</a></h3>
+<pre><code>Could not load file or assembly 'Cursinet.Infrastructure'
+</code></pre>
+<p><strong>Causa:</strong> El <code>MigrationsAssembly</code> apunta a un nombre de assembly incorrecto.</p>
+<p><strong>Solución:</strong> En <code>Program.cs</code>:</p>
+<pre><code class="language-csharp">// ❌ MAL - RootNamespace no es el assembly name
+options.UseNpgsql(cs, b =&gt; b.MigrationsAssembly("Cursinet.Infrastructure"));
+
+// ✅ BIEN - Nombre del archivo .csproj (sin extensión)
+options.UseNpgsql(cs, b =&gt; b.MigrationsAssembly("Infrastructure"));
+</code></pre>
+<h3 id="uuid_generate_v4-does-not-exist"><a class="header" href="#uuid_generate_v4-does-not-exist">“uuid_generate_v4() does not exist”</a></h3>
+<pre><code>42883: no existe la función uuid_generate_v4()
+</code></pre>
+<p><strong>Causa:</strong> La extensión <code>uuid-ossp</code> no está instalada en PostgreSQL.</p>
+<p><strong>Solución 1 — Instalar la extensión (recomendado si ya tenés migraciones con <code>uuid_generate_v4()</code>):</strong></p>
+<pre><code class="language-sql">psql -U tu_usuario -d tu_base -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
+</code></pre>
+<p><strong>Solución 2 — Usar <code>gen_random_uuid()</code> (NGATIVO en PG 13+, sin extensiones):</strong>
+En cada configuración:</p>
+<pre><code class="language-csharp">builder.Property(x =&gt; x.Id).HasDefaultValueSql("gen_random_uuid()");
+</code></pre>
+<p>Y crear una nueva migración.</p>
+<h3 id="some-services-are-not-able-to-be-constructed"><a class="header" href="#some-services-are-not-able-to-be-constructed">“Some services are not able to be constructed”</a></h3>
+<pre><code>Some services are not able to be constructed
+(Error while validating the service descriptor 'ServiceType: IAuthService...'
+ Unable to resolve service for type 'IPasswordService'...)
+</code></pre>
+<p><strong>Causa:</strong> Un servicio registrado en DI tiene dependencias que NO están registradas.</p>
+<p><strong>Solución:</strong> Registrar la dependencia faltante:</p>
+<pre><code class="language-csharp">builder.Services.AddScoped&lt;IPasswordService, PasswordService&gt;();
+</code></pre>
+<p>O un mock temporal mientras desarrollás:</p>
+<pre><code class="language-csharp">builder.Services.AddScoped&lt;IPasswordService, TemporaryPasswordMock&gt;();
+</code></pre>
+<h3 id="cannot-be-resolved-dbcontextoptions"><a class="header" href="#cannot-be-resolved-dbcontextoptions">“Cannot be resolved… DbContextOptions”</a></h3>
+<pre><code>Unable to resolve service for type 'DbContextOptions&lt;ApplicationDbContext&gt;'
+while attempting to activate 'ApplicationDbContext'
+</code></pre>
+<p><strong>Causa CASI SIEMPRE es cascada de otro error.</strong> El DI container no pudo construirse por otro problema (servicio faltante), y EF Core no puede resolver el DbContext.</p>
+<p><strong>Solución:</strong> Fijate en el error de arriba — hay un error previo de “Some services are not able to be constructed”. Arreglá ESE y este se resuelve solo.</p>
+<h3 id="error-al-remover-migración"><a class="header" href="#error-al-remover-migración">Error al remover migración</a></h3>
+<p>Cuando corrés <code>migrations remove</code> y falla porque la migración ya se aplicó a la DB:</p>
+<pre><code class="language-bash"># Forzar remover (solo borra los archivos, no toca la DB)
+dotnet ef migrations remove --force -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj
+</code></pre>
+<p>Después, si querés revertir la DB:</p>
+<pre><code class="language-bash"># Volver a la migración anterior
+dotnet ef database update NombreMigracionAnterior -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj
+</code></pre>
+<h3 id="resetear-todas-las-migraciones-desarrollo"><a class="header" href="#resetear-todas-las-migraciones-desarrollo">Resetear todas las migraciones (desarrollo)</a></h3>
+<p>⚠️ <strong>Esto borra TODOS los datos de la base de datos.</strong></p>
+<pre><code class="language-bash"># 1. Dropear la base de datos
+dotnet ef database drop --force -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj
+
+# 2. Borrar carpeta de migraciones
+rm -rf src/Infrastructure/Migrations
+
+# 3. Crear migración desde cero
+dotnet ef migrations add InitialCreate -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj
+
+# 4. Aplicar
+dotnet ef database update -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj
+</code></pre>
+<hr>
+<h2 id="inyección-de-dependencias"><a class="header" href="#inyección-de-dependencias">Inyección de dependencias</a></h2>
+<p>El DbContext se inyecta automáticamente gracias al <code>AddDbContext</code> en Program.cs.</p>
+<h3 id="en-repositorios"><a class="header" href="#en-repositorios">En repositorios</a></h3>
+<pre><code class="language-csharp">public class UserRepository : IUserRepository
+{
+    private readonly ApplicationDbContext _context;
+
+    public UserRepository(ApplicationDbContext context)
+    {
+        _context = context;
+    }
+}
+</code></pre>
+<h3 id="en-servicios-de-aplicación"><a class="header" href="#en-servicios-de-aplicación">En servicios de aplicación</a></h3>
+<pre><code class="language-csharp">public class AuthService : IAuthService
+{
+    private readonly IUserRepository _userRepository;
+    private readonly IPasswordService _passwordService;
+
+    public AuthService(
+        IUserRepository userRepository,
+        IPasswordService passwordService)
+    {
+        _userRepository = userRepository;
+        _passwordService = passwordService;
+    }
+}
+</code></pre>
+<h3 id="registro-en-programcs"><a class="header" href="#registro-en-programcs">Registro en Program.cs</a></h3>
+<pre><code class="language-csharp">builder.Services.AddScoped&lt;IUserRepository, UserRepository&gt;();
+builder.Services.AddScoped&lt;IAuthService, AuthService&gt;();
+</code></pre>
+<p>Todos los servicios que se inyectan deben estar registrados, directa o indirectamente.</p>
+<hr>
+<h2 id="buenas-prácticas-1"><a class="header" href="#buenas-prácticas-1">Buenas prácticas</a></h2>
+<ol>
+<li>
+<p><strong>Las entidades en Domain NO deben tener decoraciones de EF</strong> (ni <code>[Key]</code>, <code>[Required]</code>, etc.). Usá Fluent API en configuraciones separadas.</p>
+</li>
+<li>
+<p><strong>Usá <code>SaveChangesAsync()</code></strong> siempre, no la versión sync. EF Core soporta batch saves, pero solo con la versión async.</p>
+</li>
+<li>
+<p><strong><code>AsNoTracking()</code> para consultas de solo lectura</strong>. Mejora performance porque EF no trackea los objetos.</p>
+</li>
+<li>
+<p><strong>No edites migraciones a mano</strong>. Si necesitás cambiar algo, creá una nueva migración o modificá la configuración de la entidad y creá una migración nueva.</p>
+</li>
+<li>
+<p><strong>Snake_case en la DB, PascalCase en C#</strong>. Usá <code>.HasColumnName("snake_case")</code> consistentemente.</p>
+</li>
+<li>
+<p><strong><code>FindAsync(id)</code> &gt; <code>FirstOrDefaultAsync(x =&gt; x.Id == id)</code></strong>. <code>FindAsync</code> primero revisa el cache del contexto, es más rápido.</p>
+</li>
+<li>
+<p><strong>Nombrá las migraciones descriptivamente</strong>: <code>AddUserProfileFields</code>, <code>AddCourseTable</code>, <code>FixSessionIndex</code>. No uses <code>InitialCreate</code> dos veces.</p>
+</li>
+<li>
+<p><strong><code>Add-Migration</code> en inglés, consistente</strong>. Todas las migraciones con nombres en inglés.</p>
+</li>
+<li>
+<p><strong>Siempre revisá la migración generada</strong> antes de hacer <code>database update</code>. Revisá que <code>Up()</code> cree/altere lo que esperás.</p>
+</li>
+<li>
+<p><strong>DbContext es scoped</strong> (una instancia por request). No lo guardes en variables estáticas ni singleton.</p>
+</li>
+</ol>
+<hr>
+<h2 id="resumen-del-flujo-de-desarrollo-1"><a class="header" href="#resumen-del-flujo-de-desarrollo-1">Resumen del flujo de desarrollo</a></h2>
+<pre><code>1. Creás/modificás una entidad en Domain/Entities/
+2. Creás/modificás su Configuration en Infrastructure/Persistence/Configurations/
+3. Agregás el DbSet en ApplicationDbContext si es nueva
+4. Ejecutás:
+     dotnet ef migrations add NombreDescriptivo -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj
+5. Revisás el archivo generado en Migrations/
+6. Ejecutás:
+     dotnet ef database update -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj
+7. Usás el repositorio en tu servicio
+</code></pre>
+<hr>
+<h2 id="referencia-rápida-de-comandos"><a class="header" href="#referencia-rápida-de-comandos">Referencia rápida de comandos</a></h2>
+<pre><code class="language-bash"># Crear migración
+dotnet ef migrations add Nombre -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj
+
+# Aplicar migraciones
+dotnet ef database update -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj
+
+# Remover última migración (no aplicada)
+dotnet ef migrations remove -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj
+
+# Remover migración forzada (ya aplicada)
+dotnet ef migrations remove --force -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj
+
+# Listar migraciones
+dotnet ef migrations list -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj
+
+# Generar script SQL
+dotnet ef migrations script -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj
+
+# Dropear base de datos
+dotnet ef database drop --force -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
 <h1 id="aspnet-core-init---manual-técnico-completo"><a class="header" href="#aspnet-core-init---manual-técnico-completo">ASP.NET Core Init - Manual Técnico Completo</a></h1>
 <p>Manual completo para instalar y desarrollar con <strong>.NET 10</strong> en <strong>Debian 13 (Trixie)</strong>, incluyendo instalación, creación de API con Clean Architecture, Entity Framework Core, autenticación JWT, y comandos de administración.</p>
 <hr>
-<h2 id="índice-4"><a class="header" href="#índice-4">Índice</a></h2>
+<h2 id="índice-5"><a class="header" href="#índice-5">Índice</a></h2>
 <ol>
 <li><a href="#1-instalación-de-net-10-en-debian-13">Instalación de .NET 10 en Debian 13</a></li>
 <li><a href="#2-verificar-instalación">Verificar Instalación</a></li>
@@ -19291,7 +19870,7 @@ Pero lo ignora porque sender === currentUserId
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="16-introducción-a-las-redes"><a class="header" href="#16-introducción-a-las-redes">16. Introducción a las Redes</a></h1>
 <hr>
-<h2 id="índice-5"><a class="header" href="#índice-5">ÍNDICE</a></h2>
+<h2 id="índice-6"><a class="header" href="#índice-6">ÍNDICE</a></h2>
 <ul>
 <li><a href="#qué-es-una-red">¿Qué es una Red?</a></li>
 <li><a href="#ventajas-de-las-redes">Ventajas de las Redes</a></li>
@@ -19623,7 +20202,7 @@ Pero lo ignora porque sender === currentUserId
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="18-modelos-de-red"><a class="header" href="#18-modelos-de-red">18. Modelos de Red</a></h1>
 <hr>
-<h2 id="índice-6"><a class="header" href="#índice-6">ÍNDICE</a></h2>
+<h2 id="índice-7"><a class="header" href="#índice-7">ÍNDICE</a></h2>
 <ul>
 <li><a href="#qué-es-un-modelo-de-red">¿Qué es un Modelo de Red?</a></li>
 <li><a href="#importancia-de-los-modelos-de-red">Importancia de los Modelos de Red</a></li>
@@ -19981,7 +20560,7 @@ Señales eléctricas / ondas de radio
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="redes---direcciones-ip-y-subredes"><a class="header" href="#redes---direcciones-ip-y-subredes">Redes - Direcciones IP y Subredes</a></h1>
 <hr>
-<h2 id="índice-7"><a class="header" href="#índice-7">ÍNDICE</a></h2>
+<h2 id="índice-8"><a class="header" href="#índice-8">ÍNDICE</a></h2>
 <ul>
 <li><a href="#qué-es-una-dirección-ip">¿Qué es una Dirección IP?</a>
 <ul>
@@ -20291,7 +20870,7 @@ Señales eléctricas / ondas de radio
 <h2 id="introducción"><a class="header" href="#introducción">Introducción</a></h2>
 <p>Este manual te guiará paso a paso para analizar direcciones IPv4 y determinar la <strong>parte de red</strong>, la <strong>parte de host</strong>, la <strong>máscara de subred</strong>, la <strong>dirección de red</strong>, la <strong>dirección de broadcast</strong> y el <strong>rango de hosts utilizables</strong>. Este es un ejercicio fundamental para entender cómo funcionan las subredes y cómo los routers enrutan paquetes entre diferentes redes.</p>
 <hr>
-<h2 id="índice-8"><a class="header" href="#índice-8">ÍNDICE</a></h2>
+<h2 id="índice-9"><a class="header" href="#índice-9">ÍNDICE</a></h2>
 <ul>
 <li><a href="#1-conceptos-fundamentales">Conceptos Fundamentales</a></li>
 <li><a href="#2-metodología-paso-a-paso">Metodología Paso a Paso</a></li>
@@ -21110,7 +21689,7 @@ Broadcast: 192.168.10.255 (bits de host = 11111110 → 255)
 </blockquote>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="nat"><a href="#nat" class="header">NAT</a></h1>
-<h2 id="índice-9"><a class="header" href="#índice-9">ÍNDICE</a></h2>
+<h2 id="índice-10"><a class="header" href="#índice-10">ÍNDICE</a></h2>
 <ul>
 <li><a href="#qué-es-nat-y-cómo-actúa-en-nuestra-red">Qué es NAT y cómo actúa en nuestra red</a>
 <ul>
@@ -21231,7 +21810,7 @@ Broadcast: 192.168.10.255 (bits de host = 11111110 → 255)
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="22-direcciones-mac-y-switches"><a class="header" href="#22-direcciones-mac-y-switches">22. Direcciones MAC y Switches</a></h1>
 <hr>
-<h2 id="índice-10"><a class="header" href="#índice-10">ÍNDICE</a></h2>
+<h2 id="índice-11"><a class="header" href="#índice-11">ÍNDICE</a></h2>
 <ul>
 <li><a href="#introducción-a-la-capa-de-enlace-de-datos">Introducción a la Capa de Enlace de Datos</a></li>
 <li><a href="#qué-es-una-dirección-mac">¿Qué es una Dirección MAC?</a></li>
@@ -22143,7 +22722,7 @@ show ip arp
 <h1 id="cisco-packet-tracer--manual-de-comandos"><a class="header" href="#cisco-packet-tracer--manual-de-comandos">CISCO PACKET TRACER — Manual de Comandos</a></h1>
 <p><strong>Router · Switch · DHCP · IP Routes · VLANs</strong></p>
 <hr>
-<h2 id="índice-11"><a class="header" href="#índice-11">ÍNDICE</a></h2>
+<h2 id="índice-12"><a class="header" href="#índice-12">ÍNDICE</a></h2>
 <ol>
 <li><a href="#1-configuración-del-router">Configuración del Router</a></li>
 <li><a href="#2-configuración-del-switch">Configuración del Switch</a></li>
@@ -22523,7 +23102,7 @@ S1#  show interfaces Fa0/1 switchport       ! Detalle de un puerto
 <h1 id="manual-de-docker-en-debian--instalación-desinstalación-y-reinstalación-completa"><a class="header" href="#manual-de-docker-en-debian--instalación-desinstalación-y-reinstalación-completa">Manual de Docker en Debian — Instalación, Desinstalación y Reinstalación Completa</a></h1>
 <p>Docker es una plataforma de contenedores que permite empaquetar, distribuir y ejecutar aplicaciones en entornos aislados. Este manual cubre la instalación completa usando el repositorio oficial, la desinstalación limpia sin residuos, y el procedimiento de reinstalación desde cero.</p>
 <hr>
-<h2 id="índice-12"><a class="header" href="#índice-12">Índice</a></h2>
+<h2 id="índice-13"><a class="header" href="#índice-13">Índice</a></h2>
 <ol>
 <li><a href="#1-requisitos-previos-4">Requisitos Previos</a></li>
 <li><a href="#2-desinstalación-completa-hacer-primero-si-ya-tienes-docker">Desinstalación Completa</a></li>
