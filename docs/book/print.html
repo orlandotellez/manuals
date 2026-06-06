@@ -36,10 +36,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-31be9c5b.js";
+            window.path_to_searchindex_js = "searchindex-fa53bf11.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-5c76d780.js"></script>
+        <script src="toc-cb677c00.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -185,10 +185,14 @@
 <li><a href="#manual-completo-backend-rasflow---rust--axum">Backend con Axum (rasflow)</a></li>
 <li><a href="#restix---manual-de-desarrollo-paso-a-paso">Restix</a></li>
 </ul>
-<h2 id="fastifytypescript"><a class="header" href="#fastifytypescript">Fastify(TypeScript)</a></h2>
+<h2 id="fastifynodejstypescript"><a class="header" href="#fastifynodejstypescript">Fastify(NodeJs/TypeScript)</a></h2>
 <ul>
 <li><a href="#fastify-init---manual-técnico-completo">Backend Fastify Primeros Pasos</a></li>
 <li><a href="#manual-completo--backend-farmacia-con-fastify">Backend Farmacia</a></li>
+</ul>
+<h2 id="expressnodejstypescript"><a class="header" href="#expressnodejstypescript">Express(NodeJs/Typescript)</a></h2>
+<ul>
+<li><a href="#express-primeros-pasos--manual-completo-del-backend-bookteka">Backend Express Primeros Pasos</a></li>
 </ul>
 <h2 id="nextjstypescript"><a class="header" href="#nextjstypescript">NextJs(Typescript)</a></h2>
 <ul>
@@ -197,7 +201,7 @@
 <h2 id="base-de-datos"><a class="header" href="#base-de-datos">Base de datos</a></h2>
 <ul>
 <li><a href="#manual-de-postgresql-en-debian--instalación-y-configuración-completa">Postgres</a></li>
-<li><a href="#1-instalar-sqlx-cli">SQLx</a></li>
+<li><a href="#manual-de-sqlx-con-rust-migraciones-y-uso-básico">SQLx</a></li>
 <li><a href="#redis">Redis</a></li>
 <li><a href="#guía-completa-de-prisma-6">Prisma</a></li>
 <li><a href="#guía-completa-de-entity-framework-core">Entity Framework Core</a></li>
@@ -232,6 +236,19 @@
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="manual-de-usuario-backend-rust-con-axum"><a class="header" href="#manual-de-usuario-backend-rust-con-axum">Manual de Usuario: Backend Rust con Axum</a></h1>
 <p>Este manual proporciona una guía completa para configurar, comprender y ejecutar el proyecto de backend desarrollado en Rust utilizando el framework Axum. El proyecto implementa un sistema de autenticación robusto con PostgreSQL como base de datos principal, incluyendo gestión de sesiones, tokens JWT y manejo de cuentas de usuario.</p>
+<h2 id="índice"><a class="header" href="#índice">Índice</a></h2>
+<ol>
+<li><a href="#requisitos-previos">Requisitos Previos</a></li>
+<li><a href="#estructura-de-directorios">Estructura de Directorios</a></li>
+<li><a href="#cargotoml">Cargo.toml</a></li>
+<li><a href="#variables-de-entorno">Variables de Entorno</a></li>
+<li><a href="#migración-de-base-de-datos">Migración de Base de Datos</a></li>
+<li><a href="#módulos-core">Módulos Core</a></li>
+<li><a href="#shared-module">Shared Module</a></li>
+<li><a href="#feature-auth-completa">Feature Auth Completa</a></li>
+<li><a href="#cómo-ejecutar">Cómo Ejecutar</a></li>
+</ol>
+<hr>
 <h2 id="1-requisitos-previos"><a class="header" href="#1-requisitos-previos">1. Requisitos Previos</a></h2>
 <p>Antes de comenzar con la configuración del proyecto, es necesario contar con las herramientas fundamentales que permiten compilar y ejecutar aplicaciones Rust junto con la base de datos PostgreSQL. A continuación se detallan los pasos para la instalación de cada componente necesario en el sistema.</p>
 <h3 id="11-instalación-de-rust"><a class="header" href="#11-instalación-de-rust">1.1 Instalación de Rust</a></h3>
@@ -1151,7 +1168,7 @@ pub fn routes() -&gt; Router&lt;crate::shared::state::DbState&gt; {
 <h1 id="manual-completo-backend-rasflow---rust--axum"><a class="header" href="#manual-completo-backend-rasflow---rust--axum">MANUAL COMPLETO: Backend RASFLOW - Rust + Axum</a></h1>
 <p>Este es el manual definitivo para entender, mantener y extender este backend. Está escrito para que puedas replicar cualquier cosa que necesites hacer en este proyecto. Vas a encontrar desde la estructura general hasta cómo agregar un nuevo endpoint completo con modelos, handlers, servicios, rutas, cache y base de datos.</p>
 <hr>
-<h2 id="tabla-de-contenidos"><a class="header" href="#tabla-de-contenidos">TABLA DE CONTENIDOS</a></h2>
+<h2 id="índice-1"><a class="header" href="#índice-1">Índice</a></h2>
 <ol>
 <li><a href="#1-arquitectura-general-del-proyecto">Arquitectura General del Proyecto</a></li>
 <li><a href="#2-stack-tecnológico">Stack Tecnológico</a></li>
@@ -3254,6 +3271,16 @@ use crate::{
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="restix---manual-de-desarrollo-paso-a-paso"><a class="header" href="#restix---manual-de-desarrollo-paso-a-paso">Restix - Manual de Desarrollo Paso a Paso</a></h1>
 <p>Este manual te permite replicar el proyecto Restix desde cero. Restix es un cliente TUI (Terminal User Interface) para Redis construido con Rust y la librería ratatui.</p>
+<h2 id="índice-2"><a class="header" href="#índice-2">Índice</a></h2>
+<ol>
+<li><a href="#requisitos-previos">Requisitos Previos</a></li>
+<li><a href="#paso-1-crear-el-proyecto">Paso 1: Crear el Proyecto</a></li>
+<li><a href="#paso-2-configurar-cargotoml">Paso 2: Configurar Cargo.toml</a></li>
+<li><a href="#paso-3-estructura-de-archivos">Paso 3: Estructura de Archivos</a></li>
+<li><a href="#paso-4-módulos-del-proyecto">Paso 4: Módulos del Proyecto</a></li>
+<li><a href="#paso-5-compilar-y-ejecutar">Paso 5: Compilar y Ejecutar</a></li>
+</ol>
+<hr>
 <h2 id="requisitos-previos"><a class="header" href="#requisitos-previos">Requisitos Previos</a></h2>
 <ul>
 <li>Rust instalado (https://rustup.rs)</li>
@@ -4260,7 +4287,7 @@ cargo run
 <h1 id="fastify-init---manual-técnico-completo"><a class="header" href="#fastify-init---manual-técnico-completo">Fastify Init - Manual Técnico Completo</a></h1>
 <p>Este manual documenta todo el código del proyecto, explicando cada función, configuración e implementación.</p>
 <hr>
-<h2 id="índice"><a class="header" href="#índice">Índice</a></h2>
+<h2 id="índice-3"><a class="header" href="#índice-3">Índice</a></h2>
 <ol>
 <li><a href="#estructura-del-proyecto">Estructura del Proyecto</a></li>
 <li><a href="#configuración-principal">Configuración Principal</a></li>
@@ -7057,7 +7084,7 @@ bun start
 <p><strong>Stack:</strong> Node.js + TypeScript + Fastify + Prisma + PostgreSQL + Redis + JWT<br><strong>Patrón:</strong> Clean Architecture (Domain-Driven) con módulos</p>
 </blockquote>
 <hr>
-<h2 id="índice-1"><a class="header" href="#índice-1">ÍNDICE</a></h2>
+<h2 id="índice-4"><a class="header" href="#índice-4">Índice</a></h2>
 <ol>
 <li><a href="#1-introducción-y-arquitectura">Introducción y Arquitectura</a></li>
 <li><a href="#2-prerequisitos">Prerequisitos</a></li>
@@ -11089,13 +11116,2060 @@ npm run dev
 <li><strong>Observability</strong>: Pino logger con niveles diferenciados por entorno</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div>
+<h1 id="express-primeros-pasos--manual-completo-del-backend-bookteka"><a class="header" href="#express-primeros-pasos--manual-completo-del-backend-bookteka">Express Primeros Pasos — Manual Completo del Backend Bookteka</a></h1>
+<blockquote>
+<p><strong>Stack:</strong> Node.js + TypeScript + Express v5 + Prisma + PostgreSQL + Cloudflare R2 + Better-Auth<br><strong>Patrón:</strong> MVC con capa de servicios y repositorios</p>
+</blockquote>
+<hr>
+<h2 id="índice-5"><a class="header" href="#índice-5">ÍNDICE</a></h2>
+<ol>
+<li><a href="#1-introducción-y-stack-tecnológico">Introducción y Stack Tecnológico</a></li>
+<li><a href="#2-estructura-del-proyecto">Estructura del Proyecto</a></li>
+<li><a href="#3-prerequisitos">Prerequisitos</a></li>
+<li><a href="#4-paso-1-packagejson">Paso 1 — package.json</a></li>
+<li><a href="#5-paso-2-tsconfigjson">Paso 2 — tsconfig.json</a></li>
+<li><a href="#6-paso-3-variables-de-entorno-env">Paso 3 — Variables de Entorno (.env)</a></li>
+<li><a href="#7-paso-4-configuración-del-proyecto">Paso 4 — Configuración del Proyecto</a>
+<ul>
+<li>7.1 <a href="#71-envts--validación-de-entorno">env.ts — Validación de entorno</a></li>
+<li>7.2 <a href="#72-dbts--pool-de-postgresql-nativo">db.ts — Pool de PostgreSQL nativo</a></li>
+<li>7.3 <a href="#73-prismats--cliente-prisma-singleton">prisma.ts — Cliente Prisma singleton</a></li>
+</ul>
+</li>
+<li><a href="#8-paso-5-modelo-de-datos-prisma-schema">Paso 5 — Modelo de Datos (Prisma Schema)</a></li>
+<li><a href="#9-paso-6-tipos-del-sistema-types">Paso 6 — Tipos del Sistema (Types)</a></li>
+<li><a href="#10-paso-7-dtos-data-transfer-objects">Paso 7 — DTOs (Data Transfer Objects)</a></li>
+<li><a href="#11-paso-8-helpers-y-utilidades">Paso 8 — Helpers y Utilidades</a>
+<ul>
+<li>11.1 <a href="#111-errorsts--error-personalizado">errors.ts — Error personalizado</a></li>
+<li>11.2 <a href="#112-formatts--normalización-de-archivos">format.ts — Normalización de archivos</a></li>
+<li>11.3 <a href="#113-timets--formateo-de-fechas">time.ts — Formateo de fechas</a></li>
+</ul>
+</li>
+<li><a href="#12-paso-9-librerías-y-servicios-externos">Paso 9 — Librerías y Servicios Externos</a>
+<ul>
+<li>12.1 <a href="#121-authts--better-auth">auth.ts — Better-Auth</a></li>
+<li>12.2 <a href="#122-emailts--resend">email.ts — Resend</a></li>
+<li>12.3 <a href="#123-r2ts--cloudflare-r2-s3-compatible">r2.ts — Cloudflare R2 (S3-Compatible)</a></li>
+</ul>
+</li>
+<li><a href="#13-paso-10-capa-de-repositorios">Paso 10 — Capa de Repositorios</a>
+<ul>
+<li>13.1 <a href="#131-bookrepositoryts">book.repository.ts</a></li>
+<li>13.2 <a href="#132-bookmarkrepositoryts">bookmark.repository.ts</a></li>
+<li>13.3 <a href="#133-streakrepositoryts">streak.repository.ts</a></li>
+</ul>
+</li>
+<li><a href="#14-paso-11-capa-de-servicios">Paso 11 — Capa de Servicios</a>
+<ul>
+<li>11.1 <a href="#141-bookservicets">book.service.ts</a></li>
+<li>11.2 <a href="#142-bookmarkservicets">bookmark.service.ts</a></li>
+<li>11.3 <a href="#143-streakservicets">streak.service.ts</a></li>
+</ul>
+</li>
+<li><a href="#15-paso-12-capa-de-controladores">Paso 12 — Capa de Controladores</a>
+<ul>
+<li>12.1 <a href="#151-bookcontrollerts">book.controller.ts</a></li>
+<li>12.2 <a href="#152-bookmarkcontrollerts">bookmark.controller.ts</a></li>
+<li>12.3 <a href="#153-streakcontrollerts">streak.controller.ts</a></li>
+</ul>
+</li>
+<li><a href="#16-paso-13-rutas">Paso 13 — Rutas</a></li>
+<li><a href="#17-paso-14-servidor-serverts">Paso 14 — Servidor (server.ts)</a></li>
+<li><a href="#18-paso-15-pruebas-con-jest">Paso 15 — Pruebas con Jest</a></li>
+<li><a href="#19-paso-16-docker-y-despliegue">Paso 16 — Docker y Despliegue</a></li>
+<li><a href="#20-resumen-de-endpoints">Resumen de Endpoints</a></li>
+<li><a href="#21-referencia-rápida-de-comandos">Referencia Rápida de Comandos</a></li>
+</ol>
+<hr>
+<h2 id="1-introducción-y-stack-tecnológico"><a class="header" href="#1-introducción-y-stack-tecnológico">1. Introducción y Stack Tecnológico</a></h2>
+<p>Este backend es el motor de <strong>Bookteka</strong>, una aplicación de lectura de libros digitales. Está construido con una arquitectura <strong>MVC (Model-View-Controller)</strong> con capas adicionales de <strong>servicios</strong> y <strong>repositorios</strong> para mantener una separación de responsabilidades clara.</p>
+<pre><code>src/
+├── config/           # Configuraciones: env, db, prisma
+├── controllers/      # Controladores (capa HTTP)
+├── dto/              # Data Transfer Objects
+├── helper/           # Utilidades
+├── lib/              # Servicios externos: auth, email, r2
+├── repositories/     # Acceso a datos
+├── routes/           # Definición de rutas Express
+├── services/         # Lógica de negocio
+├── types/            # Tipos TypeScript
+├── __tests__/        # Tests
+└── server.ts         # Punto de entrada
+</code></pre>
+<p><strong>Stack tecnológico:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Tecnología</th><th>Versión</th><th>Propósito</th></tr>
+</thead>
+<tbody>
+<tr><td>Node.js</td><td>20+</td><td>Runtime</td></tr>
+<tr><td>Express</td><td>^5.2.1</td><td>Framework HTTP</td></tr>
+<tr><td>TypeScript</td><td>^5.9.3</td><td>Tipado estático</td></tr>
+<tr><td>Prisma</td><td>^6.19.2</td><td>ORM para PostgreSQL</td></tr>
+<tr><td>PostgreSQL</td><td>15+</td><td>Base de datos relacional</td></tr>
+<tr><td>Cloudflare R2</td><td>—</td><td>Storage de archivos (S3-compatible)</td></tr>
+<tr><td>Better-Auth</td><td>^1.5.0</td><td>Autenticación completa</td></tr>
+<tr><td>Resend</td><td>^6.9.4</td><td>Envío de emails</td></tr>
+<tr><td>Multer</td><td>^2.1.0</td><td>Upload de archivos</td></tr>
+<tr><td>Jest</td><td>^30.3.0</td><td>Testing</td></tr>
+<tr><td>Supertest</td><td>^7.2.2</td><td>Testing HTTP</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Principios aplicados:</strong></p>
+<ul>
+<li>Separación de responsabilidades (Controller → Service → Repository)</li>
+<li>Repositorios con interfaces (contratos)</li>
+<li>DTOs para Tipado de entrada/salida</li>
+<li>Autenticación delegada a Better-Auth</li>
+<li>Storage externo (R2) para archivos PDF</li>
+<li>Auditoría de eliminaciones</li>
+</ul>
+<hr>
+<h2 id="2-estructura-del-proyecto"><a class="header" href="#2-estructura-del-proyecto">2. Estructura del Proyecto</a></h2>
+<pre><code class="language-bash">backend/
+├── .env                    # Variables de entorno (NO se commitea)
+├── .env.example            # Plantilla de variables de entorno
+├── .gitignore
+├── package.json            # Dependencias y scripts
+├── tsconfig.json           # Configuración de TypeScript
+├── jest.config.ts          # Configuración de Jest
+├── Dockerfile              # Build multi-stage para producción
+├── docker-entrypoint.sh    # Script de entrada del contenedor
+├── pnpm-lock.yaml          # Lockfile de pnpm
+│
+├── prisma/
+│   └── schema.prisma       # Schema de la base de datos
+│
+├── better-auth_migrations/ # Migraciones de Better-Auth
+│
+├── mock/
+│   └── book.pdf            # PDF de prueba para uploads
+│
+├── http/                   # Endpoints organizados (REST Client)
+│   ├── books.http
+│   ├── bookmarks.http
+│   ├── streaks.http
+│   └── auth-debug.http
+│
+├── api.http                # Índice de endpoints
+│
+└── src/
+    ├── server.ts            # Punto de entrada de la app
+    │
+    ├── config/
+    │   ├── env.ts           # Variables de entorno validadas
+    │   ├── db.ts            # Pool de PostgreSQL nativo (para Better-Auth)
+    │   └── prisma.ts        # Cliente Prisma singleton
+    │
+    ├── lib/
+    │   ├── auth.ts          # Configuración de Better-Auth
+    │   ├── email.ts         # Servicio de emails (Resend)
+    │   └── r2.ts            # Cliente S3 para Cloudflare R2
+    │
+    ├── helper/
+    │   ├── errors.ts        # Clase AppError personalizada
+    │   ├── format.ts        # Normalización de nombres de archivo
+    │   └── time.ts          # Formateo de fechas
+    │
+    ├── types/
+    │   ├── book.d.ts        # Tipos de Book, UserBook, Bookmark
+    │   ├── bookmark.d.ts    # Tipos de bookmark
+    │   ├── streak.d.ts      # Tipos de racha de lectura
+    │   └── audit.d.ts       # Tipos de auditoría
+    │
+    ├── dto/
+    │   ├── book/
+    │   │   ├── params.ts    # Parámetros de ruta (id, etc.)
+    │   │   ├── request.ts   # Body de requests (upload)
+    │   │   └── response.ts  # Estructuras de respuesta
+    │   └── bookmark/
+    │       ├── params.ts
+    │       ├── request.ts
+    │       └── response.ts
+    │
+    ├── repositories/
+    │   ├── book.repository.ts
+    │   ├── bookmark.repository.ts
+    │   └── streak.repository.ts
+    │
+    ├── services/
+    │   ├── book.service.ts
+    │   ├── bookmark.service.ts
+    │   └── streak.service.ts
+    │
+    ├── controllers/
+    │   ├── book.controller.ts
+    │   ├── bookmark.controller.ts
+    │   └── streak.controller.ts
+    │
+    ├── routes/
+    │   ├── book.routes.ts
+    │   ├── bookmark.routes.ts
+    │   └── streak.routes.ts
+    │
+    └── __tests__/
+        ├── example.test.ts
+        ├── book.test.ts
+        ├── bookmark.test.ts
+        └── streak.test.ts
+</code></pre>
+<hr>
+<h2 id="3-prerequisitos"><a class="header" href="#3-prerequisitos">3. Prerequisitos</a></h2>
+<p>Antes de empezar necesitás tener instalado:</p>
+<ul>
+<li><strong>Node.js</strong> v20+ (recomendado v22+)</li>
+<li><strong>pnpm</strong> v10+ (el proyecto usa pnpm como package manager)</li>
+<li><strong>Docker</strong> y <strong>Docker Compose</strong> (para PostgreSQL en desarrollo)</li>
+<li><strong>TypeScript</strong> (se instala como devDependency)</li>
+</ul>
+<hr>
+<h2 id="4-paso-1--packagejson-1"><a class="header" href="#4-paso-1--packagejson-1">4. Paso 1 — package.json</a></h2>
+<pre><code class="language-json">{
+  "name": "backend",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "prisma generate &amp;&amp; tsc &amp;&amp; tsc-alias",
+    "start": "node dist/server.js",
+    "prisma:generate": "prisma generate",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch"
+  },
+  "packageManager": "pnpm@10.15.0",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1000.0",
+    "@aws-sdk/s3-request-presigner": "^3.1000.0",
+    "@prisma/client": "^6.19.2",
+    "better-auth": "1.5.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "multer": "^2.1.0",
+    "pg": "^8.18.0",
+    "resend": "^6.9.4"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/multer": "^2.0.0",
+    "@types/node": "^25.9.1",
+    "@types/pg": "^8.16.0",
+    "@jest/globals": "^30.3.0",
+    "@types/jest": "^30.0.0",
+    "@types/supertest": "^7.2.0",
+    "jest": "^30.3.0",
+    "supertest": "^7.2.2",
+    "ts-jest": "^29.4.9",
+    "prisma": "^6.19.2",
+    "tsc-alias": "^1.8.16",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}
+</code></pre>
+<p><strong>¿Qué significa cada script?</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Script</th><th>Comando</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><code>dev</code></td><td><code>tsx watch src/server.ts</code></td><td>Inicia el servidor en modo desarrollo con recarga automática</td></tr>
+<tr><td><code>build</code></td><td><code>prisma generate &amp;&amp; tsc &amp;&amp; tsc-alias</code></td><td>Genera Prisma client, compila TS y resuelve alias <code>@/</code></td></tr>
+<tr><td><code>start</code></td><td><code>node dist/server.js</code></td><td>Inicia el servidor desde el build de producción</td></tr>
+<tr><td><code>test</code></td><td><code>jest</code></td><td>Ejecuta tests con soporte ESM</td></tr>
+<tr><td><code>test:watch</code></td><td><code>jest --watch</code></td><td>Tests en modo watch</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>¿Por qué estas dependencias?</strong></p>
+<ul>
+<li><strong>express</strong> — Framework HTTP (v5 con soporte nativo de async/await en errores)</li>
+<li><strong>cors</strong> — Middleware para Cross-Origin Resource Sharing</li>
+<li><strong>multer</strong> — Middleware para manejo de multipart/form-data (uploads de PDFs)</li>
+<li><strong>@aws-sdk/client-s3</strong> — Cliente S3 oficial de AWS para interactuar con Cloudflare R2</li>
+<li><strong>@aws-sdk/s3-request-presigner</strong> — Generar URLs firmadas para descargas seguras</li>
+<li><strong>better-auth</strong> — Autenticación completa con email+password, verificación, reset</li>
+<li><strong>pg</strong> — Driver nativo de PostgreSQL (Better-Auth lo necesita para el pool)</li>
+<li><strong>resend</strong> — Servicio de envío de emails transaccionales</li>
+<li><strong>dotenv</strong> — Cargar variables de entorno desde <code>.env</code></li>
+<li><strong>tsx</strong> — Ejecutar TypeScript directamente sin compilar (para desarrollo)</li>
+<li><strong>tsc-alias</strong> — Resolver el alias <code>@/</code> en el build compilado</li>
+</ul>
+<p><strong>Instalación:</strong></p>
+<pre><code class="language-bash">pnpm install
+</code></pre>
+<hr>
+<h2 id="5-paso-2--tsconfigjson-1"><a class="header" href="#5-paso-2--tsconfigjson-1">5. Paso 2 — tsconfig.json</a></h2>
+<pre><code class="language-json">{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ESNext"],
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "types": ["jest", "node"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
+</code></pre>
+<p><strong>¿Qué hace cada opción?</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Opción</th><th>Valor</th><th>Explicación</th></tr>
+</thead>
+<tbody>
+<tr><td><code>target</code></td><td><code>ESNext</code></td><td>Compila a la versión más reciente de ECMAScript</td></tr>
+<tr><td><code>module</code></td><td><code>NodeNext</code></td><td>Usa el sistema de módulos nativo de Node.js (ESM con <code>.js</code> en imports)</td></tr>
+<tr><td><code>moduleResolution</code></td><td><code>NodeNext</code></td><td>Resolución de módulos acorde a <code>NodeNext</code></td></tr>
+<tr><td><code>strict</code></td><td><code>true</code></td><td>Máxima estrictitud (strictNullChecks, noImplicitAny, etc.)</td></tr>
+<tr><td><code>baseUrl</code></td><td><code>"."</code></td><td>Base para resolver paths relativos</td></tr>
+<tr><td><code>paths</code></td><td><code>@/* → src/*</code></td><td>Alias para imports: <code>import { x } from "@/config/env"</code></td></tr>
+<tr><td><code>esModuleInterop</code></td><td><code>true</code></td><td>Compatibilidad con módulos CommonJS</td></tr>
+<tr><td><code>sourceMap</code></td><td><code>true</code></td><td>Genera source maps para debugging</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>⚠️ Importante con ESM:</strong> Cuando usás <code>"type": "module"</code> en package.json, TODOS los imports locales deben terminar en <code>.js</code> aunque el archivo fuente sea <code>.ts</code>:</p>
+<pre><code class="language-typescript">// ✅ Correcto
+import { env } from "@/config/env.js";
+import { BookService } from "@/services/book.service.js";
+
+// ❌ Incorrecto (TypeScript no va a encontrar el módulo)
+import { env } from "@/config/env";
+import { BookService } from "@/services/book.service";
+</code></pre>
+<hr>
+<h2 id="6-paso-3--variables-de-entorno-env-1"><a class="header" href="#6-paso-3--variables-de-entorno-env-1">6. Paso 3 — Variables de Entorno (.env)</a></h2>
+<p>Creá el archivo <code>.env</code> en la raíz de <code>backend/</code>:</p>
+<pre><code class="language-env">PORT=3000
+DATABASE_URL=postgres://usuario:password@localhost:5432/bookteka_db?schema=public
+FRONTEND_URL=http://localhost:5173
+BETTER_AUTH_SECRET=WsEGMicmTmVF0Tln8NEkfwZkrEmIePQB
+BETTER_AUTH_URL=http://localhost:3000
+
+R2_ACCESS_KEY_ID=tu-access-key
+R2_SECRET_ACCESS_KEY=tu-secret-key
+R2_ENDPOINT=https://tu-endpoint.r2.cloudflarestorage.com
+R2_PUBLIC_DOMAIN=https://tu-public-domain.r2.dev
+R2_BUCKET=tu-bucket-name
+
+RESEND_API_KEY=re_xxxxxxxxxxxx
+RESEND_FROM_EMAIL=onboarding@resend.dev
+</code></pre>
+<p><strong>Cada variable explicada:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Variable</th><th>Obligatorio</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><code>PORT</code></td><td>Sí</td><td>Puerto del servidor Express (default 3000)</td></tr>
+<tr><td><code>DATABASE_URL</code></td><td>Sí</td><td>Connection string de PostgreSQL</td></tr>
+<tr><td><code>FRONTEND_URL</code></td><td>Sí</td><td>URL del frontend (para CORS)</td></tr>
+<tr><td><code>BETTER_AUTH_SECRET</code></td><td>Sí</td><td>Secreto para firmar tokens de Better-Auth</td></tr>
+<tr><td><code>BETTER_AUTH_URL</code></td><td>Sí</td><td>URL base del backend (para callbacks de auth)</td></tr>
+<tr><td><code>R2_ACCESS_KEY_ID</code></td><td>Sí</td><td>Access Key de Cloudflare R2</td></tr>
+<tr><td><code>R2_SECRET_ACCESS_KEY</code></td><td>Sí</td><td>Secret Key de Cloudflare R2</td></tr>
+<tr><td><code>R2_ENDPOINT</code></td><td>Sí</td><td>Endpoint S3 de Cloudflare R2</td></tr>
+<tr><td><code>R2_PUBLIC_DOMAIN</code></td><td>Sí</td><td>Dominio público para acceder a archivos</td></tr>
+<tr><td><code>R2_BUCKET</code></td><td>Sí</td><td>Nombre del bucket en R2</td></tr>
+<tr><td><code>RESEND_API_KEY</code></td><td>Sí</td><td>API Key de Resend para envío de emails</td></tr>
+<tr><td><code>RESEND_FROM_EMAIL</code></td><td>Sí</td><td>Email remitente para los correos</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>⚠️ IMPORTANTE:</strong> El <code>.env</code> NUNCA se commitea al repositorio. Está en <code>.gitignore</code>. Usá <code>.env.example</code> como plantilla.</p>
+<hr>
+<h2 id="7-paso-4--configuración-del-proyecto"><a class="header" href="#7-paso-4--configuración-del-proyecto">7. Paso 4 — Configuración del Proyecto</a></h2>
+<h3 id="71-envts--validación-de-entorno"><a class="header" href="#71-envts--validación-de-entorno">7.1 <code>env.ts</code> — Validación de Entorno</a></h3>
+<pre><code class="language-typescript">import dotenv from "dotenv";
+
+dotenv.config();
+
+interface EnvConfig {
+  PORT: number;
+  DATABASE_URL: string;
+  FRONTEND_URL: string;
+  BETTER_AUTH_SECRET: string;
+  BETTER_AUTH_URL: string;
+  R2_ACCESS_KEY: string;
+  R2_SECRET_KEY: string;
+  R2_S3_API: string;
+  R2_BUCKET: string;
+  R2_PUBLIC_DOMAIN: string;
+  RESEND_API_KEY: string;
+  RESEND_FROM_EMAIL: string;
+}
+
+function getEnvVar(key: string): string {
+  const value = process.env[key];
+  if (!value) {
+    throw new Error(`env not found: ${key}`);
+  }
+  return value;
+}
+
+export const env: EnvConfig = {
+  PORT: parseInt(process.env.PORT || "3000", 10),
+  DATABASE_URL: getEnvVar("DATABASE_URL"),
+  FRONTEND_URL: getEnvVar("FRONTEND_URL"),
+  BETTER_AUTH_SECRET: getEnvVar("BETTER_AUTH_SECRET"),
+  BETTER_AUTH_URL: getEnvVar("BETTER_AUTH_URL"),
+  R2_ACCESS_KEY: getEnvVar("R2_ACCESS_KEY_ID"),
+  R2_SECRET_KEY: getEnvVar("R2_SECRET_ACCESS_KEY"),
+  R2_S3_API: getEnvVar("R2_ENDPOINT"),
+  R2_BUCKET: getEnvVar("R2_BUCKET"),
+  R2_PUBLIC_DOMAIN: getEnvVar("R2_PUBLIC_DOMAIN"),
+  RESEND_API_KEY: getEnvVar("RESEND_API_KEY"),
+  RESEND_FROM_EMAIL: getEnvVar("RESEND_FROM_EMAIL"),
+};
+</code></pre>
+<p><strong>¿Qué hace?</strong></p>
+<ol>
+<li><strong><code>dotenv.config()</code></strong> — Carga las variables del archivo <code>.env</code> en <code>process.env</code></li>
+<li><strong><code>getEnvVar(key)</code></strong> — Helper que obtiene una variable y lanza error si falta (fail-fast)</li>
+<li><strong>Exporta <code>env</code></strong> — Objeto tipado con todas las variables de entorno accesibles desde cualquier parte del código</li>
+</ol>
+<p><strong>Diferencia con Zod:</strong> A diferencia del manual de Fastify que usa Zod para validar, acá se usa un enfoque más simple con <code>getEnvVar</code>. Cada variable que es obligatoria se valida manualmente. Para proyectos más grandes, Zod sería recomendable.</p>
+<hr>
+<h3 id="72-dbts--pool-de-postgresql-nativo"><a class="header" href="#72-dbts--pool-de-postgresql-nativo">7.2 <code>db.ts</code> — Pool de PostgreSQL Nativo</a></h3>
+<pre><code class="language-typescript">import pkg from "pg";
+import { env } from "./env.js";
+
+const { Pool } = pkg;
+
+export const pool = new Pool({
+  connectionString: env.DATABASE_URL,
+});
+</code></pre>
+<p><strong>¿Qué hace?</strong></p>
+<p>Crea un <strong>Pool de conexiones PostgreSQL</strong> usando el driver <code>pg</code>. Este pool se usa exclusivamente para <strong>Better-Auth</strong>, que necesita acceso directo a PostgreSQL (no a través de Prisma).</p>
+<ul>
+<li><strong>Pool</strong> mantiene un conjunto de conexiones reutilizables (más eficiente que crear una conexión por request)</li>
+<li>Se conecta usando la misma <code>DATABASE_URL</code> que Prisma</li>
+</ul>
+<hr>
+<h3 id="73-prismats--cliente-prisma-singleton"><a class="header" href="#73-prismats--cliente-prisma-singleton">7.3 <code>prisma.ts</code> — Cliente Prisma Singleton</a></h3>
+<pre><code class="language-typescript">import { PrismaClient } from "@prisma/client";
+
+const globalForPrisma = global as unknown as { prisma: PrismaClient };
+
+export const dbPrisma = globalForPrisma.prisma || new PrismaClient();
+
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = dbPrisma;
+</code></pre>
+<p><strong>¿Qué hace?</strong></p>
+<ol>
+<li><strong>Singleton pattern</strong> — En desarrollo, <code>tsx watch</code> reinicia el servidor y crearía múltiples instancias de Prisma. Al guardarla en <code>global</code>, nos aseguramos de reutilizar la misma instancia.</li>
+<li><strong><code>dbPrisma</code></strong> — Es el cliente Prisma que se usa en toda la aplicación (repositories).</li>
+<li>En producción, esto no es necesario porque no hay hot-reload.</li>
+</ol>
+<p><strong>¿Por qué no se llama <code>prisma</code>?</strong> Porque Better-Auth también exporta un <code>prisma</code> y podrían haber conflictos de nombres. Se usa <code>dbPrisma</code> para diferenciar.</p>
+<hr>
+<h2 id="8-paso-5--modelo-de-datos-prisma-schema"><a class="header" href="#8-paso-5--modelo-de-datos-prisma-schema">8. Paso 5 — Modelo de Datos (Prisma Schema)</a></h2>
+<pre><code class="language-prisma">datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model book {
+  id        String   @id @default(uuid())
+  title     String
+  author    String?
+  fileUrl   String
+  fileKey   String
+  fileHash  String   @unique
+  size      Int?
+  createdAt DateTime @default(now())
+  userBooks user_book[]
+
+  @@index([fileHash])
+}
+
+model user_book {
+  id                 String    @id @default(uuid())
+  userId             String
+  bookId             String
+  currentPage        Int       @default(0)
+  scrollPosition     Int       @default(0)
+  readingTimeSeconds Int       @default(0)
+  lastReadAt         DateTime?
+  createdAt          DateTime  @default(now())
+
+  book      book       @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  bookmarks bookmark[]
+
+  @@index([userId])
+  @@index([bookId])
+  @@unique([userId, bookId])
+}
+
+model bookmark {
+  id          String   @id @default(uuid())
+  userId      String
+  userBookId  String
+  name        String?
+  pageNumber  Int
+  textPreview String?
+  createdAt   DateTime @default(now())
+
+  userBook user_book @relation(fields: [userBookId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userBookId])
+}
+
+model user_streak {
+  id             String    @id @default(uuid())
+  userId         String    @unique
+  currentStreak  Int       @default(0)
+  startDate      DateTime?
+  lastActiveDate DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([userId])
+}
+
+model audit_log {
+  id         String   @id @default(uuid())
+  action     String
+  entityType String
+  entityId   String
+  userId     String
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([userId])
+  @@index([createdAt])
+}
+</code></pre>
+<p><strong>Diagrama de relaciones:</strong></p>
+<pre><code>book ──1:N──&gt; user_book ──1:N──&gt; bookmark
+                │
+                └── (userId + bookId) único por usuario
+
+user_streak (1:1 con usuario por userId)
+
+audit_log (logs de acciones)
+</code></pre>
+<p><strong>Modelos explicados:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Modelo</th><th>Tabla</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><code>book</code></td><td><code>books</code></td><td>Libro físico (archivo PDF). Se comparte entre usuarios si tienen el mismo hash.</td></tr>
+<tr><td><code>user_book</code></td><td><code>user_books</code></td><td>Relación usuario-libro con progreso de lectura. <code>@@unique([userId, bookId])</code> evita duplicados.</td></tr>
+<tr><td><code>bookmark</code></td><td><code>bookmarks</code></td><td>Marcadores por página. Pertenece a un <code>user_book</code>.</td></tr>
+<tr><td><code>user_streak</code></td><td><code>user_streaks</code></td><td>Racha de lectura diaria del usuario. <code>@unique</code> en userId (1 racha por usuario).</td></tr>
+<tr><td><code>audit_log</code></td><td><code>audit_logs</code></td><td>Registro de acciones importantes (eliminaciones, etc.) con metadata JSON.</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Características clave del schema:</strong></p>
+<ul>
+<li><strong>UUIDs</strong> como IDs (no autoincrementales) — más seguros y distribuibles</li>
+<li><strong>Cascade delete</strong> — Si se elimina un <code>book</code>, se eliminan sus <code>user_book</code>, y si se elimina un <code>user_book</code>, se eliminan sus <code>bookmarks</code></li>
+<li><strong>Índices</strong> en todas las columnas de búsqueda frecuente</li>
+<li><strong><code>@@unique([userId, bookId])</code></strong> — Un usuario solo puede tener un <code>user_book</code> por libro</li>
+<li><strong><code>fileHash @unique</code></strong> — Si dos usuarios suben el mismo PDF, comparten el mismo <code>book</code> (se detecta por hash SHA-256)</li>
+</ul>
+<p><strong>Comandos de migración:</strong></p>
+<pre><code class="language-bash">pnpm prisma:generate    # Genera el cliente Prisma
+npx prisma migrate dev  # Crea/ejecuta migraciones
+npx prisma studio       # Abre la UI de Prisma Studio
+</code></pre>
+<hr>
+<h2 id="9-paso-6--tipos-del-sistema-types"><a class="header" href="#9-paso-6--tipos-del-sistema-types">9. Paso 6 — Tipos del Sistema (Types)</a></h2>
+<p>Los tipos están en la carpeta <code>src/types/</code> y definen las interfaces que se usan en toda la aplicación.</p>
+<h3 id="bookdts--tipos-de-libros"><a class="header" href="#bookdts--tipos-de-libros"><code>book.d.ts</code> — Tipos de Libros</a></h3>
+<pre><code class="language-typescript">export interface Book {
+  id: string;
+  title: string;
+  author?: string | null;
+  fileUrl: string;
+  fileKey: string;
+  fileHash: string;
+  size?: number | null;
+  createdAt: Date;
+  userBooks?: UserBook[];
+}
+
+export interface UserBook {
+  id: string;
+  userId: string;
+  bookId: string;
+  currentPage: number;
+  scrollPosition: number;
+  readingTimeSeconds: number;
+  lastReadAt?: Date | null;
+  createdAt: Date;
+  book?: Book;
+  bookmarks?: Bookmark[];
+}
+
+export interface Bookmark {
+  id: string;
+  userId: string;
+  userBookId: string;
+  name?: string | null;
+  pageNumber: number;
+  textPreview?: string | null;
+  createdAt: Date;
+  userBook?: UserBook;
+}
+
+export interface UploadBookInput {
+  userId: string;
+  file: Express.Multer.File;
+  body: {
+    title?: string;
+    author?: string;
+    readingTimeSeconds?: string;
+    scrollPosition?: string;
+  };
+}
+
+export interface CreateBookInput {
+  title: string;
+  author: string;
+  fileKey: string;
+  fileUrl: string;
+  fileHash: string;
+  size: number;
+}
+
+export interface UpdateBookProgressInput {
+  userId: string;
+  bookId: string;
+  body: {
+    readingTimeSeconds?: number;
+    scrollPosition?: number;
+    lastReadAt?: string;
+  };
+}
+
+export interface DeleteBookInput {
+  userId: string;
+  bookId: string;
+}
+
+export interface DownloadBookInput {
+  userId: string;
+  bookId: string;
+}
+
+export interface StreamBookInput {
+  userId: string;
+  bookId: string;
+}
+</code></pre>
+<p><strong>¿Por qué tantos tipos de input?</strong> Cada operación (upload, delete, download, stream, update progress) tiene requerimientos distintos. Al tiparlos por separado, TypeScript nos ayuda a no mezclar parámetros.</p>
+<h3 id="streakdts--tipos-de-racha"><a class="header" href="#streakdts--tipos-de-racha"><code>streak.d.ts</code> — Tipos de Racha</a></h3>
+<pre><code class="language-typescript">export interface StreakData {
+  id?: string;
+  userId?: string;
+  currentStreak: number;
+  startDate: string | null;
+  lastActiveDate: string | null;
+  hasCompletedToday: boolean;
+}
+
+export interface UserStreak {
+  id: string;
+  userId: string;
+  currentStreak: number;
+  startDate?: Date | null;
+  lastActiveDate?: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface CreateStreakInput {
+  userId: string;
+  currentStreak: number;
+  startDate: Date | null;
+  lastActiveDate: Date | null;
+  createdAt: Date;
+}
+
+export interface UpdateStreakInput {
+  currentStreak?: number;
+  startDate?: Date | null;
+  lastActiveDate?: Date | null;
+  updatedAt?: Date;
+}
+</code></pre>
+<h3 id="auditdts--auditoría"><a class="header" href="#auditdts--auditoría"><code>audit.d.ts</code> — Auditoría</a></h3>
+<pre><code class="language-typescript">export interface AuditLog {
+  id: string;
+  action: string;
+  entityType: string;
+  entityId: string;
+  userId: string;
+  metadata?: Record&lt;string, any&gt; | null;
+  createdAt: Date;
+}
+</code></pre>
+<p><strong>Auditoría:</strong> Cada vez que se elimina un libro, se guarda un registro en <code>audit_log</code> con metadata sobre qué se eliminó, quién lo hizo, y cuándo.</p>
+<hr>
+<h2 id="10-paso-7--dtos-data-transfer-objects"><a class="header" href="#10-paso-7--dtos-data-transfer-objects">10. Paso 7 — DTOs (Data Transfer Objects)</a></h2>
+<p>Los DTOs definen la forma exacta de los datos que entran y salen de la API. Están separados en <code>params</code> (parámetros de ruta), <code>request</code> (body), y <code>response</code> (respuesta).</p>
+<h3 id="book-dtos"><a class="header" href="#book-dtos">Book DTOs</a></h3>
+<p><strong><code>dto/book/params.ts</code></strong> — Parámetros de ruta:</p>
+<pre><code class="language-typescript">export interface DeleteBookParamsDTO {
+  id: string;
+}
+
+export interface UpdateBookParamsDTO {
+  id: string;
+}
+
+export interface DownloadBookParamsDTO {
+  id: string;
+}
+
+export interface StreamBookParamsDTO {
+  id: string;
+}
+</code></pre>
+<p><strong><code>dto/book/request.ts</code></strong> — Body de subida:</p>
+<pre><code class="language-typescript">export interface UploadBookRequestDTO {
+  title?: string;
+  author?: string;
+  readingTimeSeconds?: string;
+  scrollPosition?: string;
+}
+</code></pre>
+<p><strong><code>dto/book/response.ts</code></strong> — Respuestas:</p>
+<pre><code class="language-typescript">// Lista de libros del usuario
+export interface UserBookResponse {
+  id: string;
+  title: string;
+  author: string;
+  createdAt: number;        // timestamp (getTime)
+  lastReadAt: number;       // timestamp
+  readingTimeSeconds: number;
+  scrollPosition: number;
+  totalPages?: number;
+  fileUrl: string;
+  fileKey: string;
+}
+
+// Respuesta de subida exitosa
+export interface UploadBookResponseDTO {
+  bookId: string;
+  userBookId: string;
+}
+
+// Respuesta de eliminación
+export interface DeleteBookResponseDTO {
+  success: boolean;
+  message: string;
+  auditId: string;
+}
+</code></pre>
+<h3 id="bookmark-dtos"><a class="header" href="#bookmark-dtos">Bookmark DTOs</a></h3>
+<p><strong><code>dto/bookmark/params.ts</code>:</strong></p>
+<pre><code class="language-typescript">export interface GetBookmarkParams {
+  bookId: string;
+}
+
+export interface CreateBookmarkParams {
+  bookId: string;
+}
+
+export interface DeleteBookmarkParams {
+  bookId: string;
+}
+</code></pre>
+<p><strong><code>dto/bookmark/request.ts</code>:</strong></p>
+<pre><code class="language-typescript">export interface CreateBookmarkRequestDTO {
+  name: string;
+  pageNumber: number;
+  textPreview?: string;
+}
+</code></pre>
+<hr>
+<h2 id="11-paso-8--helpers-y-utilidades"><a class="header" href="#11-paso-8--helpers-y-utilidades">11. Paso 8 — Helpers y Utilidades</a></h2>
+<h3 id="111-errorsts--error-personalizado"><a class="header" href="#111-errorsts--error-personalizado">11.1 <code>errors.ts</code> — Error Personalizado</a></h3>
+<pre><code class="language-typescript">export class AppError extends Error {
+  constructor(
+    public code: string,
+    public statusCode: number,
+    message: string
+  ) {
+    super(message);
+  }
+}
+</code></pre>
+<p><strong>¿Qué hace?</strong></p>
+<ul>
+<li>Extiende <code>Error</code> nativo de JavaScript</li>
+<li>Agrega <code>code</code> (código interno: <code>NOT_FOUND</code>, <code>FORBIDDEN</code>, etc.) y <code>statusCode</code> (HTTP status)</li>
+<li>Se usa en services para lanzar errores que los controllers capturan y convierten en respuestas HTTP</li>
+</ul>
+<p><strong>Uso típico:</strong></p>
+<pre><code class="language-typescript">// En un service:
+throw new AppError("NOT_FOUND", 404, "Libro no encontrado para este usuario");
+
+// En el controller:
+if (err instanceof AppError) {
+  return res.status(err.statusCode).json({ error: err.message });
+}
+</code></pre>
+<h3 id="112-formatts--normalización-de-archivos"><a class="header" href="#112-formatts--normalización-de-archivos">11.2 <code>format.ts</code> — Normalización de Archivos</a></h3>
+<pre><code class="language-typescript">import crypto from "crypto";
+
+export const normalizedFileName = (name: string) =&gt; {
+  return name
+    .replace(/\s+/g, "-")           // Reemplazar espacios por guiones
+    .replace(/[^a-zA-Z0-9.\-_]/g, ""); // Eliminar caracteres especiales
+};
+
+export const generateFileHash = (file: any) =&gt; {
+  return crypto.createHash("sha256").update(file.buffer).digest("hex");
+};
+</code></pre>
+<p><strong>¿Para qué sirve?</strong></p>
+<ul>
+<li><strong><code>normalizedFileName</code></strong> — Limpia el nombre del archivo subido: espacios → guiones, elimina caractéres especiales. Esto evita problemas con archivos que tienen caractéres raros en el nombre.</li>
+<li><strong><code>generateFileHash</code></strong> — Genera un hash SHA-256 del contenido del archivo. Se usa para detectar si ya existe un libro con el mismo contenido (deduplicación).</li>
+</ul>
+<h3 id="113-timets--formateo-de-fechas"><a class="header" href="#113-timets--formateo-de-fechas">11.3 <code>time.ts</code> — Formateo de Fechas</a></h3>
+<pre><code class="language-typescript">export const toDateString = (date: Date | null): string | null =&gt; {
+  if (!date) return null;
+  const d = new Date(date);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+export const getUTCDateOnly = (date: Date): string =&gt; {
+  const d = new Date(date);
+  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}-${String(d.getUTCDate()).padStart(2, "0")}`;
+};
+</code></pre>
+<p><strong>¿Para qué sirve?</strong></p>
+<ul>
+<li><strong><code>toDateString</code></strong> — Convierte un Date a formato legible <code>YYYY-MM-DD</code>. Se usa para mostrar fechas en las respuestas de streak.</li>
+<li><strong><code>getUTCDateOnly</code></strong> — Obtiene la fecha en UTC, ignorando la hora. Es crítico para el sistema de streaks: si un usuario en Argentina (UTC-3) marca un día a las 11 PM, no debe confundirse con el día siguiente en UTC.</li>
+</ul>
+<hr>
+<h2 id="12-paso-9--librerías-y-servicios-externos"><a class="header" href="#12-paso-9--librerías-y-servicios-externos">12. Paso 9 — Librerías y Servicios Externos</a></h2>
+<h3 id="121-authts--better-auth"><a class="header" href="#121-authts--better-auth">12.1 <code>auth.ts</code> — Better-Auth</a></h3>
+<pre><code class="language-typescript">import { betterAuth } from "better-auth";
+import { pool } from "@/config/db.js";
+import { env } from "@/config/env.js";
+import { sendEmail } from "./email.js";
+
+const isProduction = env.BETTER_AUTH_URL.startsWith("https");
+
+export const auth = betterAuth({
+  baseURL: env.BETTER_AUTH_URL,
+  database: pool,                             // Pool de PostgreSQL nativo
+  emailAndPassword: {
+    enabled: true,
+    sendResetPassword: async ({ user, url }) =&gt; { /* envía email */ },
+  },
+  emailVerification: {
+    sendOnSignUp: true,
+    autoSignInAfterVerification: true,
+    sendVerificationEmail: async ({ user, url }) =&gt; { /* envía email */ },
+  },
+  trustedOrigins: [
+    env.FRONTEND_URL,
+    "http://localhost:5173",
+    "https://bookteka.up.railway.app",
+  ],
+  advanced: {
+    useSecureCookies: isProduction,
+  },
+  cookie: {
+    name: "better-auth.session_token",
+    secure: isProduction,
+    sameSite: "lax",
+    httpOnly: true,
+    maxAge: 60 * 60 * 24 * 7,
+    path: "/",
+  },
+  session: {
+    expiresIn: 60 * 60 * 24 * 7,     // 7 días
+    updateAge: 60 * 60 * 24,         // Renueva cada 24h
+  },
+});
+</code></pre>
+<p><strong>¿Qué configura Better-Auth?</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Configuración</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><code>database: pool</code></td><td>Usa el pool de PostgreSQL nativo (NO Prisma)</td></tr>
+<tr><td><code>emailAndPassword.enabled</code></td><td>Habilita login con email y contraseña</td></tr>
+<tr><td><code>sendResetPassword</code></td><td>Callback para enviar email de reset</td></tr>
+<tr><td><code>emailVerification.sendOnSignUp</code></td><td>Envía email de verificación al registrarse</td></tr>
+<tr><td><code>autoSignInAfterVerification</code></td><td>Login automático después de verificar</td></tr>
+<tr><td><code>trustedOrigins</code></td><td>Orígenes permitidos para CORS de auth</td></tr>
+<tr><td><code>useSecureCookies</code></td><td>Cookies seguras solo en HTTPS</td></tr>
+<tr><td><code>session.expiresIn</code></td><td>Duración de la sesión (7 días)</td></tr>
+<tr><td><code>session.updateAge</code></td><td>Renueva la sesión cada 24h de actividad</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>¿Cómo se integra con Express?</strong></p>
+<pre><code class="language-typescript">import { toNodeHandler } from "better-auth/node";
+
+// Todas las rutas de auth bajo /api/auth/*
+app.all("/api/auth/*splat", toNodeHandler(auth));
+</code></pre>
+<p>Better-Auth genera automáticamente todas las rutas de autenticación:</p>
+<ul>
+<li><code>POST /api/auth/signup</code> — Registro</li>
+<li><code>POST /api/auth/login</code> — Login</li>
+<li><code>POST /api/auth/logout</code> — Logout</li>
+<li><code>GET /api/auth/session</code> — Obtener sesión actual</li>
+<li><code>POST /api/auth/verify-email</code> — Verificar email</li>
+<li><code>POST /api/auth/forgot-password</code> — Olvidé contraseña</li>
+<li><code>POST /api/auth/reset-password</code> — Resetear contraseña</li>
+</ul>
+<p>Better-Auth además genera sus propias tablas en la base de datos (<code>user</code>, <code>account</code>, <code>session</code>, <code>verification</code>) mediante migraciones propias (carpeta <code>better-auth_migrations/</code>).</p>
+<h3 id="122-emailts--resend"><a class="header" href="#122-emailts--resend">12.2 <code>email.ts</code> — Resend</a></h3>
+<pre><code class="language-typescript">import { Resend } from "resend";
+import { env } from "@/config/env.js";
+
+const resend = new Resend(env.RESEND_API_KEY);
+
+interface SendEmailParams {
+  to: string;
+  subject: string;
+  html: string;
+}
+
+export async function sendEmail({ to, subject, html }: SendEmailParams) {
+  const { data, error } = await resend.emails.send({
+    from: env.RESEND_FROM_EMAIL,
+    to,
+    subject,
+    html,
+  });
+
+  if (error) {
+    console.error(`❌ Error sending email to ${to}:`, error);
+    throw new Error(`Failed to send email: ${error.message}`);
+  }
+
+  return data;
+}
+</code></pre>
+<p><strong>¿Qué hace?</strong></p>
+<ul>
+<li>Crea un cliente de <strong>Resend</strong> (servicio de emails transaccionales, alternativa moderna a SendGrid)</li>
+<li><code>sendEmail()</code> envía un email con HTML personalizado</li>
+<li>Se usa desde Better-Auth para los emails de verificación y reset de password</li>
+<li>Si falla, lanza error (pero mejoraría con un sistema de colas para reintentos)</li>
+</ul>
+<h3 id="123-r2ts--cloudflare-r2-s3-compatible"><a class="header" href="#123-r2ts--cloudflare-r2-s3-compatible">12.3 <code>r2.ts</code> — Cloudflare R2 (S3-Compatible)</a></h3>
+<pre><code class="language-typescript">import { S3Client } from "@aws-sdk/client-s3";
+import { env } from "@/config/env.js";
+
+const R2_ACCESS_KEY = env.R2_ACCESS_KEY;
+const R2_SECRET_KEY = env.R2_SECRET_KEY;
+const R2_S3_API = env.R2_S3_API;
+const R2_BUCKET = env.R2_BUCKET;
+
+if (!R2_ACCESS_KEY || !R2_SECRET_KEY || !R2_S3_API || !R2_BUCKET) {
+  throw new Error("Faltan variables de entorno R2");
+}
+
+export const r2 = new S3Client({
+  region: "auto",
+  endpoint: R2_S3_API,
+  credentials: {
+    accessKeyId: R2_ACCESS_KEY!,
+    secretAccessKey: R2_SECRET_KEY!,
+  },
+});
+</code></pre>
+<p><strong>¿Qué es Cloudflare R2?</strong></p>
+<p>R2 es el servicio de almacenamiento de objetos de Cloudflare, <strong>compatible con la API S3 de AWS</strong>. Esto significa que podemos usar el SDK de AWS S3 para interactuar con R2.</p>
+<p><strong>¿Por qué R2 y no S3?</strong></p>
+<ul>
+<li>Sin cargos de salida de datos (egress) — ideal para servir archivos PDF</li>
+<li>Precios más bajos que S3</li>
+<li>Integración con la red global de Cloudflare (CDN incluida)</li>
+</ul>
+<p><strong>Operaciones que se hacen con R2:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operación</th><th>SDK</th><th>Propósito</th></tr>
+</thead>
+<tbody>
+<tr><td><code>PutObjectCommand</code></td><td><code>@aws-sdk/client-s3</code></td><td>Subir PDF</td></tr>
+<tr><td><code>GetObjectCommand</code></td><td><code>@aws-sdk/client-s3</code></td><td>Obtener PDF (stream)</td></tr>
+<tr><td><code>DeleteObjectCommand</code></td><td><code>@aws-sdk/client-s3</code></td><td>Eliminar PDF</td></tr>
+<tr><td><code>getSignedUrl</code></td><td><code>@aws-sdk/s3-request-presigner</code></td><td>Generar URL de descarga temporaria</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="13-paso-10--capa-de-repositorios"><a class="header" href="#13-paso-10--capa-de-repositorios">13. Paso 10 — Capa de Repositorios</a></h2>
+<p>Los repositorios son la <strong>capa de acceso a datos</strong>. Cada repositorio tiene una interfaz (contrato) y una implementación que usa Prisma para interactuar con PostgreSQL.</p>
+<p><strong>Patrón:</strong> Interface → Implementation</p>
+<h3 id="131-bookrepositoryts"><a class="header" href="#131-bookrepositoryts">13.1 <code>book.repository.ts</code></a></h3>
+<pre><code class="language-typescript">import { dbPrisma } from "@/config/prisma.js";
+import { CreateBookInput, UpsertUserBookInput } from "@/types/book.js";
+import { audit_log, book, user_book } from "@prisma/client";
+
+interface IBookRepository {
+  getUserBooks: (userId: string) =&gt; Promise&lt;user_book[] | null&gt;;
+  findByHash: (fileHash: string) =&gt; Promise&lt;book | null&gt;;
+  createBook: (data: CreateBookInput) =&gt; Promise&lt;book&gt;;
+  upsertUserBook: (data: UpsertUserBookInput) =&gt; Promise&lt;user_book&gt;;
+  findUserBook: (userId: string, bookId: string) =&gt; Promise&lt;user_book | null&gt;;
+  countOtherUsers: (bookId: string, userId: string) =&gt; Promise&lt;number | null&gt;;
+  deleteUserBook: (id: string) =&gt; Promise&lt;user_book&gt;;
+  deleteBook: (id: string) =&gt; Promise&lt;book&gt;;
+  createAuditLog: (data: any) =&gt; Promise&lt;audit_log&gt;;
+  updateUserBook: (id: string, data: any) =&gt; Promise&lt;user_book&gt;;
+}
+
+export class BookRepository implements IBookRepository {
+  // Obtener todos los libros de un usuario (con datos del book)
+  getUserBooks = (userId: string) =&gt; {
+    return dbPrisma.user_book.findMany({
+      where: { userId },
+      orderBy: { lastReadAt: "desc" },
+      include: {
+        book: {
+          select: {
+            id: true, title: true, author: true,
+            fileUrl: true, fileKey: true, size: true, createdAt: true,
+          },
+        },
+      },
+    });
+  };
+
+  // Buscar libro por hash SHA-256 (deduplicación)
+  findByHash = (fileHash: string) =&gt; {
+    return dbPrisma.book.findUnique({ where: { fileHash } });
+  };
+
+  // Crear un nuevo libro
+  createBook = (data: CreateBookInput) =&gt; {
+    return dbPrisma.book.create({ data });
+  };
+
+  // Crear o actualizar relación usuario-libro (upsert)
+  // Si el usuario ya tiene ese libro, no hace nada (update: {})
+  upsertUserBook = ({ userId, bookId, readingTimeSeconds, scrollPosition }: UpsertUserBookInput) =&gt; {
+    return dbPrisma.user_book.upsert({
+      where: { userId_bookId: { userId, bookId } },
+      create: { userId, bookId, readingTimeSeconds, scrollPosition },
+      update: {},
+    });
+  };
+
+  // Buscar relación usuario-libro específica
+  findUserBook = (userId: string, bookId: string) =&gt; {
+    return dbPrisma.user_book.findFirst({
+      where: { userId, bookId },
+      include: { book: true },
+    });
+  };
+
+  // Contar cuántos otros usuarios tienen el mismo libro
+  countOtherUsers = (bookId: string, userId: string) =&gt; {
+    return dbPrisma.user_book.count({
+      where: { bookId, NOT: { userId } },
+    });
+  };
+
+  // Eliminar relación usuario-libro
+  deleteUserBook = (id: string) =&gt; {
+    return dbPrisma.user_book.delete({ where: { id } });
+  };
+
+  // Eliminar libro (solo si nadie más lo usa)
+  deleteBook = (id: string) =&gt; {
+    return dbPrisma.book.delete({ where: { id } });
+  };
+
+  // Registrar acción en auditoría
+  createAuditLog = (data: any) =&gt; {
+    return dbPrisma.audit_log.create({ data });
+  };
+
+  // Actualizar progreso de lectura
+  updateUserBook = (id: string, data: any) =&gt; {
+    return dbPrisma.user_book.update({ where: { id }, data });
+  };
+}
+</code></pre>
+<p><strong>Métodos clave explicados:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>¿Qué hace?</th></tr>
+</thead>
+<tbody>
+<tr><td><code>getUserBooks</code></td><td>Trae todos los <code>user_book</code> del usuario ordenados por última lectura, incluyendo datos del <code>book</code></td></tr>
+<tr><td><code>findByHash</code></td><td>Busca si ya existe un libro con el mismo hash SHA-256 (evita duplicados en storage)</td></tr>
+<tr><td><code>upsertUserBook</code></td><td>Crea la relación usuario-libro si no existe, si existe no modifica nada</td></tr>
+<tr><td><code>countOtherUsers</code></td><td>Cuenta cuántos otros usuarios usan el mismo libro (para saber si podemos eliminar el archivo de R2)</td></tr>
+<tr><td><code>createAuditLog</code></td><td>Guarda en <code>audit_log</code> qué se eliminó, quién, y cuándo</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="132-bookmarkrepositoryts"><a class="header" href="#132-bookmarkrepositoryts">13.2 <code>bookmark.repository.ts</code></a></h3>
+<pre><code class="language-typescript">interface IBookmarkRepository {
+  findUserBookAccess: (userId: string, bookId: string) =&gt; Promise&lt;user_book | null&gt;;
+  getBookmarksByUserBookId: (userBookId: string) =&gt; Promise&lt;bookmark[]&gt;;
+  createBookmark: (data: CreateBookmarkInput) =&gt; Promise&lt;bookmark&gt;;
+  findBookmark: (bookmarkId: string, userBookId: string) =&gt; Promise&lt;bookmark | null&gt;;
+  deleteBookmark: (bookmarkId: string) =&gt; Promise&lt;bookmark&gt;;
+}
+</code></pre>
+<p><strong>Métodos clave:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>¿Qué hace?</th></tr>
+</thead>
+<tbody>
+<tr><td><code>findUserBookAccess</code></td><td>Verifica que el usuario tenga acceso al libro (es su <code>user_book</code>)</td></tr>
+<tr><td><code>getBookmarksByUserBookId</code></td><td>Trae todos los bookmarks de un <code>user_book</code> ordenados por fecha descendente</td></tr>
+<tr><td><code>findBookmark</code></td><td>Busca un bookmark verificando que pertenezca al <code>user_book</code> específico</td></tr>
+<tr><td><code>deleteBookmark</code></td><td>Elimina un bookmark por ID</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="133-streakrepositoryts"><a class="header" href="#133-streakrepositoryts">13.3 <code>streak.repository.ts</code></a></h3>
+<pre><code class="language-typescript">interface IStreakRepository {
+  findByUserId: (userId: string) =&gt; Promise&lt;user_streak | null&gt;;
+  createStreak: (data: CreateStreakInput) =&gt; Promise&lt;user_streak&gt;;
+  updateStreak: (userId: string, data: UpdateStreakInput) =&gt; Promise&lt;user_streak&gt;;
+  upsertStreak: (args: {
+    where: { userId: string };
+    update: UpdateStreakInput;
+    create: CreateStreakInput;
+  }) =&gt; Promise&lt;user_streak&gt;;
+}
+</code></pre>
+<p><strong>Métodos clave:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>¿Qué hace?</th></tr>
+</thead>
+<tbody>
+<tr><td><code>findByUserId</code></td><td>Busca la racha por userId (relación 1:1 gracias a <code>@unique</code> en el schema)</td></tr>
+<tr><td><code>createStreak</code></td><td>Crea una nueva racha desde cero</td></tr>
+<tr><td><code>updateStreak</code></td><td>Actualiza racha existente (currentStreak, fechas)</td></tr>
+<tr><td><code>upsertStreak</code></td><td>Crea o actualiza en una sola operación (usado por <code>initializeStreak</code>)</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="14-paso-11--capa-de-servicios"><a class="header" href="#14-paso-11--capa-de-servicios">14. Paso 11 — Capa de Servicios</a></h2>
+<p>Los servicios contienen la <strong>lógica de negocio</strong>. Son la capa intermedia entre los controladores (HTTP) y los repositorios (datos). Acá se toman las decisiones: validar permisos, calcular streaks, generar URLs firmadas, etc.</p>
+<h3 id="141-bookservicets"><a class="header" href="#141-bookservicets">14.1 <code>book.service.ts</code></a></h3>
+<pre><code class="language-typescript">const bookRepository = new BookRepository();
+
+export class BookService {
+  // Obtener libros del usuario (mapea la respuesta)
+  static getUserBooks = async (userId: string) =&gt; {
+    const userBooks = await bookRepository.getUserBooks(userId);
+    return userBooks.map((ub) =&gt; ({
+      id: ub.book.id,
+      name: ub.book.title,
+      author: ub.book.author || "",
+      createdAt: ub.book.createdAt.getTime(),
+      lastReadAt: ub.lastReadAt?.getTime() || ub.book.createdAt.getTime(),
+      readingTimeSeconds: ub.readingTimeSeconds || 0,
+      scrollPosition: ub.scrollPosition || 0,
+      currentPage: ub.currentPage || 0,
+      fileUrl: ub.book.fileUrl,
+      fileKey: ub.book.fileKey,
+      isSynced: true,
+    }));
+  };
+
+  // Subir libro con deduplicación
+  static uploadBook = async ({ userId, file, body }: UploadBookInput) =&gt; {
+    const dto = {
+      title: body.title || file.originalname,
+      author: body.author || "??",
+      readingTimeSeconds: parseInt(body.readingTimeSeconds || "0"),
+      scrollPosition: parseInt(body.scrollPosition || "0"),
+    };
+
+    const fileHash = generateFileHash(file.buffer);
+    let book = await bookRepository.findByHash(fileHash);
+
+    let fileKey: string | null = null;
+
+    if (!book) {
+      // Solo subimos a R2 si el libro no existe
+      const normalizedName = normalizedFileName(file.originalname);
+      fileKey = `books/${userId}/${Date.now()}-${normalizedName}`;
+
+      await r2.send(new PutObjectCommand({
+        Bucket: env.R2_BUCKET,
+        Key: fileKey,
+        Body: file.buffer,
+        ContentType: "application/pdf",
+      }));
+
+      book = await bookRepository.createBook({
+        title: dto.title,
+        author: dto.author,
+        fileKey,
+        fileUrl: `${env.R2_PUBLIC_DOMAIN}/${fileKey}`,
+        fileHash,
+        size: file.size,
+      });
+    }
+
+    const userBook = await bookRepository.upsertUserBook({
+      userId,
+      bookId: book.id,
+      readingTimeSeconds: dto.readingTimeSeconds,
+      scrollPosition: dto.scrollPosition,
+    });
+
+    return { bookId: book.id, userBookId: userBook.id };
+  };
+
+  // Eliminar libro con auditoría
+  static deleteBook = async ({ userId, bookId }: DeleteBookInput) =&gt; {
+    const userBook = await bookRepository.findUserBook(userId, bookId);
+    if (!userBook) {
+      throw new AppError("NOT_FOUND", 404, "Libro no encontrado para este usuario");
+    }
+
+    const otherUsers = await bookRepository.countOtherUsers(bookId, userId);
+
+    // Solo eliminar de R2 si nadie más usa el libro
+    if (otherUsers === 0) {
+      await r2.send(new DeleteObjectCommand({
+        Bucket: env.R2_BUCKET,
+        Key: userBook.book.fileKey,
+      }));
+    }
+
+    await bookRepository.createAuditLog({ ... });
+
+    await bookRepository.deleteUserBook(userBook.id);
+
+    if (otherUsers === 0) {
+      await bookRepository.deleteBook(bookId);
+    }
+
+    return { success: true, message: "Libro eliminado correctamente", auditId: bookId };
+  };
+
+  // Descargar libro (genera URL firmada)
+  static downloadBookWithUrl = async ({ userId, bookId }: DownloadBookInput) =&gt; {
+    const userBook = await bookRepository.findUserBook(userId, bookId);
+    if (!userBook) {
+      throw new AppError("FORBIDDEN", 403, "No es tu libro");
+    }
+
+    const command = new GetObjectCommand({
+      Bucket: env.R2_BUCKET,
+      Key: userBook.book.fileKey,
+    });
+
+    // URL firmada válida por 15 minutos
+    const url = await getSignedUrl(r2, command, { expiresIn: 60 * 15 });
+
+    return { url };
+  };
+
+  // Stream del PDF (proxy para evitar CORS)
+  static streamBookPdf = async ({ userId, bookId }: StreamBookInput) =&gt; {
+    const userBook = await bookRepository.findUserBook(userId, bookId);
+    if (!userBook) {
+      throw new AppError("FORBIDDEN", 403, "No es tu libro");
+    }
+
+    const command = new GetObjectCommand({
+      Bucket: env.R2_BUCKET,
+      Key: userBook.book.fileKey,
+    });
+
+    const pdfData = await r2.send(command);
+    if (!pdfData.Body) {
+      throw new AppError("INTERNAL_ERROR", 500, "Error al obtener el archivo");
+    }
+
+    return {
+      body: pdfData.Body as NodeJS.ReadableStream,
+      headers: {
+        contentType: "application/pdf",
+        contentDisposition: `inline; filename="${userBook.book.title}.pdf"`,
+        contentLength: pdfData.ContentLength,
+      },
+    };
+  };
+}
+</code></pre>
+<p><strong>Flujo de <code>uploadBook</code> (el más complejo):</strong></p>
+<pre><code>1. Cliente envía PDF + title + author
+2. Se genera hash SHA-256 del buffer
+3. Se busca si ya existe un book con ese hash
+   │
+   ├── Sí existe → se reusa el book (no se sube a R2 otra vez)
+   │
+   └── No existe →
+       4. Se normaliza el nombre del archivo
+       5. Se sube a R2 con PutObjectCommand
+       6. Se crea el book en BD
+7. Se crea/actualiza user_book (upsert)
+8. Se devuelve { bookId, userBookId }
+</code></pre>
+<p><strong>Flujo de <code>deleteBook</code>:</strong></p>
+<pre><code>1. Verificar que el usuario tenga el libro
+2. Contar otros usuarios que usan el mismo libro
+   │
+   ├── Si hay otros → solo se elimina user_book (no se toca R2)
+   │
+   └── Si es el único →
+       3. Se elimina archivo de R2
+       4. Se elimina book de BD
+5. Se guarda auditoría
+6. Se elimina user_book
+</code></pre>
+<h3 id="142-bookmarkservicets"><a class="header" href="#142-bookmarkservicets">14.2 <code>bookmark.service.ts</code></a></h3>
+<pre><code class="language-typescript">const bookmarkRepository = new BookmarkRepository();
+
+export class BookmarkService {
+  // Obtener bookmarks de un libro (solo si el usuario tiene acceso)
+  static getBookmarks = async (userId: string, bookId: string) =&gt; {
+    const userBook = await bookmarkRepository.findUserBookAccess(userId, bookId);
+    if (!userBook) {
+      throw new AppError("FORBIDDEN", 403, "No autorizado o libro no encontrado");
+    }
+    return bookmarkRepository.getBookmarksByUserBookId(userBook.id);
+  };
+
+  // Crear bookmark
+  static createBookmark = async (userId: string, bookId: string, data) =&gt; {
+    const userBook = await bookmarkRepository.findUserBookAccess(userId, bookId);
+    if (!userBook) {
+      throw new AppError("FORBIDDEN", 403, "No autorizado o libro no encontrado");
+    }
+    return bookmarkRepository.createBookmark({ userId, userBookId: userBook.id, ...data });
+  };
+
+  // Eliminar bookmark (verificando propiedad)
+  static deleteBookmark = async (userId: string, bookId: string, bookmarkId: string) =&gt; {
+    const userBook = await bookmarkRepository.findUserBookAccess(userId, bookId);
+    if (!userBook) {
+      throw new AppError("FORBIDDEN", 403, "No autorizado o libro no encontrado");
+    }
+    const bookmark = await bookmarkRepository.findBookmark(bookmarkId, userBook.id);
+    if (!bookmark) {
+      throw new AppError("NOT_FOUND", 404, "Bookmark no encontrado");
+    }
+    await bookmarkRepository.deleteBookmark(bookmarkId);
+    return { success: true };
+  };
+}
+</code></pre>
+<p><strong>Patrón de seguridad:</strong> Todos los métodos verifican que el usuario tenga acceso al libro ANTES de hacer cualquier operación. Esto se hace buscando el <code>user_book</code> que relaciona al usuario con el libro. Si no existe, el usuario no tiene permiso.</p>
+<h3 id="143-streakservicets"><a class="header" href="#143-streakservicets">14.3 <code>streak.service.ts</code></a></h3>
+<pre><code class="language-typescript">const streakRepository = new StreakRepository();
+
+export class StreakService {
+  // Obtener racha del usuario (crea una si no existe)
+  static getUserStreak = async (userId: string) =&gt; {
+    let streak = await streakRepository.findByUserId(userId);
+
+    if (!streak) {
+      // Crear racha con valores por defecto
+      streak = await streakRepository.createStreak({
+        userId, currentStreak: 0,
+        startDate: null, lastActiveDate: null,
+        createdAt: new Date(),
+      });
+    }
+
+    // Calcular si completó el día de hoy
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const lastActive = streak.lastActiveDate
+      ? new Date(streak.lastActiveDate)
+      : null;
+
+    let hasCompletedToday = false;
+    if (lastActive) {
+      lastActive.setHours(0, 0, 0, 0);
+      hasCompletedToday = lastActive.getTime() === today.getTime();
+    }
+
+    return {
+      currentStreak: streak.currentStreak,
+      startDate: toDateString(streak.startDate),
+      lastActiveDate: toDateString(streak.lastActiveDate),
+      hasCompletedToday,
+    };
+  };
+
+  // Completar el día actual
+  static completeDay = async (userId: string, clientDate?: string, clientTimestamp?: string) =&gt; {
+    let today: Date;
+    if (clientDate) {
+      today = new Date(clientDate + "T12:00:00.000Z");
+    } else {
+      today = new Date();
+      today.setHours(0, 0, 0, 0);
+    }
+
+    let streak = await streakRepository.findByUserId(userId);
+
+    if (!streak) {
+      // Crear nueva racha (primer día)
+      streak = await streakRepository.createStreak({ ... });
+      return { currentStreak: 1, hasCompletedToday: true, isNew: true };
+    }
+
+    // Verificar si ya completó hoy
+    if (streak.lastActiveDate &amp;&amp; esMismoDia(streak.lastActiveDate, today)) {
+      return { currentStreak: streak.currentStreak, hasCompletedToday: true, isNew: false };
+    }
+
+    // Calcular si es streak continuo o se reinicia
+    let newStreak = 1;
+    if (streak.lastActiveDate &amp;&amp; esDiaAnterior(streak.lastActiveDate, today)) {
+      newStreak = streak.currentStreak + 1;  // Streak continuo
+    }
+    // Si no es día anterior, se reinicia a 1
+
+    streak = await streakRepository.updateStreak(userId, {
+      currentStreak: newStreak,
+      lastActiveDate: today,
+      startDate: newStreak === 1 ? today : streak.startDate,
+    });
+
+    return { currentStreak: newStreak, hasCompletedToday: true, isNew: newStreak === 1 };
+  };
+}
+</code></pre>
+<p><strong>Lógica del streak (racha de lectura):</strong></p>
+<pre><code>Estado: currentStreak = 5, lastActiveDate = 2026-06-04
+
+Hoy es 2026-06-05:
+  → Es día consecutivo → currentStreak = 6 ✅
+
+Hoy es 2026-06-06 (saltó un día):
+  → No es consecutivo → currentStreak = 1 (se reinicia) 🔄
+
+Hoy es 2026-06-04 (ya completó hoy):
+  → No cambia nada → currentStreak = 5 (sin cambios)
+</code></pre>
+<p><strong>¿Por qué <code>clientDate</code>?</strong> El frontend puede enviar su propia fecha para evitar problemas con zonas horarias. Si un usuario está en UTC-3 y completa el día a las 11 PM, la fecha del servidor en UTC podría ser diferente.</p>
+<hr>
+<h2 id="15-paso-12--capa-de-controladores"><a class="header" href="#15-paso-12--capa-de-controladores">15. Paso 12 — Capa de Controladores</a></h2>
+<p>Los controladores <strong>reciben requests HTTP y devuelven responses</strong>. Su trabajo es:</p>
+<ol>
+<li>Extraer datos del request (headers, params, body, query)</li>
+<li>Verificar autenticación (vía Better-Auth)</li>
+<li>Llamar al service correspondiente</li>
+<li>Manejar errores y devolver la respuesta HTTP adecuada</li>
+</ol>
+<h3 id="151-bookcontrollerts"><a class="header" href="#151-bookcontrollerts">15.1 <code>book.controller.ts</code></a></h3>
+<pre><code class="language-typescript">import { Request, Response } from "express";
+import { auth } from "@/lib/auth.js";
+import { BookService } from "@/services/book.service.js";
+import { AppError } from "@/helper/errors.js";
+
+// GET /api/books
+export const getUserBooks = async (req: Request, res: Response) =&gt; {
+  try {
+    const session = await auth.api.getSession({ headers: req.headers });
+    if (!session) return res.status(401).json({ error: "No autorizado" });
+
+    const books = await BookService.getUserBooks(session.user.id);
+    res.json(books);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error al obtener libros" });
+  }
+};
+
+// POST /api/books/upload (multipart)
+export const uploadBook = async (req: UploadBookRequest, res: Response) =&gt; {
+  try {
+    const session = await auth.api.getSession({ headers: req.headers });
+    if (!session) return res.status(401).json({ error: "Unauthorized" });
+    if (!req.file) return res.status(400).json({ error: "File not found" });
+
+    const result = await BookService.uploadBook({
+      userId: session.user.id,
+      file: req.file,
+      body: req.body,
+    });
+    res.json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error interno al procesar el libro" });
+  }
+};
+
+// DELETE /api/books/:id
+export const deleteBook = async (req: DeleteBookRequest, res: Response) =&gt; {
+  try {
+    const session = await auth.api.getSession({ headers: req.headers });
+    if (!session) return res.status(401).json({ error: "No autorizado" });
+
+    const result = await BookService.deleteBook({
+      userId: session.user.id,
+      bookId: req.params.id,
+    });
+    res.json(result);
+  } catch (err) {
+    if (err instanceof AppError) {
+      return res.status(err.statusCode).json({ error: err.message });
+    }
+    return res.status(500).json({ error: "Error interno al eliminar el libro" });
+  }
+};
+
+// PATCH /api/books/:id/progress
+export const updateBookProgress = async (req: UpdateBookRequest, res: Response) =&gt; {
+  try {
+    const session = await auth.api.getSession({ headers: req.headers });
+    if (!session) return res.status(401).json({ error: "No autorizado" });
+
+    const result = await BookService.updateBookProgress({
+      userId: session.user.id,
+      bookId: req.params.id,
+      body: req.body,
+    });
+    return res.json(result);
+  } catch (err) {
+    if (err instanceof AppError) {
+      return res.status(err.statusCode).json({ error: err.message });
+    }
+    return res.status(500).json({ error: "Error al actualizar el progreso" });
+  }
+};
+
+// GET /api/books/:id/download
+export const downloadBookWithUrl = async (req: DownloadRequest, res: Response) =&gt; {
+  try {
+    const session = await auth.api.getSession({ headers: req.headers });
+    if (!session) return res.status(401).json({ error: "No autorizado" });
+
+    const result = await BookService.downloadBookWithUrl({
+      userId: session.user.id,
+      bookId: req.params.id,
+    });
+    return res.json(result);
+  } catch (err) {
+    if (err instanceof AppError) {
+      return res.status(err.statusCode).json({ error: err.message });
+    }
+    return res.status(500).json({ error: "Error interno al descargar el libro" });
+  }
+};
+
+// GET /api/books/:id/stream (proxy PDF → evita CORS)
+export const streamBookPdf = async (req: StreamRequest, res: Response) =&gt; {
+  try {
+    const session = await auth.api.getSession({ headers: req.headers });
+    if (!session) return res.status(401).json({ error: "No autorizado" });
+
+    const stream = await BookService.streamBookPdf({
+      userId: session.user.id,
+      bookId: req.params.id,
+    });
+
+    res.setHeader("Content-Type", stream.headers.contentType);
+    res.setHeader("Content-Disposition", stream.headers.contentDisposition);
+    if (stream.headers.contentLength) {
+      res.setHeader("Content-Length", stream.headers.contentLength.toString());
+    }
+
+    // Stream directo del PDF desde R2 al cliente
+    await streamPipeline(stream.body, res);
+  } catch (err) {
+    if (err instanceof AppError) {
+      return res.status(err.statusCode).json({ error: err.message });
+    }
+    return res.status(500).json({ error: "Error al procesar el PDF" });
+  }
+};
+</code></pre>
+<p><strong>Patrón común en todos los controladores:</strong></p>
+<pre><code class="language-typescript">try {
+  // 1. Verificar autenticación
+  const session = await auth.api.getSession({ headers: req.headers });
+  if (!session) return res.status(401).json({ error: "No autorizado" });
+
+  // 2. Ejecutar lógica de negocio
+  const result = await BookService.algo(session.user.id, ...);
+
+  // 3. Devolver respuesta
+  res.json(result);
+} catch (err) {
+  // 4. Manejar errores
+  if (err instanceof AppError) {
+    return res.status(err.statusCode).json({ error: err.message });
+  }
+  return res.status(500).json({ error: "Error interno" });
+}
+</code></pre>
+<h3 id="152-bookmarkcontrollerts"><a class="header" href="#152-bookmarkcontrollerts">15.2 <code>bookmark.controller.ts</code></a></h3>
+<pre><code class="language-typescript">// GET /api/books/:bookId/bookmarks
+export const getBookmarks = async (req, res) =&gt; {
+  const session = await auth.api.getSession({ headers: req.headers });
+  if (!session) return res.status(401).json({ error: "No autorizado" });
+
+  const bookmarks = await BookmarkService.getBookmarks(
+    session.user.id, req.params.bookId
+  );
+  res.json(bookmarks);
+};
+
+// POST /api/books/:bookId/bookmarks
+export const createBookmark = async (req, res) =&gt; {
+  const session = await auth.api.getSession({ headers: req.headers });
+  if (!session) return res.status(401).json({ error: "No autorizado" });
+
+  const { name, pageNumber, textPreview } = req.body;
+  if (!name || typeof pageNumber !== "number") {
+    return res.status(400).json({ error: "Faltan campos requeridos" });
+  }
+
+  const bookmark = await BookmarkService.createBookmark(
+    session.user.id, req.params.bookId, { name, pageNumber, textPreview }
+  );
+  res.status(201).json(bookmark);
+};
+
+// DELETE /api/books/:bookId/bookmarks/:bookmarkId
+export const deleteBookmark = async (req, res) =&gt; {
+  const session = await auth.api.getSession({ headers: req.headers });
+  if (!session) return res.status(401).json({ error: "No autorizado" });
+
+  const result = await BookmarkService.deleteBookmark(
+    session.user.id, req.params.bookId, req.params.bookmarkId
+  );
+  res.json(result);
+};
+</code></pre>
+<h3 id="153-streakcontrollerts"><a class="header" href="#153-streakcontrollerts">15.3 <code>streak.controller.ts</code></a></h3>
+<pre><code class="language-typescript">// GET /api/streak
+export const getUserStreak = async (req, res) =&gt; {
+  const session = await auth.api.getSession({ headers: req.headers });
+  if (!session) return res.status(401).json({ error: "No autorizado" });
+
+  const result = await StreakService.getUserStreak(session.user.id);
+  res.json(result);
+};
+
+// POST /api/streak/complete
+export const completeDay = async (req, res) =&gt; {
+  const session = await auth.api.getSession({ headers: req.headers });
+  if (!session) return res.status(401).json({ error: "No autorizado" });
+
+  const { clientTimestamp, clientDate } = req.body;
+  const result = await StreakService.completeDay(
+    session.user.id, clientDate, clientTimestamp
+  );
+  res.json(result);
+};
+
+// POST /api/streak/initialize
+export const initializeStreak = async (req, res) =&gt; {
+  const session = await auth.api.getSession({ headers: req.headers });
+  if (!session) return res.status(401).json({ error: "No autorizado" });
+
+  const { startDate } = req.body;
+  if (!startDate) {
+    return res.status(400).json({ error: "Se requiere la fecha de inicio" });
+  }
+
+  const result = await StreakService.initializeStreak(session.user.id, startDate);
+  res.json(result);
+};
+</code></pre>
+<hr>
+<h2 id="16-paso-13--rutas"><a class="header" href="#16-paso-13--rutas">16. Paso 13 — Rutas</a></h2>
+<p>Las rutas definen <strong>cómo se conectan las URLs con los controladores</strong>. Express usa <code>Router()</code> para agrupar rutas relacionadas.</p>
+<h3 id="bookroutests"><a class="header" href="#bookroutests"><code>book.routes.ts</code></a></h3>
+<pre><code class="language-typescript">import multer from "multer";
+import { Router } from "express";
+import {
+  uploadBook, deleteBook, getUserBooks,
+  streamBookPdf, updateBookProgress, downloadBookWithUrl
+} from "@/controllers/book.controller.js";
+
+export const book: Router = Router();
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 25 * 1024 * 1024 }, // 25MB
+});
+
+book.get("/", getUserBooks);
+book.post("/upload", upload.single("pdf"), uploadBook);
+book.get("/:id/download", downloadBookWithUrl);
+book.get("/:id/stream", streamBookPdf);
+book.patch("/:id/progress", updateBookProgress);
+book.delete("/:id", deleteBook);
+</code></pre>
+<p><strong>Notas sobre Multer:</strong></p>
+<ul>
+<li><strong><code>multer.memoryStorage()</code></strong> — Guarda el archivo en memoria (buffer) en vez de disco. Esto es importante porque después subimos el buffer a R2.</li>
+<li><strong><code>upload.single("pdf")</code></strong> — Espera un campo llamado <code>"pdf"</code> en el formulario (NO <code>"file"</code> como suele ser común).</li>
+<li><strong>Límite de 25MB</strong> — Suficiente para la mayoría de los PDFs.</li>
+</ul>
+<h3 id="bookmarkroutests"><a class="header" href="#bookmarkroutests"><code>bookmark.routes.ts</code></a></h3>
+<pre><code class="language-typescript">export const bookmark: Router = Router({ mergeParams: true });
+
+bookmark.get("/:bookId/bookmarks", getBookmarks);
+bookmark.post("/:bookId/bookmarks", createBookmark);
+bookmark.delete("/:bookId/bookmarks/:bookmarkId", deleteBookmark);
+</code></pre>
+<p><strong>¿Qué hace <code>mergeParams: true</code>?</strong></p>
+<p>Sin <code>mergeParams</code>, cuando montás un router hijo con <code>app.use("/api/books", bookmarkRoutes)</code>, los parámetros del padre (<code>bookId</code>) no son accesibles en el router hijo. Con <code>mergeParams: true</code>, Express hereda los parámetros de ruta del padre.</p>
+<p>Como bookmarks está montado bajo <code>/api/books</code>, el <code>bookId</code> viene de la URL padre.</p>
+<h3 id="streakroutests"><a class="header" href="#streakroutests"><code>streak.routes.ts</code></a></h3>
+<pre><code class="language-typescript">export const streak: Router = Router();
+
+streak.get("/streak", getUserStreak);
+streak.post("/streak/complete", completeDay);
+streak.post("/streak/initialize", initializeStreak);
+</code></pre>
+<h3 id="mapeo-de-rutas-en-serverts"><a class="header" href="#mapeo-de-rutas-en-serverts">Mapeo de rutas en <code>server.ts</code></a></h3>
+<pre><code class="language-typescript">app.use("/api/books", bookRoutes);      // GET, POST, PATCH, DELETE /api/books/...
+app.use("/api/books", bookmarkRoutes);  // GET, POST, DELETE /api/books/:bookId/bookmarks
+app.use("/api", streakRoutes);          // GET /api/streak, POST /api/streak/complete
+</code></pre>
+<p><strong>Importante:</strong> Las rutas de bookmarks se montan en <code>/api/books</code> (NO en <code>/api/books/:bookId/bookmarks</code>). El <code>bookId</code> es parte de la ruta definida en el router: <code>/:bookId/bookmarks</code>.</p>
+<hr>
+<h2 id="17-paso-14--servidor-serverts"><a class="header" href="#17-paso-14--servidor-serverts">17. Paso 14 — Servidor (server.ts)</a></h2>
+<pre><code class="language-typescript">import "dotenv/config";
+import express, { type Express } from "express";
+import cors from "cors";
+import { env } from "@/config/env.js";
+import { auth } from "@/lib/auth.js";
+import { toNodeHandler } from "better-auth/node";
+import { book as bookRoutes } from "./routes/book.routes.js";
+import { streak as streakRoutes } from "./routes/streak.routes.js";
+import { bookmark as bookmarkRoutes } from "./routes/bookmark.routes.js";
+
+const app: Express = express();
+
+// ── Middlewares globales ──
+
+// CORS: solo permite el frontend configurado
+app.use(cors({
+  origin: env.FRONTEND_URL,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+  credentials: true,
+}));
+
+// Better-Auth: maneja TODO el sistema de autenticación
+// Genera rutas como /api/auth/signup, /api/auth/login, etc.
+app.all("/api/auth/*splat", toNodeHandler(auth));
+
+// Body parsers con límite de 25MB (para uploads de PDF)
+app.use(express.json({ limit: '25mb' }));
+app.use(express.urlencoded({ extended: true, limit: '25mb' }));
+
+// ── Health check ──
+app.get("/api/health", (_req, res) =&gt; {
+  res.status(200).json({
+    success: true,
+    message: "API working correctly",
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// ── Rutas de la aplicación ──
+app.use("/api/books", bookRoutes);
+app.use("/api/books", bookmarkRoutes);
+app.use("/api", streakRoutes);
+
+// ── Inicio del servidor ──
+app.listen(env.PORT, () =&gt;
+  console.log(`Server initialize in http://localhost:${env.PORT}`),
+);
+
+export default app;
+</code></pre>
+<p><strong>Orden de los middlewares (importante):</strong></p>
+<pre><code>1. CORS               → Permite requests del frontend
+2. Better-Auth        → Maneja autenticación (antes de parsear body)
+3. express.json       → Parsea JSON bodies (25MB)
+4. express.urlencoded → Parsea form-data (25MB)
+5. Health check       → Endpoint público
+6. Rutas de negocio   → Books, Bookmarks, Streaks
+</code></pre>
+<p><strong>¿Por qué Better-Auth va antes de los body parsers?</strong> Better-Auth tiene su propio manejo de requests y no necesita los body parsers de Express. Si los pusieramos antes, podrían interferir.</p>
+<p><strong>¿Qué es <code>*splat</code>?</strong> Es una sintaxis de Express v5 para capturar <strong>todas</strong> las rutas bajo <code>/api/auth/</code>. Es como un comodín que captura <code>/api/auth/signup</code>, <code>/api/auth/login</code>, <code>/api/auth/session</code>, etc.</p>
+<hr>
+<h2 id="18-paso-15--pruebas-con-jest"><a class="header" href="#18-paso-15--pruebas-con-jest">18. Paso 15 — Pruebas con Jest</a></h2>
+<p>El proyecto usa <strong>Jest</strong> con <strong>ts-jest</strong> para testing, con soporte para ESM (ES Modules).</p>
+<h3 id="configuración-jestconfigts"><a class="header" href="#configuración-jestconfigts">Configuración (<code>jest.config.ts</code>)</a></h3>
+<pre><code class="language-typescript">const config: Config = {
+  preset: "ts-jest/presets/default-esm",
+  testEnvironment: "node",
+
+  transform: {
+    "^.+\\.ts$": [
+      "ts-jest",
+      {
+        useESM: true,
+        tsconfig: {
+          module: "NodeNext",
+          moduleResolution: "NodeNext",
+        },
+        diagnostics: { ignoreCodes: [151002] },
+      },
+    ],
+  },
+
+  moduleNameMapper: {
+    "^(\\.{1,2}/.*)\\.js$": "$1",    // Saca .js de los imports
+    "^@/(.*)\\.js$": "&lt;rootDir&gt;/src/$1",
+    "^@/(.*)$": "&lt;rootDir&gt;/src/$1",   // Resuelve @/ alias
+  },
+
+  testMatch: ["**/__tests__/**/*.test.ts"],
+};
+</code></pre>
+<h3 id="tests-existentes"><a class="header" href="#tests-existentes">Tests existentes</a></h3>
+<pre><code class="language-bash">src/__tests__/
+├── example.test.ts       # Test de ejemplo
+├── book.test.ts          # Tests de libros
+├── bookmark.test.ts      # Tests de bookmarks
+└── streak.test.ts        # Tests de streaks
+</code></pre>
+<p><strong>Ejecutar tests:</strong></p>
+<pre><code class="language-bash">pnpm test                # Una vez
+pnpm test:watch          # En modo watch (desarrollo)
+</code></pre>
+<p><strong>Nota sobre ESM:</strong> Jest necesita <code>NODE_OPTIONS=--experimental-vm-modules</code> para soportar ESM. El package.json ya lo configura en los scripts.</p>
+<hr>
+<h2 id="19-paso-16--docker-y-despliegue"><a class="header" href="#19-paso-16--docker-y-despliegue">19. Paso 16 — Docker y Despliegue</a></h2>
+<h3 id="dockerfile-multi-stage-build"><a class="header" href="#dockerfile-multi-stage-build">Dockerfile (multi-stage build)</a></h3>
+<pre><code class="language-dockerfile"># Stage 1: Builder
+FROM node:20-alpine AS builder
+RUN npm install -g pnpm
+WORKDIR /app
+
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
+
+COPY prisma ./prisma
+RUN npx prisma generate
+
+COPY tsconfig.json ./
+COPY src ./src
+RUN pnpm build
+
+# Stage 2: Runtime
+FROM node:20-alpine
+RUN apk add --no-cache postgresql-client
+RUN npm install -g pnpm
+WORKDIR /app
+
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/prisma ./prisma
+COPY better-auth_migrations ./better-auth_migrations
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+EXPOSE 3000
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["node", "dist/server.js"]
+</code></pre>
+<p><strong>Multi-stage build:</strong></p>
+<ul>
+<li><strong>Stage 1 (builder):</strong> Instala dependencias, genera Prisma client, compila TypeScript</li>
+<li><strong>Stage 2 (runtime):</strong> Solo copia lo necesario (<code>dist/</code>, <code>node_modules/</code>, <code>prisma/</code>) — imagen más chica y segura</li>
+</ul>
+<h3 id="docker-entrypointsh"><a class="header" href="#docker-entrypointsh">docker-entrypoint.sh</a></h3>
+<p>El entrypoint ejecuta migraciones de Prisma y de Better-Auth antes de iniciar el servidor.</p>
+<hr>
+<h2 id="20-resumen-de-endpoints"><a class="header" href="#20-resumen-de-endpoints">20. Resumen de Endpoints</a></h2>
+<h3 id="autenticación-better-auth"><a class="header" href="#autenticación-better-auth">Autenticación (Better-Auth)</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>URL</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><code>POST</code></td><td><code>/api/auth/signup</code></td><td>Registrarse</td></tr>
+<tr><td><code>POST</code></td><td><code>/api/auth/login</code></td><td>Iniciar sesión</td></tr>
+<tr><td><code>POST</code></td><td><code>/api/auth/logout</code></td><td>Cerrar sesión</td></tr>
+<tr><td><code>GET</code></td><td><code>/api/auth/session</code></td><td>Obtener sesión actual</td></tr>
+<tr><td><code>POST</code></td><td><code>/api/auth/verify-email</code></td><td>Verificar email</td></tr>
+<tr><td><code>POST</code></td><td><code>/api/auth/forgot-password</code></td><td>Solicitar reset de contraseña</td></tr>
+<tr><td><code>POST</code></td><td><code>/api/auth/reset-password</code></td><td>Resetear contraseña</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="health-1"><a class="header" href="#health-1">Health</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>URL</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><code>GET</code></td><td><code>/api/health</code></td><td>Health check de la API</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="books"><a class="header" href="#books">Books</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>URL</th><th>Descripción</th><th>Autenticación</th></tr>
+</thead>
+<tbody>
+<tr><td><code>GET</code></td><td><code>/api/books</code></td><td>Listar libros del usuario</td><td>✅</td></tr>
+<tr><td><code>POST</code></td><td><code>/api/books/upload</code></td><td>Subir un libro (multipart)</td><td>✅</td></tr>
+<tr><td><code>GET</code></td><td><code>/api/books/:id/download</code></td><td>Obtener URL de descarga</td><td>✅</td></tr>
+<tr><td><code>GET</code></td><td><code>/api/books/:id/stream</code></td><td>Stream del PDF (proxy)</td><td>✅</td></tr>
+<tr><td><code>PATCH</code></td><td><code>/api/books/:id/progress</code></td><td>Actualizar progreso de lectura</td><td>✅</td></tr>
+<tr><td><code>DELETE</code></td><td><code>/api/books/:id</code></td><td>Eliminar un libro</td><td>✅</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="bookmarks"><a class="header" href="#bookmarks">Bookmarks</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>URL</th><th>Descripción</th><th>Autenticación</th></tr>
+</thead>
+<tbody>
+<tr><td><code>GET</code></td><td><code>/api/books/:bookId/bookmarks</code></td><td>Listar bookmarks de un libro</td><td>✅</td></tr>
+<tr><td><code>POST</code></td><td><code>/api/books/:bookId/bookmarks</code></td><td>Crear un bookmark</td><td>✅</td></tr>
+<tr><td><code>DELETE</code></td><td><code>/api/books/:bookId/bookmarks/:bookmarkId</code></td><td>Eliminar un bookmark</td><td>✅</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="streaks"><a class="header" href="#streaks">Streaks</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>URL</th><th>Descripción</th><th>Autenticación</th></tr>
+</thead>
+<tbody>
+<tr><td><code>GET</code></td><td><code>/api/streak</code></td><td>Obtener racha del usuario</td><td>✅</td></tr>
+<tr><td><code>POST</code></td><td><code>/api/streak/complete</code></td><td>Completar el día actual</td><td>✅</td></tr>
+<tr><td><code>POST</code></td><td><code>/api/streak/initialize</code></td><td>Inicializar racha manualmente</td><td>✅</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="depuración-solo-desarrollo"><a class="header" href="#depuración-solo-desarrollo">Depuración (solo desarrollo)</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>URL</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><code>POST</code></td><td><code>/api/verify-email-debug</code></td><td>Verificar email manualmente (debug)</td></tr>
+<tr><td><code>GET</code></td><td><code>/api/user-debug</code></td><td>Ver estado de un usuario (debug)</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="21-referencia-rápida-de-comandos"><a class="header" href="#21-referencia-rápida-de-comandos">21. Referencia Rápida de Comandos</a></h2>
+<pre><code class="language-bash"># ── Desarrollo ──
+pnpm run dev                       # Iniciar servidor en modo desarrollo (hot-reload)
+
+# ── Base de datos ──
+npx prisma generate            # Generar cliente Prisma
+npx prisma migrate dev         # Crear y ejecutar migraciones
+npx prisma migrate dev --name  # Crear migración con nombre
+npx prisma studio              # Abrir Prisma Studio (UI de BD)
+
+# ── Build ──
+pnpm build                     # Generar Prisma client + compilar TS
+
+# ── Tests ──
+pnpm test                      # Ejecutar tests
+pnpm test:watch                # Tests en modo watch
+
+# ── Docker ──
+docker build -t bookteka-api . # Build de la imagen
+docker run -p 3000:3000 bookteka-api  # Correr el contenedor
+
+# ── Mejores prácticas de desarrollo ──
+
+# 1. Siempre corré las migraciones después de cambiar el schema
+npx prisma migrate dev
+
+# 2. Si cambiás el schema, regenerá el cliente
+pnpm prisma:generate
+
+# 3. Para testear endpoints, usá los archivos .http
+#    (requiere extensión REST Client en VS Code)
+#    → http/books.http
+#    → http/bookmarks.http
+#    → http/streaks.http
+
+# 4. SIEMPRE verificá la sesión del usuario en los controladores
+const session = await auth.api.getSession({ headers: req.headers });
+if (!session) return res.status(401).json({ error: "No autorizado" });
+
+# 5. Usá AppError en los services para errores controlados
+throw new AppError("NOT_FOUND", 404, "Mensaje descriptivo");
+
+# 6. En los controllers, atrapá AppError para status codes específicos
+if (err instanceof AppError) {
+  return res.status(err.statusCode).json({ error: err.message });
+}
+</code></pre>
+<hr><div style="break-before: page; page-break-before: always;"></div>
 <h1 id="nextjs-init--manual-técnico-completo"><a class="header" href="#nextjs-init--manual-técnico-completo">Next.js Init — Manual Técnico Completo</a></h1>
 <blockquote>
 <p><strong>Stack:</strong> Next.js 16+ · React 19+ · TypeScript 5+ · Tailwind CSS 4+ · Zustand 5+ · pnpm<br><strong>Patrón:</strong> Feature-First Architecture · Container-Presentational · CSS Modules + Tailwind</p>
 </blockquote>
 <p>Manual de referencia para iniciar proyectos frontend con Next.js, basado en la arquitectura y convenciones establecidas en el proyecto.</p>
 <hr>
-<h2 id="índice-2"><a class="header" href="#índice-2">Índice</a></h2>
+<h2 id="índice-6"><a class="header" href="#índice-6">Índice</a></h2>
 <ol>
 <li><a href="#1-stack-principal">Stack Principal</a></li>
 <li><a href="#2-creación-del-proyecto">Creación del Proyecto</a></li>
@@ -13077,7 +15151,7 @@ export const getInitials = (name: string) =&gt; {
 <h1 id="manual-de-postgresql-en-debian--instalación-y-configuración-completa"><a class="header" href="#manual-de-postgresql-en-debian--instalación-y-configuración-completa">Manual de PostgreSQL en Debian — Instalación y Configuración Completa</a></h1>
 <p>PostgreSQL es un sistema de gestión de bases de datos relacional de código abierto, conocido por su robustez, extensibilidad y cumplimiento estricto del estándar SQL. Este manual cubre la instalación completa usando el repositorio oficial de PostgreSQL, la configuración del usuario <code>dev-espada</code> y la forma de acceder directamente con <code>psql</code> sin parámetros adicionales.</p>
 <hr>
-<h2 id="índice-3"><a class="header" href="#índice-3">Índice</a></h2>
+<h2 id="índice-7"><a class="header" href="#índice-7">Índice</a></h2>
 <ol>
 <li><a href="#1-requisitos-previos-1">Requisitos Previos</a></li>
 <li><a href="#2-desinstalación-completa-hacer-primero-si-ya-tienes-postgres">Desinstalación Completa</a></li>
@@ -13369,6 +15443,31 @@ sudo journalctl -u postgresql --no-pager -n 50
 <hr>
 <p><em>Para temas avanzados como replicación, particionado de tablas, extensiones o ajuste de rendimiento en producción, consultar la <a href="https://www.postgresql.org/docs/">documentación oficial de PostgreSQL</a>.</em></p>
 <div style="break-before: page; page-break-before: always;"></div>
+<h1 id="manual-de-sqlx-con-rust-migraciones-y-uso-básico"><a class="header" href="#manual-de-sqlx-con-rust-migraciones-y-uso-básico">Manual de SQLx con Rust (Migraciones y uso básico)</a></h1>
+<h2 id="índice-8"><a class="header" href="#índice-8">Índice</a></h2>
+<ol>
+<li><a href="#instalar-sqlx-cli">Instalar SQLx CLI</a></li>
+<li><a href="#si-sigue-sin-funcionar">Si sigue sin funcionar</a></li>
+<li><a href="#qué-es-sqlx">¿Qué es SQLx?</a></li>
+<li><a href="#instalación">Instalación</a></li>
+<li><a href="#crear-proyecto-rust">Crear proyecto Rust</a></li>
+<li><a href="#dependencias-en-cargotoml">Dependencias en Cargo.toml</a></li>
+<li><a href="#variables-de-entorno">Variables de entorno</a></li>
+<li><a href="#crear-migraciones">Crear migraciones</a></li>
+<li><a href="#escribir-migración">Escribir migración</a></li>
+<li><a href="#ejecutar-migraciones">Ejecutar migraciones</a></li>
+<li><a href="#revertir-migración">Revertir migración</a></li>
+<li><a href="#conexión-a-la-base-de-datos">Conexión a la base de datos</a></li>
+<li><a href="#usar-migraciones-desde-rust">Usar migraciones desde Rust</a></li>
+<li><a href="#insertar-datos">Insertar datos</a></li>
+<li><a href="#obtener-datos">Obtener datos</a></li>
+<li><a href="#usar-structs">Usar structs</a></li>
+<li><a href="#verificación-de-queries-en-compilación">Verificación de queries en compilación</a></li>
+<li><a href="#comandos-importantes-de-sqlx-cli">Comandos importantes de SQLx CLI</a></li>
+<li><a href="#estructura-típica-del-proyecto">Estructura típica del proyecto</a></li>
+<li><a href="#buenas-prácticas">Buenas prácticas</a></li>
+</ol>
+<hr>
 <h1 id="1-instalar-sqlx-cli"><a class="header" href="#1-instalar-sqlx-cli">1. Instalar SQLx CLI</a></h1>
 <pre><code class="language-bash">cargo install sqlx-cli --no-default-features --features postgres
 </code></pre>
@@ -13397,7 +15496,6 @@ sudo journalctl -u postgresql --no-pager -n 50
 <pre><code class="language-bash">source ~/.zshrc
 </code></pre>
 <hr>
-<h1 id="manual-de-sqlx-con-rust-migraciones-y-uso-básico"><a class="header" href="#manual-de-sqlx-con-rust-migraciones-y-uso-básico">Manual de SQLx con Rust (Migraciones y uso básico)</a></h1>
 <h2 id="1-qué-es-sqlx"><a class="header" href="#1-qué-es-sqlx">1. ¿Qué es SQLx?</a></h2>
 <p>SQLx es un <strong>cliente SQL asíncrono para Rust</strong> que permite interactuar con bases de datos <strong>sin ORM</strong>, usando <strong>consultas SQL reales</strong> con verificación en tiempo de compilación.</p>
 <p>Bases soportadas:</p>
@@ -13647,6 +15745,31 @@ struct User {
 <h1 id="redis"><a href="#redis" class="header">Redis</a></h1>
 <h2 id="manual-completo-de-redis-instalación--uso-avanzado"><a class="header" href="#manual-completo-de-redis-instalación--uso-avanzado">Manual Completo de Redis (Instalación → Uso Avanzado)</a></h2>
 <p>Redis es una base de datos en memoria orientada a estructuras de datos. Se utiliza principalmente para caché, colas, sesiones y sistemas de alta velocidad.</p>
+<hr>
+<h2 id="índice-9"><a class="header" href="#índice-9">Índice</a></h2>
+<ol>
+<li><a href="#qué-es-redis">¿Qué es Redis?</a></li>
+<li><a href="#instalación">Instalación</a></li>
+<li><a href="#uso-básico-con-redis-cli">Uso básico con redis-cli</a></li>
+<li><a href="#tipos-de-datos">Tipos de datos</a></li>
+<li><a href="#comandos-esenciales">Comandos esenciales</a></li>
+<li><a href="#monitoreo">Monitoreo</a></li>
+<li><a href="#patrón-cache-aside">Patrón Cache-Aside</a></li>
+<li><a href="#ejemplo-de-clave">Ejemplo de clave</a></li>
+<li><a href="#invalidación-de-caché">Invalidación de caché</a></li>
+<li><a href="#integración-con-rust">Integración con Rust</a></li>
+<li><a href="#persistencia">Persistencia</a></li>
+<li><a href="#configuración-importante">Configuración importante</a></li>
+<li><a href="#performance">Performance</a></li>
+<li><a href="#errores-comunes">Errores comunes</a></li>
+<li><a href="#comandos-avanzados">Comandos avanzados</a></li>
+<li><a href="#ejemplo-completo">Ejemplo completo</a></li>
+<li><a href="#arquitectura-típica">Arquitectura típica</a></li>
+<li><a href="#cuándo-usar-redis">Cuándo usar Redis</a></li>
+<li><a href="#conceptos-fundamentales">Conceptos Fundamentales</a></li>
+<li><a href="#comandos-esenciales-cli">Comandos Esenciales (CLI)</a></li>
+<li><a href="#resumen">Resumen</a></li>
+</ol>
 <hr>
 <h1 id="1-qué-es-redis"><a class="header" href="#1-qué-es-redis">1. ¿Qué es Redis?</a></h1>
 <p>Redis (Remote Dictionary Server) es:</p>
@@ -13996,6 +16119,22 @@ DEL projects:user:1:page:1
 </ul>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="guía-completa-de-prisma-6"><a class="header" href="#guía-completa-de-prisma-6">Guía completa de Prisma 6</a></h1>
+<h2 id="índice-10"><a class="header" href="#índice-10">Índice</a></h2>
+<ol>
+<li><a href="#qué-es-prisma">¿Qué es Prisma?</a></li>
+<li><a href="#instalación-inicial-desde-0">Instalación inicial (desde 0)</a></li>
+<li><a href="#flujo-de-trabajo-típico">Flujo de trabajo típico</a></li>
+<li><a href="#comandos-esenciales-de-prisma">Comandos esenciales de Prisma</a></li>
+<li><a href="#el-error-común-cannot-read-properties-of-undefined">El error común: “Cannot read properties of undefined”</a></li>
+<li><a href="#crud-básico-con-prisma">CRUD básico con Prisma</a></li>
+<li><a href="#relaciones-entre-modelos">Relaciones entre modelos</a></li>
+<li><a href="#casos-especiales">Casos especiales</a></li>
+<li><a href="#troubleshooting-común">Troubleshooting común</a></li>
+<li><a href="#buenas-prácticas">Buenas prácticas</a></li>
+<li><a href="#estructura-de-archivos">Estructura de archivos</a></li>
+<li><a href="#resumen-del-flujo-de-desarrollo">Resumen del flujo de desarrollo</a></li>
+</ol>
+<hr>
 <h2 id="qué-es-prisma"><a class="header" href="#qué-es-prisma">¿Qué es Prisma?</a></h2>
 <p>Prisma es un <strong>ORM (Object-Relational Mapper)</strong> que te permite trabajar con bases de datos de forma тип safe y con una sintaxis más limpia que SQL puro. En lugar de escribir consultas SQL, trabajas con objetos JavaScript/TypeScript.</p>
 <hr>
@@ -14256,7 +16395,7 @@ pnpm prisma migrate dev --name sync_current_state
 <p>¡Con esto ya sabés lo básico de Prisma para trabajar! 🚀</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="guía-completa-de-entity-framework-core"><a class="header" href="#guía-completa-de-entity-framework-core">Guía completa de Entity Framework Core</a></h1>
-<h2 id="índice-4"><a class="header" href="#índice-4">Índice</a></h2>
+<h2 id="índice-11"><a class="header" href="#índice-11">Índice</a></h2>
 <ul>
 <li><a href="#qué-es-ef-core">¿Qué es EF Core?</a></li>
 <li><a href="#arquitectura-del-proyecto-cursinet">Arquitectura del proyecto (Cursinet)</a></li>
@@ -14836,7 +16975,7 @@ dotnet ef database drop --force -s src/Api/Api.csproj -p src/Infrastructure/Infr
 <h1 id="aspnet-core-init---manual-técnico-completo"><a class="header" href="#aspnet-core-init---manual-técnico-completo">ASP.NET Core Init - Manual Técnico Completo</a></h1>
 <p>Manual completo para instalar y desarrollar con <strong>.NET 10</strong> en <strong>Debian 13 (Trixie)</strong>, incluyendo instalación, creación de API con Clean Architecture, Entity Framework Core, autenticación JWT, y comandos de administración.</p>
 <hr>
-<h2 id="índice-5"><a class="header" href="#índice-5">Índice</a></h2>
+<h2 id="índice-12"><a class="header" href="#índice-12">Índice</a></h2>
 <ol>
 <li><a href="#1-instalación-de-net-10-en-debian-13">Instalación de .NET 10 en Debian 13</a></li>
 <li><a href="#2-verificar-instalación">Verificar Instalación</a></li>
@@ -17506,6 +19645,18 @@ echo "  dotnet run"
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="primeros-pasos---react-native"><a class="header" href="#primeros-pasos---react-native">Primeros pasos - React Native</a></h1>
 <p>Este manual te guiará paso a paso para entender y desarrollar una aplicación de React Native desde 0. Usamos <strong>Expo</strong> con <strong>expo-router</strong>, que es la forma más moderna y recomendada de crear apps con React Native.</p>
+<h2 id="índice-13"><a class="header" href="#índice-13">Índice</a></h2>
+<ol>
+<li><a href="#1-requisitos-previos-2">Requisitos Previos</a></li>
+<li><a href="#2-instalación-del-proyecto">Instalación del Proyecto</a></li>
+<li><a href="#3-ejecutar-la-aplicación">Ejecutar la Aplicación</a></li>
+<li><a href="#4-estructura-del-proyecto-1">Estructura del Proyecto</a></li>
+<li><a href="#5-explicación-de-los-archivos-clave">Explicación de los Archivos Clave</a></li>
+<li><a href="#6-cómo-agregar-nuevas-funcionalidades">Cómo Agregar Nuevas Funcionalidades</a></li>
+<li><a href="#7-conceptos-fundamentales-que-debes-dominar">Conceptos Fundamentales que Debes Dominar</a></li>
+<li><a href="#8-buenas-prácticas">Buenas Prácticas</a></li>
+<li><a href="#9-comandos-útiles">Comandos Útiles</a></li>
+</ol>
 <hr>
 <h2 id="1-requisitos-previos-2"><a class="header" href="#1-requisitos-previos-2">1. Requisitos Previos</a></h2>
 <p>Antes de comenzar, necesitas tener instalado en tu computadora:</p>
@@ -17960,6 +20111,27 @@ npx expo build:ios
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="guía-completa-instalación-y-configuración-de-matrix-synapse-con-docker"><a class="header" href="#guía-completa-instalación-y-configuración-de-matrix-synapse-con-docker">Guía Completa: Instalación y Configuración de Matrix Synapse con Docker</a></h1>
+<h2 id="índice-14"><a class="header" href="#índice-14">Índice</a></h2>
+<ol>
+<li><a href="#requisitos-previos">Requisitos previos</a></li>
+<li><a href="#instalación-de-docker-y-docker-compose">Instalación de Docker y Docker Compose</a></li>
+<li><a href="#crear-el-proyecto">Crear el proyecto</a></li>
+<li><a href="#generar-configuración-inicial-de-synapse">Generar configuración inicial de Synapse</a></li>
+<li><a href="#configurar-docker-compose">Configurar Docker Compose</a></li>
+<li><a href="#levantar-los-servicios">Levantar los servicios</a></li>
+<li><a href="#permisos-de-archivos">Permisos de archivos</a></li>
+<li><a href="#gestión-de-usuarios">Gestión de usuarios</a></li>
+<li><a href="#api-de-matrix">API de Matrix</a></li>
+<li><a href="#media-archivos">Media (archivos)</a></li>
+<li><a href="#estructura-de-almacenamiento">Estructura de almacenamiento</a></li>
+<li><a href="#relación-entre-base-de-datos-y-archivos">Relación entre base de datos y archivos</a></li>
+<li><a href="#reconfigurar-base-de-datos">Reconfigurar base de datos</a></li>
+<li><a href="#problemas-comunes">Problemas comunes</a></li>
+<li><a href="#generar-access-token">Generar access token</a></li>
+<li><a href="#consultar-información-de-usuario-admin">Consultar información de usuario (admin)</a></li>
+<li><a href="#listar-archivos-en-una-room">Listar archivos en una room</a></li>
+</ol>
+<hr>
 <h2 id="1-requisitos-previos-3"><a class="header" href="#1-requisitos-previos-3">1. Requisitos previos</a></h2>
 <ul>
 <li>Sistema basado en Linux (Ubuntu recomendado)</li>
@@ -18297,6 +20469,17 @@ http://example.com:8008/_synapse/admin/v1/whois/@user:example.com
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="manual-de-matrix---implementación-custom"><a class="header" href="#manual-de-matrix---implementación-custom">MANUAL DE MATRIX - Implementación Custom</a></h1>
 <p>Este documento explica cómo funciona la integración con Matrix en esta app, sin usar el SDK oficial (matrix-js-sdk). Se usa la <strong>REST API</strong> directamente.</p>
+<hr>
+<h2 id="índice-15"><a class="header" href="#índice-15">Índice</a></h2>
+<ol>
+<li><a href="#arquitectura-general">ARQUITECTURA GENERAL</a></li>
+<li><a href="#tipos-de-datos-types">TIPOS DE DATOS (Types)</a></li>
+<li><a href="#servicios-api-rest">SERVICIOS (API REST)</a></li>
+<li><a href="#hooks-personalizados">HOOKS PERSONALIZADOS</a></li>
+<li><a href="#flujo-completo-de-un-chat">FLUJO COMPLETO DE UN CHAT</a></li>
+<li><a href="#endpoints-de-matrix-api-usados">ENDPOINTS DE MATRIX API USADOS</a></li>
+<li><a href="#consideraciones-importantes">CONSIDERACIONES IMPORTANTES</a></li>
+</ol>
 <hr>
 <h2 id="1-arquitectura-general"><a class="header" href="#1-arquitectura-general">1. ARQUITECTURA GENERAL</a></h2>
 <p>La app se conecta a un servidor <strong>Matrix Synapse</strong> usando la REST API v3. No hay conexión directa WebSocket - el tiempo real se maneja mediante <strong>long polling</strong> al endpoint <code>/sync</code>.</p>
@@ -19870,7 +22053,7 @@ Pero lo ignora porque sender === currentUserId
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="16-introducción-a-las-redes"><a class="header" href="#16-introducción-a-las-redes">16. Introducción a las Redes</a></h1>
 <hr>
-<h2 id="índice-6"><a class="header" href="#índice-6">ÍNDICE</a></h2>
+<h2 id="índice-16"><a class="header" href="#índice-16">Índice</a></h2>
 <ul>
 <li><a href="#qué-es-una-red">¿Qué es una Red?</a></li>
 <li><a href="#ventajas-de-las-redes">Ventajas de las Redes</a></li>
@@ -20202,7 +22385,7 @@ Pero lo ignora porque sender === currentUserId
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="18-modelos-de-red"><a class="header" href="#18-modelos-de-red">18. Modelos de Red</a></h1>
 <hr>
-<h2 id="índice-7"><a class="header" href="#índice-7">ÍNDICE</a></h2>
+<h2 id="índice-17"><a class="header" href="#índice-17">Índice</a></h2>
 <ul>
 <li><a href="#qué-es-un-modelo-de-red">¿Qué es un Modelo de Red?</a></li>
 <li><a href="#importancia-de-los-modelos-de-red">Importancia de los Modelos de Red</a></li>
@@ -20560,7 +22743,7 @@ Señales eléctricas / ondas de radio
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="redes---direcciones-ip-y-subredes"><a class="header" href="#redes---direcciones-ip-y-subredes">Redes - Direcciones IP y Subredes</a></h1>
 <hr>
-<h2 id="índice-8"><a class="header" href="#índice-8">ÍNDICE</a></h2>
+<h2 id="índice-18"><a class="header" href="#índice-18">Índice</a></h2>
 <ul>
 <li><a href="#qué-es-una-dirección-ip">¿Qué es una Dirección IP?</a>
 <ul>
@@ -20870,7 +23053,7 @@ Señales eléctricas / ondas de radio
 <h2 id="introducción"><a class="header" href="#introducción">Introducción</a></h2>
 <p>Este manual te guiará paso a paso para analizar direcciones IPv4 y determinar la <strong>parte de red</strong>, la <strong>parte de host</strong>, la <strong>máscara de subred</strong>, la <strong>dirección de red</strong>, la <strong>dirección de broadcast</strong> y el <strong>rango de hosts utilizables</strong>. Este es un ejercicio fundamental para entender cómo funcionan las subredes y cómo los routers enrutan paquetes entre diferentes redes.</p>
 <hr>
-<h2 id="índice-9"><a class="header" href="#índice-9">ÍNDICE</a></h2>
+<h2 id="índice-19"><a class="header" href="#índice-19">Índice</a></h2>
 <ul>
 <li><a href="#1-conceptos-fundamentales">Conceptos Fundamentales</a></li>
 <li><a href="#2-metodología-paso-a-paso">Metodología Paso a Paso</a></li>
@@ -21689,7 +23872,7 @@ Broadcast: 192.168.10.255 (bits de host = 11111110 → 255)
 </blockquote>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="nat"><a href="#nat" class="header">NAT</a></h1>
-<h2 id="índice-10"><a class="header" href="#índice-10">ÍNDICE</a></h2>
+<h2 id="índice-20"><a class="header" href="#índice-20">Índice</a></h2>
 <ul>
 <li><a href="#qué-es-nat-y-cómo-actúa-en-nuestra-red">Qué es NAT y cómo actúa en nuestra red</a>
 <ul>
@@ -21810,7 +23993,7 @@ Broadcast: 192.168.10.255 (bits de host = 11111110 → 255)
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="22-direcciones-mac-y-switches"><a class="header" href="#22-direcciones-mac-y-switches">22. Direcciones MAC y Switches</a></h1>
 <hr>
-<h2 id="índice-11"><a class="header" href="#índice-11">ÍNDICE</a></h2>
+<h2 id="índice-21"><a class="header" href="#índice-21">Índice</a></h2>
 <ul>
 <li><a href="#introducción-a-la-capa-de-enlace-de-datos">Introducción a la Capa de Enlace de Datos</a></li>
 <li><a href="#qué-es-una-dirección-mac">¿Qué es una Dirección MAC?</a></li>
@@ -22722,7 +24905,7 @@ show ip arp
 <h1 id="cisco-packet-tracer--manual-de-comandos"><a class="header" href="#cisco-packet-tracer--manual-de-comandos">CISCO PACKET TRACER — Manual de Comandos</a></h1>
 <p><strong>Router · Switch · DHCP · IP Routes · VLANs</strong></p>
 <hr>
-<h2 id="índice-12"><a class="header" href="#índice-12">ÍNDICE</a></h2>
+<h2 id="índice-22"><a class="header" href="#índice-22">Índice</a></h2>
 <ol>
 <li><a href="#1-configuración-del-router">Configuración del Router</a></li>
 <li><a href="#2-configuración-del-switch">Configuración del Switch</a></li>
@@ -23102,7 +25285,7 @@ S1#  show interfaces Fa0/1 switchport       ! Detalle de un puerto
 <h1 id="manual-de-docker-en-debian--instalación-desinstalación-y-reinstalación-completa"><a class="header" href="#manual-de-docker-en-debian--instalación-desinstalación-y-reinstalación-completa">Manual de Docker en Debian — Instalación, Desinstalación y Reinstalación Completa</a></h1>
 <p>Docker es una plataforma de contenedores que permite empaquetar, distribuir y ejecutar aplicaciones en entornos aislados. Este manual cubre la instalación completa usando el repositorio oficial, la desinstalación limpia sin residuos, y el procedimiento de reinstalación desde cero.</p>
 <hr>
-<h2 id="índice-13"><a class="header" href="#índice-13">Índice</a></h2>
+<h2 id="índice-23"><a class="header" href="#índice-23">Índice</a></h2>
 <ol>
 <li><a href="#1-requisitos-previos-4">Requisitos Previos</a></li>
 <li><a href="#2-desinstalación-completa-hacer-primero-si-ya-tienes-docker">Desinstalación Completa</a></li>

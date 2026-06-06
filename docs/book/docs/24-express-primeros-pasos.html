@@ -1,0 +1,2296 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Backend Express Primeros Pasos - Manuales</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-fa53bf11.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-cb677c00.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Manuales</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="express-primeros-pasos--manual-completo-del-backend-bookteka"><a class="header" href="#express-primeros-pasos--manual-completo-del-backend-bookteka">Express Primeros Pasos — Manual Completo del Backend Bookteka</a></h1>
+<blockquote>
+<p><strong>Stack:</strong> Node.js + TypeScript + Express v5 + Prisma + PostgreSQL + Cloudflare R2 + Better-Auth<br><strong>Patrón:</strong> MVC con capa de servicios y repositorios</p>
+</blockquote>
+<hr>
+<h2 id="índice"><a class="header" href="#índice">ÍNDICE</a></h2>
+<ol>
+<li><a href="#1-introducción-y-stack-tecnológico">Introducción y Stack Tecnológico</a></li>
+<li><a href="#2-estructura-del-proyecto">Estructura del Proyecto</a></li>
+<li><a href="#3-prerequisitos">Prerequisitos</a></li>
+<li><a href="#4-paso-1-packagejson">Paso 1 — package.json</a></li>
+<li><a href="#5-paso-2-tsconfigjson">Paso 2 — tsconfig.json</a></li>
+<li><a href="#6-paso-3-variables-de-entorno-env">Paso 3 — Variables de Entorno (.env)</a></li>
+<li><a href="#7-paso-4-configuración-del-proyecto">Paso 4 — Configuración del Proyecto</a>
+<ul>
+<li>7.1 <a href="#71-envts--validación-de-entorno">env.ts — Validación de entorno</a></li>
+<li>7.2 <a href="#72-dbts--pool-de-postgresql-nativo">db.ts — Pool de PostgreSQL nativo</a></li>
+<li>7.3 <a href="#73-prismats--cliente-prisma-singleton">prisma.ts — Cliente Prisma singleton</a></li>
+</ul>
+</li>
+<li><a href="#8-paso-5-modelo-de-datos-prisma-schema">Paso 5 — Modelo de Datos (Prisma Schema)</a></li>
+<li><a href="#9-paso-6-tipos-del-sistema-types">Paso 6 — Tipos del Sistema (Types)</a></li>
+<li><a href="#10-paso-7-dtos-data-transfer-objects">Paso 7 — DTOs (Data Transfer Objects)</a></li>
+<li><a href="#11-paso-8-helpers-y-utilidades">Paso 8 — Helpers y Utilidades</a>
+<ul>
+<li>11.1 <a href="#111-errorsts--error-personalizado">errors.ts — Error personalizado</a></li>
+<li>11.2 <a href="#112-formatts--normalización-de-archivos">format.ts — Normalización de archivos</a></li>
+<li>11.3 <a href="#113-timets--formateo-de-fechas">time.ts — Formateo de fechas</a></li>
+</ul>
+</li>
+<li><a href="#12-paso-9-librerías-y-servicios-externos">Paso 9 — Librerías y Servicios Externos</a>
+<ul>
+<li>12.1 <a href="#121-authts--better-auth">auth.ts — Better-Auth</a></li>
+<li>12.2 <a href="#122-emailts--resend">email.ts — Resend</a></li>
+<li>12.3 <a href="#123-r2ts--cloudflare-r2-s3-compatible">r2.ts — Cloudflare R2 (S3-Compatible)</a></li>
+</ul>
+</li>
+<li><a href="#13-paso-10-capa-de-repositorios">Paso 10 — Capa de Repositorios</a>
+<ul>
+<li>13.1 <a href="#131-bookrepositoryts">book.repository.ts</a></li>
+<li>13.2 <a href="#132-bookmarkrepositoryts">bookmark.repository.ts</a></li>
+<li>13.3 <a href="#133-streakrepositoryts">streak.repository.ts</a></li>
+</ul>
+</li>
+<li><a href="#14-paso-11-capa-de-servicios">Paso 11 — Capa de Servicios</a>
+<ul>
+<li>11.1 <a href="#141-bookservicets">book.service.ts</a></li>
+<li>11.2 <a href="#142-bookmarkservicets">bookmark.service.ts</a></li>
+<li>11.3 <a href="#143-streakservicets">streak.service.ts</a></li>
+</ul>
+</li>
+<li><a href="#15-paso-12-capa-de-controladores">Paso 12 — Capa de Controladores</a>
+<ul>
+<li>12.1 <a href="#151-bookcontrollerts">book.controller.ts</a></li>
+<li>12.2 <a href="#152-bookmarkcontrollerts">bookmark.controller.ts</a></li>
+<li>12.3 <a href="#153-streakcontrollerts">streak.controller.ts</a></li>
+</ul>
+</li>
+<li><a href="#16-paso-13-rutas">Paso 13 — Rutas</a></li>
+<li><a href="#17-paso-14-servidor-serverts">Paso 14 — Servidor (server.ts)</a></li>
+<li><a href="#18-paso-15-pruebas-con-jest">Paso 15 — Pruebas con Jest</a></li>
+<li><a href="#19-paso-16-docker-y-despliegue">Paso 16 — Docker y Despliegue</a></li>
+<li><a href="#20-resumen-de-endpoints">Resumen de Endpoints</a></li>
+<li><a href="#21-referencia-rápida-de-comandos">Referencia Rápida de Comandos</a></li>
+</ol>
+<hr>
+<h2 id="1-introducción-y-stack-tecnológico"><a class="header" href="#1-introducción-y-stack-tecnológico">1. Introducción y Stack Tecnológico</a></h2>
+<p>Este backend es el motor de <strong>Bookteka</strong>, una aplicación de lectura de libros digitales. Está construido con una arquitectura <strong>MVC (Model-View-Controller)</strong> con capas adicionales de <strong>servicios</strong> y <strong>repositorios</strong> para mantener una separación de responsabilidades clara.</p>
+<pre><code>src/
+├── config/           # Configuraciones: env, db, prisma
+├── controllers/      # Controladores (capa HTTP)
+├── dto/              # Data Transfer Objects
+├── helper/           # Utilidades
+├── lib/              # Servicios externos: auth, email, r2
+├── repositories/     # Acceso a datos
+├── routes/           # Definición de rutas Express
+├── services/         # Lógica de negocio
+├── types/            # Tipos TypeScript
+├── __tests__/        # Tests
+└── server.ts         # Punto de entrada
+</code></pre>
+<p><strong>Stack tecnológico:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Tecnología</th><th>Versión</th><th>Propósito</th></tr>
+</thead>
+<tbody>
+<tr><td>Node.js</td><td>20+</td><td>Runtime</td></tr>
+<tr><td>Express</td><td>^5.2.1</td><td>Framework HTTP</td></tr>
+<tr><td>TypeScript</td><td>^5.9.3</td><td>Tipado estático</td></tr>
+<tr><td>Prisma</td><td>^6.19.2</td><td>ORM para PostgreSQL</td></tr>
+<tr><td>PostgreSQL</td><td>15+</td><td>Base de datos relacional</td></tr>
+<tr><td>Cloudflare R2</td><td>—</td><td>Storage de archivos (S3-compatible)</td></tr>
+<tr><td>Better-Auth</td><td>^1.5.0</td><td>Autenticación completa</td></tr>
+<tr><td>Resend</td><td>^6.9.4</td><td>Envío de emails</td></tr>
+<tr><td>Multer</td><td>^2.1.0</td><td>Upload de archivos</td></tr>
+<tr><td>Jest</td><td>^30.3.0</td><td>Testing</td></tr>
+<tr><td>Supertest</td><td>^7.2.2</td><td>Testing HTTP</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Principios aplicados:</strong></p>
+<ul>
+<li>Separación de responsabilidades (Controller → Service → Repository)</li>
+<li>Repositorios con interfaces (contratos)</li>
+<li>DTOs para Tipado de entrada/salida</li>
+<li>Autenticación delegada a Better-Auth</li>
+<li>Storage externo (R2) para archivos PDF</li>
+<li>Auditoría de eliminaciones</li>
+</ul>
+<hr>
+<h2 id="2-estructura-del-proyecto"><a class="header" href="#2-estructura-del-proyecto">2. Estructura del Proyecto</a></h2>
+<pre><code class="language-bash">backend/
+├── .env                    # Variables de entorno (NO se commitea)
+├── .env.example            # Plantilla de variables de entorno
+├── .gitignore
+├── package.json            # Dependencias y scripts
+├── tsconfig.json           # Configuración de TypeScript
+├── jest.config.ts          # Configuración de Jest
+├── Dockerfile              # Build multi-stage para producción
+├── docker-entrypoint.sh    # Script de entrada del contenedor
+├── pnpm-lock.yaml          # Lockfile de pnpm
+│
+├── prisma/
+│   └── schema.prisma       # Schema de la base de datos
+│
+├── better-auth_migrations/ # Migraciones de Better-Auth
+│
+├── mock/
+│   └── book.pdf            # PDF de prueba para uploads
+│
+├── http/                   # Endpoints organizados (REST Client)
+│   ├── books.http
+│   ├── bookmarks.http
+│   ├── streaks.http
+│   └── auth-debug.http
+│
+├── api.http                # Índice de endpoints
+│
+└── src/
+    ├── server.ts            # Punto de entrada de la app
+    │
+    ├── config/
+    │   ├── env.ts           # Variables de entorno validadas
+    │   ├── db.ts            # Pool de PostgreSQL nativo (para Better-Auth)
+    │   └── prisma.ts        # Cliente Prisma singleton
+    │
+    ├── lib/
+    │   ├── auth.ts          # Configuración de Better-Auth
+    │   ├── email.ts         # Servicio de emails (Resend)
+    │   └── r2.ts            # Cliente S3 para Cloudflare R2
+    │
+    ├── helper/
+    │   ├── errors.ts        # Clase AppError personalizada
+    │   ├── format.ts        # Normalización de nombres de archivo
+    │   └── time.ts          # Formateo de fechas
+    │
+    ├── types/
+    │   ├── book.d.ts        # Tipos de Book, UserBook, Bookmark
+    │   ├── bookmark.d.ts    # Tipos de bookmark
+    │   ├── streak.d.ts      # Tipos de racha de lectura
+    │   └── audit.d.ts       # Tipos de auditoría
+    │
+    ├── dto/
+    │   ├── book/
+    │   │   ├── params.ts    # Parámetros de ruta (id, etc.)
+    │   │   ├── request.ts   # Body de requests (upload)
+    │   │   └── response.ts  # Estructuras de respuesta
+    │   └── bookmark/
+    │       ├── params.ts
+    │       ├── request.ts
+    │       └── response.ts
+    │
+    ├── repositories/
+    │   ├── book.repository.ts
+    │   ├── bookmark.repository.ts
+    │   └── streak.repository.ts
+    │
+    ├── services/
+    │   ├── book.service.ts
+    │   ├── bookmark.service.ts
+    │   └── streak.service.ts
+    │
+    ├── controllers/
+    │   ├── book.controller.ts
+    │   ├── bookmark.controller.ts
+    │   └── streak.controller.ts
+    │
+    ├── routes/
+    │   ├── book.routes.ts
+    │   ├── bookmark.routes.ts
+    │   └── streak.routes.ts
+    │
+    └── __tests__/
+        ├── example.test.ts
+        ├── book.test.ts
+        ├── bookmark.test.ts
+        └── streak.test.ts
+</code></pre>
+<hr>
+<h2 id="3-prerequisitos"><a class="header" href="#3-prerequisitos">3. Prerequisitos</a></h2>
+<p>Antes de empezar necesitás tener instalado:</p>
+<ul>
+<li><strong>Node.js</strong> v20+ (recomendado v22+)</li>
+<li><strong>pnpm</strong> v10+ (el proyecto usa pnpm como package manager)</li>
+<li><strong>Docker</strong> y <strong>Docker Compose</strong> (para PostgreSQL en desarrollo)</li>
+<li><strong>TypeScript</strong> (se instala como devDependency)</li>
+</ul>
+<hr>
+<h2 id="4-paso-1--packagejson"><a class="header" href="#4-paso-1--packagejson">4. Paso 1 — package.json</a></h2>
+<pre><code class="language-json">{
+  "name": "backend",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "prisma generate &amp;&amp; tsc &amp;&amp; tsc-alias",
+    "start": "node dist/server.js",
+    "prisma:generate": "prisma generate",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch"
+  },
+  "packageManager": "pnpm@10.15.0",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1000.0",
+    "@aws-sdk/s3-request-presigner": "^3.1000.0",
+    "@prisma/client": "^6.19.2",
+    "better-auth": "1.5.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "multer": "^2.1.0",
+    "pg": "^8.18.0",
+    "resend": "^6.9.4"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/multer": "^2.0.0",
+    "@types/node": "^25.9.1",
+    "@types/pg": "^8.16.0",
+    "@jest/globals": "^30.3.0",
+    "@types/jest": "^30.0.0",
+    "@types/supertest": "^7.2.0",
+    "jest": "^30.3.0",
+    "supertest": "^7.2.2",
+    "ts-jest": "^29.4.9",
+    "prisma": "^6.19.2",
+    "tsc-alias": "^1.8.16",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}
+</code></pre>
+<p><strong>¿Qué significa cada script?</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Script</th><th>Comando</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><code>dev</code></td><td><code>tsx watch src/server.ts</code></td><td>Inicia el servidor en modo desarrollo con recarga automática</td></tr>
+<tr><td><code>build</code></td><td><code>prisma generate &amp;&amp; tsc &amp;&amp; tsc-alias</code></td><td>Genera Prisma client, compila TS y resuelve alias <code>@/</code></td></tr>
+<tr><td><code>start</code></td><td><code>node dist/server.js</code></td><td>Inicia el servidor desde el build de producción</td></tr>
+<tr><td><code>test</code></td><td><code>jest</code></td><td>Ejecuta tests con soporte ESM</td></tr>
+<tr><td><code>test:watch</code></td><td><code>jest --watch</code></td><td>Tests en modo watch</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>¿Por qué estas dependencias?</strong></p>
+<ul>
+<li><strong>express</strong> — Framework HTTP (v5 con soporte nativo de async/await en errores)</li>
+<li><strong>cors</strong> — Middleware para Cross-Origin Resource Sharing</li>
+<li><strong>multer</strong> — Middleware para manejo de multipart/form-data (uploads de PDFs)</li>
+<li><strong>@aws-sdk/client-s3</strong> — Cliente S3 oficial de AWS para interactuar con Cloudflare R2</li>
+<li><strong>@aws-sdk/s3-request-presigner</strong> — Generar URLs firmadas para descargas seguras</li>
+<li><strong>better-auth</strong> — Autenticación completa con email+password, verificación, reset</li>
+<li><strong>pg</strong> — Driver nativo de PostgreSQL (Better-Auth lo necesita para el pool)</li>
+<li><strong>resend</strong> — Servicio de envío de emails transaccionales</li>
+<li><strong>dotenv</strong> — Cargar variables de entorno desde <code>.env</code></li>
+<li><strong>tsx</strong> — Ejecutar TypeScript directamente sin compilar (para desarrollo)</li>
+<li><strong>tsc-alias</strong> — Resolver el alias <code>@/</code> en el build compilado</li>
+</ul>
+<p><strong>Instalación:</strong></p>
+<pre><code class="language-bash">pnpm install
+</code></pre>
+<hr>
+<h2 id="5-paso-2--tsconfigjson"><a class="header" href="#5-paso-2--tsconfigjson">5. Paso 2 — tsconfig.json</a></h2>
+<pre><code class="language-json">{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ESNext"],
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "types": ["jest", "node"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
+</code></pre>
+<p><strong>¿Qué hace cada opción?</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Opción</th><th>Valor</th><th>Explicación</th></tr>
+</thead>
+<tbody>
+<tr><td><code>target</code></td><td><code>ESNext</code></td><td>Compila a la versión más reciente de ECMAScript</td></tr>
+<tr><td><code>module</code></td><td><code>NodeNext</code></td><td>Usa el sistema de módulos nativo de Node.js (ESM con <code>.js</code> en imports)</td></tr>
+<tr><td><code>moduleResolution</code></td><td><code>NodeNext</code></td><td>Resolución de módulos acorde a <code>NodeNext</code></td></tr>
+<tr><td><code>strict</code></td><td><code>true</code></td><td>Máxima estrictitud (strictNullChecks, noImplicitAny, etc.)</td></tr>
+<tr><td><code>baseUrl</code></td><td><code>"."</code></td><td>Base para resolver paths relativos</td></tr>
+<tr><td><code>paths</code></td><td><code>@/* → src/*</code></td><td>Alias para imports: <code>import { x } from "@/config/env"</code></td></tr>
+<tr><td><code>esModuleInterop</code></td><td><code>true</code></td><td>Compatibilidad con módulos CommonJS</td></tr>
+<tr><td><code>sourceMap</code></td><td><code>true</code></td><td>Genera source maps para debugging</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>⚠️ Importante con ESM:</strong> Cuando usás <code>"type": "module"</code> en package.json, TODOS los imports locales deben terminar en <code>.js</code> aunque el archivo fuente sea <code>.ts</code>:</p>
+<pre><code class="language-typescript">// ✅ Correcto
+import { env } from "@/config/env.js";
+import { BookService } from "@/services/book.service.js";
+
+// ❌ Incorrecto (TypeScript no va a encontrar el módulo)
+import { env } from "@/config/env";
+import { BookService } from "@/services/book.service";
+</code></pre>
+<hr>
+<h2 id="6-paso-3--variables-de-entorno-env"><a class="header" href="#6-paso-3--variables-de-entorno-env">6. Paso 3 — Variables de Entorno (.env)</a></h2>
+<p>Creá el archivo <code>.env</code> en la raíz de <code>backend/</code>:</p>
+<pre><code class="language-env">PORT=3000
+DATABASE_URL=postgres://usuario:password@localhost:5432/bookteka_db?schema=public
+FRONTEND_URL=http://localhost:5173
+BETTER_AUTH_SECRET=WsEGMicmTmVF0Tln8NEkfwZkrEmIePQB
+BETTER_AUTH_URL=http://localhost:3000
+
+R2_ACCESS_KEY_ID=tu-access-key
+R2_SECRET_ACCESS_KEY=tu-secret-key
+R2_ENDPOINT=https://tu-endpoint.r2.cloudflarestorage.com
+R2_PUBLIC_DOMAIN=https://tu-public-domain.r2.dev
+R2_BUCKET=tu-bucket-name
+
+RESEND_API_KEY=re_xxxxxxxxxxxx
+RESEND_FROM_EMAIL=onboarding@resend.dev
+</code></pre>
+<p><strong>Cada variable explicada:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Variable</th><th>Obligatorio</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><code>PORT</code></td><td>Sí</td><td>Puerto del servidor Express (default 3000)</td></tr>
+<tr><td><code>DATABASE_URL</code></td><td>Sí</td><td>Connection string de PostgreSQL</td></tr>
+<tr><td><code>FRONTEND_URL</code></td><td>Sí</td><td>URL del frontend (para CORS)</td></tr>
+<tr><td><code>BETTER_AUTH_SECRET</code></td><td>Sí</td><td>Secreto para firmar tokens de Better-Auth</td></tr>
+<tr><td><code>BETTER_AUTH_URL</code></td><td>Sí</td><td>URL base del backend (para callbacks de auth)</td></tr>
+<tr><td><code>R2_ACCESS_KEY_ID</code></td><td>Sí</td><td>Access Key de Cloudflare R2</td></tr>
+<tr><td><code>R2_SECRET_ACCESS_KEY</code></td><td>Sí</td><td>Secret Key de Cloudflare R2</td></tr>
+<tr><td><code>R2_ENDPOINT</code></td><td>Sí</td><td>Endpoint S3 de Cloudflare R2</td></tr>
+<tr><td><code>R2_PUBLIC_DOMAIN</code></td><td>Sí</td><td>Dominio público para acceder a archivos</td></tr>
+<tr><td><code>R2_BUCKET</code></td><td>Sí</td><td>Nombre del bucket en R2</td></tr>
+<tr><td><code>RESEND_API_KEY</code></td><td>Sí</td><td>API Key de Resend para envío de emails</td></tr>
+<tr><td><code>RESEND_FROM_EMAIL</code></td><td>Sí</td><td>Email remitente para los correos</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>⚠️ IMPORTANTE:</strong> El <code>.env</code> NUNCA se commitea al repositorio. Está en <code>.gitignore</code>. Usá <code>.env.example</code> como plantilla.</p>
+<hr>
+<h2 id="7-paso-4--configuración-del-proyecto"><a class="header" href="#7-paso-4--configuración-del-proyecto">7. Paso 4 — Configuración del Proyecto</a></h2>
+<h3 id="71-envts--validación-de-entorno"><a class="header" href="#71-envts--validación-de-entorno">7.1 <code>env.ts</code> — Validación de Entorno</a></h3>
+<pre><code class="language-typescript">import dotenv from "dotenv";
+
+dotenv.config();
+
+interface EnvConfig {
+  PORT: number;
+  DATABASE_URL: string;
+  FRONTEND_URL: string;
+  BETTER_AUTH_SECRET: string;
+  BETTER_AUTH_URL: string;
+  R2_ACCESS_KEY: string;
+  R2_SECRET_KEY: string;
+  R2_S3_API: string;
+  R2_BUCKET: string;
+  R2_PUBLIC_DOMAIN: string;
+  RESEND_API_KEY: string;
+  RESEND_FROM_EMAIL: string;
+}
+
+function getEnvVar(key: string): string {
+  const value = process.env[key];
+  if (!value) {
+    throw new Error(`env not found: ${key}`);
+  }
+  return value;
+}
+
+export const env: EnvConfig = {
+  PORT: parseInt(process.env.PORT || "3000", 10),
+  DATABASE_URL: getEnvVar("DATABASE_URL"),
+  FRONTEND_URL: getEnvVar("FRONTEND_URL"),
+  BETTER_AUTH_SECRET: getEnvVar("BETTER_AUTH_SECRET"),
+  BETTER_AUTH_URL: getEnvVar("BETTER_AUTH_URL"),
+  R2_ACCESS_KEY: getEnvVar("R2_ACCESS_KEY_ID"),
+  R2_SECRET_KEY: getEnvVar("R2_SECRET_ACCESS_KEY"),
+  R2_S3_API: getEnvVar("R2_ENDPOINT"),
+  R2_BUCKET: getEnvVar("R2_BUCKET"),
+  R2_PUBLIC_DOMAIN: getEnvVar("R2_PUBLIC_DOMAIN"),
+  RESEND_API_KEY: getEnvVar("RESEND_API_KEY"),
+  RESEND_FROM_EMAIL: getEnvVar("RESEND_FROM_EMAIL"),
+};
+</code></pre>
+<p><strong>¿Qué hace?</strong></p>
+<ol>
+<li><strong><code>dotenv.config()</code></strong> — Carga las variables del archivo <code>.env</code> en <code>process.env</code></li>
+<li><strong><code>getEnvVar(key)</code></strong> — Helper que obtiene una variable y lanza error si falta (fail-fast)</li>
+<li><strong>Exporta <code>env</code></strong> — Objeto tipado con todas las variables de entorno accesibles desde cualquier parte del código</li>
+</ol>
+<p><strong>Diferencia con Zod:</strong> A diferencia del manual de Fastify que usa Zod para validar, acá se usa un enfoque más simple con <code>getEnvVar</code>. Cada variable que es obligatoria se valida manualmente. Para proyectos más grandes, Zod sería recomendable.</p>
+<hr>
+<h3 id="72-dbts--pool-de-postgresql-nativo"><a class="header" href="#72-dbts--pool-de-postgresql-nativo">7.2 <code>db.ts</code> — Pool de PostgreSQL Nativo</a></h3>
+<pre><code class="language-typescript">import pkg from "pg";
+import { env } from "./env.js";
+
+const { Pool } = pkg;
+
+export const pool = new Pool({
+  connectionString: env.DATABASE_URL,
+});
+</code></pre>
+<p><strong>¿Qué hace?</strong></p>
+<p>Crea un <strong>Pool de conexiones PostgreSQL</strong> usando el driver <code>pg</code>. Este pool se usa exclusivamente para <strong>Better-Auth</strong>, que necesita acceso directo a PostgreSQL (no a través de Prisma).</p>
+<ul>
+<li><strong>Pool</strong> mantiene un conjunto de conexiones reutilizables (más eficiente que crear una conexión por request)</li>
+<li>Se conecta usando la misma <code>DATABASE_URL</code> que Prisma</li>
+</ul>
+<hr>
+<h3 id="73-prismats--cliente-prisma-singleton"><a class="header" href="#73-prismats--cliente-prisma-singleton">7.3 <code>prisma.ts</code> — Cliente Prisma Singleton</a></h3>
+<pre><code class="language-typescript">import { PrismaClient } from "@prisma/client";
+
+const globalForPrisma = global as unknown as { prisma: PrismaClient };
+
+export const dbPrisma = globalForPrisma.prisma || new PrismaClient();
+
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = dbPrisma;
+</code></pre>
+<p><strong>¿Qué hace?</strong></p>
+<ol>
+<li><strong>Singleton pattern</strong> — En desarrollo, <code>tsx watch</code> reinicia el servidor y crearía múltiples instancias de Prisma. Al guardarla en <code>global</code>, nos aseguramos de reutilizar la misma instancia.</li>
+<li><strong><code>dbPrisma</code></strong> — Es el cliente Prisma que se usa en toda la aplicación (repositories).</li>
+<li>En producción, esto no es necesario porque no hay hot-reload.</li>
+</ol>
+<p><strong>¿Por qué no se llama <code>prisma</code>?</strong> Porque Better-Auth también exporta un <code>prisma</code> y podrían haber conflictos de nombres. Se usa <code>dbPrisma</code> para diferenciar.</p>
+<hr>
+<h2 id="8-paso-5--modelo-de-datos-prisma-schema"><a class="header" href="#8-paso-5--modelo-de-datos-prisma-schema">8. Paso 5 — Modelo de Datos (Prisma Schema)</a></h2>
+<pre><code class="language-prisma">datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model book {
+  id        String   @id @default(uuid())
+  title     String
+  author    String?
+  fileUrl   String
+  fileKey   String
+  fileHash  String   @unique
+  size      Int?
+  createdAt DateTime @default(now())
+  userBooks user_book[]
+
+  @@index([fileHash])
+}
+
+model user_book {
+  id                 String    @id @default(uuid())
+  userId             String
+  bookId             String
+  currentPage        Int       @default(0)
+  scrollPosition     Int       @default(0)
+  readingTimeSeconds Int       @default(0)
+  lastReadAt         DateTime?
+  createdAt          DateTime  @default(now())
+
+  book      book       @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  bookmarks bookmark[]
+
+  @@index([userId])
+  @@index([bookId])
+  @@unique([userId, bookId])
+}
+
+model bookmark {
+  id          String   @id @default(uuid())
+  userId      String
+  userBookId  String
+  name        String?
+  pageNumber  Int
+  textPreview String?
+  createdAt   DateTime @default(now())
+
+  userBook user_book @relation(fields: [userBookId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userBookId])
+}
+
+model user_streak {
+  id             String    @id @default(uuid())
+  userId         String    @unique
+  currentStreak  Int       @default(0)
+  startDate      DateTime?
+  lastActiveDate DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([userId])
+}
+
+model audit_log {
+  id         String   @id @default(uuid())
+  action     String
+  entityType String
+  entityId   String
+  userId     String
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([userId])
+  @@index([createdAt])
+}
+</code></pre>
+<p><strong>Diagrama de relaciones:</strong></p>
+<pre><code>book ──1:N──&gt; user_book ──1:N──&gt; bookmark
+                │
+                └── (userId + bookId) único por usuario
+
+user_streak (1:1 con usuario por userId)
+
+audit_log (logs de acciones)
+</code></pre>
+<p><strong>Modelos explicados:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Modelo</th><th>Tabla</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><code>book</code></td><td><code>books</code></td><td>Libro físico (archivo PDF). Se comparte entre usuarios si tienen el mismo hash.</td></tr>
+<tr><td><code>user_book</code></td><td><code>user_books</code></td><td>Relación usuario-libro con progreso de lectura. <code>@@unique([userId, bookId])</code> evita duplicados.</td></tr>
+<tr><td><code>bookmark</code></td><td><code>bookmarks</code></td><td>Marcadores por página. Pertenece a un <code>user_book</code>.</td></tr>
+<tr><td><code>user_streak</code></td><td><code>user_streaks</code></td><td>Racha de lectura diaria del usuario. <code>@unique</code> en userId (1 racha por usuario).</td></tr>
+<tr><td><code>audit_log</code></td><td><code>audit_logs</code></td><td>Registro de acciones importantes (eliminaciones, etc.) con metadata JSON.</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Características clave del schema:</strong></p>
+<ul>
+<li><strong>UUIDs</strong> como IDs (no autoincrementales) — más seguros y distribuibles</li>
+<li><strong>Cascade delete</strong> — Si se elimina un <code>book</code>, se eliminan sus <code>user_book</code>, y si se elimina un <code>user_book</code>, se eliminan sus <code>bookmarks</code></li>
+<li><strong>Índices</strong> en todas las columnas de búsqueda frecuente</li>
+<li><strong><code>@@unique([userId, bookId])</code></strong> — Un usuario solo puede tener un <code>user_book</code> por libro</li>
+<li><strong><code>fileHash @unique</code></strong> — Si dos usuarios suben el mismo PDF, comparten el mismo <code>book</code> (se detecta por hash SHA-256)</li>
+</ul>
+<p><strong>Comandos de migración:</strong></p>
+<pre><code class="language-bash">pnpm prisma:generate    # Genera el cliente Prisma
+npx prisma migrate dev  # Crea/ejecuta migraciones
+npx prisma studio       # Abre la UI de Prisma Studio
+</code></pre>
+<hr>
+<h2 id="9-paso-6--tipos-del-sistema-types"><a class="header" href="#9-paso-6--tipos-del-sistema-types">9. Paso 6 — Tipos del Sistema (Types)</a></h2>
+<p>Los tipos están en la carpeta <code>src/types/</code> y definen las interfaces que se usan en toda la aplicación.</p>
+<h3 id="bookdts--tipos-de-libros"><a class="header" href="#bookdts--tipos-de-libros"><code>book.d.ts</code> — Tipos de Libros</a></h3>
+<pre><code class="language-typescript">export interface Book {
+  id: string;
+  title: string;
+  author?: string | null;
+  fileUrl: string;
+  fileKey: string;
+  fileHash: string;
+  size?: number | null;
+  createdAt: Date;
+  userBooks?: UserBook[];
+}
+
+export interface UserBook {
+  id: string;
+  userId: string;
+  bookId: string;
+  currentPage: number;
+  scrollPosition: number;
+  readingTimeSeconds: number;
+  lastReadAt?: Date | null;
+  createdAt: Date;
+  book?: Book;
+  bookmarks?: Bookmark[];
+}
+
+export interface Bookmark {
+  id: string;
+  userId: string;
+  userBookId: string;
+  name?: string | null;
+  pageNumber: number;
+  textPreview?: string | null;
+  createdAt: Date;
+  userBook?: UserBook;
+}
+
+export interface UploadBookInput {
+  userId: string;
+  file: Express.Multer.File;
+  body: {
+    title?: string;
+    author?: string;
+    readingTimeSeconds?: string;
+    scrollPosition?: string;
+  };
+}
+
+export interface CreateBookInput {
+  title: string;
+  author: string;
+  fileKey: string;
+  fileUrl: string;
+  fileHash: string;
+  size: number;
+}
+
+export interface UpdateBookProgressInput {
+  userId: string;
+  bookId: string;
+  body: {
+    readingTimeSeconds?: number;
+    scrollPosition?: number;
+    lastReadAt?: string;
+  };
+}
+
+export interface DeleteBookInput {
+  userId: string;
+  bookId: string;
+}
+
+export interface DownloadBookInput {
+  userId: string;
+  bookId: string;
+}
+
+export interface StreamBookInput {
+  userId: string;
+  bookId: string;
+}
+</code></pre>
+<p><strong>¿Por qué tantos tipos de input?</strong> Cada operación (upload, delete, download, stream, update progress) tiene requerimientos distintos. Al tiparlos por separado, TypeScript nos ayuda a no mezclar parámetros.</p>
+<h3 id="streakdts--tipos-de-racha"><a class="header" href="#streakdts--tipos-de-racha"><code>streak.d.ts</code> — Tipos de Racha</a></h3>
+<pre><code class="language-typescript">export interface StreakData {
+  id?: string;
+  userId?: string;
+  currentStreak: number;
+  startDate: string | null;
+  lastActiveDate: string | null;
+  hasCompletedToday: boolean;
+}
+
+export interface UserStreak {
+  id: string;
+  userId: string;
+  currentStreak: number;
+  startDate?: Date | null;
+  lastActiveDate?: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface CreateStreakInput {
+  userId: string;
+  currentStreak: number;
+  startDate: Date | null;
+  lastActiveDate: Date | null;
+  createdAt: Date;
+}
+
+export interface UpdateStreakInput {
+  currentStreak?: number;
+  startDate?: Date | null;
+  lastActiveDate?: Date | null;
+  updatedAt?: Date;
+}
+</code></pre>
+<h3 id="auditdts--auditoría"><a class="header" href="#auditdts--auditoría"><code>audit.d.ts</code> — Auditoría</a></h3>
+<pre><code class="language-typescript">export interface AuditLog {
+  id: string;
+  action: string;
+  entityType: string;
+  entityId: string;
+  userId: string;
+  metadata?: Record&lt;string, any&gt; | null;
+  createdAt: Date;
+}
+</code></pre>
+<p><strong>Auditoría:</strong> Cada vez que se elimina un libro, se guarda un registro en <code>audit_log</code> con metadata sobre qué se eliminó, quién lo hizo, y cuándo.</p>
+<hr>
+<h2 id="10-paso-7--dtos-data-transfer-objects"><a class="header" href="#10-paso-7--dtos-data-transfer-objects">10. Paso 7 — DTOs (Data Transfer Objects)</a></h2>
+<p>Los DTOs definen la forma exacta de los datos que entran y salen de la API. Están separados en <code>params</code> (parámetros de ruta), <code>request</code> (body), y <code>response</code> (respuesta).</p>
+<h3 id="book-dtos"><a class="header" href="#book-dtos">Book DTOs</a></h3>
+<p><strong><code>dto/book/params.ts</code></strong> — Parámetros de ruta:</p>
+<pre><code class="language-typescript">export interface DeleteBookParamsDTO {
+  id: string;
+}
+
+export interface UpdateBookParamsDTO {
+  id: string;
+}
+
+export interface DownloadBookParamsDTO {
+  id: string;
+}
+
+export interface StreamBookParamsDTO {
+  id: string;
+}
+</code></pre>
+<p><strong><code>dto/book/request.ts</code></strong> — Body de subida:</p>
+<pre><code class="language-typescript">export interface UploadBookRequestDTO {
+  title?: string;
+  author?: string;
+  readingTimeSeconds?: string;
+  scrollPosition?: string;
+}
+</code></pre>
+<p><strong><code>dto/book/response.ts</code></strong> — Respuestas:</p>
+<pre><code class="language-typescript">// Lista de libros del usuario
+export interface UserBookResponse {
+  id: string;
+  title: string;
+  author: string;
+  createdAt: number;        // timestamp (getTime)
+  lastReadAt: number;       // timestamp
+  readingTimeSeconds: number;
+  scrollPosition: number;
+  totalPages?: number;
+  fileUrl: string;
+  fileKey: string;
+}
+
+// Respuesta de subida exitosa
+export interface UploadBookResponseDTO {
+  bookId: string;
+  userBookId: string;
+}
+
+// Respuesta de eliminación
+export interface DeleteBookResponseDTO {
+  success: boolean;
+  message: string;
+  auditId: string;
+}
+</code></pre>
+<h3 id="bookmark-dtos"><a class="header" href="#bookmark-dtos">Bookmark DTOs</a></h3>
+<p><strong><code>dto/bookmark/params.ts</code>:</strong></p>
+<pre><code class="language-typescript">export interface GetBookmarkParams {
+  bookId: string;
+}
+
+export interface CreateBookmarkParams {
+  bookId: string;
+}
+
+export interface DeleteBookmarkParams {
+  bookId: string;
+}
+</code></pre>
+<p><strong><code>dto/bookmark/request.ts</code>:</strong></p>
+<pre><code class="language-typescript">export interface CreateBookmarkRequestDTO {
+  name: string;
+  pageNumber: number;
+  textPreview?: string;
+}
+</code></pre>
+<hr>
+<h2 id="11-paso-8--helpers-y-utilidades"><a class="header" href="#11-paso-8--helpers-y-utilidades">11. Paso 8 — Helpers y Utilidades</a></h2>
+<h3 id="111-errorsts--error-personalizado"><a class="header" href="#111-errorsts--error-personalizado">11.1 <code>errors.ts</code> — Error Personalizado</a></h3>
+<pre><code class="language-typescript">export class AppError extends Error {
+  constructor(
+    public code: string,
+    public statusCode: number,
+    message: string
+  ) {
+    super(message);
+  }
+}
+</code></pre>
+<p><strong>¿Qué hace?</strong></p>
+<ul>
+<li>Extiende <code>Error</code> nativo de JavaScript</li>
+<li>Agrega <code>code</code> (código interno: <code>NOT_FOUND</code>, <code>FORBIDDEN</code>, etc.) y <code>statusCode</code> (HTTP status)</li>
+<li>Se usa en services para lanzar errores que los controllers capturan y convierten en respuestas HTTP</li>
+</ul>
+<p><strong>Uso típico:</strong></p>
+<pre><code class="language-typescript">// En un service:
+throw new AppError("NOT_FOUND", 404, "Libro no encontrado para este usuario");
+
+// En el controller:
+if (err instanceof AppError) {
+  return res.status(err.statusCode).json({ error: err.message });
+}
+</code></pre>
+<h3 id="112-formatts--normalización-de-archivos"><a class="header" href="#112-formatts--normalización-de-archivos">11.2 <code>format.ts</code> — Normalización de Archivos</a></h3>
+<pre><code class="language-typescript">import crypto from "crypto";
+
+export const normalizedFileName = (name: string) =&gt; {
+  return name
+    .replace(/\s+/g, "-")           // Reemplazar espacios por guiones
+    .replace(/[^a-zA-Z0-9.\-_]/g, ""); // Eliminar caracteres especiales
+};
+
+export const generateFileHash = (file: any) =&gt; {
+  return crypto.createHash("sha256").update(file.buffer).digest("hex");
+};
+</code></pre>
+<p><strong>¿Para qué sirve?</strong></p>
+<ul>
+<li><strong><code>normalizedFileName</code></strong> — Limpia el nombre del archivo subido: espacios → guiones, elimina caractéres especiales. Esto evita problemas con archivos que tienen caractéres raros en el nombre.</li>
+<li><strong><code>generateFileHash</code></strong> — Genera un hash SHA-256 del contenido del archivo. Se usa para detectar si ya existe un libro con el mismo contenido (deduplicación).</li>
+</ul>
+<h3 id="113-timets--formateo-de-fechas"><a class="header" href="#113-timets--formateo-de-fechas">11.3 <code>time.ts</code> — Formateo de Fechas</a></h3>
+<pre><code class="language-typescript">export const toDateString = (date: Date | null): string | null =&gt; {
+  if (!date) return null;
+  const d = new Date(date);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+export const getUTCDateOnly = (date: Date): string =&gt; {
+  const d = new Date(date);
+  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}-${String(d.getUTCDate()).padStart(2, "0")}`;
+};
+</code></pre>
+<p><strong>¿Para qué sirve?</strong></p>
+<ul>
+<li><strong><code>toDateString</code></strong> — Convierte un Date a formato legible <code>YYYY-MM-DD</code>. Se usa para mostrar fechas en las respuestas de streak.</li>
+<li><strong><code>getUTCDateOnly</code></strong> — Obtiene la fecha en UTC, ignorando la hora. Es crítico para el sistema de streaks: si un usuario en Argentina (UTC-3) marca un día a las 11 PM, no debe confundirse con el día siguiente en UTC.</li>
+</ul>
+<hr>
+<h2 id="12-paso-9--librerías-y-servicios-externos"><a class="header" href="#12-paso-9--librerías-y-servicios-externos">12. Paso 9 — Librerías y Servicios Externos</a></h2>
+<h3 id="121-authts--better-auth"><a class="header" href="#121-authts--better-auth">12.1 <code>auth.ts</code> — Better-Auth</a></h3>
+<pre><code class="language-typescript">import { betterAuth } from "better-auth";
+import { pool } from "@/config/db.js";
+import { env } from "@/config/env.js";
+import { sendEmail } from "./email.js";
+
+const isProduction = env.BETTER_AUTH_URL.startsWith("https");
+
+export const auth = betterAuth({
+  baseURL: env.BETTER_AUTH_URL,
+  database: pool,                             // Pool de PostgreSQL nativo
+  emailAndPassword: {
+    enabled: true,
+    sendResetPassword: async ({ user, url }) =&gt; { /* envía email */ },
+  },
+  emailVerification: {
+    sendOnSignUp: true,
+    autoSignInAfterVerification: true,
+    sendVerificationEmail: async ({ user, url }) =&gt; { /* envía email */ },
+  },
+  trustedOrigins: [
+    env.FRONTEND_URL,
+    "http://localhost:5173",
+    "https://bookteka.up.railway.app",
+  ],
+  advanced: {
+    useSecureCookies: isProduction,
+  },
+  cookie: {
+    name: "better-auth.session_token",
+    secure: isProduction,
+    sameSite: "lax",
+    httpOnly: true,
+    maxAge: 60 * 60 * 24 * 7,
+    path: "/",
+  },
+  session: {
+    expiresIn: 60 * 60 * 24 * 7,     // 7 días
+    updateAge: 60 * 60 * 24,         // Renueva cada 24h
+  },
+});
+</code></pre>
+<p><strong>¿Qué configura Better-Auth?</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Configuración</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><code>database: pool</code></td><td>Usa el pool de PostgreSQL nativo (NO Prisma)</td></tr>
+<tr><td><code>emailAndPassword.enabled</code></td><td>Habilita login con email y contraseña</td></tr>
+<tr><td><code>sendResetPassword</code></td><td>Callback para enviar email de reset</td></tr>
+<tr><td><code>emailVerification.sendOnSignUp</code></td><td>Envía email de verificación al registrarse</td></tr>
+<tr><td><code>autoSignInAfterVerification</code></td><td>Login automático después de verificar</td></tr>
+<tr><td><code>trustedOrigins</code></td><td>Orígenes permitidos para CORS de auth</td></tr>
+<tr><td><code>useSecureCookies</code></td><td>Cookies seguras solo en HTTPS</td></tr>
+<tr><td><code>session.expiresIn</code></td><td>Duración de la sesión (7 días)</td></tr>
+<tr><td><code>session.updateAge</code></td><td>Renueva la sesión cada 24h de actividad</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>¿Cómo se integra con Express?</strong></p>
+<pre><code class="language-typescript">import { toNodeHandler } from "better-auth/node";
+
+// Todas las rutas de auth bajo /api/auth/*
+app.all("/api/auth/*splat", toNodeHandler(auth));
+</code></pre>
+<p>Better-Auth genera automáticamente todas las rutas de autenticación:</p>
+<ul>
+<li><code>POST /api/auth/signup</code> — Registro</li>
+<li><code>POST /api/auth/login</code> — Login</li>
+<li><code>POST /api/auth/logout</code> — Logout</li>
+<li><code>GET /api/auth/session</code> — Obtener sesión actual</li>
+<li><code>POST /api/auth/verify-email</code> — Verificar email</li>
+<li><code>POST /api/auth/forgot-password</code> — Olvidé contraseña</li>
+<li><code>POST /api/auth/reset-password</code> — Resetear contraseña</li>
+</ul>
+<p>Better-Auth además genera sus propias tablas en la base de datos (<code>user</code>, <code>account</code>, <code>session</code>, <code>verification</code>) mediante migraciones propias (carpeta <code>better-auth_migrations/</code>).</p>
+<h3 id="122-emailts--resend"><a class="header" href="#122-emailts--resend">12.2 <code>email.ts</code> — Resend</a></h3>
+<pre><code class="language-typescript">import { Resend } from "resend";
+import { env } from "@/config/env.js";
+
+const resend = new Resend(env.RESEND_API_KEY);
+
+interface SendEmailParams {
+  to: string;
+  subject: string;
+  html: string;
+}
+
+export async function sendEmail({ to, subject, html }: SendEmailParams) {
+  const { data, error } = await resend.emails.send({
+    from: env.RESEND_FROM_EMAIL,
+    to,
+    subject,
+    html,
+  });
+
+  if (error) {
+    console.error(`❌ Error sending email to ${to}:`, error);
+    throw new Error(`Failed to send email: ${error.message}`);
+  }
+
+  return data;
+}
+</code></pre>
+<p><strong>¿Qué hace?</strong></p>
+<ul>
+<li>Crea un cliente de <strong>Resend</strong> (servicio de emails transaccionales, alternativa moderna a SendGrid)</li>
+<li><code>sendEmail()</code> envía un email con HTML personalizado</li>
+<li>Se usa desde Better-Auth para los emails de verificación y reset de password</li>
+<li>Si falla, lanza error (pero mejoraría con un sistema de colas para reintentos)</li>
+</ul>
+<h3 id="123-r2ts--cloudflare-r2-s3-compatible"><a class="header" href="#123-r2ts--cloudflare-r2-s3-compatible">12.3 <code>r2.ts</code> — Cloudflare R2 (S3-Compatible)</a></h3>
+<pre><code class="language-typescript">import { S3Client } from "@aws-sdk/client-s3";
+import { env } from "@/config/env.js";
+
+const R2_ACCESS_KEY = env.R2_ACCESS_KEY;
+const R2_SECRET_KEY = env.R2_SECRET_KEY;
+const R2_S3_API = env.R2_S3_API;
+const R2_BUCKET = env.R2_BUCKET;
+
+if (!R2_ACCESS_KEY || !R2_SECRET_KEY || !R2_S3_API || !R2_BUCKET) {
+  throw new Error("Faltan variables de entorno R2");
+}
+
+export const r2 = new S3Client({
+  region: "auto",
+  endpoint: R2_S3_API,
+  credentials: {
+    accessKeyId: R2_ACCESS_KEY!,
+    secretAccessKey: R2_SECRET_KEY!,
+  },
+});
+</code></pre>
+<p><strong>¿Qué es Cloudflare R2?</strong></p>
+<p>R2 es el servicio de almacenamiento de objetos de Cloudflare, <strong>compatible con la API S3 de AWS</strong>. Esto significa que podemos usar el SDK de AWS S3 para interactuar con R2.</p>
+<p><strong>¿Por qué R2 y no S3?</strong></p>
+<ul>
+<li>Sin cargos de salida de datos (egress) — ideal para servir archivos PDF</li>
+<li>Precios más bajos que S3</li>
+<li>Integración con la red global de Cloudflare (CDN incluida)</li>
+</ul>
+<p><strong>Operaciones que se hacen con R2:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operación</th><th>SDK</th><th>Propósito</th></tr>
+</thead>
+<tbody>
+<tr><td><code>PutObjectCommand</code></td><td><code>@aws-sdk/client-s3</code></td><td>Subir PDF</td></tr>
+<tr><td><code>GetObjectCommand</code></td><td><code>@aws-sdk/client-s3</code></td><td>Obtener PDF (stream)</td></tr>
+<tr><td><code>DeleteObjectCommand</code></td><td><code>@aws-sdk/client-s3</code></td><td>Eliminar PDF</td></tr>
+<tr><td><code>getSignedUrl</code></td><td><code>@aws-sdk/s3-request-presigner</code></td><td>Generar URL de descarga temporaria</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="13-paso-10--capa-de-repositorios"><a class="header" href="#13-paso-10--capa-de-repositorios">13. Paso 10 — Capa de Repositorios</a></h2>
+<p>Los repositorios son la <strong>capa de acceso a datos</strong>. Cada repositorio tiene una interfaz (contrato) y una implementación que usa Prisma para interactuar con PostgreSQL.</p>
+<p><strong>Patrón:</strong> Interface → Implementation</p>
+<h3 id="131-bookrepositoryts"><a class="header" href="#131-bookrepositoryts">13.1 <code>book.repository.ts</code></a></h3>
+<pre><code class="language-typescript">import { dbPrisma } from "@/config/prisma.js";
+import { CreateBookInput, UpsertUserBookInput } from "@/types/book.js";
+import { audit_log, book, user_book } from "@prisma/client";
+
+interface IBookRepository {
+  getUserBooks: (userId: string) =&gt; Promise&lt;user_book[] | null&gt;;
+  findByHash: (fileHash: string) =&gt; Promise&lt;book | null&gt;;
+  createBook: (data: CreateBookInput) =&gt; Promise&lt;book&gt;;
+  upsertUserBook: (data: UpsertUserBookInput) =&gt; Promise&lt;user_book&gt;;
+  findUserBook: (userId: string, bookId: string) =&gt; Promise&lt;user_book | null&gt;;
+  countOtherUsers: (bookId: string, userId: string) =&gt; Promise&lt;number | null&gt;;
+  deleteUserBook: (id: string) =&gt; Promise&lt;user_book&gt;;
+  deleteBook: (id: string) =&gt; Promise&lt;book&gt;;
+  createAuditLog: (data: any) =&gt; Promise&lt;audit_log&gt;;
+  updateUserBook: (id: string, data: any) =&gt; Promise&lt;user_book&gt;;
+}
+
+export class BookRepository implements IBookRepository {
+  // Obtener todos los libros de un usuario (con datos del book)
+  getUserBooks = (userId: string) =&gt; {
+    return dbPrisma.user_book.findMany({
+      where: { userId },
+      orderBy: { lastReadAt: "desc" },
+      include: {
+        book: {
+          select: {
+            id: true, title: true, author: true,
+            fileUrl: true, fileKey: true, size: true, createdAt: true,
+          },
+        },
+      },
+    });
+  };
+
+  // Buscar libro por hash SHA-256 (deduplicación)
+  findByHash = (fileHash: string) =&gt; {
+    return dbPrisma.book.findUnique({ where: { fileHash } });
+  };
+
+  // Crear un nuevo libro
+  createBook = (data: CreateBookInput) =&gt; {
+    return dbPrisma.book.create({ data });
+  };
+
+  // Crear o actualizar relación usuario-libro (upsert)
+  // Si el usuario ya tiene ese libro, no hace nada (update: {})
+  upsertUserBook = ({ userId, bookId, readingTimeSeconds, scrollPosition }: UpsertUserBookInput) =&gt; {
+    return dbPrisma.user_book.upsert({
+      where: { userId_bookId: { userId, bookId } },
+      create: { userId, bookId, readingTimeSeconds, scrollPosition },
+      update: {},
+    });
+  };
+
+  // Buscar relación usuario-libro específica
+  findUserBook = (userId: string, bookId: string) =&gt; {
+    return dbPrisma.user_book.findFirst({
+      where: { userId, bookId },
+      include: { book: true },
+    });
+  };
+
+  // Contar cuántos otros usuarios tienen el mismo libro
+  countOtherUsers = (bookId: string, userId: string) =&gt; {
+    return dbPrisma.user_book.count({
+      where: { bookId, NOT: { userId } },
+    });
+  };
+
+  // Eliminar relación usuario-libro
+  deleteUserBook = (id: string) =&gt; {
+    return dbPrisma.user_book.delete({ where: { id } });
+  };
+
+  // Eliminar libro (solo si nadie más lo usa)
+  deleteBook = (id: string) =&gt; {
+    return dbPrisma.book.delete({ where: { id } });
+  };
+
+  // Registrar acción en auditoría
+  createAuditLog = (data: any) =&gt; {
+    return dbPrisma.audit_log.create({ data });
+  };
+
+  // Actualizar progreso de lectura
+  updateUserBook = (id: string, data: any) =&gt; {
+    return dbPrisma.user_book.update({ where: { id }, data });
+  };
+}
+</code></pre>
+<p><strong>Métodos clave explicados:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>¿Qué hace?</th></tr>
+</thead>
+<tbody>
+<tr><td><code>getUserBooks</code></td><td>Trae todos los <code>user_book</code> del usuario ordenados por última lectura, incluyendo datos del <code>book</code></td></tr>
+<tr><td><code>findByHash</code></td><td>Busca si ya existe un libro con el mismo hash SHA-256 (evita duplicados en storage)</td></tr>
+<tr><td><code>upsertUserBook</code></td><td>Crea la relación usuario-libro si no existe, si existe no modifica nada</td></tr>
+<tr><td><code>countOtherUsers</code></td><td>Cuenta cuántos otros usuarios usan el mismo libro (para saber si podemos eliminar el archivo de R2)</td></tr>
+<tr><td><code>createAuditLog</code></td><td>Guarda en <code>audit_log</code> qué se eliminó, quién, y cuándo</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="132-bookmarkrepositoryts"><a class="header" href="#132-bookmarkrepositoryts">13.2 <code>bookmark.repository.ts</code></a></h3>
+<pre><code class="language-typescript">interface IBookmarkRepository {
+  findUserBookAccess: (userId: string, bookId: string) =&gt; Promise&lt;user_book | null&gt;;
+  getBookmarksByUserBookId: (userBookId: string) =&gt; Promise&lt;bookmark[]&gt;;
+  createBookmark: (data: CreateBookmarkInput) =&gt; Promise&lt;bookmark&gt;;
+  findBookmark: (bookmarkId: string, userBookId: string) =&gt; Promise&lt;bookmark | null&gt;;
+  deleteBookmark: (bookmarkId: string) =&gt; Promise&lt;bookmark&gt;;
+}
+</code></pre>
+<p><strong>Métodos clave:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>¿Qué hace?</th></tr>
+</thead>
+<tbody>
+<tr><td><code>findUserBookAccess</code></td><td>Verifica que el usuario tenga acceso al libro (es su <code>user_book</code>)</td></tr>
+<tr><td><code>getBookmarksByUserBookId</code></td><td>Trae todos los bookmarks de un <code>user_book</code> ordenados por fecha descendente</td></tr>
+<tr><td><code>findBookmark</code></td><td>Busca un bookmark verificando que pertenezca al <code>user_book</code> específico</td></tr>
+<tr><td><code>deleteBookmark</code></td><td>Elimina un bookmark por ID</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="133-streakrepositoryts"><a class="header" href="#133-streakrepositoryts">13.3 <code>streak.repository.ts</code></a></h3>
+<pre><code class="language-typescript">interface IStreakRepository {
+  findByUserId: (userId: string) =&gt; Promise&lt;user_streak | null&gt;;
+  createStreak: (data: CreateStreakInput) =&gt; Promise&lt;user_streak&gt;;
+  updateStreak: (userId: string, data: UpdateStreakInput) =&gt; Promise&lt;user_streak&gt;;
+  upsertStreak: (args: {
+    where: { userId: string };
+    update: UpdateStreakInput;
+    create: CreateStreakInput;
+  }) =&gt; Promise&lt;user_streak&gt;;
+}
+</code></pre>
+<p><strong>Métodos clave:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>¿Qué hace?</th></tr>
+</thead>
+<tbody>
+<tr><td><code>findByUserId</code></td><td>Busca la racha por userId (relación 1:1 gracias a <code>@unique</code> en el schema)</td></tr>
+<tr><td><code>createStreak</code></td><td>Crea una nueva racha desde cero</td></tr>
+<tr><td><code>updateStreak</code></td><td>Actualiza racha existente (currentStreak, fechas)</td></tr>
+<tr><td><code>upsertStreak</code></td><td>Crea o actualiza en una sola operación (usado por <code>initializeStreak</code>)</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="14-paso-11--capa-de-servicios"><a class="header" href="#14-paso-11--capa-de-servicios">14. Paso 11 — Capa de Servicios</a></h2>
+<p>Los servicios contienen la <strong>lógica de negocio</strong>. Son la capa intermedia entre los controladores (HTTP) y los repositorios (datos). Acá se toman las decisiones: validar permisos, calcular streaks, generar URLs firmadas, etc.</p>
+<h3 id="141-bookservicets"><a class="header" href="#141-bookservicets">14.1 <code>book.service.ts</code></a></h3>
+<pre><code class="language-typescript">const bookRepository = new BookRepository();
+
+export class BookService {
+  // Obtener libros del usuario (mapea la respuesta)
+  static getUserBooks = async (userId: string) =&gt; {
+    const userBooks = await bookRepository.getUserBooks(userId);
+    return userBooks.map((ub) =&gt; ({
+      id: ub.book.id,
+      name: ub.book.title,
+      author: ub.book.author || "",
+      createdAt: ub.book.createdAt.getTime(),
+      lastReadAt: ub.lastReadAt?.getTime() || ub.book.createdAt.getTime(),
+      readingTimeSeconds: ub.readingTimeSeconds || 0,
+      scrollPosition: ub.scrollPosition || 0,
+      currentPage: ub.currentPage || 0,
+      fileUrl: ub.book.fileUrl,
+      fileKey: ub.book.fileKey,
+      isSynced: true,
+    }));
+  };
+
+  // Subir libro con deduplicación
+  static uploadBook = async ({ userId, file, body }: UploadBookInput) =&gt; {
+    const dto = {
+      title: body.title || file.originalname,
+      author: body.author || "??",
+      readingTimeSeconds: parseInt(body.readingTimeSeconds || "0"),
+      scrollPosition: parseInt(body.scrollPosition || "0"),
+    };
+
+    const fileHash = generateFileHash(file.buffer);
+    let book = await bookRepository.findByHash(fileHash);
+
+    let fileKey: string | null = null;
+
+    if (!book) {
+      // Solo subimos a R2 si el libro no existe
+      const normalizedName = normalizedFileName(file.originalname);
+      fileKey = `books/${userId}/${Date.now()}-${normalizedName}`;
+
+      await r2.send(new PutObjectCommand({
+        Bucket: env.R2_BUCKET,
+        Key: fileKey,
+        Body: file.buffer,
+        ContentType: "application/pdf",
+      }));
+
+      book = await bookRepository.createBook({
+        title: dto.title,
+        author: dto.author,
+        fileKey,
+        fileUrl: `${env.R2_PUBLIC_DOMAIN}/${fileKey}`,
+        fileHash,
+        size: file.size,
+      });
+    }
+
+    const userBook = await bookRepository.upsertUserBook({
+      userId,
+      bookId: book.id,
+      readingTimeSeconds: dto.readingTimeSeconds,
+      scrollPosition: dto.scrollPosition,
+    });
+
+    return { bookId: book.id, userBookId: userBook.id };
+  };
+
+  // Eliminar libro con auditoría
+  static deleteBook = async ({ userId, bookId }: DeleteBookInput) =&gt; {
+    const userBook = await bookRepository.findUserBook(userId, bookId);
+    if (!userBook) {
+      throw new AppError("NOT_FOUND", 404, "Libro no encontrado para este usuario");
+    }
+
+    const otherUsers = await bookRepository.countOtherUsers(bookId, userId);
+
+    // Solo eliminar de R2 si nadie más usa el libro
+    if (otherUsers === 0) {
+      await r2.send(new DeleteObjectCommand({
+        Bucket: env.R2_BUCKET,
+        Key: userBook.book.fileKey,
+      }));
+    }
+
+    await bookRepository.createAuditLog({ ... });
+
+    await bookRepository.deleteUserBook(userBook.id);
+
+    if (otherUsers === 0) {
+      await bookRepository.deleteBook(bookId);
+    }
+
+    return { success: true, message: "Libro eliminado correctamente", auditId: bookId };
+  };
+
+  // Descargar libro (genera URL firmada)
+  static downloadBookWithUrl = async ({ userId, bookId }: DownloadBookInput) =&gt; {
+    const userBook = await bookRepository.findUserBook(userId, bookId);
+    if (!userBook) {
+      throw new AppError("FORBIDDEN", 403, "No es tu libro");
+    }
+
+    const command = new GetObjectCommand({
+      Bucket: env.R2_BUCKET,
+      Key: userBook.book.fileKey,
+    });
+
+    // URL firmada válida por 15 minutos
+    const url = await getSignedUrl(r2, command, { expiresIn: 60 * 15 });
+
+    return { url };
+  };
+
+  // Stream del PDF (proxy para evitar CORS)
+  static streamBookPdf = async ({ userId, bookId }: StreamBookInput) =&gt; {
+    const userBook = await bookRepository.findUserBook(userId, bookId);
+    if (!userBook) {
+      throw new AppError("FORBIDDEN", 403, "No es tu libro");
+    }
+
+    const command = new GetObjectCommand({
+      Bucket: env.R2_BUCKET,
+      Key: userBook.book.fileKey,
+    });
+
+    const pdfData = await r2.send(command);
+    if (!pdfData.Body) {
+      throw new AppError("INTERNAL_ERROR", 500, "Error al obtener el archivo");
+    }
+
+    return {
+      body: pdfData.Body as NodeJS.ReadableStream,
+      headers: {
+        contentType: "application/pdf",
+        contentDisposition: `inline; filename="${userBook.book.title}.pdf"`,
+        contentLength: pdfData.ContentLength,
+      },
+    };
+  };
+}
+</code></pre>
+<p><strong>Flujo de <code>uploadBook</code> (el más complejo):</strong></p>
+<pre><code>1. Cliente envía PDF + title + author
+2. Se genera hash SHA-256 del buffer
+3. Se busca si ya existe un book con ese hash
+   │
+   ├── Sí existe → se reusa el book (no se sube a R2 otra vez)
+   │
+   └── No existe →
+       4. Se normaliza el nombre del archivo
+       5. Se sube a R2 con PutObjectCommand
+       6. Se crea el book en BD
+7. Se crea/actualiza user_book (upsert)
+8. Se devuelve { bookId, userBookId }
+</code></pre>
+<p><strong>Flujo de <code>deleteBook</code>:</strong></p>
+<pre><code>1. Verificar que el usuario tenga el libro
+2. Contar otros usuarios que usan el mismo libro
+   │
+   ├── Si hay otros → solo se elimina user_book (no se toca R2)
+   │
+   └── Si es el único →
+       3. Se elimina archivo de R2
+       4. Se elimina book de BD
+5. Se guarda auditoría
+6. Se elimina user_book
+</code></pre>
+<h3 id="142-bookmarkservicets"><a class="header" href="#142-bookmarkservicets">14.2 <code>bookmark.service.ts</code></a></h3>
+<pre><code class="language-typescript">const bookmarkRepository = new BookmarkRepository();
+
+export class BookmarkService {
+  // Obtener bookmarks de un libro (solo si el usuario tiene acceso)
+  static getBookmarks = async (userId: string, bookId: string) =&gt; {
+    const userBook = await bookmarkRepository.findUserBookAccess(userId, bookId);
+    if (!userBook) {
+      throw new AppError("FORBIDDEN", 403, "No autorizado o libro no encontrado");
+    }
+    return bookmarkRepository.getBookmarksByUserBookId(userBook.id);
+  };
+
+  // Crear bookmark
+  static createBookmark = async (userId: string, bookId: string, data) =&gt; {
+    const userBook = await bookmarkRepository.findUserBookAccess(userId, bookId);
+    if (!userBook) {
+      throw new AppError("FORBIDDEN", 403, "No autorizado o libro no encontrado");
+    }
+    return bookmarkRepository.createBookmark({ userId, userBookId: userBook.id, ...data });
+  };
+
+  // Eliminar bookmark (verificando propiedad)
+  static deleteBookmark = async (userId: string, bookId: string, bookmarkId: string) =&gt; {
+    const userBook = await bookmarkRepository.findUserBookAccess(userId, bookId);
+    if (!userBook) {
+      throw new AppError("FORBIDDEN", 403, "No autorizado o libro no encontrado");
+    }
+    const bookmark = await bookmarkRepository.findBookmark(bookmarkId, userBook.id);
+    if (!bookmark) {
+      throw new AppError("NOT_FOUND", 404, "Bookmark no encontrado");
+    }
+    await bookmarkRepository.deleteBookmark(bookmarkId);
+    return { success: true };
+  };
+}
+</code></pre>
+<p><strong>Patrón de seguridad:</strong> Todos los métodos verifican que el usuario tenga acceso al libro ANTES de hacer cualquier operación. Esto se hace buscando el <code>user_book</code> que relaciona al usuario con el libro. Si no existe, el usuario no tiene permiso.</p>
+<h3 id="143-streakservicets"><a class="header" href="#143-streakservicets">14.3 <code>streak.service.ts</code></a></h3>
+<pre><code class="language-typescript">const streakRepository = new StreakRepository();
+
+export class StreakService {
+  // Obtener racha del usuario (crea una si no existe)
+  static getUserStreak = async (userId: string) =&gt; {
+    let streak = await streakRepository.findByUserId(userId);
+
+    if (!streak) {
+      // Crear racha con valores por defecto
+      streak = await streakRepository.createStreak({
+        userId, currentStreak: 0,
+        startDate: null, lastActiveDate: null,
+        createdAt: new Date(),
+      });
+    }
+
+    // Calcular si completó el día de hoy
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const lastActive = streak.lastActiveDate
+      ? new Date(streak.lastActiveDate)
+      : null;
+
+    let hasCompletedToday = false;
+    if (lastActive) {
+      lastActive.setHours(0, 0, 0, 0);
+      hasCompletedToday = lastActive.getTime() === today.getTime();
+    }
+
+    return {
+      currentStreak: streak.currentStreak,
+      startDate: toDateString(streak.startDate),
+      lastActiveDate: toDateString(streak.lastActiveDate),
+      hasCompletedToday,
+    };
+  };
+
+  // Completar el día actual
+  static completeDay = async (userId: string, clientDate?: string, clientTimestamp?: string) =&gt; {
+    let today: Date;
+    if (clientDate) {
+      today = new Date(clientDate + "T12:00:00.000Z");
+    } else {
+      today = new Date();
+      today.setHours(0, 0, 0, 0);
+    }
+
+    let streak = await streakRepository.findByUserId(userId);
+
+    if (!streak) {
+      // Crear nueva racha (primer día)
+      streak = await streakRepository.createStreak({ ... });
+      return { currentStreak: 1, hasCompletedToday: true, isNew: true };
+    }
+
+    // Verificar si ya completó hoy
+    if (streak.lastActiveDate &amp;&amp; esMismoDia(streak.lastActiveDate, today)) {
+      return { currentStreak: streak.currentStreak, hasCompletedToday: true, isNew: false };
+    }
+
+    // Calcular si es streak continuo o se reinicia
+    let newStreak = 1;
+    if (streak.lastActiveDate &amp;&amp; esDiaAnterior(streak.lastActiveDate, today)) {
+      newStreak = streak.currentStreak + 1;  // Streak continuo
+    }
+    // Si no es día anterior, se reinicia a 1
+
+    streak = await streakRepository.updateStreak(userId, {
+      currentStreak: newStreak,
+      lastActiveDate: today,
+      startDate: newStreak === 1 ? today : streak.startDate,
+    });
+
+    return { currentStreak: newStreak, hasCompletedToday: true, isNew: newStreak === 1 };
+  };
+}
+</code></pre>
+<p><strong>Lógica del streak (racha de lectura):</strong></p>
+<pre><code>Estado: currentStreak = 5, lastActiveDate = 2026-06-04
+
+Hoy es 2026-06-05:
+  → Es día consecutivo → currentStreak = 6 ✅
+
+Hoy es 2026-06-06 (saltó un día):
+  → No es consecutivo → currentStreak = 1 (se reinicia) 🔄
+
+Hoy es 2026-06-04 (ya completó hoy):
+  → No cambia nada → currentStreak = 5 (sin cambios)
+</code></pre>
+<p><strong>¿Por qué <code>clientDate</code>?</strong> El frontend puede enviar su propia fecha para evitar problemas con zonas horarias. Si un usuario está en UTC-3 y completa el día a las 11 PM, la fecha del servidor en UTC podría ser diferente.</p>
+<hr>
+<h2 id="15-paso-12--capa-de-controladores"><a class="header" href="#15-paso-12--capa-de-controladores">15. Paso 12 — Capa de Controladores</a></h2>
+<p>Los controladores <strong>reciben requests HTTP y devuelven responses</strong>. Su trabajo es:</p>
+<ol>
+<li>Extraer datos del request (headers, params, body, query)</li>
+<li>Verificar autenticación (vía Better-Auth)</li>
+<li>Llamar al service correspondiente</li>
+<li>Manejar errores y devolver la respuesta HTTP adecuada</li>
+</ol>
+<h3 id="151-bookcontrollerts"><a class="header" href="#151-bookcontrollerts">15.1 <code>book.controller.ts</code></a></h3>
+<pre><code class="language-typescript">import { Request, Response } from "express";
+import { auth } from "@/lib/auth.js";
+import { BookService } from "@/services/book.service.js";
+import { AppError } from "@/helper/errors.js";
+
+// GET /api/books
+export const getUserBooks = async (req: Request, res: Response) =&gt; {
+  try {
+    const session = await auth.api.getSession({ headers: req.headers });
+    if (!session) return res.status(401).json({ error: "No autorizado" });
+
+    const books = await BookService.getUserBooks(session.user.id);
+    res.json(books);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error al obtener libros" });
+  }
+};
+
+// POST /api/books/upload (multipart)
+export const uploadBook = async (req: UploadBookRequest, res: Response) =&gt; {
+  try {
+    const session = await auth.api.getSession({ headers: req.headers });
+    if (!session) return res.status(401).json({ error: "Unauthorized" });
+    if (!req.file) return res.status(400).json({ error: "File not found" });
+
+    const result = await BookService.uploadBook({
+      userId: session.user.id,
+      file: req.file,
+      body: req.body,
+    });
+    res.json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error interno al procesar el libro" });
+  }
+};
+
+// DELETE /api/books/:id
+export const deleteBook = async (req: DeleteBookRequest, res: Response) =&gt; {
+  try {
+    const session = await auth.api.getSession({ headers: req.headers });
+    if (!session) return res.status(401).json({ error: "No autorizado" });
+
+    const result = await BookService.deleteBook({
+      userId: session.user.id,
+      bookId: req.params.id,
+    });
+    res.json(result);
+  } catch (err) {
+    if (err instanceof AppError) {
+      return res.status(err.statusCode).json({ error: err.message });
+    }
+    return res.status(500).json({ error: "Error interno al eliminar el libro" });
+  }
+};
+
+// PATCH /api/books/:id/progress
+export const updateBookProgress = async (req: UpdateBookRequest, res: Response) =&gt; {
+  try {
+    const session = await auth.api.getSession({ headers: req.headers });
+    if (!session) return res.status(401).json({ error: "No autorizado" });
+
+    const result = await BookService.updateBookProgress({
+      userId: session.user.id,
+      bookId: req.params.id,
+      body: req.body,
+    });
+    return res.json(result);
+  } catch (err) {
+    if (err instanceof AppError) {
+      return res.status(err.statusCode).json({ error: err.message });
+    }
+    return res.status(500).json({ error: "Error al actualizar el progreso" });
+  }
+};
+
+// GET /api/books/:id/download
+export const downloadBookWithUrl = async (req: DownloadRequest, res: Response) =&gt; {
+  try {
+    const session = await auth.api.getSession({ headers: req.headers });
+    if (!session) return res.status(401).json({ error: "No autorizado" });
+
+    const result = await BookService.downloadBookWithUrl({
+      userId: session.user.id,
+      bookId: req.params.id,
+    });
+    return res.json(result);
+  } catch (err) {
+    if (err instanceof AppError) {
+      return res.status(err.statusCode).json({ error: err.message });
+    }
+    return res.status(500).json({ error: "Error interno al descargar el libro" });
+  }
+};
+
+// GET /api/books/:id/stream (proxy PDF → evita CORS)
+export const streamBookPdf = async (req: StreamRequest, res: Response) =&gt; {
+  try {
+    const session = await auth.api.getSession({ headers: req.headers });
+    if (!session) return res.status(401).json({ error: "No autorizado" });
+
+    const stream = await BookService.streamBookPdf({
+      userId: session.user.id,
+      bookId: req.params.id,
+    });
+
+    res.setHeader("Content-Type", stream.headers.contentType);
+    res.setHeader("Content-Disposition", stream.headers.contentDisposition);
+    if (stream.headers.contentLength) {
+      res.setHeader("Content-Length", stream.headers.contentLength.toString());
+    }
+
+    // Stream directo del PDF desde R2 al cliente
+    await streamPipeline(stream.body, res);
+  } catch (err) {
+    if (err instanceof AppError) {
+      return res.status(err.statusCode).json({ error: err.message });
+    }
+    return res.status(500).json({ error: "Error al procesar el PDF" });
+  }
+};
+</code></pre>
+<p><strong>Patrón común en todos los controladores:</strong></p>
+<pre><code class="language-typescript">try {
+  // 1. Verificar autenticación
+  const session = await auth.api.getSession({ headers: req.headers });
+  if (!session) return res.status(401).json({ error: "No autorizado" });
+
+  // 2. Ejecutar lógica de negocio
+  const result = await BookService.algo(session.user.id, ...);
+
+  // 3. Devolver respuesta
+  res.json(result);
+} catch (err) {
+  // 4. Manejar errores
+  if (err instanceof AppError) {
+    return res.status(err.statusCode).json({ error: err.message });
+  }
+  return res.status(500).json({ error: "Error interno" });
+}
+</code></pre>
+<h3 id="152-bookmarkcontrollerts"><a class="header" href="#152-bookmarkcontrollerts">15.2 <code>bookmark.controller.ts</code></a></h3>
+<pre><code class="language-typescript">// GET /api/books/:bookId/bookmarks
+export const getBookmarks = async (req, res) =&gt; {
+  const session = await auth.api.getSession({ headers: req.headers });
+  if (!session) return res.status(401).json({ error: "No autorizado" });
+
+  const bookmarks = await BookmarkService.getBookmarks(
+    session.user.id, req.params.bookId
+  );
+  res.json(bookmarks);
+};
+
+// POST /api/books/:bookId/bookmarks
+export const createBookmark = async (req, res) =&gt; {
+  const session = await auth.api.getSession({ headers: req.headers });
+  if (!session) return res.status(401).json({ error: "No autorizado" });
+
+  const { name, pageNumber, textPreview } = req.body;
+  if (!name || typeof pageNumber !== "number") {
+    return res.status(400).json({ error: "Faltan campos requeridos" });
+  }
+
+  const bookmark = await BookmarkService.createBookmark(
+    session.user.id, req.params.bookId, { name, pageNumber, textPreview }
+  );
+  res.status(201).json(bookmark);
+};
+
+// DELETE /api/books/:bookId/bookmarks/:bookmarkId
+export const deleteBookmark = async (req, res) =&gt; {
+  const session = await auth.api.getSession({ headers: req.headers });
+  if (!session) return res.status(401).json({ error: "No autorizado" });
+
+  const result = await BookmarkService.deleteBookmark(
+    session.user.id, req.params.bookId, req.params.bookmarkId
+  );
+  res.json(result);
+};
+</code></pre>
+<h3 id="153-streakcontrollerts"><a class="header" href="#153-streakcontrollerts">15.3 <code>streak.controller.ts</code></a></h3>
+<pre><code class="language-typescript">// GET /api/streak
+export const getUserStreak = async (req, res) =&gt; {
+  const session = await auth.api.getSession({ headers: req.headers });
+  if (!session) return res.status(401).json({ error: "No autorizado" });
+
+  const result = await StreakService.getUserStreak(session.user.id);
+  res.json(result);
+};
+
+// POST /api/streak/complete
+export const completeDay = async (req, res) =&gt; {
+  const session = await auth.api.getSession({ headers: req.headers });
+  if (!session) return res.status(401).json({ error: "No autorizado" });
+
+  const { clientTimestamp, clientDate } = req.body;
+  const result = await StreakService.completeDay(
+    session.user.id, clientDate, clientTimestamp
+  );
+  res.json(result);
+};
+
+// POST /api/streak/initialize
+export const initializeStreak = async (req, res) =&gt; {
+  const session = await auth.api.getSession({ headers: req.headers });
+  if (!session) return res.status(401).json({ error: "No autorizado" });
+
+  const { startDate } = req.body;
+  if (!startDate) {
+    return res.status(400).json({ error: "Se requiere la fecha de inicio" });
+  }
+
+  const result = await StreakService.initializeStreak(session.user.id, startDate);
+  res.json(result);
+};
+</code></pre>
+<hr>
+<h2 id="16-paso-13--rutas"><a class="header" href="#16-paso-13--rutas">16. Paso 13 — Rutas</a></h2>
+<p>Las rutas definen <strong>cómo se conectan las URLs con los controladores</strong>. Express usa <code>Router()</code> para agrupar rutas relacionadas.</p>
+<h3 id="bookroutests"><a class="header" href="#bookroutests"><code>book.routes.ts</code></a></h3>
+<pre><code class="language-typescript">import multer from "multer";
+import { Router } from "express";
+import {
+  uploadBook, deleteBook, getUserBooks,
+  streamBookPdf, updateBookProgress, downloadBookWithUrl
+} from "@/controllers/book.controller.js";
+
+export const book: Router = Router();
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 25 * 1024 * 1024 }, // 25MB
+});
+
+book.get("/", getUserBooks);
+book.post("/upload", upload.single("pdf"), uploadBook);
+book.get("/:id/download", downloadBookWithUrl);
+book.get("/:id/stream", streamBookPdf);
+book.patch("/:id/progress", updateBookProgress);
+book.delete("/:id", deleteBook);
+</code></pre>
+<p><strong>Notas sobre Multer:</strong></p>
+<ul>
+<li><strong><code>multer.memoryStorage()</code></strong> — Guarda el archivo en memoria (buffer) en vez de disco. Esto es importante porque después subimos el buffer a R2.</li>
+<li><strong><code>upload.single("pdf")</code></strong> — Espera un campo llamado <code>"pdf"</code> en el formulario (NO <code>"file"</code> como suele ser común).</li>
+<li><strong>Límite de 25MB</strong> — Suficiente para la mayoría de los PDFs.</li>
+</ul>
+<h3 id="bookmarkroutests"><a class="header" href="#bookmarkroutests"><code>bookmark.routes.ts</code></a></h3>
+<pre><code class="language-typescript">export const bookmark: Router = Router({ mergeParams: true });
+
+bookmark.get("/:bookId/bookmarks", getBookmarks);
+bookmark.post("/:bookId/bookmarks", createBookmark);
+bookmark.delete("/:bookId/bookmarks/:bookmarkId", deleteBookmark);
+</code></pre>
+<p><strong>¿Qué hace <code>mergeParams: true</code>?</strong></p>
+<p>Sin <code>mergeParams</code>, cuando montás un router hijo con <code>app.use("/api/books", bookmarkRoutes)</code>, los parámetros del padre (<code>bookId</code>) no son accesibles en el router hijo. Con <code>mergeParams: true</code>, Express hereda los parámetros de ruta del padre.</p>
+<p>Como bookmarks está montado bajo <code>/api/books</code>, el <code>bookId</code> viene de la URL padre.</p>
+<h3 id="streakroutests"><a class="header" href="#streakroutests"><code>streak.routes.ts</code></a></h3>
+<pre><code class="language-typescript">export const streak: Router = Router();
+
+streak.get("/streak", getUserStreak);
+streak.post("/streak/complete", completeDay);
+streak.post("/streak/initialize", initializeStreak);
+</code></pre>
+<h3 id="mapeo-de-rutas-en-serverts"><a class="header" href="#mapeo-de-rutas-en-serverts">Mapeo de rutas en <code>server.ts</code></a></h3>
+<pre><code class="language-typescript">app.use("/api/books", bookRoutes);      // GET, POST, PATCH, DELETE /api/books/...
+app.use("/api/books", bookmarkRoutes);  // GET, POST, DELETE /api/books/:bookId/bookmarks
+app.use("/api", streakRoutes);          // GET /api/streak, POST /api/streak/complete
+</code></pre>
+<p><strong>Importante:</strong> Las rutas de bookmarks se montan en <code>/api/books</code> (NO en <code>/api/books/:bookId/bookmarks</code>). El <code>bookId</code> es parte de la ruta definida en el router: <code>/:bookId/bookmarks</code>.</p>
+<hr>
+<h2 id="17-paso-14--servidor-serverts"><a class="header" href="#17-paso-14--servidor-serverts">17. Paso 14 — Servidor (server.ts)</a></h2>
+<pre><code class="language-typescript">import "dotenv/config";
+import express, { type Express } from "express";
+import cors from "cors";
+import { env } from "@/config/env.js";
+import { auth } from "@/lib/auth.js";
+import { toNodeHandler } from "better-auth/node";
+import { book as bookRoutes } from "./routes/book.routes.js";
+import { streak as streakRoutes } from "./routes/streak.routes.js";
+import { bookmark as bookmarkRoutes } from "./routes/bookmark.routes.js";
+
+const app: Express = express();
+
+// ── Middlewares globales ──
+
+// CORS: solo permite el frontend configurado
+app.use(cors({
+  origin: env.FRONTEND_URL,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+  credentials: true,
+}));
+
+// Better-Auth: maneja TODO el sistema de autenticación
+// Genera rutas como /api/auth/signup, /api/auth/login, etc.
+app.all("/api/auth/*splat", toNodeHandler(auth));
+
+// Body parsers con límite de 25MB (para uploads de PDF)
+app.use(express.json({ limit: '25mb' }));
+app.use(express.urlencoded({ extended: true, limit: '25mb' }));
+
+// ── Health check ──
+app.get("/api/health", (_req, res) =&gt; {
+  res.status(200).json({
+    success: true,
+    message: "API working correctly",
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// ── Rutas de la aplicación ──
+app.use("/api/books", bookRoutes);
+app.use("/api/books", bookmarkRoutes);
+app.use("/api", streakRoutes);
+
+// ── Inicio del servidor ──
+app.listen(env.PORT, () =&gt;
+  console.log(`Server initialize in http://localhost:${env.PORT}`),
+);
+
+export default app;
+</code></pre>
+<p><strong>Orden de los middlewares (importante):</strong></p>
+<pre><code>1. CORS               → Permite requests del frontend
+2. Better-Auth        → Maneja autenticación (antes de parsear body)
+3. express.json       → Parsea JSON bodies (25MB)
+4. express.urlencoded → Parsea form-data (25MB)
+5. Health check       → Endpoint público
+6. Rutas de negocio   → Books, Bookmarks, Streaks
+</code></pre>
+<p><strong>¿Por qué Better-Auth va antes de los body parsers?</strong> Better-Auth tiene su propio manejo de requests y no necesita los body parsers de Express. Si los pusieramos antes, podrían interferir.</p>
+<p><strong>¿Qué es <code>*splat</code>?</strong> Es una sintaxis de Express v5 para capturar <strong>todas</strong> las rutas bajo <code>/api/auth/</code>. Es como un comodín que captura <code>/api/auth/signup</code>, <code>/api/auth/login</code>, <code>/api/auth/session</code>, etc.</p>
+<hr>
+<h2 id="18-paso-15--pruebas-con-jest"><a class="header" href="#18-paso-15--pruebas-con-jest">18. Paso 15 — Pruebas con Jest</a></h2>
+<p>El proyecto usa <strong>Jest</strong> con <strong>ts-jest</strong> para testing, con soporte para ESM (ES Modules).</p>
+<h3 id="configuración-jestconfigts"><a class="header" href="#configuración-jestconfigts">Configuración (<code>jest.config.ts</code>)</a></h3>
+<pre><code class="language-typescript">const config: Config = {
+  preset: "ts-jest/presets/default-esm",
+  testEnvironment: "node",
+
+  transform: {
+    "^.+\\.ts$": [
+      "ts-jest",
+      {
+        useESM: true,
+        tsconfig: {
+          module: "NodeNext",
+          moduleResolution: "NodeNext",
+        },
+        diagnostics: { ignoreCodes: [151002] },
+      },
+    ],
+  },
+
+  moduleNameMapper: {
+    "^(\\.{1,2}/.*)\\.js$": "$1",    // Saca .js de los imports
+    "^@/(.*)\\.js$": "&lt;rootDir&gt;/src/$1",
+    "^@/(.*)$": "&lt;rootDir&gt;/src/$1",   // Resuelve @/ alias
+  },
+
+  testMatch: ["**/__tests__/**/*.test.ts"],
+};
+</code></pre>
+<h3 id="tests-existentes"><a class="header" href="#tests-existentes">Tests existentes</a></h3>
+<pre><code class="language-bash">src/__tests__/
+├── example.test.ts       # Test de ejemplo
+├── book.test.ts          # Tests de libros
+├── bookmark.test.ts      # Tests de bookmarks
+└── streak.test.ts        # Tests de streaks
+</code></pre>
+<p><strong>Ejecutar tests:</strong></p>
+<pre><code class="language-bash">pnpm test                # Una vez
+pnpm test:watch          # En modo watch (desarrollo)
+</code></pre>
+<p><strong>Nota sobre ESM:</strong> Jest necesita <code>NODE_OPTIONS=--experimental-vm-modules</code> para soportar ESM. El package.json ya lo configura en los scripts.</p>
+<hr>
+<h2 id="19-paso-16--docker-y-despliegue"><a class="header" href="#19-paso-16--docker-y-despliegue">19. Paso 16 — Docker y Despliegue</a></h2>
+<h3 id="dockerfile-multi-stage-build"><a class="header" href="#dockerfile-multi-stage-build">Dockerfile (multi-stage build)</a></h3>
+<pre><code class="language-dockerfile"># Stage 1: Builder
+FROM node:20-alpine AS builder
+RUN npm install -g pnpm
+WORKDIR /app
+
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
+
+COPY prisma ./prisma
+RUN npx prisma generate
+
+COPY tsconfig.json ./
+COPY src ./src
+RUN pnpm build
+
+# Stage 2: Runtime
+FROM node:20-alpine
+RUN apk add --no-cache postgresql-client
+RUN npm install -g pnpm
+WORKDIR /app
+
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/prisma ./prisma
+COPY better-auth_migrations ./better-auth_migrations
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+EXPOSE 3000
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["node", "dist/server.js"]
+</code></pre>
+<p><strong>Multi-stage build:</strong></p>
+<ul>
+<li><strong>Stage 1 (builder):</strong> Instala dependencias, genera Prisma client, compila TypeScript</li>
+<li><strong>Stage 2 (runtime):</strong> Solo copia lo necesario (<code>dist/</code>, <code>node_modules/</code>, <code>prisma/</code>) — imagen más chica y segura</li>
+</ul>
+<h3 id="docker-entrypointsh"><a class="header" href="#docker-entrypointsh">docker-entrypoint.sh</a></h3>
+<p>El entrypoint ejecuta migraciones de Prisma y de Better-Auth antes de iniciar el servidor.</p>
+<hr>
+<h2 id="20-resumen-de-endpoints"><a class="header" href="#20-resumen-de-endpoints">20. Resumen de Endpoints</a></h2>
+<h3 id="autenticación-better-auth"><a class="header" href="#autenticación-better-auth">Autenticación (Better-Auth)</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>URL</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><code>POST</code></td><td><code>/api/auth/signup</code></td><td>Registrarse</td></tr>
+<tr><td><code>POST</code></td><td><code>/api/auth/login</code></td><td>Iniciar sesión</td></tr>
+<tr><td><code>POST</code></td><td><code>/api/auth/logout</code></td><td>Cerrar sesión</td></tr>
+<tr><td><code>GET</code></td><td><code>/api/auth/session</code></td><td>Obtener sesión actual</td></tr>
+<tr><td><code>POST</code></td><td><code>/api/auth/verify-email</code></td><td>Verificar email</td></tr>
+<tr><td><code>POST</code></td><td><code>/api/auth/forgot-password</code></td><td>Solicitar reset de contraseña</td></tr>
+<tr><td><code>POST</code></td><td><code>/api/auth/reset-password</code></td><td>Resetear contraseña</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="health"><a class="header" href="#health">Health</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>URL</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><code>GET</code></td><td><code>/api/health</code></td><td>Health check de la API</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="books"><a class="header" href="#books">Books</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>URL</th><th>Descripción</th><th>Autenticación</th></tr>
+</thead>
+<tbody>
+<tr><td><code>GET</code></td><td><code>/api/books</code></td><td>Listar libros del usuario</td><td>✅</td></tr>
+<tr><td><code>POST</code></td><td><code>/api/books/upload</code></td><td>Subir un libro (multipart)</td><td>✅</td></tr>
+<tr><td><code>GET</code></td><td><code>/api/books/:id/download</code></td><td>Obtener URL de descarga</td><td>✅</td></tr>
+<tr><td><code>GET</code></td><td><code>/api/books/:id/stream</code></td><td>Stream del PDF (proxy)</td><td>✅</td></tr>
+<tr><td><code>PATCH</code></td><td><code>/api/books/:id/progress</code></td><td>Actualizar progreso de lectura</td><td>✅</td></tr>
+<tr><td><code>DELETE</code></td><td><code>/api/books/:id</code></td><td>Eliminar un libro</td><td>✅</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="bookmarks"><a class="header" href="#bookmarks">Bookmarks</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>URL</th><th>Descripción</th><th>Autenticación</th></tr>
+</thead>
+<tbody>
+<tr><td><code>GET</code></td><td><code>/api/books/:bookId/bookmarks</code></td><td>Listar bookmarks de un libro</td><td>✅</td></tr>
+<tr><td><code>POST</code></td><td><code>/api/books/:bookId/bookmarks</code></td><td>Crear un bookmark</td><td>✅</td></tr>
+<tr><td><code>DELETE</code></td><td><code>/api/books/:bookId/bookmarks/:bookmarkId</code></td><td>Eliminar un bookmark</td><td>✅</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="streaks"><a class="header" href="#streaks">Streaks</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>URL</th><th>Descripción</th><th>Autenticación</th></tr>
+</thead>
+<tbody>
+<tr><td><code>GET</code></td><td><code>/api/streak</code></td><td>Obtener racha del usuario</td><td>✅</td></tr>
+<tr><td><code>POST</code></td><td><code>/api/streak/complete</code></td><td>Completar el día actual</td><td>✅</td></tr>
+<tr><td><code>POST</code></td><td><code>/api/streak/initialize</code></td><td>Inicializar racha manualmente</td><td>✅</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="depuración-solo-desarrollo"><a class="header" href="#depuración-solo-desarrollo">Depuración (solo desarrollo)</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>URL</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><code>POST</code></td><td><code>/api/verify-email-debug</code></td><td>Verificar email manualmente (debug)</td></tr>
+<tr><td><code>GET</code></td><td><code>/api/user-debug</code></td><td>Ver estado de un usuario (debug)</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="21-referencia-rápida-de-comandos"><a class="header" href="#21-referencia-rápida-de-comandos">21. Referencia Rápida de Comandos</a></h2>
+<pre><code class="language-bash"># ── Desarrollo ──
+pnpm run dev                       # Iniciar servidor en modo desarrollo (hot-reload)
+
+# ── Base de datos ──
+npx prisma generate            # Generar cliente Prisma
+npx prisma migrate dev         # Crear y ejecutar migraciones
+npx prisma migrate dev --name  # Crear migración con nombre
+npx prisma studio              # Abrir Prisma Studio (UI de BD)
+
+# ── Build ──
+pnpm build                     # Generar Prisma client + compilar TS
+
+# ── Tests ──
+pnpm test                      # Ejecutar tests
+pnpm test:watch                # Tests en modo watch
+
+# ── Docker ──
+docker build -t bookteka-api . # Build de la imagen
+docker run -p 3000:3000 bookteka-api  # Correr el contenedor
+
+# ── Mejores prácticas de desarrollo ──
+
+# 1. Siempre corré las migraciones después de cambiar el schema
+npx prisma migrate dev
+
+# 2. Si cambiás el schema, regenerá el cliente
+pnpm prisma:generate
+
+# 3. Para testear endpoints, usá los archivos .http
+#    (requiere extensión REST Client en VS Code)
+#    → http/books.http
+#    → http/bookmarks.http
+#    → http/streaks.http
+
+# 4. SIEMPRE verificá la sesión del usuario en los controladores
+const session = await auth.api.getSession({ headers: req.headers });
+if (!session) return res.status(401).json({ error: "No autorizado" });
+
+# 5. Usá AppError en los services para errores controlados
+throw new AppError("NOT_FOUND", 404, "Mensaje descriptivo");
+
+# 6. En los controllers, atrapá AppError para status codes específicos
+if (err instanceof AppError) {
+  return res.status(err.statusCode).json({ error: err.message });
+}
+</code></pre>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../docs/17-fastify-backend.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../docs/20-nextjs-init.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../docs/17-fastify-backend.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../docs/20-nextjs-init.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>
