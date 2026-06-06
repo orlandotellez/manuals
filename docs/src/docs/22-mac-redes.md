@@ -2,7 +2,7 @@
 
 ---
 
-## ÍNDICE
+## Índice
 
 - [Introducción a la Capa de Enlace de Datos](#introducción-a-la-capa-de-enlace-de-datos)
 - [¿Qué es una Dirección MAC?](#qué-es-una-dirección-mac)

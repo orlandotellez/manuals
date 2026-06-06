@@ -1,5 +1,22 @@
 # Guía completa de Prisma 6
 
+## Índice
+
+1. [¿Qué es Prisma?](#qué-es-prisma)
+2. [Instalación inicial (desde 0)](#instalación-inicial-desde-0)
+3. [Flujo de trabajo típico](#flujo-de-trabajo-típico)
+4. [Comandos esenciales de Prisma](#comandos-esenciales-de-prisma)
+5. [El error común: "Cannot read properties of undefined"](#el-error-común-cannot-read-properties-of-undefined)
+6. [CRUD básico con Prisma](#crud-básico-con-prisma)
+7. [Relaciones entre modelos](#relaciones-entre-modelos)
+8. [Casos especiales](#casos-especiales)
+9. [Troubleshooting común](#troubleshooting-común)
+10. [Buenas prácticas](#buenas-prácticas)
+11. [Estructura de archivos](#estructura-de-archivos)
+12. [Resumen del flujo de desarrollo](#resumen-del-flujo-de-desarrollo)
+
+---
+
 ## ¿Qué es Prisma?
 
 Prisma es un **ORM (Object-Relational Mapper)** que te permite trabajar con bases de datos de forma тип safe y con una sintaxis más limpia que SQL puro. En lugar de escribir consultas SQL, trabajas con objetos JavaScript/TypeScript.

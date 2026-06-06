@@ -2,7 +2,7 @@
 
 ---
 
-## ÍNDICE
+## Índice
 
 - [¿Qué es una Red?](#qué-es-una-red)
 - [Ventajas de las Redes](#ventajas-de-las-redes)

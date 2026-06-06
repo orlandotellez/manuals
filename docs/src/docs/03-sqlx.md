@@ -1,3 +1,30 @@
+# Manual de SQLx con Rust (Migraciones y uso básico)
+
+## Índice
+
+1. [Instalar SQLx CLI](#instalar-sqlx-cli)
+2. [Si sigue sin funcionar](#si-sigue-sin-funcionar)
+3. [¿Qué es SQLx?](#qué-es-sqlx)
+4. [Instalación](#instalación)
+5. [Crear proyecto Rust](#crear-proyecto-rust)
+6. [Dependencias en Cargo.toml](#dependencias-en-cargotoml)
+7. [Variables de entorno](#variables-de-entorno)
+8. [Crear migraciones](#crear-migraciones)
+9. [Escribir migración](#escribir-migración)
+10. [Ejecutar migraciones](#ejecutar-migraciones)
+11. [Revertir migración](#revertir-migración)
+12. [Conexión a la base de datos](#conexión-a-la-base-de-datos)
+13. [Usar migraciones desde Rust](#usar-migraciones-desde-rust)
+14. [Insertar datos](#insertar-datos)
+15. [Obtener datos](#obtener-datos)
+16. [Usar structs](#usar-structs)
+17. [Verificación de queries en compilación](#verificación-de-queries-en-compilación)
+18. [Comandos importantes de SQLx CLI](#comandos-importantes-de-sqlx-cli)
+19. [Estructura típica del proyecto](#estructura-típica-del-proyecto)
+20. [Buenas prácticas](#buenas-prácticas)
+
+---
+
 # 1. Instalar SQLx CLI
 
 ```bash
@@ -53,8 +80,6 @@ source ~/.zshrc
 ```
 
 ---
-
-# Manual de SQLx con Rust (Migraciones y uso básico)
 
 ## 1. ¿Qué es SQLx?
 

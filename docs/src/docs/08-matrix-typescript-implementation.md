@@ -5,6 +5,18 @@ Este documento explica cómo funciona la integración con Matrix en esta app, si
 
 ---
 
+## Índice
+
+1. [ARQUITECTURA GENERAL](#arquitectura-general)
+2. [TIPOS DE DATOS (Types)](#tipos-de-datos-types)
+3. [SERVICIOS (API REST)](#servicios-api-rest)
+4. [HOOKS PERSONALIZADOS](#hooks-personalizados)
+5. [FLUJO COMPLETO DE UN CHAT](#flujo-completo-de-un-chat)
+6. [ENDPOINTS DE MATRIX API USADOS](#endpoints-de-matrix-api-usados)
+7. [CONSIDERACIONES IMPORTANTES](#consideraciones-importantes)
+
+---
+
 ## 1. ARQUITECTURA GENERAL
 
 La app se conecta a un servidor **Matrix Synapse** usando la REST API v3. No hay conexión directa WebSocket - el tiempo real se maneja mediante **long polling** al endpoint `/sync`.

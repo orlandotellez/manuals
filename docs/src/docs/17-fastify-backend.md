@@ -5,7 +5,7 @@
 
 ---
 
-## ÍNDICE
+## Índice
 
 1. [Introducción y Arquitectura](#1-introducción-y-arquitectura)
 2. [Prerequisitos](#2-prerequisitos)

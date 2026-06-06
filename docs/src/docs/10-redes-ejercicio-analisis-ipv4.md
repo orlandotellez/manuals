@@ -6,7 +6,7 @@ Este manual te guiará paso a paso para analizar direcciones IPv4 y determinar l
 
 ---
 
-## ÍNDICE
+## Índice
 
 - [Conceptos Fundamentales](#1-conceptos-fundamentales)
 - [Metodología Paso a Paso](#2-metodología-paso-a-paso)

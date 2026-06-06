@@ -1,4 +1,4 @@
-## ÍNDICE
+## Índice
 
 - [Qué es NAT y cómo actúa en nuestra red](#qué-es-nat-y-cómo-actúa-en-nuestra-red)
   - [Funcionamiento de NAT](#funcionamiento-de-nat)

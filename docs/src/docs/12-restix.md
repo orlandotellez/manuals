@@ -2,6 +2,19 @@
 
 Este manual te permite replicar el proyecto Restix desde cero. Restix es un cliente TUI (Terminal User Interface) para Redis construido con Rust y la librería ratatui.
 
+
+## Índice
+
+1. [Requisitos Previos](#requisitos-previos)
+2. [Paso 1: Crear el Proyecto](#paso-1-crear-el-proyecto)
+3. [Paso 2: Configurar Cargo.toml](#paso-2-configurar-cargotoml)
+4. [Paso 3: Estructura de Archivos](#paso-3-estructura-de-archivos)
+5. [Paso 4: Módulos del Proyecto](#paso-4-módulos-del-proyecto)
+6. [Paso 5: Compilar y Ejecutar](#paso-5-compilar-y-ejecutar)
+
+---
+
+
 ## Requisitos Previos
 
 - Rust instalado (https://rustup.rs)

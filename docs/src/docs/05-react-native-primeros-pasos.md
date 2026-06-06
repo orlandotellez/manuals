@@ -2,6 +2,19 @@
 
 Este manual te guiará paso a paso para entender y desarrollar una aplicación de React Native desde 0. Usamos **Expo** con **expo-router**, que es la forma más moderna y recomendada de crear apps con React Native.
 
+
+## Índice
+
+1. [Requisitos Previos](#1-requisitos-previos)
+2. [Instalación del Proyecto](#2-instalación-del-proyecto)
+3. [Ejecutar la Aplicación](#3-ejecutar-la-aplicación)
+4. [Estructura del Proyecto](#4-estructura-del-proyecto)
+5. [Explicación de los Archivos Clave](#5-explicación-de-los-archivos-clave)
+6. [Cómo Agregar Nuevas Funcionalidades](#6-cómo-agregar-nuevas-funcionalidades)
+7. [Conceptos Fundamentales que Debes Dominar](#7-conceptos-fundamentales-que-debes-dominar)
+8. [Buenas Prácticas](#8-buenas-prácticas)
+9. [Comandos Útiles](#9-comandos-útiles)
+
 ---
 
 ## 1. Requisitos Previos

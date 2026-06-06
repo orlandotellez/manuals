@@ -4,7 +4,7 @@ Este es el manual definitivo para entender, mantener y extender este backend. Es
 
 ---
 
-## TABLA DE CONTENIDOS
+## Índice
 
 1. [Arquitectura General del Proyecto](#1-arquitectura-general-del-proyecto)
 2. [Stack Tecnológico](#2-stack-tecnológico)

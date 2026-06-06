@@ -2,7 +2,7 @@
 
 ---
 
-## ÍNDICE
+## Índice
 
 - [¿Qué es una Dirección IP?](#qué-es-una-dirección-ip)
   - [El Protocolo de Internet (IP)](#el-protocolo-de-internet-ip)

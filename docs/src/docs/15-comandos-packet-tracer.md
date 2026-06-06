@@ -3,7 +3,7 @@
 
 ---
 
-## ÍNDICE
+## Índice
 1. [Configuración del Router](#1-configuración-del-router)
 2. [Configuración del Switch](#2-configuración-del-switch)
 3. [DHCP en el Router](#3-dhcp-en-el-router)

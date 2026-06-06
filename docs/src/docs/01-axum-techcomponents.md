@@ -2,6 +2,22 @@
 
 Este manual proporciona una guía completa para configurar, comprender y ejecutar el proyecto de backend desarrollado en Rust utilizando el framework Axum. El proyecto implementa un sistema de autenticación robusto con PostgreSQL como base de datos principal, incluyendo gestión de sesiones, tokens JWT y manejo de cuentas de usuario.
 
+
+## Índice
+
+1. [Requisitos Previos](#requisitos-previos)
+2. [Estructura de Directorios](#estructura-de-directorios)
+3. [Cargo.toml](#cargotoml)
+4. [Variables de Entorno](#variables-de-entorno)
+5. [Migración de Base de Datos](#migración-de-base-de-datos)
+6. [Módulos Core](#módulos-core)
+7. [Shared Module](#shared-module)
+8. [Feature Auth Completa](#feature-auth-completa)
+9. [Cómo Ejecutar](#cómo-ejecutar)
+
+---
+
+
 ## 1. Requisitos Previos
 
 Antes de comenzar con la configuración del proyecto, es necesario contar con las herramientas fundamentales que permiten compilar y ejecutar aplicaciones Rust junto con la base de datos PostgreSQL. A continuación se detallan los pasos para la instalación de cada componente necesario en el sistema.

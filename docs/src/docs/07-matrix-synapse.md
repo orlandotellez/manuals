@@ -1,5 +1,28 @@
 # Guía Completa: Instalación y Configuración de Matrix Synapse con Docker
 
+
+## Índice
+
+1. [Requisitos previos](#requisitos-previos)
+2. [Instalación de Docker y Docker Compose](#instalación-de-docker-y-docker-compose)
+3. [Crear el proyecto](#crear-el-proyecto)
+4. [Generar configuración inicial de Synapse](#generar-configuración-inicial-de-synapse)
+5. [Configurar Docker Compose](#configurar-docker-compose)
+6. [Levantar los servicios](#levantar-los-servicios)
+7. [Permisos de archivos](#permisos-de-archivos)
+8. [Gestión de usuarios](#gestión-de-usuarios)
+9. [API de Matrix](#api-de-matrix)
+10. [Media (archivos)](#media-archivos)
+11. [Estructura de almacenamiento](#estructura-de-almacenamiento)
+12. [Relación entre base de datos y archivos](#relación-entre-base-de-datos-y-archivos)
+13. [Reconfigurar base de datos](#reconfigurar-base-de-datos)
+14. [Problemas comunes](#problemas-comunes)
+15. [Generar access token](#generar-access-token)
+16. [Consultar información de usuario (admin)](#consultar-información-de-usuario-admin)
+17. [Listar archivos en una room](#listar-archivos-en-una-room)
+
+---
+
 ## 1. Requisitos previos
 
 * Sistema basado en Linux (Ubuntu recomendado)

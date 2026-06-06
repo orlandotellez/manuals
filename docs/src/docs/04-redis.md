@@ -4,6 +4,32 @@ Redis es una base de datos en memoria orientada a estructuras de datos. Se utili
 
 ---
 
+## Índice
+
+1. [¿Qué es Redis?](#qué-es-redis)
+2. [Instalación](#instalación)
+3. [Uso básico con redis-cli](#uso-básico-con-redis-cli)
+4. [Tipos de datos](#tipos-de-datos)
+5. [Comandos esenciales](#comandos-esenciales)
+6. [Monitoreo](#monitoreo)
+7. [Patrón Cache-Aside](#patrón-cache-aside)
+8. [Ejemplo de clave](#ejemplo-de-clave)
+9. [Invalidación de caché](#invalidación-de-caché)
+10. [Integración con Rust](#integración-con-rust)
+11. [Persistencia](#persistencia)
+12. [Configuración importante](#configuración-importante)
+13. [Performance](#performance)
+14. [Errores comunes](#errores-comunes)
+15. [Comandos avanzados](#comandos-avanzados)
+16. [Ejemplo completo](#ejemplo-completo)
+17. [Arquitectura típica](#arquitectura-típica)
+18. [Cuándo usar Redis](#cuándo-usar-redis)
+19. [Conceptos Fundamentales](#conceptos-fundamentales)
+20. [Comandos Esenciales (CLI)](#comandos-esenciales-cli)
+21. [Resumen](#resumen)
+
+---
+
 # 1. ¿Qué es Redis?
 
 Redis (Remote Dictionary Server) es:

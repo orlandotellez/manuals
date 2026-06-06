@@ -2,7 +2,7 @@
 
 ---
 
-## ÍNDICE
+## Índice
 
 - [¿Qué es un Modelo de Red?](#qué-es-un-modelo-de-red)
 - [Importancia de los Modelos de Red](#importancia-de-los-modelos-de-red)
