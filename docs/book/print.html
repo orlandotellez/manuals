@@ -36,10 +36,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-7a72d1de.js";
+            window.path_to_searchindex_js = "searchindex-59698ace.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-2d0c9c40.js"></script>
+        <script src="toc-aad71852.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -184,6 +184,10 @@
 <li><a href="#manual-de-usuario-backend-rust-con-axum">Backend con Axum (techcomponents)</a></li>
 <li><a href="#manual-completo-backend-rasflow---rust--axum">Backend con Axum (rasflow)</a></li>
 <li><a href="#restix---manual-de-desarrollo-paso-a-paso">Restix</a></li>
+</ul>
+<h2 id="tauri"><a class="header" href="#tauri">Tauri</a></h2>
+<ul>
+<li><a href="#manual-tauri-android--dev-debug-apk-y-release-apk">Crear apk con Tauri</a></li>
 </ul>
 <h2 id="fastifynodejstypescript"><a class="header" href="#fastifynodejstypescript">Fastify(NodeJs/TypeScript)</a></h2>
 <ul>
@@ -4285,10 +4289,258 @@ cargo run
 <pre><code class="language-bash">REDIS_URL=redis://tu-servidor:6379 cargo run
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div>
+<h1 id="manual-tauri-android--dev-debug-apk-y-release-apk"><a class="header" href="#manual-tauri-android--dev-debug-apk-y-release-apk">Manual: Tauri Android — Dev, Debug APK y Release APK</a></h1>
+<h2 id="índice-3"><a class="header" href="#índice-3">Índice</a></h2>
+<ol>
+<li><a href="#1-requisitos-previos">Requisitos previos</a></li>
+<li><a href="#2-configuración-inicial-del-proyecto">Configuración inicial del proyecto</a>
+<ul>
+<li>2.1 <a href="#21-inicializar-el-proyecto-android">Inicializar el proyecto Android</a></li>
+<li>2.2 <a href="#22-configurar-viteconfigts">Configurar vite.config.ts</a></li>
+<li>2.3 <a href="#23-variables-de-entorno">Variables de entorno</a></li>
+</ul>
+</li>
+<li><a href="#3-agregar-build-tools-al-path">Agregar build-tools al PATH</a></li>
+<li><a href="#4-modo-desarrollo-tauri-android-dev">Modo desarrollo (tauri android dev)</a>
+<ul>
+<li>4.1 <a href="#41-conectar-el-teléfono-por-usb">Conectar el teléfono por USB</a></li>
+<li>4.2 <a href="#42-configurar-adb-reverse-importante">Configurar ADB Reverse</a></li>
+<li>4.3 <a href="#43-problema-con-cloudflare-warp-u-otras-vpns">Problema con Cloudflare WARP u otras VPNs</a></li>
+<li>4.4 <a href="#44-correr-el-dev-server">Correr el dev server</a></li>
+</ul>
+</li>
+<li><a href="#5-apk-de-debug-para-pruebas-rápidas">APK de Debug</a></li>
+<li><a href="#6-apk-de-release-para-compartir-por-internet">APK de Release</a>
+<ul>
+<li>6.1 <a href="#61-crear-el-keystore-solo-una-vez">Crear el Keystore</a></li>
+<li>6.2 <a href="#62-configurar-envproduction">Configurar .env.production</a></li>
+<li>6.3 <a href="#63-compilar-el-apk-de-release">Compilar el APK de release</a></li>
+<li>6.4 <a href="#64-firmar-el-apk-manualmente">Firmar el APK manualmente</a></li>
+</ul>
+</li>
+<li><a href="#7-instalar-el-apk-en-android">Instalar el APK en Android</a></li>
+<li><a href="#8-resumen-rápido-de-comandos">Resumen rápido de comandos</a></li>
+<li><a href="#9-solución-de-problemas-comunes">Solución de problemas comunes</a></li>
+</ol>
+<hr>
+<h2 id="requisitos-previos-1"><a class="header" href="#requisitos-previos-1">Requisitos previos</a></h2>
+<ul>
+<li>Android SDK instalado (<code>~/Android/Sdk</code>)</li>
+<li>NDK instalado (Tauri lo detecta automáticamente)</li>
+<li>ADB disponible en el PATH</li>
+<li>Java JDK instalado</li>
+<li>Rust con target Android: <code>rustup target add aarch64-linux-android</code></li>
+</ul>
+<hr>
+<h2 id="2-configuración-inicial-del-proyecto"><a class="header" href="#2-configuración-inicial-del-proyecto">2. Configuración inicial del proyecto</a></h2>
+<h3 id="21-inicializar-el-proyecto-android"><a class="header" href="#21-inicializar-el-proyecto-android">2.1 Inicializar el proyecto Android</a></h3>
+<pre><code class="language-bash">pnpm tauri android init
+</code></pre>
+<h3 id="22-configurar-viteconfigts"><a class="header" href="#22-configurar-viteconfigts">2.2 Configurar <code>vite.config.ts</code></a></h3>
+<p>El host debe escuchar en <code>0.0.0.0</code> para que el teléfono pueda conectarse:</p>
+<pre><code class="language-ts">const host = process.env.TAURI_DEV_HOST;
+
+export default defineConfig({
+  server: {
+    port: 1420,
+    strictPort: true,
+    host: host || "0.0.0.0", // importante: no dejar false
+    hmr: host
+      ? { protocol: "ws", host, port: 1421 }
+      : undefined,
+    watch: {
+      ignored: ["**/src-tauri/**"],
+    },
+  },
+});
+</code></pre>
+<h3 id="23-variables-de-entorno"><a class="header" href="#23-variables-de-entorno">2.3 Variables de entorno</a></h3>
+<p>Crear <code>.env</code>:</p>
+<pre><code class="language-env">VITE_API_URL="http://192.168.0.9:3000/api/v1"
+</code></pre>
+<blockquote>
+<p>⚠️ No uses <code>localhost</code> en la IP del backend para el APK de release — usa la IP real de tu PC o un servidor público.</p>
+</blockquote>
+<hr>
+<h2 id="3-agregar-build-tools-al-path"><a class="header" href="#3-agregar-build-tools-al-path">3. Agregar build-tools al PATH</a></h2>
+<p>Necesario para <code>zipalign</code> y <code>apksigner</code>:</p>
+<pre><code class="language-bash"># Ver versiones instaladas
+ls ~/Android/Sdk/build-tools/
+
+# Exportar la versión (cambia 35.0.0 por la tuya)
+export PATH="$PATH:$HOME/Android/Sdk/build-tools/35.0.0"
+
+# Para que sea permanente
+echo 'export PATH="$PATH:$HOME/Android/Sdk/build-tools/35.0.0"' &gt;&gt; ~/.bashrc
+source ~/.bashrc
+</code></pre>
+<hr>
+<h2 id="4-modo-desarrollo-tauri-android-dev"><a class="header" href="#4-modo-desarrollo-tauri-android-dev">4. Modo desarrollo (<code>tauri android dev</code>)</a></h2>
+<h3 id="41-conectar-el-teléfono-por-usb"><a class="header" href="#41-conectar-el-teléfono-por-usb">4.1 Conectar el teléfono por USB</a></h3>
+<p>Habilitar <strong>Depuración USB</strong> en el teléfono:</p>
+<ul>
+<li>Configuración → Acerca del teléfono → toca “Número de compilación” 7 veces</li>
+<li>Configuración → Opciones de desarrollador → Depuración USB ✓</li>
+</ul>
+<p>Verificar que el teléfono es detectado:</p>
+<pre><code class="language-bash">adb devices
+# Debe mostrar: XXXXXXX    device
+</code></pre>
+<p>Si dice <code>unauthorized</code>, desbloquea el teléfono y acepta el popup.</p>
+<h3 id="42-configurar-adb-reverse-importante"><a class="header" href="#42-configurar-adb-reverse-importante">4.2 Configurar ADB Reverse (importante)</a></h3>
+<p>Esto permite que el teléfono acceda al dev server y backend de tu PC por USB sin depender del WiFi:</p>
+<pre><code class="language-bash">adb reverse tcp:1420 tcp:1420   # Vite dev server
+adb reverse tcp:1421 tcp:1421   # Vite HMR (hot reload)
+adb reverse tcp:3000 tcp:3000   # Tu backend API
+</code></pre>
+<blockquote>
+<p>Repite estos comandos cada vez que desconectes y reconectes el teléfono.</p>
+</blockquote>
+<h3 id="43-problema-con-cloudflare-warp-u-otras-vpns"><a class="header" href="#43-problema-con-cloudflare-warp-u-otras-vpns">4.3 Problema con Cloudflare WARP u otras VPNs</a></h3>
+<p>Si tienes una VPN activa (WARP, Mullvad, etc.), Tauri puede detectar la IP de la VPN en vez de tu IP local, y el teléfono no podrá conectarse.</p>
+<p>Solución:</p>
+<pre><code class="language-bash"># Opción A: desconecta la VPN antes de correr dev
+warp-cli disconnect
+
+# Opción B: fuerza la IP local manualmente
+TAURI_DEV_HOST=192.168.0.9 pnpm tauri android dev
+</code></pre>
+<h3 id="44-correr-el-dev-server"><a class="header" href="#44-correr-el-dev-server">4.4 Correr el dev server</a></h3>
+<pre><code class="language-bash">pnpm tauri android dev
+</code></pre>
+<p>Tauri compilará, instalará la app en el teléfono y abrirá el WebView apuntando al dev server.</p>
+<hr>
+<h2 id="5-apk-de-debug-para-pruebas-rápidas"><a class="header" href="#5-apk-de-debug-para-pruebas-rápidas">5. APK de Debug (para pruebas rápidas)</a></h2>
+<p>No requiere firma. Útil para probar en tu propio dispositivo.</p>
+<pre><code class="language-bash">pnpm tauri android build --debug
+</code></pre>
+<p>El APK queda en:</p>
+<pre><code>src-tauri/gen/android/app/build/outputs/apk/debug/app-debug.apk
+</code></pre>
+<p>Instalar directo por USB:</p>
+<pre><code class="language-bash">adb install src-tauri/gen/android/app/build/outputs/apk/debug/app-debug.apk
+</code></pre>
+<blockquote>
+<p>⚠️ El APK debug <strong>no se puede subir a Play Store</strong> y puede ser más lento, pero funciona para compartir con testers.</p>
+</blockquote>
+<hr>
+<h2 id="6-apk-de-release-para-compartir-por-internet"><a class="header" href="#6-apk-de-release-para-compartir-por-internet">6. APK de Release (para compartir por internet)</a></h2>
+<h3 id="61-crear-el-keystore-solo-una-vez"><a class="header" href="#61-crear-el-keystore-solo-una-vez">6.1 Crear el Keystore (solo una vez)</a></h3>
+<p>El keystore es tu firma digital. <strong>Guárdalo en un lugar seguro — si lo pierdes no podrás actualizar la app.</strong></p>
+<pre><code class="language-bash">keytool -genkey -v \
+  -keystore mi-app.keystore \
+  -alias mi-app \
+  -keyalg RSA \
+  -keysize 2048 \
+  -validity 10000
+</code></pre>
+<p>Te pedirá:</p>
+<ul>
+<li>Contraseña del keystore</li>
+<li>Nombre, apellido, organización, ciudad, país (puedes dejar en blanco con Enter)</li>
+<li>Confirmar contraseña</li>
+</ul>
+<p>Verificar los alias del keystore:</p>
+<pre><code class="language-bash">keytool -list -keystore mi-app.keystore
+</code></pre>
+<h3 id="62-configurar-envproduction"><a class="header" href="#62-configurar-envproduction">6.2 Configurar <code>.env.production</code></a></h3>
+<pre><code class="language-env">VITE_API_URL="https://tu-servidor-publico.com/api/v1"
+</code></pre>
+<blockquote>
+<p>Si el APK es solo para tu red local (mismo WiFi), puedes usar tu IP local: <code>http://192.168.0.9:3000/api/v1</code></p>
+</blockquote>
+<h3 id="63-compilar-el-apk-de-release"><a class="header" href="#63-compilar-el-apk-de-release">6.3 Compilar el APK de release</a></h3>
+<pre><code class="language-bash">pnpm tauri android build
+</code></pre>
+<p>Genera un APK <strong>sin firmar</strong> en:</p>
+<pre><code>src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk
+</code></pre>
+<h3 id="64-firmar-el-apk-manualmente"><a class="header" href="#64-firmar-el-apk-manualmente">6.4 Firmar el APK manualmente</a></h3>
+<p><strong>Paso 1 — Alinear el APK:</strong></p>
+<pre><code class="language-bash">zipalign -v 4 \
+  src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk \
+  app-aligned.apk
+</code></pre>
+<p><strong>Paso 2 — Firmar:</strong></p>
+<pre><code class="language-bash">apksigner sign \
+  --ks mi-app.keystore \
+  --ks-key-alias mi-app \
+  --ks-pass pass:tu-contraseña \
+  --key-pass pass:tu-contraseña \
+  --out app-release.apk \
+  app-aligned.apk
+</code></pre>
+<p><strong>Paso 3 — Verificar la firma:</strong></p>
+<pre><code class="language-bash">apksigner verify app-release.apk
+# Debe decir: Verified using v1 scheme, v2 scheme...
+</code></pre>
+<p><strong>Limpiar archivos temporales:</strong></p>
+<pre><code class="language-bash">rm app-aligned.apk
+</code></pre>
+<p>El APK listo para compartir es <code>app-release.apk</code>.</p>
+<hr>
+<h2 id="7-instalar-el-apk-en-android"><a class="header" href="#7-instalar-el-apk-en-android">7. Instalar el APK en Android</a></h2>
+<h3 id="desde-pc-por-usb"><a class="header" href="#desde-pc-por-usb">Desde PC por USB:</a></h3>
+<pre><code class="language-bash">adb install app-release.apk
+</code></pre>
+<h3 id="desde-el-teléfono-descarga-directa"><a class="header" href="#desde-el-teléfono-descarga-directa">Desde el teléfono (descarga directa):</a></h3>
+<p>El usuario debe activar la instalación de fuentes desconocidas:</p>
+<ul>
+<li><strong>Android 8+:</strong> Configuración → Apps → (navegador o gestor de archivos) → Instalar apps desconocidas → Permitir</li>
+<li><strong>Android 7 o menos:</strong> Configuración → Seguridad → Fuentes desconocidas ✓</li>
+</ul>
+<p>Luego abrir el <code>.apk</code> desde el gestor de archivos y presionar <strong>Instalar</strong>.</p>
+<hr>
+<h2 id="8-resumen-rápido-de-comandos"><a class="header" href="#8-resumen-rápido-de-comandos">8. Resumen rápido de comandos</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Acción</th><th>Comando</th></tr>
+</thead>
+<tbody>
+<tr><td>Inicializar Android</td><td><code>pnpm tauri android init</code></td></tr>
+<tr><td>Dev con hot reload</td><td><code>pnpm tauri android dev</code></td></tr>
+<tr><td>ADB reverse (puertos)</td><td><code>adb reverse tcp:1420 tcp:1420</code></td></tr>
+<tr><td>Build debug</td><td><code>pnpm tauri android build --debug</code></td></tr>
+<tr><td>Build release (sin firma)</td><td><code>pnpm tauri android build</code></td></tr>
+<tr><td>Crear keystore</td><td><code>keytool -genkey -v -keystore mi-app.keystore -alias mi-app -keyalg RSA -keysize 2048 -validity 10000</code></td></tr>
+<tr><td>Alinear APK</td><td><code>zipalign -v 4 unsigned.apk aligned.apk</code></td></tr>
+<tr><td>Firmar APK</td><td><code>apksigner sign --ks mi-app.keystore ...</code></td></tr>
+<tr><td>Verificar firma</td><td><code>apksigner verify app-release.apk</code></td></tr>
+<tr><td>Instalar por USB</td><td><code>adb install app-release.apk</code></td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="9-solución-de-problemas-comunes"><a class="header" href="#9-solución-de-problemas-comunes">9. Solución de problemas comunes</a></h2>
+<h3 id="neterr_connection_refused-en-el-webview"><a class="header" href="#neterr_connection_refused-en-el-webview"><code>net::ERR_CONNECTION_REFUSED</code> en el WebView</a></h3>
+<ul>
+<li>Verifica que Vite escucha en <code>0.0.0.0</code> (no en <code>false</code>)</li>
+<li>Corre <code>adb reverse</code> para todos los puertos necesarios</li>
+<li>Desconecta VPNs antes de correr <code>tauri android dev</code></li>
+</ul>
+<h3 id="failed-to-load-signer-entry-does-not-contain-a-key"><a class="header" href="#failed-to-load-signer-entry-does-not-contain-a-key"><code>Failed to load signer: entry does not contain a key</code></a></h3>
+<p>El alias del keystore no coincide. Verifica con:</p>
+<pre><code class="language-bash">keytool -list -keystore mi-app.keystore
+</code></pre>
+<h3 id="output-file-already-exists-en-zipalign"><a class="header" href="#output-file-already-exists-en-zipalign"><code>Output file already exists</code> en zipalign</a></h3>
+<p>Borra el archivo anterior:</p>
+<pre><code class="language-bash">rm -f app-aligned.apk app-release.apk
+</code></pre>
+<h3 id="zipalign-orden-no-encontrada"><a class="header" href="#zipalign-orden-no-encontrada"><code>zipalign: orden no encontrada</code></a></h3>
+<p>Agrega el build-tools al PATH:</p>
+<pre><code class="language-bash">export PATH="$PATH:$HOME/Android/Sdk/build-tools/35.0.0"
+</code></pre>
+<h3 id="la-app-instala-pero-no-carga-datos-failed-to-fetch"><a class="header" href="#la-app-instala-pero-no-carga-datos-failed-to-fetch">La app instala pero no carga datos (failed to fetch)</a></h3>
+<ul>
+<li>En debug/dev: corre <code>adb reverse tcp:3000 tcp:3000</code></li>
+<li>En release: el <code>VITE_API_URL</code> debe apuntar a un servidor público o IP local accesible</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div>
 <h1 id="fastify-init---manual-técnico-completo"><a class="header" href="#fastify-init---manual-técnico-completo">Fastify Init - Manual Técnico Completo</a></h1>
 <p>Este manual documenta todo el código del proyecto, explicando cada función, configuración e implementación.</p>
 <hr>
-<h2 id="índice-3"><a class="header" href="#índice-3">Índice</a></h2>
+<h2 id="índice-4"><a class="header" href="#índice-4">Índice</a></h2>
 <ol>
 <li><a href="#estructura-del-proyecto">Estructura del Proyecto</a></li>
 <li><a href="#configuración-principal">Configuración Principal</a></li>
@@ -7085,7 +7337,7 @@ bun start
 <p><strong>Stack:</strong> Node.js + TypeScript + Fastify + Prisma + PostgreSQL + Redis + JWT<br><strong>Patrón:</strong> Clean Architecture (Domain-Driven) con módulos</p>
 </blockquote>
 <hr>
-<h2 id="índice-4"><a class="header" href="#índice-4">Índice</a></h2>
+<h2 id="índice-5"><a class="header" href="#índice-5">Índice</a></h2>
 <ol>
 <li><a href="#1-introducción-y-arquitectura">Introducción y Arquitectura</a></li>
 <li><a href="#2-prerequisitos">Prerequisitos</a></li>
@@ -11122,7 +11374,7 @@ npm run dev
 <p><strong>Stack:</strong> Node.js + TypeScript + Express v5 + Prisma + PostgreSQL + Cloudflare R2 + Better-Auth<br><strong>Patrón:</strong> MVC con capa de servicios y repositorios</p>
 </blockquote>
 <hr>
-<h2 id="índice-5"><a class="header" href="#índice-5">ÍNDICE</a></h2>
+<h2 id="índice-6"><a class="header" href="#índice-6">ÍNDICE</a></h2>
 <ol>
 <li><a href="#1-introducción-y-stack-tecnológico">Introducción y Stack Tecnológico</a></li>
 <li><a href="#2-estructura-del-proyecto">Estructura del Proyecto</a></li>
@@ -13170,7 +13422,7 @@ if (err instanceof AppError) {
 </blockquote>
 <p>Manual de referencia para iniciar proyectos frontend con Next.js, basado en la arquitectura y convenciones establecidas en el proyecto.</p>
 <hr>
-<h2 id="índice-6"><a class="header" href="#índice-6">Índice</a></h2>
+<h2 id="índice-7"><a class="header" href="#índice-7">Índice</a></h2>
 <ol>
 <li><a href="#1-stack-principal">Stack Principal</a></li>
 <li><a href="#2-creación-del-proyecto">Creación del Proyecto</a></li>
@@ -15152,7 +15404,7 @@ export const getInitials = (name: string) =&gt; {
 <h1 id="manual-de-postgresql-en-debian--instalación-y-configuración-completa"><a class="header" href="#manual-de-postgresql-en-debian--instalación-y-configuración-completa">Manual de PostgreSQL en Debian — Instalación y Configuración Completa</a></h1>
 <p>PostgreSQL es un sistema de gestión de bases de datos relacional de código abierto, conocido por su robustez, extensibilidad y cumplimiento estricto del estándar SQL. Este manual cubre la instalación completa usando el repositorio oficial de PostgreSQL, la configuración del usuario <code>dev-espada</code> y la forma de acceder directamente con <code>psql</code> sin parámetros adicionales.</p>
 <hr>
-<h2 id="índice-7"><a class="header" href="#índice-7">Índice</a></h2>
+<h2 id="índice-8"><a class="header" href="#índice-8">Índice</a></h2>
 <ol>
 <li><a href="#1-requisitos-previos-1">Requisitos Previos</a></li>
 <li><a href="#2-desinstalación-completa-hacer-primero-si-ya-tienes-postgres">Desinstalación Completa</a></li>
@@ -15445,7 +15697,7 @@ sudo journalctl -u postgresql --no-pager -n 50
 <p><em>Para temas avanzados como replicación, particionado de tablas, extensiones o ajuste de rendimiento en producción, consultar la <a href="https://www.postgresql.org/docs/">documentación oficial de PostgreSQL</a>.</em></p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="manual-de-sqlx-con-rust-migraciones-y-uso-básico"><a class="header" href="#manual-de-sqlx-con-rust-migraciones-y-uso-básico">Manual de SQLx con Rust (Migraciones y uso básico)</a></h1>
-<h2 id="índice-8"><a class="header" href="#índice-8">Índice</a></h2>
+<h2 id="índice-9"><a class="header" href="#índice-9">Índice</a></h2>
 <ol>
 <li><a href="#instalar-sqlx-cli">Instalar SQLx CLI</a></li>
 <li><a href="#si-sigue-sin-funcionar">Si sigue sin funcionar</a></li>
@@ -15747,7 +15999,7 @@ struct User {
 <h2 id="manual-completo-de-redis-instalación--uso-avanzado"><a class="header" href="#manual-completo-de-redis-instalación--uso-avanzado">Manual Completo de Redis (Instalación → Uso Avanzado)</a></h2>
 <p>Redis es una base de datos en memoria orientada a estructuras de datos. Se utiliza principalmente para caché, colas, sesiones y sistemas de alta velocidad.</p>
 <hr>
-<h2 id="índice-9"><a class="header" href="#índice-9">Índice</a></h2>
+<h2 id="índice-10"><a class="header" href="#índice-10">Índice</a></h2>
 <ol>
 <li><a href="#qué-es-redis">¿Qué es Redis?</a></li>
 <li><a href="#instalación">Instalación</a></li>
@@ -16120,7 +16372,7 @@ DEL projects:user:1:page:1
 </ul>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="guía-completa-de-prisma-6"><a class="header" href="#guía-completa-de-prisma-6">Guía completa de Prisma 6</a></h1>
-<h2 id="índice-10"><a class="header" href="#índice-10">Índice</a></h2>
+<h2 id="índice-11"><a class="header" href="#índice-11">Índice</a></h2>
 <ol>
 <li><a href="#qué-es-prisma">¿Qué es Prisma?</a></li>
 <li><a href="#instalación-inicial-desde-0">Instalación inicial (desde 0)</a></li>
@@ -16396,7 +16648,7 @@ pnpm prisma migrate dev --name sync_current_state
 <p>¡Con esto ya sabés lo básico de Prisma para trabajar! 🚀</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="guía-completa-de-entity-framework-core"><a class="header" href="#guía-completa-de-entity-framework-core">Guía completa de Entity Framework Core</a></h1>
-<h2 id="índice-11"><a class="header" href="#índice-11">Índice</a></h2>
+<h2 id="índice-12"><a class="header" href="#índice-12">Índice</a></h2>
 <ul>
 <li><a href="#qué-es-ef-core">¿Qué es EF Core?</a></li>
 <li><a href="#arquitectura-del-proyecto-cursinet">Arquitectura del proyecto (Cursinet)</a></li>
@@ -16976,7 +17228,7 @@ dotnet ef database drop --force -s src/Api/Api.csproj -p src/Infrastructure/Infr
 <h1 id="aspnet-core-init---manual-técnico-completo"><a class="header" href="#aspnet-core-init---manual-técnico-completo">ASP.NET Core Init - Manual Técnico Completo</a></h1>
 <p>Manual completo para instalar y desarrollar con <strong>.NET 10</strong> en <strong>Debian 13 (Trixie)</strong>, incluyendo instalación, creación de API con Clean Architecture, Entity Framework Core, autenticación JWT, y comandos de administración.</p>
 <hr>
-<h2 id="índice-12"><a class="header" href="#índice-12">Índice</a></h2>
+<h2 id="índice-13"><a class="header" href="#índice-13">Índice</a></h2>
 <ol>
 <li><a href="#1-instalación-de-net-10-en-debian-13">Instalación de .NET 10 en Debian 13</a></li>
 <li><a href="#2-verificar-instalación">Verificar Instalación</a></li>
@@ -19648,7 +19900,7 @@ echo "  dotnet run"
 <p>Manual completo de la API backend de <strong>Cursinet</strong>, construida con <strong>.NET 10</strong>, <strong>Clean Architecture</strong> (5 capas), <strong>Entity Framework Core 10</strong>, <strong>PostgreSQL</strong>, <strong>JWT + RBAC</strong>, y <strong>Serilog</strong>.</p>
 <p>Cubre instalación, arquitectura completa, todas las entidades (32), todos los endpoints (10+ controladores), sistema de autenticación de 3 factores (JWT, API Key, Session), y guía de desarrollo.</p>
 <hr>
-<h2 id="índice-13"><a class="header" href="#índice-13">Índice</a></h2>
+<h2 id="índice-14"><a class="header" href="#índice-14">Índice</a></h2>
 <ol>
 <li><a href="#1-stack-tecnológico">Stack Tecnológico</a></li>
 <li><a href="#2-instalación-de-net-10-en-debian-13">Instalación de .NET 10 en Debian 13</a></li>
@@ -22672,7 +22924,7 @@ public class AuthServiceTests
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="primeros-pasos---react-native"><a class="header" href="#primeros-pasos---react-native">Primeros pasos - React Native</a></h1>
 <p>Este manual te guiará paso a paso para entender y desarrollar una aplicación de React Native desde 0. Usamos <strong>Expo</strong> con <strong>expo-router</strong>, que es la forma más moderna y recomendada de crear apps con React Native.</p>
-<h2 id="índice-14"><a class="header" href="#índice-14">Índice</a></h2>
+<h2 id="índice-15"><a class="header" href="#índice-15">Índice</a></h2>
 <ol>
 <li><a href="#1-requisitos-previos-2">Requisitos Previos</a></li>
 <li><a href="#2-instalación-del-proyecto">Instalación del Proyecto</a></li>
@@ -23138,7 +23390,7 @@ npx expo build:ios
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="guía-completa-instalación-y-configuración-de-matrix-synapse-con-docker"><a class="header" href="#guía-completa-instalación-y-configuración-de-matrix-synapse-con-docker">Guía Completa: Instalación y Configuración de Matrix Synapse con Docker</a></h1>
-<h2 id="índice-15"><a class="header" href="#índice-15">Índice</a></h2>
+<h2 id="índice-16"><a class="header" href="#índice-16">Índice</a></h2>
 <ol>
 <li><a href="#requisitos-previos">Requisitos previos</a></li>
 <li><a href="#instalación-de-docker-y-docker-compose">Instalación de Docker y Docker Compose</a></li>
@@ -23497,7 +23749,7 @@ http://example.com:8008/_synapse/admin/v1/whois/@user:example.com
 <h1 id="manual-de-matrix---implementación-custom"><a class="header" href="#manual-de-matrix---implementación-custom">MANUAL DE MATRIX - Implementación Custom</a></h1>
 <p>Este documento explica cómo funciona la integración con Matrix en esta app, sin usar el SDK oficial (matrix-js-sdk). Se usa la <strong>REST API</strong> directamente.</p>
 <hr>
-<h2 id="índice-16"><a class="header" href="#índice-16">Índice</a></h2>
+<h2 id="índice-17"><a class="header" href="#índice-17">Índice</a></h2>
 <ol>
 <li><a href="#arquitectura-general">ARQUITECTURA GENERAL</a></li>
 <li><a href="#tipos-de-datos-types">TIPOS DE DATOS (Types)</a></li>
@@ -25080,7 +25332,7 @@ Pero lo ignora porque sender === currentUserId
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="16-introducción-a-las-redes"><a class="header" href="#16-introducción-a-las-redes">16. Introducción a las Redes</a></h1>
 <hr>
-<h2 id="índice-17"><a class="header" href="#índice-17">Índice</a></h2>
+<h2 id="índice-18"><a class="header" href="#índice-18">Índice</a></h2>
 <ul>
 <li><a href="#qué-es-una-red">¿Qué es una Red?</a></li>
 <li><a href="#ventajas-de-las-redes">Ventajas de las Redes</a></li>
@@ -25412,7 +25664,7 @@ Pero lo ignora porque sender === currentUserId
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="18-modelos-de-red"><a class="header" href="#18-modelos-de-red">18. Modelos de Red</a></h1>
 <hr>
-<h2 id="índice-18"><a class="header" href="#índice-18">Índice</a></h2>
+<h2 id="índice-19"><a class="header" href="#índice-19">Índice</a></h2>
 <ul>
 <li><a href="#qué-es-un-modelo-de-red">¿Qué es un Modelo de Red?</a></li>
 <li><a href="#importancia-de-los-modelos-de-red">Importancia de los Modelos de Red</a></li>
@@ -25770,7 +26022,7 @@ Señales eléctricas / ondas de radio
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="redes---direcciones-ip-y-subredes"><a class="header" href="#redes---direcciones-ip-y-subredes">Redes - Direcciones IP y Subredes</a></h1>
 <hr>
-<h2 id="índice-19"><a class="header" href="#índice-19">Índice</a></h2>
+<h2 id="índice-20"><a class="header" href="#índice-20">Índice</a></h2>
 <ul>
 <li><a href="#qué-es-una-dirección-ip">¿Qué es una Dirección IP?</a>
 <ul>
@@ -26080,7 +26332,7 @@ Señales eléctricas / ondas de radio
 <h2 id="introducción"><a class="header" href="#introducción">Introducción</a></h2>
 <p>Este manual te guiará paso a paso para analizar direcciones IPv4 y determinar la <strong>parte de red</strong>, la <strong>parte de host</strong>, la <strong>máscara de subred</strong>, la <strong>dirección de red</strong>, la <strong>dirección de broadcast</strong> y el <strong>rango de hosts utilizables</strong>. Este es un ejercicio fundamental para entender cómo funcionan las subredes y cómo los routers enrutan paquetes entre diferentes redes.</p>
 <hr>
-<h2 id="índice-20"><a class="header" href="#índice-20">Índice</a></h2>
+<h2 id="índice-21"><a class="header" href="#índice-21">Índice</a></h2>
 <ul>
 <li><a href="#1-conceptos-fundamentales">Conceptos Fundamentales</a></li>
 <li><a href="#2-metodología-paso-a-paso">Metodología Paso a Paso</a></li>
@@ -26899,7 +27151,7 @@ Broadcast: 192.168.10.255 (bits de host = 11111110 → 255)
 </blockquote>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="nat"><a href="#nat" class="header">NAT</a></h1>
-<h2 id="índice-21"><a class="header" href="#índice-21">Índice</a></h2>
+<h2 id="índice-22"><a class="header" href="#índice-22">Índice</a></h2>
 <ul>
 <li><a href="#qué-es-nat-y-cómo-actúa-en-nuestra-red">Qué es NAT y cómo actúa en nuestra red</a>
 <ul>
@@ -27020,7 +27272,7 @@ Broadcast: 192.168.10.255 (bits de host = 11111110 → 255)
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="22-direcciones-mac-y-switches"><a class="header" href="#22-direcciones-mac-y-switches">22. Direcciones MAC y Switches</a></h1>
 <hr>
-<h2 id="índice-22"><a class="header" href="#índice-22">Índice</a></h2>
+<h2 id="índice-23"><a class="header" href="#índice-23">Índice</a></h2>
 <ul>
 <li><a href="#introducción-a-la-capa-de-enlace-de-datos">Introducción a la Capa de Enlace de Datos</a></li>
 <li><a href="#qué-es-una-dirección-mac">¿Qué es una Dirección MAC?</a></li>
@@ -27932,7 +28184,7 @@ show ip arp
 <h1 id="cisco-packet-tracer--manual-de-comandos"><a class="header" href="#cisco-packet-tracer--manual-de-comandos">CISCO PACKET TRACER — Manual de Comandos</a></h1>
 <p><strong>Router · Switch · DHCP · IP Routes · VLANs</strong></p>
 <hr>
-<h2 id="índice-23"><a class="header" href="#índice-23">Índice</a></h2>
+<h2 id="índice-24"><a class="header" href="#índice-24">Índice</a></h2>
 <ol>
 <li><a href="#1-configuración-del-router">Configuración del Router</a></li>
 <li><a href="#2-configuración-del-switch">Configuración del Switch</a></li>
@@ -28312,7 +28564,7 @@ S1#  show interfaces Fa0/1 switchport       ! Detalle de un puerto
 <h1 id="manual-de-docker-en-debian--instalación-desinstalación-y-reinstalación-completa"><a class="header" href="#manual-de-docker-en-debian--instalación-desinstalación-y-reinstalación-completa">Manual de Docker en Debian — Instalación, Desinstalación y Reinstalación Completa</a></h1>
 <p>Docker es una plataforma de contenedores que permite empaquetar, distribuir y ejecutar aplicaciones en entornos aislados. Este manual cubre la instalación completa usando el repositorio oficial, la desinstalación limpia sin residuos, y el procedimiento de reinstalación desde cero.</p>
 <hr>
-<h2 id="índice-24"><a class="header" href="#índice-24">Índice</a></h2>
+<h2 id="índice-25"><a class="header" href="#índice-25">Índice</a></h2>
 <ol>
 <li><a href="#1-requisitos-previos-4">Requisitos Previos</a></li>
 <li><a href="#2-desinstalación-completa-hacer-primero-si-ya-tienes-docker">Desinstalación Completa</a></li>

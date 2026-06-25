@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Comandos Packet Tracer - Manuales</title>
+        <title>Crear apk con Tauri - Manuales</title>
 
 
         <!-- Custom HTML head -->
@@ -174,395 +174,263 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="cisco-packet-tracer--manual-de-comandos"><a class="header" href="#cisco-packet-tracer--manual-de-comandos">CISCO PACKET TRACER — Manual de Comandos</a></h1>
-<p><strong>Router · Switch · DHCP · IP Routes · VLANs</strong></p>
-<hr>
+                        <h1 id="manual-tauri-android--dev-debug-apk-y-release-apk"><a class="header" href="#manual-tauri-android--dev-debug-apk-y-release-apk">Manual: Tauri Android — Dev, Debug APK y Release APK</a></h1>
 <h2 id="índice"><a class="header" href="#índice">Índice</a></h2>
 <ol>
-<li><a href="#1-configuración-del-router">Configuración del Router</a></li>
-<li><a href="#2-configuración-del-switch">Configuración del Switch</a></li>
-<li><a href="#3-dhcp-en-el-router">DHCP en el Router</a></li>
-<li><a href="#4-ip-routes--rutas-estáticas">IP Routes — Rutas Estáticas</a></li>
-<li><a href="#5-vlans">VLANs</a></li>
-<li><a href="#6-referencia-rápida">Referencia Rápida</a></li>
+<li><a href="#1-requisitos-previos">Requisitos previos</a></li>
+<li><a href="#2-configuración-inicial-del-proyecto">Configuración inicial del proyecto</a>
+<ul>
+<li>2.1 <a href="#21-inicializar-el-proyecto-android">Inicializar el proyecto Android</a></li>
+<li>2.2 <a href="#22-configurar-viteconfigts">Configurar vite.config.ts</a></li>
+<li>2.3 <a href="#23-variables-de-entorno">Variables de entorno</a></li>
+</ul>
+</li>
+<li><a href="#3-agregar-build-tools-al-path">Agregar build-tools al PATH</a></li>
+<li><a href="#4-modo-desarrollo-tauri-android-dev">Modo desarrollo (tauri android dev)</a>
+<ul>
+<li>4.1 <a href="#41-conectar-el-teléfono-por-usb">Conectar el teléfono por USB</a></li>
+<li>4.2 <a href="#42-configurar-adb-reverse-importante">Configurar ADB Reverse</a></li>
+<li>4.3 <a href="#43-problema-con-cloudflare-warp-u-otras-vpns">Problema con Cloudflare WARP u otras VPNs</a></li>
+<li>4.4 <a href="#44-correr-el-dev-server">Correr el dev server</a></li>
+</ul>
+</li>
+<li><a href="#5-apk-de-debug-para-pruebas-rápidas">APK de Debug</a></li>
+<li><a href="#6-apk-de-release-para-compartir-por-internet">APK de Release</a>
+<ul>
+<li>6.1 <a href="#61-crear-el-keystore-solo-una-vez">Crear el Keystore</a></li>
+<li>6.2 <a href="#62-configurar-envproduction">Configurar .env.production</a></li>
+<li>6.3 <a href="#63-compilar-el-apk-de-release">Compilar el APK de release</a></li>
+<li>6.4 <a href="#64-firmar-el-apk-manualmente">Firmar el APK manualmente</a></li>
+</ul>
+</li>
+<li><a href="#7-instalar-el-apk-en-android">Instalar el APK en Android</a></li>
+<li><a href="#8-resumen-rápido-de-comandos">Resumen rápido de comandos</a></li>
+<li><a href="#9-solución-de-problemas-comunes">Solución de problemas comunes</a></li>
 </ol>
 <hr>
-<h2 id="1-configuración-del-router"><a class="header" href="#1-configuración-del-router">1. Configuración del Router</a></h2>
-<h3 id="11-acceso-y-modo-privilegiado"><a class="header" href="#11-acceso-y-modo-privilegiado">1.1 Acceso y modo privilegiado</a></h3>
-<pre><code>Router&gt;  enable                     ! Entra a modo EXEC privilegiado
-Router#  configure terminal         ! Entra a modo configuración global
-Router(config)#                     ! Ya estás en config global
+<h2 id="requisitos-previos"><a class="header" href="#requisitos-previos">Requisitos previos</a></h2>
+<ul>
+<li>Android SDK instalado (<code>~/Android/Sdk</code>)</li>
+<li>NDK instalado (Tauri lo detecta automáticamente)</li>
+<li>ADB disponible en el PATH</li>
+<li>Java JDK instalado</li>
+<li>Rust con target Android: <code>rustup target add aarch64-linux-android</code></li>
+</ul>
+<hr>
+<h2 id="2-configuración-inicial-del-proyecto"><a class="header" href="#2-configuración-inicial-del-proyecto">2. Configuración inicial del proyecto</a></h2>
+<h3 id="21-inicializar-el-proyecto-android"><a class="header" href="#21-inicializar-el-proyecto-android">2.1 Inicializar el proyecto Android</a></h3>
+<pre><code class="language-bash">pnpm tauri android init
 </code></pre>
-<h3 id="12-nombre-y-contraseñas"><a class="header" href="#12-nombre-y-contraseñas">1.2 Nombre y contraseñas</a></h3>
-<pre><code>Router(config)#  hostname R1
+<h3 id="22-configurar-viteconfigts"><a class="header" href="#22-configurar-viteconfigts">2.2 Configurar <code>vite.config.ts</code></a></h3>
+<p>El host debe escuchar en <code>0.0.0.0</code> para que el teléfono pueda conectarse:</p>
+<pre><code class="language-ts">const host = process.env.TAURI_DEV_HOST;
 
-! Contraseña cifrada para modo privilegiado
-R1(config)#  enable secret cisco123
-
-! Consola — acceso físico
-R1(config)#  line console 0
-R1(config-line)#  password cisco
-R1(config-line)#  login
-R1(config-line)#  exit
-
-! Telnet / SSH — acceso remoto
-R1(config)#  line vty 0 4
-R1(config-line)#  password cisco
-R1(config-line)#  login
-R1(config-line)#  exit
-
-! Cifrar todas las contraseñas en texto plano
-R1(config)#  service password-encryption
+export default defineConfig({
+  server: {
+    port: 1420,
+    strictPort: true,
+    host: host || "0.0.0.0", // importante: no dejar false
+    hmr: host
+      ? { protocol: "ws", host, port: 1421 }
+      : undefined,
+    watch: {
+      ignored: ["**/src-tauri/**"],
+    },
+  },
+});
 </code></pre>
-<h3 id="13-asignar-ip-a-una-interfaz"><a class="header" href="#13-asignar-ip-a-una-interfaz">1.3 Asignar IP a una interfaz</a></h3>
-<pre><code>R1(config)#  interface gigabitEthernet 0/0
-R1(config-if)#  description LAN - Hacia el Switch
-R1(config-if)#  ip address 192.168.1.1 255.255.255.0
-R1(config-if)#  no shutdown            ! OBLIGATORIO — activa la interfaz
-R1(config-if)#  exit
-
-R1(config)#  interface gigabitEthernet 0/1
-R1(config-if)#  description Enlace a otro router
-R1(config-if)#  ip address 10.0.0.1 255.255.255.0
-R1(config-if)#  no shutdown
-R1(config-if)#  exit
+<h3 id="23-variables-de-entorno"><a class="header" href="#23-variables-de-entorno">2.3 Variables de entorno</a></h3>
+<p>Crear <code>.env</code>:</p>
+<pre><code class="language-env">VITE_API_URL="http://192.168.0.9:3000/api/v1"
 </code></pre>
 <blockquote>
-<p><strong>NOTA:</strong> Las interfaces del router arrancan en estado <code>administratively down</code>. Sin <code>no shutdown</code> no transmiten nada.</p>
+<p>⚠️ No uses <code>localhost</code> en la IP del backend para el APK de release — usa la IP real de tu PC o un servidor público.</p>
 </blockquote>
-<h3 id="14-comandos-de-verificación"><a class="header" href="#14-comandos-de-verificación">1.4 Comandos de verificación</a></h3>
-<pre><code>R1#  show ip interface brief          ! Resumen de todas las interfaces y estado
-R1#  show interfaces gigabitEthernet 0/0   ! Detalle de una interfaz
-R1#  show running-config              ! Config activa completa (RAM)
-R1#  show startup-config              ! Config guardada (NVRAM)
-R1#  show version                     ! IOS, uptime, modelo
-R1#  show ip route                    ! Tabla de enrutamiento
+<hr>
+<h2 id="3-agregar-build-tools-al-path"><a class="header" href="#3-agregar-build-tools-al-path">3. Agregar build-tools al PATH</a></h2>
+<p>Necesario para <code>zipalign</code> y <code>apksigner</code>:</p>
+<pre><code class="language-bash"># Ver versiones instaladas
+ls ~/Android/Sdk/build-tools/
+
+# Exportar la versión (cambia 35.0.0 por la tuya)
+export PATH="$PATH:$HOME/Android/Sdk/build-tools/35.0.0"
+
+# Para que sea permanente
+echo 'export PATH="$PATH:$HOME/Android/Sdk/build-tools/35.0.0"' &gt;&gt; ~/.bashrc
+source ~/.bashrc
 </code></pre>
+<hr>
+<h2 id="4-modo-desarrollo-tauri-android-dev"><a class="header" href="#4-modo-desarrollo-tauri-android-dev">4. Modo desarrollo (<code>tauri android dev</code>)</a></h2>
+<h3 id="41-conectar-el-teléfono-por-usb"><a class="header" href="#41-conectar-el-teléfono-por-usb">4.1 Conectar el teléfono por USB</a></h3>
+<p>Habilitar <strong>Depuración USB</strong> en el teléfono:</p>
+<ul>
+<li>Configuración → Acerca del teléfono → toca “Número de compilación” 7 veces</li>
+<li>Configuración → Opciones de desarrollador → Depuración USB ✓</li>
+</ul>
+<p>Verificar que el teléfono es detectado:</p>
+<pre><code class="language-bash">adb devices
+# Debe mostrar: XXXXXXX    device
+</code></pre>
+<p>Si dice <code>unauthorized</code>, desbloquea el teléfono y acepta el popup.</p>
+<h3 id="42-configurar-adb-reverse-importante"><a class="header" href="#42-configurar-adb-reverse-importante">4.2 Configurar ADB Reverse (importante)</a></h3>
+<p>Esto permite que el teléfono acceda al dev server y backend de tu PC por USB sin depender del WiFi:</p>
+<pre><code class="language-bash">adb reverse tcp:1420 tcp:1420   # Vite dev server
+adb reverse tcp:1421 tcp:1421   # Vite HMR (hot reload)
+adb reverse tcp:3000 tcp:3000   # Tu backend API
+</code></pre>
+<blockquote>
+<p>Repite estos comandos cada vez que desconectes y reconectes el teléfono.</p>
+</blockquote>
+<h3 id="43-problema-con-cloudflare-warp-u-otras-vpns"><a class="header" href="#43-problema-con-cloudflare-warp-u-otras-vpns">4.3 Problema con Cloudflare WARP u otras VPNs</a></h3>
+<p>Si tienes una VPN activa (WARP, Mullvad, etc.), Tauri puede detectar la IP de la VPN en vez de tu IP local, y el teléfono no podrá conectarse.</p>
+<p>Solución:</p>
+<pre><code class="language-bash"># Opción A: desconecta la VPN antes de correr dev
+warp-cli disconnect
+
+# Opción B: fuerza la IP local manualmente
+TAURI_DEV_HOST=192.168.0.9 pnpm tauri android dev
+</code></pre>
+<h3 id="44-correr-el-dev-server"><a class="header" href="#44-correr-el-dev-server">4.4 Correr el dev server</a></h3>
+<pre><code class="language-bash">pnpm tauri android dev
+</code></pre>
+<p>Tauri compilará, instalará la app en el teléfono y abrirá el WebView apuntando al dev server.</p>
+<hr>
+<h2 id="5-apk-de-debug-para-pruebas-rápidas"><a class="header" href="#5-apk-de-debug-para-pruebas-rápidas">5. APK de Debug (para pruebas rápidas)</a></h2>
+<p>No requiere firma. Útil para probar en tu propio dispositivo.</p>
+<pre><code class="language-bash">pnpm tauri android build --debug
+</code></pre>
+<p>El APK queda en:</p>
+<pre><code>src-tauri/gen/android/app/build/outputs/apk/debug/app-debug.apk
+</code></pre>
+<p>Instalar directo por USB:</p>
+<pre><code class="language-bash">adb install src-tauri/gen/android/app/build/outputs/apk/debug/app-debug.apk
+</code></pre>
+<blockquote>
+<p>⚠️ El APK debug <strong>no se puede subir a Play Store</strong> y puede ser más lento, pero funciona para compartir con testers.</p>
+</blockquote>
+<hr>
+<h2 id="6-apk-de-release-para-compartir-por-internet"><a class="header" href="#6-apk-de-release-para-compartir-por-internet">6. APK de Release (para compartir por internet)</a></h2>
+<h3 id="61-crear-el-keystore-solo-una-vez"><a class="header" href="#61-crear-el-keystore-solo-una-vez">6.1 Crear el Keystore (solo una vez)</a></h3>
+<p>El keystore es tu firma digital. <strong>Guárdalo en un lugar seguro — si lo pierdes no podrás actualizar la app.</strong></p>
+<pre><code class="language-bash">keytool -genkey -v \
+  -keystore mi-app.keystore \
+  -alias mi-app \
+  -keyalg RSA \
+  -keysize 2048 \
+  -validity 10000
+</code></pre>
+<p>Te pedirá:</p>
+<ul>
+<li>Contraseña del keystore</li>
+<li>Nombre, apellido, organización, ciudad, país (puedes dejar en blanco con Enter)</li>
+<li>Confirmar contraseña</li>
+</ul>
+<p>Verificar los alias del keystore:</p>
+<pre><code class="language-bash">keytool -list -keystore mi-app.keystore
+</code></pre>
+<h3 id="62-configurar-envproduction"><a class="header" href="#62-configurar-envproduction">6.2 Configurar <code>.env.production</code></a></h3>
+<pre><code class="language-env">VITE_API_URL="https://tu-servidor-publico.com/api/v1"
+</code></pre>
+<blockquote>
+<p>Si el APK es solo para tu red local (mismo WiFi), puedes usar tu IP local: <code>http://192.168.0.9:3000/api/v1</code></p>
+</blockquote>
+<h3 id="63-compilar-el-apk-de-release"><a class="header" href="#63-compilar-el-apk-de-release">6.3 Compilar el APK de release</a></h3>
+<pre><code class="language-bash">pnpm tauri android build
+</code></pre>
+<p>Genera un APK <strong>sin firmar</strong> en:</p>
+<pre><code>src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk
+</code></pre>
+<h3 id="64-firmar-el-apk-manualmente"><a class="header" href="#64-firmar-el-apk-manualmente">6.4 Firmar el APK manualmente</a></h3>
+<p><strong>Paso 1 — Alinear el APK:</strong></p>
+<pre><code class="language-bash">zipalign -v 4 \
+  src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk \
+  app-aligned.apk
+</code></pre>
+<p><strong>Paso 2 — Firmar:</strong></p>
+<pre><code class="language-bash">apksigner sign \
+  --ks mi-app.keystore \
+  --ks-key-alias mi-app \
+  --ks-pass pass:tu-contraseña \
+  --key-pass pass:tu-contraseña \
+  --out app-release.apk \
+  app-aligned.apk
+</code></pre>
+<p><strong>Paso 3 — Verificar la firma:</strong></p>
+<pre><code class="language-bash">apksigner verify app-release.apk
+# Debe decir: Verified using v1 scheme, v2 scheme...
+</code></pre>
+<p><strong>Limpiar archivos temporales:</strong></p>
+<pre><code class="language-bash">rm app-aligned.apk
+</code></pre>
+<p>El APK listo para compartir es <code>app-release.apk</code>.</p>
+<hr>
+<h2 id="7-instalar-el-apk-en-android"><a class="header" href="#7-instalar-el-apk-en-android">7. Instalar el APK en Android</a></h2>
+<h3 id="desde-pc-por-usb"><a class="header" href="#desde-pc-por-usb">Desde PC por USB:</a></h3>
+<pre><code class="language-bash">adb install app-release.apk
+</code></pre>
+<h3 id="desde-el-teléfono-descarga-directa"><a class="header" href="#desde-el-teléfono-descarga-directa">Desde el teléfono (descarga directa):</a></h3>
+<p>El usuario debe activar la instalación de fuentes desconocidas:</p>
+<ul>
+<li><strong>Android 8+:</strong> Configuración → Apps → (navegador o gestor de archivos) → Instalar apps desconocidas → Permitir</li>
+<li><strong>Android 7 o menos:</strong> Configuración → Seguridad → Fuentes desconocidas ✓</li>
+</ul>
+<p>Luego abrir el <code>.apk</code> desde el gestor de archivos y presionar <strong>Instalar</strong>.</p>
+<hr>
+<h2 id="8-resumen-rápido-de-comandos"><a class="header" href="#8-resumen-rápido-de-comandos">8. Resumen rápido de comandos</a></h2>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>Comando</th><th>Muestra</th></tr>
+<tr><th>Acción</th><th>Comando</th></tr>
 </thead>
 <tbody>
-<tr><td><code>show ip interface brief</code></td><td>Estado UP/DOWN de todas las interfaces + IPs</td></tr>
-<tr><td><code>show running-config</code></td><td>Configuración completa activa</td></tr>
-<tr><td><code>show ip route</code></td><td>Tabla de rutas: C=directa, S=estática, R=RIP</td></tr>
-<tr><td><code>show interfaces Gi0/0</code></td><td>Errores, velocidad, duplex, tráfico</td></tr>
-<tr><td><code>show version</code></td><td>Versión IOS, RAM, Flash, tiempo encendido</td></tr>
-</tbody>
-</table>
-</div>
-<h3 id="15-guardar-la-configuración"><a class="header" href="#15-guardar-la-configuración">1.5 Guardar la configuración</a></h3>
-<pre><code>R1#  copy running-config startup-config
-Destination filename [startup-config]?   &lt;- presiona Enter
-
-! Forma rápida
-R1#  wr
-</code></pre>
-<blockquote>
-<p><strong>TIP:</strong> <code>running-config</code> vive en RAM (se pierde al apagar). <code>startup-config</code> vive en NVRAM (persiste). Siempre guarda antes de cerrar.</p>
-</blockquote>
-<hr>
-<h2 id="2-configuración-del-switch"><a class="header" href="#2-configuración-del-switch">2. Configuración del Switch</a></h2>
-<h3 id="21-acceso-nombre-y-contraseñas"><a class="header" href="#21-acceso-nombre-y-contraseñas">2.1 Acceso, nombre y contraseñas</a></h3>
-<pre><code>Switch&gt;  enable
-Switch#  configure terminal
-Switch(config)#  hostname S1
-
-S1(config)#  enable secret cisco123
-
-S1(config)#  line console 0
-S1(config-line)#  password cisco
-S1(config-line)#  login
-S1(config-line)#  exit
-
-S1(config)#  line vty 0 15
-S1(config-line)#  password cisco
-S1(config-line)#  login
-S1(config-line)#  exit
-
-S1(config)#  service password-encryption
-</code></pre>
-<h3 id="22-ip-de-administración-vlan-1"><a class="header" href="#22-ip-de-administración-vlan-1">2.2 IP de administración (VLAN 1)</a></h3>
-<p>El switch solo necesita IP para administración remota, no para enrutar tráfico.</p>
-<pre><code>S1(config)#  interface vlan 1
-S1(config-if)#  ip address 192.168.1.254 255.255.255.0
-S1(config-if)#  no shutdown
-S1(config-if)#  exit
-
-! Indicar por dónde sale el tráfico fuera de la red
-S1(config)#  ip default-gateway 192.168.1.1
-
-S1(config)#  end
-S1#  copy running-config startup-config
-</code></pre>
-<h3 id="23-comandos-de-verificación"><a class="header" href="#23-comandos-de-verificación">2.3 Comandos de verificación</a></h3>
-<pre><code>S1#  show ip interface brief          ! IP admin y estado
-S1#  show mac address-table           ! MACs aprendidas por puerto
-S1#  show interfaces status           ! Estado de todos los puertos
-S1#  show vlan brief                  ! VLANs y puertos asignados
-S1#  show running-config
-</code></pre>
-<hr>
-<h2 id="3-dhcp-en-el-router"><a class="header" href="#3-dhcp-en-el-router">3. DHCP en el Router</a></h2>
-<p>El router asigna IPs automáticamente a las PCs sin necesitar un servidor externo.</p>
-<h3 id="31-configurar-pool-dhcp"><a class="header" href="#31-configurar-pool-dhcp">3.1 Configurar pool DHCP</a></h3>
-<pre><code>! Excluir IPs fijas del rango asignable (router, switch, servidores)
-R1(config)#  ip dhcp excluded-address 192.168.1.1 192.168.1.20
-
-! Crear el pool
-R1(config)#  ip dhcp pool LAN1
-R1(dhcp-config)#  network 192.168.1.0 255.255.255.0   ! Red completa
-R1(dhcp-config)#  default-router 192.168.1.1           ! Gateway para las PCs
-R1(dhcp-config)#  dns-server 8.8.8.8                   ! DNS
-R1(dhcp-config)#  lease 7                              ! Duración en días
-R1(dhcp-config)#  exit
-</code></pre>
-<blockquote>
-<p><strong>TIP:</strong> Las PCs recibirán IPs desde la .21 en adelante porque excluimos .1 a .20.</p>
-</blockquote>
-<h3 id="32-ip-helper-address-dhcp-en-servidor-externo"><a class="header" href="#32-ip-helper-address-dhcp-en-servidor-externo">3.2 ip helper-address (DHCP en servidor externo)</a></h3>
-<p>Cuando el servidor DHCP está en una red diferente a las PCs, el router debe reenviar las peticiones:</p>
-<pre><code>! En la interfaz LAN donde están las PCs
-R1(config)#  interface gigabitEthernet 0/0
-R1(config-if)#  ip helper-address 192.168.2.10   ! IP del servidor DHCP
-R1(config-if)#  exit
-</code></pre>
-<blockquote>
-<p><strong>NOTA:</strong> Sin <code>ip helper-address</code>, los broadcasts DHCP de las PCs no cruzan hacia otra red y nunca llegan al servidor.</p>
-</blockquote>
-<h3 id="33-verificar-dhcp"><a class="header" href="#33-verificar-dhcp">3.3 Verificar DHCP</a></h3>
-<pre><code>R1#  show ip dhcp pool          ! Pool configurado y estadísticas
-R1#  show ip dhcp binding       ! Qué IP se asignó a cada MAC
-R1#  show ip dhcp conflict      ! Conflictos detectados
-</code></pre>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Comando</th><th>Muestra</th></tr>
-</thead>
-<tbody>
-<tr><td><code>show ip dhcp pool</code></td><td>Nombre del pool, red, IPs disponibles</td></tr>
-<tr><td><code>show ip dhcp binding</code></td><td>IP asignada, MAC del cliente, vencimiento</td></tr>
-<tr><td><code>show ip dhcp conflict</code></td><td>IPs que causaron conflicto</td></tr>
-</tbody>
-</table>
-</div>
-<hr>
-<h2 id="4-ip-routes--rutas-estáticas"><a class="header" href="#4-ip-routes--rutas-estáticas">4. IP Routes — Rutas Estáticas</a></h2>
-<p>Las rutas estáticas le dicen al router cómo llegar a redes que no tiene conectadas directamente.</p>
-<h3 id="41-sintaxis"><a class="header" href="#41-sintaxis">4.1 Sintaxis</a></h3>
-<pre><code>! Formato:
-! ip route  [red_destino]  [máscara]  [siguiente_salto]
-
-! Ejemplo: para llegar a 192.168.2.0, el próximo router es 10.0.0.2
-R1(config)#  ip route 192.168.2.0 255.255.255.0 10.0.0.2
-
-! Ruta por defecto (cuando no coincide ninguna otra ruta)
-R1(config)#  ip route 0.0.0.0 0.0.0.0 10.0.0.2
-</code></pre>
-<h3 id="42-ejemplo--2-routers-2-lans"><a class="header" href="#42-ejemplo--2-routers-2-lans">4.2 Ejemplo — 2 routers, 2 LANs</a></h3>
-<pre><code>Topología:
-[LAN1 192.168.1.0] -- R1 -- 10.0.0.0 -- R2 -- [LAN2 192.168.2.0]
-</code></pre>
-<pre><code>! En R1 — necesita saber cómo llegar a LAN2
-R1(config)#  ip route 192.168.2.0 255.255.255.0 10.0.0.2
-
-! En R2 — necesita saber cómo llegar a LAN1
-R2(config)#  ip route 192.168.1.0 255.255.255.0 10.0.0.1
-</code></pre>
-<blockquote>
-<p><strong>NOTA:</strong> Si falta la ruta en uno de los dos routers, el ping va pero no regresa.</p>
-</blockquote>
-<h3 id="43-verificar-rutas"><a class="header" href="#43-verificar-rutas">4.3 Verificar rutas</a></h3>
-<pre><code>R1#  show ip route
-
-! Salida esperada:
-! C   192.168.1.0/24  is directly connected, GigabitEthernet0/0
-! C   10.0.0.0/24     is directly connected, GigabitEthernet0/1
-! S   192.168.2.0/24  [1/0] via 10.0.0.2
-</code></pre>
-<p>Letras en la tabla de rutas:</p>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Letra</th><th>Significado</th></tr>
-</thead>
-<tbody>
-<tr><td>C</td><td>Connected — red directamente conectada</td></tr>
-<tr><td>S</td><td>Static — ruta estática configurada manualmente</td></tr>
-<tr><td>R</td><td>RIP</td></tr>
-<tr><td>O</td><td>OSPF</td></tr>
-<tr><td>D</td><td>EIGRP</td></tr>
-</tbody>
-</table>
-</div>
-<h3 id="44-eliminar-una-ruta"><a class="header" href="#44-eliminar-una-ruta">4.4 Eliminar una ruta</a></h3>
-<pre><code>R1(config)#  no ip route 192.168.2.0 255.255.255.0 10.0.0.2
-</code></pre>
-<hr>
-<h2 id="5-vlans"><a class="header" href="#5-vlans">5. VLANs</a></h2>
-<p>Las VLANs dividen una red física en segmentos lógicos separados. Dispositivos en VLANs distintas no se comunican sin un router.</p>
-<h3 id="51-crear-vlans-en-el-switch"><a class="header" href="#51-crear-vlans-en-el-switch">5.1 Crear VLANs en el Switch</a></h3>
-<pre><code>S1(config)#  vlan 10
-S1(config-vlan)#  name VENTAS
-S1(config-vlan)#  exit
-
-S1(config)#  vlan 20
-S1(config-vlan)#  name RRHH
-S1(config-vlan)#  exit
-
-S1(config)#  vlan 30
-S1(config-vlan)#  name SERVIDORES
-S1(config-vlan)#  exit
-</code></pre>
-<h3 id="52-puertos-access-un-puerto--una-vlan"><a class="header" href="#52-puertos-access-un-puerto--una-vlan">5.2 Puertos Access (un puerto = una VLAN)</a></h3>
-<p>Se usa en puertos de PCs, impresoras y servidores.</p>
-<pre><code>! Puerto único
-S1(config)#  interface fastEthernet 0/1
-S1(config-if)#  switchport mode access
-S1(config-if)#  switchport access vlan 10
-S1(config-if)#  exit
-
-! Rango de puertos de una sola vez
-S1(config)#  interface range fastEthernet 0/2-5
-S1(config-if-range)#  switchport mode access
-S1(config-if-range)#  switchport access vlan 20
-S1(config-if-range)#  exit
-</code></pre>
-<h3 id="53-puerto-trunk-switch--router-o-switch--switch"><a class="header" href="#53-puerto-trunk-switch--router-o-switch--switch">5.3 Puerto Trunk (Switch → Router o Switch → Switch)</a></h3>
-<p>Un puerto Trunk lleva tráfico de múltiples VLANs al mismo tiempo.</p>
-<pre><code>S1(config)#  interface gigabitEthernet 0/1
-S1(config-if)#  switchport mode trunk
-S1(config-if)#  switchport trunk allowed vlan 10,20,30
-S1(config-if)#  exit
-</code></pre>
-<h3 id="54-router-on-a-stick-enrutamiento-entre-vlans"><a class="header" href="#54-router-on-a-stick-enrutamiento-entre-vlans">5.4 Router on a Stick (enrutamiento entre VLANs)</a></h3>
-<p>Un solo cable físico entre switch y router, con subinterfaces por cada VLAN.</p>
-<pre><code>! Primero activar la interfaz física sin IP
-R1(config)#  interface gigabitEthernet 0/0
-R1(config-if)#  no shutdown
-R1(config-if)#  exit
-
-! Subinterfaz VLAN 10
-R1(config)#  interface gigabitEthernet 0/0.10
-R1(config-subif)#  encapsulation dot1Q 10
-R1(config-subif)#  ip address 192.168.10.1 255.255.255.0
-R1(config-subif)#  exit
-
-! Subinterfaz VLAN 20
-R1(config)#  interface gigabitEthernet 0/0.20
-R1(config-subif)#  encapsulation dot1Q 20
-R1(config-subif)#  ip address 192.168.20.1 255.255.255.0
-R1(config-subif)#  exit
-
-! Subinterfaz VLAN 30
-R1(config)#  interface gigabitEthernet 0/0.30
-R1(config-subif)#  encapsulation dot1Q 30
-R1(config-subif)#  ip address 192.168.30.1 255.255.255.0
-R1(config-subif)#  exit
-</code></pre>
-<blockquote>
-<p><strong>NOTA:</strong> El puerto del switch hacia el router DEBE estar en modo Trunk. El gateway de cada PC es la IP de su subinterfaz.</p>
-</blockquote>
-<h3 id="55-verificar-vlans"><a class="header" href="#55-verificar-vlans">5.5 Verificar VLANs</a></h3>
-<pre><code>S1#  show vlan brief                        ! VLANs y puertos asignados
-S1#  show interfaces trunk                  ! Puertos trunk activos
-S1#  show interfaces Fa0/1 switchport       ! Detalle de un puerto
-</code></pre>
-<h3 id="56-tabla-resumen--configuración-típica"><a class="header" href="#56-tabla-resumen--configuración-típica">5.6 Tabla resumen — configuración típica</a></h3>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>VLAN</th><th>Nombre</th><th>Red</th><th>Gateway</th><th>Puertos Switch</th></tr>
-</thead>
-<tbody>
-<tr><td>10</td><td>VENTAS</td><td>192.168.10.0/24</td><td>192.168.10.1</td><td>Fa0/1 – Fa0/5</td></tr>
-<tr><td>20</td><td>RRHH</td><td>192.168.20.0/24</td><td>192.168.20.1</td><td>Fa0/6 – Fa0/10</td></tr>
-<tr><td>30</td><td>SERVIDORES</td><td>192.168.30.0/24</td><td>192.168.30.1</td><td>Fa0/11 – Fa0/15</td></tr>
-<tr><td>1</td><td>Nativa (default)</td><td>—</td><td>—</td><td>Gi0/1 (Trunk)</td></tr>
+<tr><td>Inicializar Android</td><td><code>pnpm tauri android init</code></td></tr>
+<tr><td>Dev con hot reload</td><td><code>pnpm tauri android dev</code></td></tr>
+<tr><td>ADB reverse (puertos)</td><td><code>adb reverse tcp:1420 tcp:1420</code></td></tr>
+<tr><td>Build debug</td><td><code>pnpm tauri android build --debug</code></td></tr>
+<tr><td>Build release (sin firma)</td><td><code>pnpm tauri android build</code></td></tr>
+<tr><td>Crear keystore</td><td><code>keytool -genkey -v -keystore mi-app.keystore -alias mi-app -keyalg RSA -keysize 2048 -validity 10000</code></td></tr>
+<tr><td>Alinear APK</td><td><code>zipalign -v 4 unsigned.apk aligned.apk</code></td></tr>
+<tr><td>Firmar APK</td><td><code>apksigner sign --ks mi-app.keystore ...</code></td></tr>
+<tr><td>Verificar firma</td><td><code>apksigner verify app-release.apk</code></td></tr>
+<tr><td>Instalar por USB</td><td><code>adb install app-release.apk</code></td></tr>
 </tbody>
 </table>
 </div>
 <hr>
-<h2 id="6-referencia-rápida"><a class="header" href="#6-referencia-rápida">6. Referencia Rápida</a></h2>
-<h3 id="router--todos-los-comandos"><a class="header" href="#router--todos-los-comandos">Router — todos los comandos</a></h3>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Comando</th><th>Qué hace</th></tr>
-</thead>
-<tbody>
-<tr><td><code>enable</code></td><td>Entra a modo privilegiado</td></tr>
-<tr><td><code>configure terminal</code></td><td>Abre modo configuración global</td></tr>
-<tr><td><code>hostname NOMBRE</code></td><td>Cambia el nombre del dispositivo</td></tr>
-<tr><td><code>enable secret PASS</code></td><td>Contraseña cifrada para modo privilegiado</td></tr>
-<tr><td><code>interface Gi0/0</code></td><td>Entra a configurar una interfaz</td></tr>
-<tr><td><code>ip address IP MASK</code></td><td>Asigna IP a la interfaz</td></tr>
-<tr><td><code>no shutdown</code></td><td>Activa la interfaz</td></tr>
-<tr><td><code>ip route RED MASK NEXTHOP</code></td><td>Agrega ruta estática</td></tr>
-<tr><td><code>ip dhcp pool NOMBRE</code></td><td>Crea pool DHCP</td></tr>
-<tr><td><code>ip dhcp excluded-address X Y</code></td><td>Excluye IPs del rango DHCP</td></tr>
-<tr><td><code>ip helper-address IP</code></td><td>Reenvía DHCP hacia otro segmento</td></tr>
-<tr><td><code>show ip interface brief</code></td><td>Resumen de interfaces y estado</td></tr>
-<tr><td><code>show ip route</code></td><td>Tabla de enrutamiento</td></tr>
-<tr><td><code>show running-config</code></td><td>Config activa completa</td></tr>
-<tr><td><code>show ip dhcp binding</code></td><td>IPs asignadas por DHCP</td></tr>
-<tr><td><code>copy running-config startup-config</code></td><td>Guarda la configuración</td></tr>
-</tbody>
-</table>
-</div>
-<h3 id="switch--todos-los-comandos"><a class="header" href="#switch--todos-los-comandos">Switch — todos los comandos</a></h3>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Comando</th><th>Qué hace</th></tr>
-</thead>
-<tbody>
-<tr><td><code>interface vlan 1</code></td><td>Configura IP de administración</td></tr>
-<tr><td><code>ip default-gateway IP</code></td><td>Gateway del switch para admin remoto</td></tr>
-<tr><td><code>vlan ID</code></td><td>Crea una VLAN</td></tr>
-<tr><td><code>name NOMBRE</code></td><td>Asigna nombre a la VLAN</td></tr>
-<tr><td><code>switchport mode access</code></td><td>Puerto para PC/servidor (1 VLAN)</td></tr>
-<tr><td><code>switchport access vlan ID</code></td><td>Asigna puerto a una VLAN</td></tr>
-<tr><td><code>switchport mode trunk</code></td><td>Puerto multi-VLAN (hacia router/switch)</td></tr>
-<tr><td><code>switchport trunk allowed vlan X,Y</code></td><td>VLANs permitidas en el trunk</td></tr>
-<tr><td><code>show vlan brief</code></td><td>VLANs y puertos asignados</td></tr>
-<tr><td><code>show interfaces trunk</code></td><td>Puertos trunk activos</td></tr>
-<tr><td><code>show mac address-table</code></td><td>Tabla de MACs aprendidas</td></tr>
-</tbody>
-</table>
-</div>
-<h3 id="errores-comunes-y-solución"><a class="header" href="#errores-comunes-y-solución">Errores comunes y solución</a></h3>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Problema</th><th>Causa</th><th>Solución</th></tr>
-</thead>
-<tbody>
-<tr><td>Interfaz <code>down/down</code></td><td>Falta <code>no shutdown</code></td><td>Aplicar <code>no shutdown</code> en la interfaz</td></tr>
-<tr><td>PC no recibe IP</td><td>DHCP mal configurado o sin <code>ip helper</code></td><td>Verificar pool y/o <code>ip helper-address</code></td></tr>
-<tr><td>Ping falla entre LANs</td><td>Falta ruta estática en algún router</td><td>Agregar <code>ip route</code> en ambos routers</td></tr>
-<tr><td>PC no sale de su VLAN</td><td>Puerto mal asignado o gateway incorrecto</td><td>Verificar <code>switchport access vlan</code> y gateway de la PC</td></tr>
-<tr><td>Trunk no funciona</td><td>Puerto en modo access</td><td>Cambiar a <code>switchport mode trunk</code></td></tr>
-<tr><td>Config se pierde al reiniciar</td><td>No se guardó</td><td>Ejecutar <code>copy running-config startup-config</code></td></tr>
-</tbody>
-</table>
-</div>
-<hr>
-<blockquote>
-<p><strong>Orden recomendado:</strong> Router (IPs + rutas) → Switch (VLANs + puertos) → Servidor/DHCP → PCs → Verificar con <code>ping</code> e <code>ipconfig</code></p>
-</blockquote>
+<h2 id="9-solución-de-problemas-comunes"><a class="header" href="#9-solución-de-problemas-comunes">9. Solución de problemas comunes</a></h2>
+<h3 id="neterr_connection_refused-en-el-webview"><a class="header" href="#neterr_connection_refused-en-el-webview"><code>net::ERR_CONNECTION_REFUSED</code> en el WebView</a></h3>
+<ul>
+<li>Verifica que Vite escucha en <code>0.0.0.0</code> (no en <code>false</code>)</li>
+<li>Corre <code>adb reverse</code> para todos los puertos necesarios</li>
+<li>Desconecta VPNs antes de correr <code>tauri android dev</code></li>
+</ul>
+<h3 id="failed-to-load-signer-entry-does-not-contain-a-key"><a class="header" href="#failed-to-load-signer-entry-does-not-contain-a-key"><code>Failed to load signer: entry does not contain a key</code></a></h3>
+<p>El alias del keystore no coincide. Verifica con:</p>
+<pre><code class="language-bash">keytool -list -keystore mi-app.keystore
+</code></pre>
+<h3 id="output-file-already-exists-en-zipalign"><a class="header" href="#output-file-already-exists-en-zipalign"><code>Output file already exists</code> en zipalign</a></h3>
+<p>Borra el archivo anterior:</p>
+<pre><code class="language-bash">rm -f app-aligned.apk app-release.apk
+</code></pre>
+<h3 id="zipalign-orden-no-encontrada"><a class="header" href="#zipalign-orden-no-encontrada"><code>zipalign: orden no encontrada</code></a></h3>
+<p>Agrega el build-tools al PATH:</p>
+<pre><code class="language-bash">export PATH="$PATH:$HOME/Android/Sdk/build-tools/35.0.0"
+</code></pre>
+<h3 id="la-app-instala-pero-no-carga-datos-failed-to-fetch"><a class="header" href="#la-app-instala-pero-no-carga-datos-failed-to-fetch">La app instala pero no carga datos (failed to fetch)</a></h3>
+<ul>
+<li>En debug/dev: corre <code>adb reverse tcp:3000 tcp:3000</code></li>
+<li>En release: el <code>VITE_API_URL</code> debe apuntar a un servidor público o IP local accesible</li>
+</ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../docs/22-mac-redes.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../docs/12-restix.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="../docs/13-docker-installation.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../docs/19-fastify-init.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -572,11 +440,11 @@ S1#  show interfaces Fa0/1 switchport       ! Detalle de un puerto
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../docs/22-mac-redes.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../docs/12-restix.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="../docs/13-docker-installation.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../docs/19-fastify-init.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>

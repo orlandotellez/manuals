@@ -11,9 +11,13 @@
 - [Backend con Axum (rasflow)](./docs/02-axum-rasflow.md)
 - [Restix](./docs/12-restix.md)
 
+## Tauri 
+- [Crear apk con Tauri](./docs/26-tauri-apk-release.md)
+
 ## Fastify(NodeJs/TypeScript)
 - [Backend Fastify Primeros Pasos](./docs/19-fastify-init.md)
 - [Backend Farmacia](./docs/17-fastify-backend.md)
+
 ## Express(NodeJs/Typescript)
 - [Backend Express Primeros Pasos](./docs/24-express-primeros-pasos.md)
 
