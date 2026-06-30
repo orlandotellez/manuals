@@ -36,10 +36,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-59698ace.js";
+            window.path_to_searchindex_js = "searchindex-05afb62a.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-aad71852.js"></script>
+        <script src="toc-ce436242.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -181,6 +181,7 @@
 <h2 id="contenidos"><a class="header" href="#contenidos">Contenidos</a></h2>
 <h2 id="rust"><a class="header" href="#rust">Rust</a></h2>
 <ul>
+<li><a href="#axum-manual--manual-paso-a-paso">Backend con Axum (Primeros pasos)</a></li>
 <li><a href="#manual-de-usuario-backend-rust-con-axum">Backend con Axum (techcomponents)</a></li>
 <li><a href="#manual-completo-backend-rasflow---rust--axum">Backend con Axum (rasflow)</a></li>
 <li><a href="#restix---manual-de-desarrollo-paso-a-paso">Restix</a></li>
@@ -239,9 +240,3899 @@
 <li><a href="#manual-de-docker-en-debian--instalación-desinstalación-y-reinstalación-completa">Docker Instalación</a></li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div>
+<h1 id="axum-manual--manual-paso-a-paso"><a class="header" href="#axum-manual--manual-paso-a-paso">Axum Manual — Manual Paso a Paso</a></h1>
+<h3 id="backend-en-rust-con-axum-sqlx-y-tokio-desde-cero"><a class="header" href="#backend-en-rust-con-axum-sqlx-y-tokio-desde-cero">Backend en Rust con Axum, SQLx y Tokio desde cero</a></h3>
+<p>Este manual te guía en la construcción de un backend completo de autenticación (registro, login, JWT, verificación de email, recuperación de contraseña, manejo de sesiones). Está diseñado para que puedas <strong>reproducir cada archivo por tu cuenta</strong>, entendiendo qué hace cada línea y por qué se tomaron las decisiones técnicas.</p>
+<hr>
+<h2 id="índice"><a class="header" href="#índice">Índice</a></h2>
+<ol>
+<li><a href="#1-crear-el-proyecto">Crear el proyecto</a></li>
+<li><a href="#2-cargotoml--configuración-de-dependencias"><code>Cargo.toml</code> — Configuración de dependencias</a></li>
+<li><a href="#3-estructura-de-directorios">Estructura de directorios</a></li>
+<li><a href="#4-archivo-env--variables-de-entorno">Archivo <code>.env</code> — Variables de entorno</a></li>
+<li><a href="#5-srcmainrs--punto-de-entrada"><code>src/main.rs</code> — Punto de entrada</a></li>
+<li><a href="#6-módulo-sharedstate--estado-compartido-appstate">Módulo <code>shared/state</code> — Estado compartido <code>AppState</code></a></li>
+<li><a href="#7-módulo-sharedconfig--configuración-global">Módulo <code>shared/config</code> — Configuración global</a></li>
+<li><a href="#8-módulo-sharederrors--manejo-de-errores">Módulo <code>shared/errors</code> — Manejo de errores</a></li>
+<li><a href="#9-módulo-sharedsecurity--jwt-passwords-cookies-auth-guards">Módulo <code>shared/security</code> — JWT, passwords, cookies, auth guards</a></li>
+<li><a href="#10-módulo-sharedhelpers--utilidades">Módulo <code>shared/helpers</code> — Utilidades</a></li>
+<li><a href="#11-módulo-sharedvalidation--validación">Módulo <code>shared/validation</code> — Validación</a></li>
+<li><a href="#12-módulo-database--conexión-y-migraciones">Módulo <code>database</code> — Conexión y migraciones</a></li>
+<li><a href="#13-migración-sql--esquema-completo-de-base-de-datos">Migración SQL — Esquema completo de base de datos</a></li>
+<li><a href="#14-feature-authdomain--entidades-y-contratos">Feature <code>auth/domain</code> — Entidades y contratos</a></li>
+<li><a href="#15-feature-authinfrastructure--modelos-y-repositorios-sqlx">Feature <code>auth/infrastructure</code> — Modelos y repositorios SQLx</a></li>
+<li><a href="#16-feature-authapplication--servicios-de-aplicación">Feature <code>auth/application</code> — Servicios de aplicación</a></li>
+<li><a href="#17-feature-authpresentation--dtos-handlers-y-rutas">Feature <code>auth/presentation</code> — DTOs, handlers y rutas</a></li>
+<li><a href="#18-router-raíz-routesmodrs">Router raíz <code>routes/mod.rs</code></a></li>
+<li><a href="#19-cómo-ejecutar-el-proyecto">Cómo ejecutar el proyecto</a></li>
+<li><a href="#20-buenas-prácticas-y-errores-comunes">Buenas prácticas y errores comunes</a></li>
+</ol>
+<hr>
+<h2 id="1-crear-el-proyecto"><a class="header" href="#1-crear-el-proyecto">1. Crear el proyecto</a></h2>
+<p>Abrí una terminal y ejecutá:</p>
+<pre><code class="language-bash">cargo new backend
+cd backend
+</code></pre>
+<p>Esto crea la carpeta <code>backend/</code> con:</p>
+<pre><code>backend/
+├── Cargo.toml
+├── src/
+│   └── main.rs
+</code></pre>
+<p>Vamos a transformar esta estructura básica en un backend completo.</p>
+<hr>
+<h2 id="2-cargotoml--configuración-de-dependencias"><a class="header" href="#2-cargotoml--configuración-de-dependencias">2. <code>Cargo.toml</code> — Configuración de dependencias</a></h2>
+<p>Reemplazá el contenido de <code>Cargo.toml</code> con lo siguiente:</p>
+<pre><code class="language-toml">[package]
+name = "backend"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+home = "=0.5.11"
+
+# ─── Framework Web ───
+axum = { version = "0.8.8", features = ["macros"] }
+axum-extra = { version = "0.10", features = ["typed-header", "cookie"] }
+tower-http = { version = "0.6.6", features = ["cors", "trace"] }
+tokio = { version = "1", features = ["full"] }
+
+# ─── Base de datos ───
+sqlx = { version = "0.8.6", features = [
+    "runtime-tokio-rustls",
+    "postgres",
+    "chrono",
+    "uuid",
+    "migrate",
+    "macros"
+] }
+
+# ─── Cache Redis (opcional por ahora) ───
+redis = { version = "0.27", features = ["aio", "tokio-comp", "json"] }
+
+# ─── Serialización ───
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# ─── Autenticación ───
+jsonwebtoken = { version = "10", default-features = false, features = ["rust_crypto"] }
+bcrypt = "0.15"
+time = "0.3"
+cookie = "0.18"
+
+# ─── Utilidades ───
+uuid = { version = "1", features = ["v4", "v5", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+once_cell = "1.19"
+dotenvy = "0.15"
+
+# ─── Validación ───
+validator = { version = "0.19", features = ["derive"] }
+
+# ─── Async traits ───
+async-trait = "0.1"
+
+# ─── Logging ───
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+[[bin]]
+name = "server"
+path = "src/main.rs"
+
+[[bin]]
+name = "seed"
+path = "src/scripts/seed.rs"
+</code></pre>
+<h3 id="explicación-de-cada-dependencia"><a class="header" href="#explicación-de-cada-dependencia">Explicación de cada dependencia</a></h3>
+<p><strong><code>axum</code></strong> — Framework web de Rust, construido sobre Tower y Tokio. Usa el patrón de “extractores” para los handlers. La feature <code>macros</code> habilita <code>#[debug_handler]</code> para debugging.</p>
+<p><strong><code>axum-extra</code></strong> — Extensiones oficiales de Axum. La feature <code>cookie</code> integra <code>CookieJar</code> para manejar cookies de forma segura.</p>
+<p><strong><code>tower-http</code></strong> — Middlewares HTTP reutilizables. <code>cors</code> permite configurar CORS (Cross-Origin Resource Sharing). <code>trace</code> agrega logging automático de requests HTTP.</p>
+<p><strong><code>tokio</code></strong> — Runtime asíncrono de Rust. <code>full</code> habilita todas las features: networking, timers, signals, sync primitives, etc.</p>
+<p><strong><code>sqlx</code></strong> — Cliente PostgreSQL <strong>nativo</strong> (no es ORM). Escribís SQL plano. Features clave:</p>
+<ul>
+<li><code>runtime-tokio-rustls</code>: usa Tokio como runtime y Rustls para TLS (no necesita OpenSSL).</li>
+<li><code>postgres</code>: driver PostgreSQL.</li>
+<li><code>chrono</code>, <code>uuid</code>: tipos para mapear timestamps y UUIDs.</li>
+<li><code>migrate</code>: ejecutar migraciones SQL al iniciar la app.</li>
+<li><code>macros</code>: las macros <code>query!</code> y <code>query_as!</code> que verifican el SQL en compilación.</li>
+</ul>
+<p><strong><code>redis</code></strong> — Cliente de Redis (opcional, para caché de sesiones o rate limiting).</p>
+<p><strong><code>serde</code></strong> + <strong><code>serde_json</code></strong> — Serialización/deserialización de Rust ↔ JSON. Axum la usa internamente para los extractores <code>Json&lt;T&gt;</code>.</p>
+<p><strong><code>jsonwebtoken</code></strong> — Crear y verificar JWT (JSON Web Tokens). Usamos el backend <code>rust_crypto</code> para evitar dependencia OpenSSL.</p>
+<p><strong><code>bcrypt</code></strong> — Hashing de contraseñas con algoritmo bcrypt. Costo por defecto: 10 iteraciones (~80ms por hash).</p>
+<p><strong><code>time</code></strong> y <strong><code>cookie</code></strong> — Dependencias de <code>axum-extra</code> para manejar cookies HTTP con fechas de expiración.</p>
+<p><strong><code>uuid</code></strong> — Generar UUIDs v4 (aleatorios). La feature <code>serde</code> permite serializarlos a JSON como strings.</p>
+<p><strong><code>chrono</code></strong> — Fechas y tiempos con zonas horarias (<code>DateTime&lt;Utc&gt;</code>). <code>serde</code> permite serializar fechas en JSON.</p>
+<p><strong><code>once_cell</code></strong> — Inicialización lazy de variables estáticas (<code>Lazy&lt;T&gt;</code>), útil para configuraciones globales.</p>
+<p><strong><code>dotenvy</code></strong> — Carga el archivo <code>.env</code> al inicio del programa.</p>
+<p><strong><code>validator</code></strong> — Validación de datos con macros derive (<code>#[validate(email)]</code>, <code>#[validate(length(min = 8))]</code>).</p>
+<p><strong><code>async-trait</code></strong> — Permite usar <code>async fn</code> en traits (Rust estable no lo soporta nativamente hasta edition 2024).</p>
+<p><strong><code>tracing</code></strong> y <strong><code>tracing-subscriber</code></strong> — Logging estructurado y spans para depuración. <code>env-filter</code> permite filtrar logs con <code>RUST_LOG=debug</code>.</p>
+<p><strong><code>[[bin]]</code></strong> — Definimos dos binarios:</p>
+<ul>
+<li><code>cargo run --bin server</code> → inicia el servidor web.</li>
+<li><code>cargo run --bin seed</code> → ejecuta un script para poblar la base de datos con datos de prueba.</li>
+</ul>
+<hr>
+<h2 id="3-estructura-de-directorios"><a class="header" href="#3-estructura-de-directorios">3. Estructura de directorios</a></h2>
+<p>Creá todas las carpetas necesarias:</p>
+<pre><code class="language-bash">mkdir -p src/{routes,features/auth/{domain/contracts,application,infrastructure/{sqlx,models},presentation/{dto,handlers}},shared/{state,config,errors,security,helpers,validation},database/migrations}
+</code></pre>
+<p>La estructura resultante:</p>
+<pre><code>src/
+├── main.rs
+├── routes/
+│   └── mod.rs
+├── features/
+│   ├── mod.rs
+│   └── auth/
+│       ├── mod.rs
+│       ├── domain/
+│       │   ├── mod.rs
+│       │   ├── entities.rs
+│       │   └── contracts/
+│       │       ├── mod.rs
+│       │       ├── user_repository.rs
+│       │       ├── session_repository.rs
+│       │       ├── verification_repository.rs
+│       │       └── account_repository.rs
+│       ├── application/
+│       │   ├── mod.rs
+│       │   ├── registration_service.rs
+│       │   └── authentication_service.rs
+│       ├── infrastructure/
+│       │   ├── mod.rs
+│       │   ├── mapper.rs
+│       │   ├── models/
+│       │   │   ├── mod.rs
+│       │   │   ├── session.rs
+│       │   │   └── credentials_account.rs
+│       │   └── sqlx/
+│       │       ├── mod.rs
+│       │       ├── user_respository.rs
+│       │       ├── session_repository.rs
+│       │       ├── verification_repository.rs
+│       │       └── account_repository.rs
+│       └── presentation/
+│           ├── mod.rs
+│           ├── routes.rs
+│           ├── dto/
+│           │   ├── mod.rs
+│           │   ├── request.rs
+│           │   └── response.rs
+│           └── handlers/
+│               ├── mod.rs
+│               ├── registration_handler.rs
+│               ├── login_handler.rs
+│               ├── logout_handler.rs
+│               ├── refresh_handler.rs
+│               ├── verify_email_handler.rs
+│               ├── forgot_password_handler.rs
+│               ├── reset_password_handler.rs
+│               ├── session_handler.rs
+│               └── resend_verification_handler.rs
+├── shared/
+│   ├── mod.rs
+│   ├── state/
+│   │   ├── mod.rs
+│   │   └── app_state.rs
+│   ├── config/
+│   │   ├── mod.rs
+│   │   ├── constants.rs
+│   │   ├── cors.rs
+│   │   ├── logger.rs
+│   │   └── shutdown.rs
+│   ├── errors/
+│   │   ├── mod.rs
+│   │   └── app_error.rs
+│   ├── security/
+│   │   ├── mod.rs
+│   │   ├── jwt.rs
+│   │   ├── password.rs
+│   │   ├── cookies.rs
+│   │   └── auth_guard.rs
+│   ├── helpers/
+│   │   ├── mod.rs
+│   │   └── generate.rs
+│   └── validation/
+│       ├── mod.rs
+│       └── validator.rs
+└── database/
+    ├── mod.rs
+    ├── connection.rs
+    └── migrations/
+        └── 20260629234600_full_schema.sql
+</code></pre>
+<h3 id="por-qué-esta-estructura"><a class="header" href="#por-qué-esta-estructura">¿Por qué esta estructura?</a></h3>
+<p>Sigue <strong>Domain-Driven Design (DDD)</strong> adaptado a Rust:</p>
+<ul>
+<li>
+<p><strong><code>domain/</code></strong>: Entidades de negocio (<code>User</code>, <code>Verification</code>) y <strong>contratos</strong> (traits). Esta capa NO sabe nada de HTTP ni de bases de datos. Solo usa tipos de Rust y serde para serialización básica.</p>
+</li>
+<li>
+<p><strong><code>application/</code></strong>: Casos de uso. Orquestan la lógica de negocio usando los traits del dominio. Tampoco saben de HTTP ni BD.</p>
+</li>
+<li>
+<p><strong><code>infrastructure/</code></strong>: Implementaciones concretas de los traits (SQLx). También contiene los modelos específicos de base de datos (como <code>Session</code> y <code>CredentialsAccount</code>).</p>
+</li>
+<li>
+<p><strong><code>presentation/</code></strong>: Capa HTTP. Handlers de Axum, DTOs (Data Transfer Objects), definición de rutas.</p>
+</li>
+<li>
+<p><strong><code>shared/</code></strong>: Código transversal que cualquier capa puede usar: configuración, errores, seguridad, helpers.</p>
+</li>
+<li>
+<p><strong><code>database/</code></strong>: Conexión a la BD y migraciones.</p>
+</li>
+</ul>
+<p>Esta organización permite que cada feature (auth, products, sales) sea independiente y tenga sus propias capas, en lugar de tener monstruosos directorios <code>models/</code>, <code>controllers/</code>, <code>services/</code> con 30 archivos mezclados.</p>
+<hr>
+<h2 id="4-archivo-env--variables-de-entorno"><a class="header" href="#4-archivo-env--variables-de-entorno">4. Archivo <code>.env</code> — Variables de entorno</a></h2>
+<p>Creá <code>.env</code> en la raíz del proyecto:</p>
+<pre><code class="language-bash">touch .env
+</code></pre>
+<p>Contenido:</p>
+<pre><code class="language-env">DATABASE_URL=postgres://postgres:postgres@localhost:5432/mi_negocio
+FRONTEND_URL=http://localhost:3000
+JWT_SECRET=mi-clave-secreta-super-segura-cambiar-en-produccion
+JWT_REFRESH_SECRET=mi-clave-refresh-super-segura-cambiar-en-produccion
+NODE_ENV=development
+</code></pre>
+<p>Explicación de cada variable:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Variable</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><code>DATABASE_URL</code></td><td>URL de conexión a PostgreSQL. Formato: <code>postgres://usuario:password@host:puerto/base_de_datos</code></td></tr>
+<tr><td><code>FRONTEND_URL</code></td><td>URL del frontend (para CORS). En desarrollo <code>http://localhost:3000</code></td></tr>
+<tr><td><code>JWT_SECRET</code></td><td>Clave secreta para firmar access tokens JWT (15 min de vida)</td></tr>
+<tr><td><code>JWT_REFRESH_SECRET</code></td><td>Clave secreta para firmar refresh tokens JWT (7 días de vida)</td></tr>
+<tr><td><code>NODE_ENV</code></td><td>Entorno: <code>development</code> o <code>production</code>. Cambia comportamiento de cookies (secure, sameSite)</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Importante</strong>: Agregá <code>.env</code> a tu <code>.gitignore</code>. Nunca subas secretos a Git.</p>
+</blockquote>
+<hr>
+<h2 id="5-srcmainrs--punto-de-entrada"><a class="header" href="#5-srcmainrs--punto-de-entrada">5. <code>src/main.rs</code> — Punto de entrada</a></h2>
+<pre class="playground"><code class="language-rust">pub mod database;
+pub mod features;
+pub mod routes;
+pub mod shared;
+
+use axum::Router;
+use dotenvy::dotenv;
+use sqlx::{Pool, Postgres};
+use std::net::{IpAddr, Ipv4Addr, SocketAddr};
+use tokio::net::TcpListener;
+use tower_http::{
+    cors::CorsLayer,
+    trace::{DefaultMakeSpan, DefaultOnRequest, DefaultOnResponse, TraceLayer},
+};
+use tracing::Level;
+
+use crate::{
+    database::connection::create_pool,
+    shared::config::shutdown::shutdown_signal,
+    shared::state::app_state::AppState,
+};
+
+const HOST: IpAddr = IpAddr::V4(Ipv4Addr::UNSPECIFIED);
+const PORT: u16 = 4001;
+
+#[tokio::main]
+async fn main() {
+    // ─── 1. Cargar variables de entorno ───
+    dotenv().ok();
+
+    // ─── 2. Inicializar logger ───
+    shared::config::logger::init();
+
+    // ─── 3. Configurar CORS ───
+    let cors: CorsLayer = shared::config::cors::init();
+
+    // ─── 4. Definir dirección de escucha ───
+    let addr: SocketAddr = SocketAddr::new(HOST, PORT);
+
+    // ─── 5. Crear pool de conexiones a la BD ───
+    let db: Pool&lt;Postgres&gt; = create_pool().await.expect("Error al conectar a la base de datos");
+
+    // ─── 6. Construir router con estado y middlewares ───
+    let router: Router = routes::create_routes()
+        .with_state(AppState { db })
+        .layer(cors)
+        .layer(
+            TraceLayer::new_for_http()
+                .make_span_with(DefaultMakeSpan::new().level(Level::INFO))
+                .on_request(DefaultOnRequest::new().level(Level::INFO))
+                .on_response(DefaultOnResponse::new().level(Level::INFO)),
+        );
+
+    // ─── 7. Escuchar en el puerto ───
+    let listener: TcpListener = TcpListener::bind(&amp;addr).await.unwrap_or_else(|e| {
+        panic!(
+            "No se pudo bindear al puerto {PORT} — {e}.\n  ¿Ya hay otro proceso corriendo? \
+             Ejecutá:\n\n    lsof -i :{PORT}\n    kill -9 &lt;PID&gt;\n"
+        )
+    });
+
+    tracing::info!("Servidor escuchando en http://{}", &amp;addr);
+
+    // ─── 8. Iniciar servidor con graceful shutdown ───
+    axum::serve(listener, router)
+        .with_graceful_shutdown(shutdown_signal())
+        .await
+        .unwrap_or_else(|e| {
+            panic!("Error al servir el servidor: {e}");
+        });
+}</code></pre>
+<h3 id="explicación-bloque-por-bloque"><a class="header" href="#explicación-bloque-por-bloque">Explicación bloque por bloque</a></h3>
+<p><strong>Líneas 1-4 — Declaración de módulos:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod database;
+pub mod features;
+pub mod routes;
+pub mod shared;
+<span class="boring">}</span></code></pre>
+<p>Cada <code>pub mod</code> le dice a Rust que busque una carpeta (o archivo) con ese nombre dentro de <code>src/</code>. Al ser <code>pub</code>, otros módulos pueden importarlos con <code>use crate::database::...</code>.</p>
+<p><strong>Líneas 15-16 — Constantes de compilación:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>const HOST: IpAddr = IpAddr::V4(Ipv4Addr::UNSPECIFIED);
+const PORT: u16 = 4001;
+<span class="boring">}</span></code></pre>
+<ul>
+<li><code>UNSPECIFIED</code> equivale a <code>0.0.0.0</code>: escucha en todas las interfaces de red.</li>
+<li><code>PORT</code> está en <code>4001</code> para no chocar con el frontend que suele usar <code>3000</code>.</li>
+</ul>
+<p><strong>Línea 18 — <code>#[tokio::main]</code>:</strong></p>
+<pre class="playground"><code class="language-rust">#[tokio::main]
+async fn main() {</code></pre>
+<p>Esta macro transforma el <code>main</code> asíncrono en un <code>main</code> síncrono que:</p>
+<ol>
+<li>Crea un runtime Tokio multi-hilo (por la feature <code>full</code>).</li>
+<li>Ejecuta la función async en ese runtime.</li>
+<li>Espera a que termine.</li>
+</ol>
+<p>Sin esta macro, tendrías que escribir:</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let rt = tokio::runtime::Runtime::new().unwrap();
+    rt.block_on(async {
+        // código async
+    });
+}</code></pre>
+<p><strong>Línea 21 — Cargar variables de entorno:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>dotenv().ok();
+<span class="boring">}</span></code></pre>
+<p><code>dotenvy::dotenv()</code> lee el archivo <code>.env</code> del directorio actual y carga las variables en el proceso. <code>.ok()</code> ignora el error si no existe el archivo (por ejemplo, en producción las variables ya están en el entorno del sistema).</p>
+<p><strong>Línea 24 — Inicializar logger:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>shared::config::logger::init();
+<span class="boring">}</span></code></pre>
+<p>Configura <code>tracing-subscriber</code> para mostrar logs formateados. Debe llamarse una sola vez al inicio.</p>
+<p><strong>Línea 27 — Inicializar CORS:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let cors: CorsLayer = shared::config::cors::init();
+<span class="boring">}</span></code></pre>
+<p>Crea la capa de CORS con la configuración definida en <code>shared::config::cors::init()</code>.</p>
+<p><strong>Línea 33 — Pool de base de datos:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let db: Pool&lt;Postgres&gt; = create_pool().await.expect("Error al conectar a la base de datos");
+<span class="boring">}</span></code></pre>
+<p>Crea un pool de conexiones PostgreSQL. <code>create_pool()</code> intenta conectar inmediatamente, por eso usamos <code>.await</code>. Si falla, <code>expect()</code> detiene el programa con un mensaje claro.</p>
+<p><strong>Líneas 36-44 — Router con estado y middlewares:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let router: Router = routes::create_routes()
+    .with_state(AppState { db })
+    .layer(cors)
+    .layer(TraceLayer::new_for_http()...);
+<span class="boring">}</span></code></pre>
+<ul>
+<li><code>routes::create_routes()</code> devuelve un <code>Router&lt;AppState&gt;</code> con todas las rutas definidas.</li>
+<li><code>.with_state(AppState { db })</code> inyecta el pool de BD como estado compartido.</li>
+<li><code>.layer(cors)</code> y <code>.layer(trace)</code> envuelven el router con middlewares.</li>
+</ul>
+<p>El orden de los layers importa: las requests entran por el último layer agregado (<code>trace</code>) y luego pasan al anterior (<code>cors</code>), luego al router. Las respuestas viajan en orden inverso (router → cors → trace).</p>
+<p><strong>Líneas 47-57 — Servidor con graceful shutdown:</strong></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let listener: TcpListener = TcpListener::bind(&amp;addr).await.unwrap_or_else(|e| {
+    panic!("No se pudo bindear al puerto {PORT} — {e}.\n ...")
+});
+
+axum::serve(listener, router)
+    .with_graceful_shutdown(shutdown_signal())
+    .await
+    .unwrap_or_else(|e| {
+        panic!("Error al servir el servidor: {e}");
+    });
+<span class="boring">}</span></code></pre>
+<ul>
+<li><code>TcpListener::bind</code> abre un socket TCP.</li>
+<li><code>axum::serve</code> comienza a servir requests HTTP.</li>
+<li><code>.with_graceful_shutdown(shutdown_signal())</code> configura el apagado graceful: cuando se recibe Ctrl+C o SIGTERM, el servidor deja de aceptar nuevas conexiones pero termina de procesar las existentes antes de cerrarse.</li>
+</ul>
+<hr>
+<h2 id="6-módulo-sharedstate--estado-compartido-appstate"><a class="header" href="#6-módulo-sharedstate--estado-compartido-appstate">6. Módulo <code>shared/state</code> — Estado compartido <code>AppState</code></a></h2>
+<h3 id="srcsharedstatemodrs"><a class="header" href="#srcsharedstatemodrs"><code>src/shared/state/mod.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod app_state;
+<span class="boring">}</span></code></pre>
+<p>Este archivo declara el submódulo <code>app_state</code>. Sin esto, Rust no sabe que <code>app_state.rs</code> existe.</p>
+<h3 id="srcsharedstateapp_staters"><a class="header" href="#srcsharedstateapp_staters"><code>src/shared/state/app_state.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use sqlx::PgPool;
+
+/// Estado compartido de la aplicación.
+/// Se inyecta en todos los handlers de Axum.
+#[derive(Clone)]
+pub struct AppState {
+    pub db: PgPool,
+}
+<span class="boring">}</span></code></pre>
+<h3 id="explicación"><a class="header" href="#explicación">Explicación</a></h3>
+<p><strong><code>#[derive(Clone)]</code></strong>: Axum requiere que el estado implemente <code>Clone</code> porque necesita clonarlo potencialmente para cada request. <code>PgPool</code> internamente usa <code>Arc</code> (puntero atómico referenciado), así que clonar <code>AppState</code> solo incrementa un contador — es barato.</p>
+<p><strong><code>pub db: PgPool</code></strong>: El pool de conexiones a PostgreSQL. Es <code>pub</code> porque los handlers acceden a él directamente con <code>state.db</code>.</p>
+<p><strong>¿Por qué no usar <code>Arc&lt;AppState&gt;</code>?</strong> Es una alternativa válida:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub type SharedState = Arc&lt;AppState&gt;;
+<span class="boring">}</span></code></pre>
+<p>Luego los handlers extraen con <code>State(state): State&lt;Arc&lt;AppState&gt;&gt;</code>. La ventaja es que funciona incluso si <code>AppState</code> no implementa <code>Clone</code>. La desventaja es que los handlers son más verbosos. En este proyecto, <code>PgPool</code> ya es clonable, así que usamos <code>Clone</code> directo.</p>
+<hr>
+<h2 id="7-módulo-sharedconfig--configuración-global"><a class="header" href="#7-módulo-sharedconfig--configuración-global">7. Módulo <code>shared/config</code> — Configuración global</a></h2>
+<h3 id="srcsharedconfigmodrs"><a class="header" href="#srcsharedconfigmodrs"><code>src/shared/config/mod.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod constants;
+pub mod cors;
+pub mod logger;
+pub mod shutdown;
+<span class="boring">}</span></code></pre>
+<p>Declara los cuatro submódulos de configuración.</p>
+<h3 id="srcsharedconfigconstantsrs"><a class="header" href="#srcsharedconfigconstantsrs"><code>src/shared/config/constants.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::env;
+use once_cell::sync::Lazy;
+
+/// URL de conexión a PostgreSQL. Se lee de DATABASE_URL.
+pub static DATABASE_URL: Lazy&lt;String&gt; =
+    Lazy::new(|| env::var("DATABASE_URL").expect("DATABASE_URL no está definida"));
+
+/// URL del frontend (para CORS). Se lee de FRONTEND_URL.
+pub static FRONTEND_URL: Lazy&lt;String&gt; =
+    Lazy::new(|| env::var("FRONTEND_URL").expect("FRONTEND_URL no está definida"));
+
+/// Clave secreta para firmar JWT de acceso. Se lee de JWT_SECRET.
+pub static JWT_SECRET: Lazy&lt;String&gt; =
+    Lazy::new(|| env::var("JWT_SECRET").expect("JWT_SECRET no está definida"));
+
+/// Clave secreta para firmar JWT de refresco. Se lee de JWT_REFRESH_SECRET.
+pub static JWT_REFRESH_SECRET: Lazy&lt;String&gt; =
+    Lazy::new(|| env::var("JWT_REFRESH_SECRET").expect("JWT_REFRESH_SECRET no está definida"));
+
+/// Entorno: "development" o "production". Por defecto "development".
+pub static NODE_ENV: Lazy&lt;String&gt; =
+    Lazy::new(|| env::var("NODE_ENV").unwrap_or_else(|_| "development".to_string()));
+<span class="boring">}</span></code></pre>
+<h3 id="explicación-1"><a class="header" href="#explicación-1">Explicación</a></h3>
+<p><strong><code>once_cell::sync::Lazy&lt;T&gt;</code></strong>: Es como <code>lazy_static!</code> pero más moderno. Garantiza que:</p>
+<ul>
+<li>La inicialización ocurre <strong>una sola vez</strong> (thread-safe).</li>
+<li>Ocurre <strong>la primera vez</strong> que se accede a la variable, no al inicio del programa.</li>
+</ul>
+<p>El flujo es:</p>
+<ol>
+<li><code>dotenv()</code> carga las variables en el entorno.</li>
+<li>Cuando el código toca <code>DATABASE_URL</code> por primera vez, <code>Lazy</code> ejecuta <code>env::var("DATABASE_URL")</code>.</li>
+<li>Si la variable no existe, <code>expect()</code> lanza panic con un mensaje claro (fast fail).</li>
+<li>El valor se cachea para siempre.</li>
+</ol>
+<p><strong>¿Por qué no pasar estas configuraciones por <code>AppState</code>?</strong> Porque se usan en funciones que no reciben <code>AppState</code>, como <code>jwt.rs</code> y <code>cookies.rs</code>. Las <code>static</code> globales son accesibles desde cualquier lugar.</p>
+<p><strong><code>NODE_ENV</code> con <code>unwrap_or_else</code></strong>: Esta variable es opcional. Si no está definida, asumimos “development”. Esto es útil porque en desarrollo local no necesitás configurarla.</p>
+<h3 id="srcsharedconfigcorsrs"><a class="header" href="#srcsharedconfigcorsrs"><code>src/shared/config/cors.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use axum::http;
+use tower_http::cors::CorsLayer;
+
+use crate::shared::config::constants::FRONTEND_URL;
+
+pub fn init() -&gt; CorsLayer {
+    CorsLayer::new()
+        // Permitir solo el origen del frontend
+        .allow_origin(FRONTEND_URL.parse::&lt;http::HeaderValue&gt;().unwrap())
+        // Métodos HTTP permitidos
+        .allow_methods([
+            http::Method::GET,
+            http::Method::POST,
+            http::Method::PUT,
+            http::Method::PATCH,
+            http::Method::DELETE,
+        ])
+        // Headers permitidos
+        .allow_headers([http::header::CONTENT_TYPE, http::header::AUTHORIZATION])
+        // Permitir envío de cookies (necesario para httpOnly cookies)
+        .allow_credentials(true)
+}
+<span class="boring">}</span></code></pre>
+<h3 id="explicación-2"><a class="header" href="#explicación-2">Explicación</a></h3>
+<p>CORS (Cross-Origin Resource Sharing) es un mecanismo de seguridad del navegador. Sin CORS, una página en <code>http://localhost:3000</code> no puede hacer fetch a <code>http://localhost:4001</code> porque son orígenes diferentes (cambia el puerto).</p>
+<p><strong><code>allow_origin(FRONTEND_URL.parse()...)</code></strong>: Solo permitimos el origen específico de nuestro frontend. Usar <code>AllowOrigin::any()</code> con <code>allow_credentials(true)</code> es inseguro.</p>
+<p><strong><code>allow_methods(...)</code></strong>: Los métodos HTTP que nuestra API soporta.</p>
+<p><strong><code>allow_headers([CONTENT_TYPE, AUTHORIZATION])</code></strong>:</p>
+<ul>
+<li><code>Content-Type</code> es necesario para requests con body JSON.</li>
+<li><code>Authorization</code> es necesario para enviar tokens JWT en el header.</li>
+</ul>
+<p><strong><code>allow_credentials(true)</code></strong>: Permite que el navegador envíe cookies en requests cross-origin. Necesario para nuestras cookies httpOnly de autenticación.</p>
+<h3 id="srcsharedconfigloggerrs"><a class="header" href="#srcsharedconfigloggerrs"><code>src/shared/config/logger.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use tracing_subscriber::{
+    EnvFilter,
+    fmt,
+    fmt::format::FmtSpan,
+};
+
+pub fn init() {
+    fmt()
+        // Filtro por RUST_LOG. Si no está definida, usa "info"
+        .with_env_filter(
+            EnvFilter::try_from_default_env()
+                .unwrap_or_else(|_| EnvFilter::new("info")),
+        )
+        // Formato compacto (una línea por log)
+        .compact()
+        // No mostrar el módulo de origen
+        .with_target(false)
+        // No mostrar eventos de span (enter/exit)
+        .with_span_events(FmtSpan::NONE)
+        // Registrar como subscriber global (solo una vez)
+        .init();
+}
+<span class="boring">}</span></code></pre>
+<h3 id="explicación-3"><a class="header" href="#explicación-3">Explicación</a></h3>
+<p><strong><code>fmt()</code></strong>: Crea un subscriber con formato legible (no JSON). Alternativa: <code>json()</code> para logs estructurados en producción.</p>
+<p><strong><code>EnvFilter</code></strong>: Lee la variable <code>RUST_LOG</code> para filtrar logs:</p>
+<pre><code>RUST_LOG=info cargo run          # info, warn, error
+RUST_LOG=debug cargo run         # +debug
+RUST_LOG=trace cargo run         # +trace
+RUST_LOG=sqlx=warn cargo run     # sqlx solo warn, el resto info
+</code></pre>
+<p><strong><code>compact()</code></strong>: Una línea por log. Alternativas: <code>pretty()</code> (multi-línea, más legible), <code>json()</code> (estructurado).</p>
+<p><strong><code>with_target(false)</code></strong>: Oculta el nombre del módulo que generó el log. Con <code>true</code> verías <code>INFO backend::routes::handler: User logged in</code>. Con <code>false</code>: <code>INFO User logged in</code>.</p>
+<p><strong><code>init()</code></strong>: Registra el subscriber como global. Solo puede llamarse una vez. Si se llama dos veces, panic.</p>
+<h3 id="srcsharedconfigshutdownrs"><a class="header" href="#srcsharedconfigshutdownrs"><code>src/shared/config/shutdown.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use tokio::signal;
+
+/// Espera una señal de terminación (Ctrl+C o SIGTERM)
+/// para iniciar el apagado graceful del servidor.
+pub async fn shutdown_signal() {
+    // Señal Ctrl+C (enviada por el terminal)
+    let ctrl_c = tokio::signal::ctrl_c();
+
+    // Señal SIGTERM (enviada por orquestadores como Docker/Kubernetes)
+    let mut term_signal = tokio::signal::unix::signal(
+        tokio::signal::unix::SignalKind::terminate(),
+    )
+    .expect("No se pudo instalar el handler de SIGTERM");
+
+    // Esperar la primera señal que llegue
+    tokio::select! {
+        _ = ctrl_c =&gt; {
+            tracing::info!("Ctrl+C recibido — cerrando servidor...");
+        }
+        _ = term_signal.recv() =&gt; {
+            tracing::info!("SIGTERM recibido — cerrando servidor...");
+        }
+    }
+
+    // Pequeña pausa para que los logs se vean antes de morir
+    tokio::time::sleep(std::time::Duration::from_millis(50)).await;
+}
+<span class="boring">}</span></code></pre>
+<h3 id="explicación-4"><a class="header" href="#explicación-4">Explicación</a></h3>
+<p><strong><code>tokio::select!</code></strong>: Espera concurrentemente múltiples futuras. La primera que complete “gana” y las otras se cancelan.</p>
+<p><strong>Ctrl+C</strong>: Señal que envía el terminal cuando presionás Ctrl+C.</p>
+<p><strong>SIGTERM</strong>: Señal que envían los orquestadores (Docker, Kubernetes, systemd) para detener el proceso de forma graceful. No está disponible en Windows (solo Unix).</p>
+<p><strong><code>tokio::signal::unix::signal(...)</code></strong>: Solo compila en sistemas Unix (Linux, macOS). En Windows necesitarías una alternativa diferente.</p>
+<p><strong><code>sleep(50ms)</code></strong>: Pequeña pausa para que los logs de “cerrando servidor” se impriman antes de que el proceso termine.</p>
+<hr>
+<h2 id="8-módulo-sharederrors--manejo-de-errores"><a class="header" href="#8-módulo-sharederrors--manejo-de-errores">8. Módulo <code>shared/errors</code> — Manejo de errores</a></h2>
+<h3 id="srcsharederrorsmodrs"><a class="header" href="#srcsharederrorsmodrs"><code>src/shared/errors/mod.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod app_error;
+<span class="boring">}</span></code></pre>
+<h3 id="srcsharederrorsapp_errorrs"><a class="header" href="#srcsharederrorsapp_errorrs"><code>src/shared/errors/app_error.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use axum::{
+    Json,
+    http::StatusCode,
+    response::{IntoResponse, Response},
+};
+use serde_json::json;
+use validator::ValidationErrors;
+
+/// Error personalizado de la aplicación.
+/// Cada variante representa un tipo de error HTTP.
+#[derive(Debug)]
+#[allow(dead_code)]
+pub enum AppError {
+    NotFound(String),
+    BadRequest(String),
+    InternalServerError(String),
+    Unauthorized(String),
+    Forbidden(String),
+    Conflict(String),
+}
+
+/// Implementación de IntoResponse para que Axum pueda
+/// convertir AppError en respuestas HTTP automáticamente.
+impl IntoResponse for AppError {
+    fn into_response(self) -&gt; Response {
+        let (status, message_error) = match self {
+            AppError::NotFound(message) =&gt; (
+                StatusCode::NOT_FOUND,
+                json!({"error": "not_found", "message": message}),
+            ),
+            AppError::InternalServerError(message) =&gt; (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                json!({"error": "internal_server_error", "message": message}),
+            ),
+            AppError::Unauthorized(message) =&gt; (
+                StatusCode::UNAUTHORIZED,
+                json!({"error": "unauthorized", "message": message}),
+            ),
+            AppError::Forbidden(message) =&gt; (
+                StatusCode::FORBIDDEN,
+                json!({"error": "forbidden", "message": message}),
+            ),
+            AppError::BadRequest(message) =&gt; (
+                StatusCode::BAD_REQUEST,
+                json!({"error": "bad_request", "message": message}),
+            ),
+            AppError::Conflict(message) =&gt; (
+                StatusCode::CONFLICT,
+                json!({"error": "conflict", "message": message}),
+            ),
+        };
+        (status, Json(message_error)).into_response()
+    }
+}
+
+/// Convierte errores de serde_json a AppError.
+impl From&lt;serde_json::Error&gt; for AppError {
+    fn from(err: serde_json::Error) -&gt; Self {
+        AppError::InternalServerError(format!("JSON error: {}", err))
+    }
+}
+
+/// Convierte errores de SQLx a AppError.
+impl From&lt;sqlx::Error&gt; for AppError {
+    fn from(err: sqlx::Error) -&gt; Self {
+        AppError::InternalServerError(format!("Database error: {}", err))
+    }
+}
+
+/// Convierte errores de validación (validator) a AppError.
+/// Extrae todos los mensajes de error y los concatena.
+impl From&lt;ValidationErrors&gt; for AppError {
+    fn from(err: ValidationErrors) -&gt; Self {
+        let message = err
+            .field_errors()
+            .iter()
+            .flat_map(|(field, errors)| {
+                errors.iter().map(move |e| {
+                    let msg = e
+                        .message
+                        .as_ref()
+                        .map(|m| m.to_string())
+                        .unwrap_or_else(|| format!("{} is invalid", field));
+                    format!("{}: {}", field, msg)
+                })
+            })
+            .collect::&lt;Vec&lt;_&gt;&gt;()
+            .join("; ");
+
+        AppError::BadRequest(message)
+    }
+}
+
+/// Convierte errores de jsonwebtoken a AppError.
+impl From&lt;jsonwebtoken::errors::Error&gt; for AppError {
+    fn from(err: jsonwebtoken::errors::Error) -&gt; Self {
+        AppError::InternalServerError(format!("JWT error: {}", err))
+    }
+}
+<span class="boring">}</span></code></pre>
+<h3 id="explicación-bloque-por-bloque-1"><a class="header" href="#explicación-bloque-por-bloque-1">Explicación bloque por bloque</a></h3>
+<p><strong><code>AppError</code> enum</strong> — Seis variantes que cubren los códigos de error HTTP más comunes:</p>
+<ul>
+<li><code>NotFound</code> → 404</li>
+<li><code>BadRequest</code> → 400</li>
+<li><code>InternalServerError</code> → 500</li>
+<li><code>Unauthorized</code> → 401</li>
+<li><code>Forbidden</code> → 403</li>
+<li><code>Conflict</code> → 409</li>
+</ul>
+<p><strong><code>IntoResponse for AppError</code></strong> — Este es el corazón del sistema de errores. Cuando un handler devuelve <code>Err(AppError::NotFound(...))</code>, Axum automáticamente llama a <code>into_response()</code> para convertirlo en una respuesta HTTP. La respuesta tiene:</p>
+<ol>
+<li>El código HTTP correspondiente.</li>
+<li>Un body JSON consistente: <code>{"error": "not_found", "message": "User not found"}</code>.</li>
+</ol>
+<p><strong><code>From&lt;sqlx::Error&gt;</code></strong> — Sin esta conversión, no podrías usar <code>?</code> en operaciones de BD dentro de handlers que devuelven <code>Result&lt;..., AppError&gt;</code>. El operador <code>?</code> intenta convertir el error automáticamente usando <code>From</code>, y nuestra implementación envuelve el error de SQLx en <code>AppError::InternalServerError</code>.</p>
+<p><strong><code>From&lt;ValidationErrors&gt;</code></strong> — Cuando <code>payload.validate()?</code> falla, el error de validator se convierte automáticamente a <code>AppError::BadRequest</code> con todos los mensajes de error concatenados.</p>
+<p>El método <code>field_errors()</code> devuelve un mapa de <code>campo → [Error, ...]</code>. Iteramos sobre cada campo y cada error, extrayendo el mensaje (o generando uno por defecto), y los unimos con “; “. Ejemplo:</p>
+<pre><code>"email: Invalid email format; password: Password must be at least 8 characters"
+</code></pre>
+<hr>
+<h2 id="9-módulo-sharedsecurity--jwt-passwords-cookies-auth-guards"><a class="header" href="#9-módulo-sharedsecurity--jwt-passwords-cookies-auth-guards">9. Módulo <code>shared/security</code> — JWT, passwords, cookies, auth guards</a></h2>
+<h3 id="srcsharedsecuritymodrs"><a class="header" href="#srcsharedsecuritymodrs"><code>src/shared/security/mod.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod auth_guard;
+pub mod cookies;
+pub mod jwt;
+pub mod password;
+<span class="boring">}</span></code></pre>
+<h3 id="srcsharedsecurityjwtrs"><a class="header" href="#srcsharedsecurityjwtrs"><code>src/shared/security/jwt.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use jsonwebtoken::{
+    decode, encode, errors::Error as JwtError, DecodingKey, EncodingKey, Header, Validation,
+};
+use serde::{Deserialize, Serialize};
+use time::OffsetDateTime;
+use uuid::Uuid;
+
+use crate::shared::config::constants::{JWT_REFRESH_SECRET, JWT_SECRET};
+
+/// Duración del access token: 15 minutos
+const ACCESS_TOKEN_EXPIRY_SECS: i64 = 900;
+
+/// Duración del refresh token: 7 días
+const REFRESH_TOKEN_EXPIRY_SECS: i64 = 604800;
+
+/// Claims del access token JWT.
+/// Contiene información del usuario para cada request autenticado.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AccessTokenClaims {
+    pub sub: String,   // subject → user_id
+    pub email: String,
+    pub role: String,
+    pub jti: String,   // JWT ID → identificador único del token
+    pub exp: usize,    // expiration timestamp
+    pub iat: usize,    // issued at timestamp
+}
+
+/// Claims del refresh token JWT.
+/// Solo contiene lo mínimo necesario: user_id y jti.
+#[derive(Debug, Serialize, Deserialize)]
+pub struct RefreshTokenClaims {
+    pub sub: String,
+    pub jti: String,
+    pub exp: usize,
+    pub iat: usize,
+}
+
+/// Par de tokens: access y refresh.
+pub struct TokenPair {
+    pub access_token: String,
+    pub refresh_token: String,
+}
+
+/// Genera un par de tokens (access + refresh) para un usuario.
+pub fn generate_tokens(user_id: &amp;str, email: &amp;str, role: &amp;str) -&gt; Result&lt;TokenPair, JwtError&gt; {
+    let now = OffsetDateTime::now_utc().unix_timestamp() as usize;
+
+    // JTI único por par de tokens
+    let jti = Uuid::new_v4().to_string();
+
+    // Access token: contiene info del usuario, expira en 15 min
+    let access_claims = AccessTokenClaims {
+        sub: user_id.to_string(),
+        email: email.to_string(),
+        role: role.to_string(),
+        jti: jti.clone(),
+        iat: now,
+        exp: now + ACCESS_TOKEN_EXPIRY_SECS as usize,
+    };
+
+    // Refresh token: solo user_id y jti, expira en 7 días
+    let refresh_claims = RefreshTokenClaims {
+        sub: user_id.to_string(),
+        jti,
+        iat: now,
+        exp: now + REFRESH_TOKEN_EXPIRY_SECS as usize,
+    };
+
+    // Firmar access token con JWT_SECRET
+    let access_token = encode(
+        &amp;Header::default(),
+        &amp;access_claims,
+        &amp;EncodingKey::from_secret(JWT_SECRET.as_bytes()),
+    )?;
+
+    // Firmar refresh token con JWT_REFRESH_SECRET (clave diferente)
+    let refresh_token = encode(
+        &amp;Header::default(),
+        &amp;refresh_claims,
+        &amp;EncodingKey::from_secret(JWT_REFRESH_SECRET.as_bytes()),
+    )?;
+
+    Ok(TokenPair {
+        access_token,
+        refresh_token,
+    })
+}
+
+/// Verifica un access token y devuelve sus claims.
+pub fn verify_access_token(token: &amp;str) -&gt; Result&lt;AccessTokenClaims, JwtError&gt; {
+    let data = decode::&lt;AccessTokenClaims&gt;(
+        token,
+        &amp;DecodingKey::from_secret(JWT_SECRET.as_bytes()),
+        &amp;Validation::default(),
+    )?;
+
+    Ok(data.claims)
+}
+
+/// Verifica un refresh token y devuelve sus claims.
+pub fn verify_refresh_token(token: &amp;str) -&gt; Result&lt;RefreshTokenClaims, JwtError&gt; {
+    let data = decode::&lt;RefreshTokenClaims&gt;(
+        token,
+        &amp;DecodingKey::from_secret(JWT_REFRESH_SECRET.as_bytes()),
+        &amp;Validation::default(),
+    )?;
+
+    Ok(data.claims)
+}
+<span class="boring">}</span></code></pre>
+<h3 id="explicación-5"><a class="header" href="#explicación-5">Explicación</a></h3>
+<p><strong>Access Token (15 min)</strong>: Contiene <code>sub</code> (user_id), <code>email</code>, <code>role</code>. Se envía en cada request autenticado (header <code>Authorization: Bearer &lt;token&gt;</code> o cookie). Su corta duración minimiza el impacto si es robado.</p>
+<p><strong>Refresh Token (7 días)</strong>: Solo contiene <code>sub</code> y <code>jti</code> (JWT ID). Se usa exclusivamente para obtener nuevos access tokens. Se almacena en la tabla <code>session</code> de la BD y se envía en una cookie httpOnly.</p>
+<p><strong>Dos claves secretas diferentes</strong>: <code>JWT_SECRET</code> para access tokens, <code>JWT_REFRESH_SECRET</code> para refresh tokens. Si una se ve comprometida, la otra sigue siendo segura.</p>
+<p><strong>JTI</strong>: Identificador único por par de tokens. Permite revocar tokens específicos (por ejemplo, cerrar sesión desde un dispositivo en particular). También se usa para <strong>token rotation</strong>: cuando refrescás, el viejo refresh token se invalida y se crea uno nuevo con diferente JTI.</p>
+<p><strong><code>EncodingKey::from_secret</code></strong>: Usamos HMAC-SHA256 (simétrico). La misma clave se usa para firmar y verificar. En producción, podrías usar RSA (asimétrico) si múltiples servicios necesitan verificar tokens sin tener la clave secreta.</p>
+<p><strong><code>Validation::default()</code></strong>: Verifica:</p>
+<ul>
+<li>Que la firma sea válida.</li>
+<li>Que <code>exp</code> no haya expirado.</li>
+<li>Que <code>iat</code> no sea una fecha futura.</li>
+</ul>
+<h3 id="srcsharedsecuritypasswordrs"><a class="header" href="#srcsharedsecuritypasswordrs"><code>src/shared/security/password.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use bcrypt::{hash, verify};
+
+/// Costo de bcrypt: 10 iteraciones (~80ms en hardware moderno).
+const BCRYPT_COST: u32 = 10;
+
+use crate::shared::errors::app_error::AppError;
+
+/// Hashea una contraseña con bcrypt.
+pub fn hash_password(password: &amp;str) -&gt; Result&lt;String, AppError&gt; {
+    hash(password, BCRYPT_COST)
+        .map_err(|e| AppError::InternalServerError(format!("Error hasheando password: {}", e)))
+}
+
+/// Verifica una contraseña contra un hash de bcrypt.
+pub fn verify_password(password: &amp;str, hash: &amp;str) -&gt; Result&lt;bool, AppError&gt; {
+    verify(password, hash)
+        .map_err(|e| AppError::InternalServerError(format!("Error verificando password: {}", e)))
+}
+<span class="boring">}</span></code></pre>
+<h3 id="explicación-6"><a class="header" href="#explicación-6">Explicación</a></h3>
+<p><strong>bcrypt</strong>: Algoritmo de hashing diseñado específicamente para contraseñas:</p>
+<ul>
+<li>Es <strong>lento</strong> intencionalmente (dificulta ataques de fuerza bruta).</li>
+<li>Incluye <strong>salt</strong> automáticamente (cada hash usa un salt diferente; no hay que almacenarlo por separado).</li>
+<li>Tiene un parámetro de <strong>costo</strong> que se puede aumentar a medida que el hardware mejora.</li>
+</ul>
+<p><strong>Costo 10</strong>: ~80ms por hash en hardware moderno. Es el valor por defecto recomendado. Costo 12+ sería más seguro pero el usuario notaría la demora en el login.</p>
+<p><strong><code>map_err</code></strong>: Convierte errores de bcrypt (como contraseñas inválidas) a nuestro tipo <code>AppError</code>.</p>
+<h3 id="srcsharedsecuritycookiesrs"><a class="header" href="#srcsharedsecuritycookiesrs"><code>src/shared/security/cookies.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use axum_extra::extract::CookieJar;
+use cookie::Cookie;
+use time::Duration;
+
+use crate::shared::config::constants::NODE_ENV;
+
+const ACCESS_TOKEN_MAX_AGE: i64 = 900;     // 15 minutos
+const REFRESH_TOKEN_MAX_AGE: i64 = 604800; // 7 días
+
+/// Determina si estamos en producción (para cookies secure y same_site).
+fn is_production() -&gt; bool {
+    *NODE_ENV == "production"
+}
+
+/// Establece las cookies de autenticación (accessToken y refreshToken).
+pub fn set_auth_cookies(jar: CookieJar, access_token: &amp;str, refresh_token: &amp;str) -&gt; CookieJar {
+    let secure = is_production();
+    let same_site = if secure {
+        cookie::SameSite::Strict
+    } else {
+        cookie::SameSite::Lax
+    };
+
+    // Cookie del access token (15 min)
+    let access_cookie = Cookie::build(("accessToken", access_token.to_owned()))
+        .path("/")
+        .http_only(true)       // No accesible desde JavaScript
+        .secure(secure)        // Solo HTTPS en producción
+        .max_age(Duration::seconds(ACCESS_TOKEN_MAX_AGE))
+        .same_site(same_site)  // Strict en prod, Lax en dev
+        .build();
+
+    // Cookie del refresh token (7 días)
+    let refresh_cookie = Cookie::build(("refreshToken", refresh_token.to_owned()))
+        .path("/")
+        .http_only(true)
+        .secure(secure)
+        .max_age(Duration::seconds(REFRESH_TOKEN_MAX_AGE))
+        .same_site(same_site)
+        .build();
+
+    jar.add(access_cookie).add(refresh_cookie)
+}
+
+/// Extrae el accessToken de un header Cookie crudo.
+/// Ej: "accessToken=abc; refreshToken=def" → Some("abc")
+pub fn extract_access_token(cookie_header: &amp;str) -&gt; Option&lt;String&gt; {
+    cookie_header
+        .split(';')
+        .filter_map(|c| {
+            let c = c.trim();
+            c.strip_prefix("accessToken=")
+        })
+        .next()
+        .map(|s| s.to_string())
+}
+
+/// Elimina las cookies de autenticación (para logout).
+pub fn clear_auth_cookies(jar: CookieJar) -&gt; CookieJar {
+    let secure = is_production();
+
+    let access_cookie = Cookie::build(("accessToken", ""))
+        .path("/")
+        .http_only(true)
+        .secure(secure)
+        .max_age(Duration::seconds(0))  // max_age 0 → el navegador la elimina
+        .build();
+
+    let refresh_cookie = Cookie::build(("refreshToken", ""))
+        .path("/")
+        .http_only(true)
+        .secure(secure)
+        .max_age(Duration::seconds(0))
+        .build();
+
+    jar.add(access_cookie).add(refresh_cookie)
+}
+<span class="boring">}</span></code></pre>
+<h3 id="explicación-7"><a class="header" href="#explicación-7">Explicación</a></h3>
+<p><strong>Propiedades de seguridad de las cookies:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Propiedad</th><th>Valor</th><th>¿Por qué?</th></tr>
+</thead>
+<tbody>
+<tr><td><code>http_only(true)</code></td><td>No accesible desde JS</td><td>Previene XSS: un script malicioso no puede leer el token</td></tr>
+<tr><td><code>secure(true en prod)</code></td><td>Solo HTTPS</td><td>En producción, la cookie solo se envía por conexiones cifradas</td></tr>
+<tr><td><code>same_site(Strict)</code></td><td>No cross-site</td><td>Previene CSRF: un sitio malicioso no puede hacer requests autenticados</td></tr>
+<tr><td><code>path("/")</code></td><td>Todo el sitio</td><td>La cookie se envía a todas las rutas de la API</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong><code>CookieJar</code></strong>: Es un extractor de Axum que recolecta las cookies de la request y permite modificarlas para la response. Se usa como:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// En el handler:
+fn login_handler(jar: CookieJar, ...) -&gt; Result&lt;(StatusCode, CookieJar, Json&lt;...&gt;), AppError&gt; {
+    let jar = set_auth_cookies(jar, &amp;token.access_token, &amp;token.refresh_token);
+    Ok((StatusCode::OK, jar, Json(response)))
+}
+<span class="boring">}</span></code></pre>
+<p><strong><code>extract_access_token</code></strong>: Se usa en el middleware de autenticación (donde no tenemos acceso a <code>CookieJar</code>, solo al header <code>Cookie</code> crudo). Parsea el header manualmente para extraer el token.</p>
+<h3 id="srcsharedsecurityauth_guardrs"><a class="header" href="#srcsharedsecurityauth_guardrs"><code>src/shared/security/auth_guard.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use axum::{
+    body::Body,
+    extract::Request,
+    middleware::Next,
+    response::{IntoResponse, Response},
+};
+
+use crate::shared::security::jwt;
+
+use super::cookies::extract_access_token;
+
+/// Middleware para rutas que requieren admin autenticado.
+/// Lee el token del header Authorization: Bearer o de la cookie accessToken.
+pub async fn admin_middleware(
+    mut req: Request&lt;Body&gt;,
+    next: Next,
+) -&gt; Result&lt;Response, Response&gt; {
+    // 1. Extraer token (Bearer header o cookie)
+    let token = extract_bearer_token(&amp;req)
+        .or_else(|| extract_cookie_token(&amp;req))
+        .ok_or_else(|| {
+            AppErrorJson::unauthorized("Authentication required").into_response()
+        })?;
+
+    // 2. Verificar token
+    let claims = jwt::verify_access_token(&amp;token).map_err(|_| {
+        AppErrorJson::unauthorized("Invalid or expired token").into_response()
+    })?;
+
+    // 3. Verificar rol admin
+    if claims.role != "admin" {
+        return Err(AppErrorJson::forbidden("Admin access required").into_response());
+    }
+
+    // 4. Insertar claims en las extensiones de la request
+    req.extensions_mut().insert(claims);
+
+    // 5. Continuar con el siguiente handler
+    Ok(next.run(req).await)
+}
+
+/// Extrae el token del header Authorization: Bearer &lt;token&gt;
+fn extract_bearer_token(req: &amp;Request&lt;Body&gt;) -&gt; Option&lt;String&gt; {
+    req.headers()
+        .get("Authorization")
+        .and_then(|v| v.to_str().ok())
+        .and_then(|v| v.strip_prefix("Bearer "))
+        .map(|s| s.to_string())
+}
+
+/// Extrae el token de la cookie accessToken
+fn extract_cookie_token(req: &amp;Request&lt;Body&gt;) -&gt; Option&lt;String&gt; {
+    let cookie_header = req.headers().get("Cookie")?.to_str().ok()?;
+    extract_access_token(cookie_header)
+}
+
+/// Middleware para rutas que requieren usuario autenticado (cualquier rol).
+pub async fn require_auth_middleware(
+    mut req: Request&lt;Body&gt;,
+    next: Next,
+) -&gt; Result&lt;Response, Response&gt; {
+    let token = extract_bearer_token(&amp;req)
+        .or_else(|| extract_cookie_token(&amp;req))
+        .ok_or_else(|| {
+            AppErrorJson::unauthorized("Authentication required").into_response()
+        })?;
+
+    let claims = jwt::verify_access_token(&amp;token).map_err(|_| {
+        AppErrorJson::unauthorized("Invalid or expired token").into_response()
+    })?;
+
+    req.extensions_mut().insert(claims);
+
+    Ok(next.run(req).await)
+}
+
+/// Helper para devolver errores JSON con el mismo formato.
+struct AppErrorJson {
+    status: axum::http::StatusCode,
+    message: String,
+}
+
+impl AppErrorJson {
+    fn unauthorized(message: &amp;str) -&gt; Self {
+        Self {
+            status: axum::http::StatusCode::UNAUTHORIZED,
+            message: message.to_string(),
+        }
+    }
+
+    fn forbidden(message: &amp;str) -&gt; Self {
+        Self {
+            status: axum::http::StatusCode::FORBIDDEN,
+            message: message.to_string(),
+        }
+    }
+}
+
+impl IntoResponse for AppErrorJson {
+    fn into_response(self) -&gt; Response {
+        let body = serde_json::json!({ "message": self.message });
+        (self.status, axum::Json(body)).into_response()
+    }
+}
+<span class="boring">}</span></code></pre>
+<h3 id="explicación-8"><a class="header" href="#explicación-8">Explicación</a></h3>
+<p><strong>¿Cómo funciona un middleware en Axum?</strong></p>
+<ol>
+<li>Recibe la request y <code>next</code> (el siguiente middleware o handler).</li>
+<li>Hace algo con la request (validar, transformar, etc.).</li>
+<li>Llama a <code>next.run(req)</code> para pasar al siguiente.</li>
+<li>Devuelve la respuesta (o error).</li>
+</ol>
+<p><strong>Dos middlewares</strong>: <code>require_auth_middleware</code> (cualquier usuario autenticado) y <code>admin_middleware</code> (solo admins). Son casi idénticos, pero <code>admin_middleware</code> además verifica <code>claims.role == "admin"</code>.</p>
+<p><strong>Extracción del token</strong>: Intentamos dos fuentes:</p>
+<ol>
+<li>Header <code>Authorization: Bearer &lt;token&gt;</code> → para requests de JavaScript (fetch/Axios).</li>
+<li>Cookie <code>accessToken</code> → para requests de navegación o cuando el token se envía como cookie.</li>
+</ol>
+<p><strong>Extensiones</strong>: <code>req.extensions_mut().insert(claims)</code> guarda los claims en la request. Luego el handler los recupera con:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Extension(claims): Extension&lt;AccessTokenClaims&gt;
+<span class="boring">}</span></code></pre>
+<p><strong><code>AppErrorJson</code></strong>: Estructura auxiliar para devolver errores desde el middleware. No podemos usar <code>AppError</code> porque el middleware devuelve <code>Result&lt;Response, Response&gt;</code> (no <code>Result&lt;..., AppError&gt;</code>).</p>
+<hr>
+<h2 id="10-módulo-sharedhelpers--utilidades"><a class="header" href="#10-módulo-sharedhelpers--utilidades">10. Módulo <code>shared/helpers</code> — Utilidades</a></h2>
+<h3 id="srcsharedhelpersmodrs"><a class="header" href="#srcsharedhelpersmodrs"><code>src/shared/helpers/mod.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod generate;
+<span class="boring">}</span></code></pre>
+<h3 id="srcsharedhelpersgeneraters"><a class="header" href="#srcsharedhelpersgeneraters"><code>src/shared/helpers/generate.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// Genera un código de verificación alfanumérico de 6 caracteres.
+/// Se usa para verificación de email y recuperación de contraseña.
+pub fn generate_code() -&gt; String {
+    use std::collections::hash_map::DefaultHasher;
+    use std::hash::{Hash, Hasher};
+    use std::time::{SystemTime, UNIX_EPOCH};
+
+    // Usar el tiempo actual como semilla
+    let seed = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_nanos();
+
+    let mut hasher = DefaultHasher::new();
+    seed.hash(&amp;mut hasher);
+    let hash = hasher.finish();
+
+    // Caracteres permitidos (sin vocales para evitar palabras ofensivas)
+    const CHARS: &amp;[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+    let mut code = String::with_capacity(6);
+    let mut h = hash;
+
+    for _ in 0..6 {
+        code.push(CHARS[(h as usize) % CHARS.len()] as char);
+        h /= CHARS.len() as u64;
+    }
+
+    code
+}
+<span class="boring">}</span></code></pre>
+<h3 id="explicación-9"><a class="header" href="#explicación-9">Explicación</a></h3>
+<p>Este generador de códigos usa un <strong>hash del timestamp actual</strong> para producir códigos de 6 caracteres. No es criptográficamente aleatorio (no deberías usarlo para tokens de sesión), pero es suficiente para códigos de verificación de email de corta duración.</p>
+<p><strong>Alternativa</strong>: Usar <code>rand</code> crate para aleatoriedad criptográfica. Sería más seguro pero agrega otra dependencia.</p>
+<p><strong>Caracteres sin vocales</strong>: <code>ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789</code> — al no tener vocales, evitamos generar palabras ofensivas accidentales.</p>
+<hr>
+<h2 id="11-módulo-sharedvalidation--validación"><a class="header" href="#11-módulo-sharedvalidation--validación">11. Módulo <code>shared/validation</code> — Validación</a></h2>
+<h3 id="srcsharedvalidationmodrs"><a class="header" href="#srcsharedvalidationmodrs"><code>src/shared/validation/mod.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod validator;
+<span class="boring">}</span></code></pre>
+<h3 id="srcsharedvalidationvalidatorrs"><a class="header" href="#srcsharedvalidationvalidatorrs"><code>src/shared/validation/validator.rs</code></a></h3>
+<p>Este archivo está vacío en el proyecto original. Se creó como预留 para validadores personalizados. Podrías agregar funciones como:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Ejemplo de validador personalizado (opcional)
+pub fn validar_telefono(telefono: &amp;str) -&gt; bool {
+    telefono.len() &gt;= 10 &amp;&amp; telefono.chars().all(|c| c.is_ascii_digit())
+}
+<span class="boring">}</span></code></pre>
+<hr>
+<h2 id="12-módulo-database--conexión-y-migraciones"><a class="header" href="#12-módulo-database--conexión-y-migraciones">12. Módulo <code>database</code> — Conexión y migraciones</a></h2>
+<h3 id="srcdatabasemodrs"><a class="header" href="#srcdatabasemodrs"><code>src/database/mod.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod connection;
+<span class="boring">}</span></code></pre>
+<h3 id="srcdatabaseconnectionrs"><a class="header" href="#srcdatabaseconnectionrs"><code>src/database/connection.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use sqlx::{PgPool, postgres::PgPoolOptions};
+
+use crate::shared::config::constants::DATABASE_URL;
+
+/// Crea un pool de conexiones a PostgreSQL.
+pub async fn create_pool() -&gt; Result&lt;PgPool, sqlx::Error&gt; {
+    tracing::info!("Conectando a la base de datos...");
+
+    PgPoolOptions::new()
+        .max_connections(10)       // Máximo 10 conexiones simultáneas
+        .connect(&amp;DATABASE_URL)    // URL de conexión
+        .await
+}
+<span class="boring">}</span></code></pre>
+<h3 id="explicación-10"><a class="header" href="#explicación-10">Explicación</a></h3>
+<p><strong><code>PgPoolOptions</code></strong>: Builder para configurar el pool.</p>
+<p><strong><code>max_connections(10)</code></strong>: Máximo de conexiones abiertas simultáneamente. En PostgreSQL, cada conexión es un proceso separado, así que no abuses del número. 10-20 es un buen punto de partida.</p>
+<p><strong><code>.connect(&amp;DATABASE_URL)</code></strong>: Intenta conectar a la base de datos. La URL tiene formato <code>postgres://usuario:password@host:puerto/base_de_datos</code>.</p>
+<p><strong>¿Qué hace el pool?</strong>: Mantiene N conexiones abiertas. Cuando un handler necesita hacer una query, toma una conexión del pool, la usa, y la devuelve. Esto es mucho más eficiente que abrir y cerrar una conexión por cada request.</p>
+<hr>
+<h2 id="13-migración-sql--esquema-completo-de-base-de-datos"><a class="header" href="#13-migración-sql--esquema-completo-de-base-de-datos">13. Migración SQL — Esquema completo de base de datos</a></h2>
+<h3 id="srcdatabasemigrations20260629234600_full_schemasql"><a class="header" href="#srcdatabasemigrations20260629234600_full_schemasql"><code>src/database/migrations/20260629234600_full_schema.sql</code></a></h3>
+<pre><code class="language-sql">-- Migration: Esquema completo del sistema POS
+-- Crea todos los enums, tablas, índices y claves foráneas
+
+-- ─── Enums ───
+
+-- Rol de usuario: admin (dueño/gerente) o cajero (empleado)
+CREATE TYPE "ROLE" AS ENUM ('admin', 'cajero');
+
+-- Tipo de unidad para productos
+CREATE TYPE "UNIT_TYPE" AS ENUM ('unidad', 'paquete', 'caja', 'bolsa', 'botella', 'lata', 'sobre', 'barra', 'rollo', 'galon', 'ristra');
+
+-- ─── Tabla: users ───
+-- Almacena los datos básicos del usuario (sin contraseña).
+CREATE TABLE "users" (
+    "id" UUID NOT NULL,
+    "name" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "email_verified" BOOLEAN NOT NULL DEFAULT false,
+    "phone" TEXT,
+    "image" TEXT,
+    "role" "ROLE" NOT NULL DEFAULT 'cajero',
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ NOT NULL,
+    "deleted_at" TIMESTAMPTZ,            -- Soft delete
+
+    CONSTRAINT "users_pkey" PRIMARY KEY ("id")
+);
+
+-- ─── Tabla: session ───
+-- Almacena sesiones activas (refresh tokens).
+CREATE TABLE "session" (
+    "id" UUID NOT NULL,
+    "expires_at" TIMESTAMPTZ NOT NULL,
+    "token" TEXT NOT NULL,                -- El refresh token JWT
+    "ip_address" TEXT,
+    "user_agent" TEXT,
+    "user_id" UUID NOT NULL,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ NOT NULL,
+
+    CONSTRAINT "session_pkey" PRIMARY KEY ("id")
+);
+
+-- ─── Tabla: account ───
+-- Almacena credenciales de autenticación.
+-- Soporta múltiples providers (ej: credentials, google, github).
+CREATE TABLE "account" (
+    "id" UUID NOT NULL,
+    "account_id" TEXT NOT NULL,           -- Email o ID del provider
+    "provider_id" TEXT NOT NULL,          -- 'credentials', 'google', etc.
+    "user_id" UUID,
+    "access_token" TEXT,
+    "refresh_token" TEXT,
+    "id_token" TEXT,
+    "access_token_expires_at" TIMESTAMPTZ,
+    "refresh_token_expires_at" TIMESTAMPTZ,
+    "scope" TEXT,
+    "password" TEXT,                      -- Solo para provider 'credentials'
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ NOT NULL,
+
+    CONSTRAINT "account_pkey" PRIMARY KEY ("id")
+);
+
+-- ─── Tabla: verification ───
+-- Almacena códigos de verificación (email, reset password).
+CREATE TABLE "verification" (
+    "id" UUID NOT NULL,
+    "identifier" TEXT NOT NULL,           -- Email o "reset:email"
+    "value" TEXT NOT NULL,                -- El código
+    "expires_at" TIMESTAMPTZ NOT NULL,    -- Fecha de expiración
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ NOT NULL,
+
+    CONSTRAINT "verification_pkey" PRIMARY KEY ("id")
+);
+
+-- ─── Tablas de negocio (productos, ventas, etc.) ───
+
+-- Categorías de productos
+CREATE TABLE "categories" (
+    "id" UUID NOT NULL,
+    "name" TEXT NOT NULL,
+    "description" TEXT,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ NOT NULL,
+    "deleted_at" TIMESTAMPTZ,
+
+    CONSTRAINT "categories_pkey" PRIMARY KEY ("id")
+);
+
+-- Proveedores
+CREATE TABLE "suppliers" (
+    "id" UUID NOT NULL,
+    "name" TEXT NOT NULL,
+    "contact_name" TEXT,
+    "email" TEXT,
+    "phone" TEXT,
+    "address" TEXT,
+    "notes" TEXT,
+    "is_active" BOOLEAN NOT NULL DEFAULT true,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ NOT NULL,
+    "deleted_at" TIMESTAMPTZ,
+
+    CONSTRAINT "suppliers_pkey" PRIMARY KEY ("id")
+);
+
+-- Productos
+CREATE TABLE "products" (
+    "id" UUID NOT NULL,
+    "barcode" TEXT,
+    "name" TEXT NOT NULL,
+    "unit_type" "UNIT_TYPE",
+    "unit_quantity" INTEGER,
+    "category_id" UUID,
+    "supplier_id" UUID,
+    "price" DECIMAL(10,2) NOT NULL,
+    "cost" DECIMAL(10,2) NOT NULL DEFAULT 0,
+    "tax_rate" DECIMAL(10,2) NOT NULL DEFAULT 0,
+    "stock" INTEGER NOT NULL DEFAULT 0,
+    "low_stock_threshold" INTEGER NOT NULL DEFAULT 5,
+    "active" BOOLEAN NOT NULL DEFAULT true,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ NOT NULL,
+    "deleted_at" TIMESTAMPTZ,
+
+    CONSTRAINT "products_pkey" PRIMARY KEY ("id")
+);
+
+-- Servicios ofrecidos
+CREATE TABLE "services" (
+    "id" UUID NOT NULL,
+    "name" TEXT NOT NULL,
+    "description" TEXT,
+    "base_price" DECIMAL(10,2) NOT NULL,
+    "is_active" BOOLEAN NOT NULL DEFAULT true,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ NOT NULL,
+    "deleted_at" TIMESTAMPTZ,
+
+    CONSTRAINT "services_pkey" PRIMARY KEY ("id")
+);
+
+-- Productos que componen un servicio
+CREATE TABLE "service_products" (
+    "id" UUID NOT NULL,
+    "service_id" UUID NOT NULL,
+    "product_id" UUID NOT NULL,
+    "quantity" INTEGER NOT NULL DEFAULT 1,
+
+    CONSTRAINT "service_products_pkey" PRIMARY KEY ("id")
+);
+
+-- Ventas
+CREATE TABLE "sales" (
+    "id" UUID NOT NULL,
+    "subtotal" DECIMAL(10,2) NOT NULL,
+    "tax_total" DECIMAL(10,2) NOT NULL DEFAULT 0,
+    "discount" DECIMAL(10,2) NOT NULL DEFAULT 0,
+    "total" DECIMAL(10,2) NOT NULL,
+    "payment_method" TEXT NOT NULL,
+    "amount_received" DECIMAL(10,2),
+    "change_given" DECIMAL(10,2),
+    "user_id" UUID NOT NULL,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ NOT NULL,
+
+    CONSTRAINT "sales_pkey" PRIMARY KEY ("id")
+);
+
+-- Servicios vendidos en una venta
+CREATE TABLE "sale_services" (
+    "id" UUID NOT NULL,
+    "sale_id" UUID NOT NULL,
+    "service_id" UUID NOT NULL,
+    "service_name" TEXT NOT NULL,
+    "base_price" DECIMAL(10,2) NOT NULL,
+    "line_total" DECIMAL(10,2) NOT NULL,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "sale_services_pkey" PRIMARY KEY ("id")
+);
+
+-- Productos de servicios vendidos
+CREATE TABLE "sale_service_products" (
+    "id" UUID NOT NULL,
+    "sale_service_id" UUID NOT NULL,
+    "product_id" UUID NOT NULL,
+    "product_name" TEXT NOT NULL,
+    "quantity" INTEGER NOT NULL,
+    "unit_price" DECIMAL(10,2) NOT NULL,
+    "line_total" DECIMAL(10,2) NOT NULL,
+    "affects_price" BOOLEAN NOT NULL DEFAULT false,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "sale_service_products_pkey" PRIMARY KEY ("id")
+);
+
+-- Items (productos individuales) vendidos en una venta
+CREATE TABLE "sale_items" (
+    "id" UUID NOT NULL,
+    "sale_id" UUID NOT NULL,
+    "product_id" UUID NOT NULL,
+    "product_name" TEXT NOT NULL,
+    "quantity" INTEGER NOT NULL,
+    "unit_price" DECIMAL(10,2) NOT NULL,
+    "tax_rate" DECIMAL(10,2) NOT NULL DEFAULT 0,
+    "line_total" DECIMAL(10,2) NOT NULL,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ NOT NULL,
+
+    CONSTRAINT "sale_items_pkey" PRIMARY KEY ("id")
+);
+
+-- Lotes de inventario (entradas/salidas)
+CREATE TABLE "inventory_batches" (
+    "id" UUID NOT NULL,
+    "movement_type" TEXT NOT NULL,
+    "supplier_id" UUID,
+    "notes" TEXT,
+    "user_id" UUID NOT NULL,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "inventory_batches_pkey" PRIMARY KEY ("id")
+);
+
+-- Items de cada lote de inventario
+CREATE TABLE "inventory_batch_items" (
+    "id" UUID NOT NULL,
+    "batch_id" UUID NOT NULL,
+    "product_id" UUID NOT NULL,
+    "quantity" INTEGER NOT NULL,
+    "unit_cost" DECIMAL(10,2),
+    "notes" TEXT,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "inventory_batch_items_pkey" PRIMARY KEY ("id")
+);
+
+-- Movimientos de inventario individuales
+CREATE TABLE "inventory_movements" (
+    "id" UUID NOT NULL,
+    "product_id" UUID NOT NULL,
+    "movement_type" TEXT NOT NULL,
+    "quantity" INTEGER NOT NULL,
+    "note" TEXT,
+    "batch_id" UUID,
+    "user_id" UUID NOT NULL,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "inventory_movements_pkey" PRIMARY KEY ("id")
+);
+
+-- Configuración del negocio
+CREATE TABLE "settings" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL DEFAULT 'Mi Negocio',
+    "address" TEXT,
+    "phone" TEXT,
+    "tax_rate" DECIMAL(10,2) NOT NULL DEFAULT 16,
+    "low_stock_threshold" INTEGER NOT NULL DEFAULT 5,
+    "ticket_footer" TEXT,
+    "updated_at" TIMESTAMPTZ NOT NULL,
+
+    CONSTRAINT "settings_pkey" PRIMARY KEY ("id")
+);
+
+-- ─── Índices ───
+-- Los índices aceleran las búsquedas por columnas específicas.
+
+-- Usuarios
+CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
+CREATE INDEX "users_email_idx" ON "users"("email");
+CREATE INDEX "users_role_idx" ON "users"("role");
+
+-- Sesiones
+CREATE INDEX "session_user_id_idx" ON "session"("user_id");
+
+-- Accounts
+CREATE INDEX "account_user_id_idx" ON "account"("user_id");
+
+-- Categorías
+CREATE UNIQUE INDEX "categories_name_key" ON "categories"("name");
+CREATE INDEX "categories_name_idx" ON "categories"("name");
+CREATE INDEX "categories_deleted_at_idx" ON "categories"("deleted_at");
+
+-- Proveedores
+CREATE INDEX "suppliers_name_idx" ON "suppliers"("name");
+CREATE INDEX "suppliers_is_active_idx" ON "suppliers"("is_active");
+
+-- Productos
+CREATE INDEX "products_barcode_idx" ON "products"("barcode");
+CREATE INDEX "products_name_idx" ON "products"("name");
+CREATE INDEX "products_category_id_idx" ON "products"("category_id");
+CREATE INDEX "products_supplier_id_idx" ON "products"("supplier_id");
+CREATE INDEX "products_active_idx" ON "products"("active");
+
+-- Servicios
+CREATE INDEX "services_name_idx" ON "services"("name");
+CREATE INDEX "services_is_active_idx" ON "services"("is_active");
+CREATE INDEX "service_products_service_id_idx" ON "service_products"("service_id");
+CREATE INDEX "service_products_product_id_idx" ON "service_products"("product_id");
+
+-- Ventas
+CREATE INDEX "sales_created_at_idx" ON "sales"("created_at");
+CREATE INDEX "sales_user_id_idx" ON "sales"("user_id");
+CREATE INDEX "sale_services_sale_id_idx" ON "sale_services"("sale_id");
+CREATE INDEX "sale_services_service_id_idx" ON "sale_services"("service_id");
+CREATE INDEX "sale_service_products_sale_service_id_idx" ON "sale_service_products"("sale_service_id");
+CREATE INDEX "sale_service_products_product_id_idx" ON "sale_service_products"("product_id");
+CREATE INDEX "sale_items_sale_id_idx" ON "sale_items"("sale_id");
+CREATE INDEX "sale_items_product_id_idx" ON "sale_items"("product_id");
+
+-- Inventario
+CREATE INDEX "inventory_batches_movement_type_idx" ON "inventory_batches"("movement_type");
+CREATE INDEX "inventory_batches_supplier_id_idx" ON "inventory_batches"("supplier_id");
+CREATE INDEX "inventory_batches_created_at_idx" ON "inventory_batches"("created_at");
+CREATE INDEX "inventory_batch_items_batch_id_idx" ON "inventory_batch_items"("batch_id");
+CREATE INDEX "inventory_batch_items_product_id_idx" ON "inventory_batch_items"("product_id");
+CREATE INDEX "inventory_movements_product_id_idx" ON "inventory_movements"("product_id");
+CREATE INDEX "inventory_movements_movement_type_idx" ON "inventory_movements"("movement_type");
+CREATE INDEX "inventory_movements_batch_id_idx" ON "inventory_movements"("batch_id");
+CREATE INDEX "inventory_movements_created_at_idx" ON "inventory_movements"("created_at");
+
+-- ─── Claves Foráneas ───
+
+-- Sesiones → usuarios
+ALTER TABLE "session" ADD CONSTRAINT "session_user_id_fkey"
+    FOREIGN KEY ("user_id") REFERENCES "users"("id")
+    ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- Accounts → usuarios
+ALTER TABLE "account" ADD CONSTRAINT "account_user_id_fkey"
+    FOREIGN KEY ("user_id") REFERENCES "users"("id")
+    ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- Productos → categorías
+ALTER TABLE "products" ADD CONSTRAINT "products_category_id_fkey"
+    FOREIGN KEY ("category_id") REFERENCES "categories"("id")
+    ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- Productos → proveedores
+ALTER TABLE "products" ADD CONSTRAINT "products_supplier_id_fkey"
+    FOREIGN KEY ("supplier_id") REFERENCES "suppliers"("id")
+    ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- Productos de servicio → servicio
+ALTER TABLE "service_products" ADD CONSTRAINT "service_products_service_id_fkey"
+    FOREIGN KEY ("service_id") REFERENCES "services"("id")
+    ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- Productos de servicio → producto
+ALTER TABLE "service_products" ADD CONSTRAINT "service_products_product_id_fkey"
+    FOREIGN KEY ("product_id") REFERENCES "products"("id")
+    ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- Ventas → usuario
+ALTER TABLE "sales" ADD CONSTRAINT "sales_user_id_fkey"
+    FOREIGN KEY ("user_id") REFERENCES "users"("id")
+    ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- Servicios vendidos → venta
+ALTER TABLE "sale_services" ADD CONSTRAINT "sale_services_sale_id_fkey"
+    FOREIGN KEY ("sale_id") REFERENCES "sales"("id")
+    ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- Servicios vendidos → servicio
+ALTER TABLE "sale_services" ADD CONSTRAINT "sale_services_service_id_fkey"
+    FOREIGN KEY ("service_id") REFERENCES "services"("id")
+    ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- Productos de servicios vendidos → servicio vendido
+ALTER TABLE "sale_service_products" ADD CONSTRAINT "sale_service_products_sale_service_id_fkey"
+    FOREIGN KEY ("sale_service_id") REFERENCES "sale_services"("id")
+    ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- Productos de servicios vendidos → producto
+ALTER TABLE "sale_service_products" ADD CONSTRAINT "sale_service_products_product_id_fkey"
+    FOREIGN KEY ("product_id") REFERENCES "products"("id")
+    ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- Items de venta → venta
+ALTER TABLE "sale_items" ADD CONSTRAINT "sale_items_sale_id_fkey"
+    FOREIGN KEY ("sale_id") REFERENCES "sales"("id")
+    ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- Items de venta → producto
+ALTER TABLE "sale_items" ADD CONSTRAINT "sale_items_product_id_fkey"
+    FOREIGN KEY ("product_id") REFERENCES "products"("id")
+    ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- Lotes → proveedor
+ALTER TABLE "inventory_batches" ADD CONSTRAINT "inventory_batches_supplier_id_fkey"
+    FOREIGN KEY ("supplier_id") REFERENCES "suppliers"("id")
+    ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- Lotes → usuario
+ALTER TABLE "inventory_batches" ADD CONSTRAINT "inventory_batches_user_id_fkey"
+    FOREIGN KEY ("user_id") REFERENCES "users"("id")
+    ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- Items de lote → lote
+ALTER TABLE "inventory_batch_items" ADD CONSTRAINT "inventory_batch_items_batch_id_fkey"
+    FOREIGN KEY ("batch_id") REFERENCES "inventory_batches"("id")
+    ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- Items de lote → producto
+ALTER TABLE "inventory_batch_items" ADD CONSTRAINT "inventory_batch_items_product_id_fkey"
+    FOREIGN KEY ("product_id") REFERENCES "products"("id")
+    ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- Movimientos → producto
+ALTER TABLE "inventory_movements" ADD CONSTRAINT "inventory_movements_product_id_fkey"
+    FOREIGN KEY ("product_id") REFERENCES "products"("id")
+    ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- Movimientos → usuario
+ALTER TABLE "inventory_movements" ADD CONSTRAINT "inventory_movements_user_id_fkey"
+    FOREIGN KEY ("user_id") REFERENCES "users"("id")
+    ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- Movimientos → lote
+ALTER TABLE "inventory_movements" ADD CONSTRAINT "inventory_movements_batch_id_fkey"
+    FOREIGN KEY ("batch_id") REFERENCES "inventory_batches"("id")
+    ON DELETE SET NULL ON UPDATE CASCADE;
+</code></pre>
+<h3 id="explicación-del-diseño-de-bd"><a class="header" href="#explicación-del-diseño-de-bd">Explicación del diseño de BD</a></h3>
+<p><strong>Enums de PostgreSQL</strong>: <code>CREATE TYPE "ROLE" AS ENUM (...)</code>. Los enums son tipos de datos nativos de PostgreSQL. Más eficientes que guardar strings.</p>
+<p><strong><code>TIMESTAMPTZ</code></strong> vs <code>TIMESTAMP</code>: <code>TIMESTAMPTZ</code> (timestamp with time zone) guarda la hora en UTC y ajusta a la zona horaria del cliente al leer. Siempre preferí <code>TIMESTAMPTZ</code>.</p>
+<p><strong><code>UUID</code> como PK</strong>: Usamos UUIDs en lugar de <code>SERIAL</code> (auto-incrementales). Ventajas:</p>
+<ul>
+<li>No exponen el número de registros (una URL <code>/users/3</code> revela que hay al menos 3 usuarios).</li>
+<li>Se pueden generar en el servidor (Rust) sin consultar la BD.</li>
+<li>Son únicos globalmente (útil para migraciones o sistemas distribuidos).</li>
+</ul>
+<p><strong><code>DECIMAL(10,2)</code></strong>: Para valores monetarios. Usar <code>FLOAT</code> para dinero puede causar errores de redondeo (0.1 + 0.2 = 0.30000000000000004).</p>
+<p><strong><code>deleted_at</code> (soft delete)</strong>: En lugar de borrar registros permanentemente, los marcamos con <code>deleted_at</code>. Las queries siempre filtran <code>WHERE deleted_at IS NULL</code>. Ventajas:</p>
+<ul>
+<li>Se pueden recuperar datos borrados accidentalmente.</li>
+<li>Se mantiene la integridad referencial.</li>
+</ul>
+<p><strong>Índices</strong>: Cada columna que aparece en <code>WHERE</code>, <code>JOIN</code>, <code>ORDER BY</code> o que tiene una constraint <code>UNIQUE</code> debe tener índice. Los índices aceleran las búsquedas pero ralentizan las inserciones (hay que actualizar el índice).</p>
+<p><strong><code>ON DELETE RESTRICT</code></strong>: No permite borrar un registro si otros registros lo referencian. Más seguro que <code>CASCADE</code> (borra en cascada, podría borrar datos inadvertidamente).</p>
+<p><strong><code>ON DELETE SET NULL</code></strong>: Si se borra el registro referenciado, el campo se pone <code>NULL</code>. Útil para relaciones opcionales.</p>
+<p><strong><code>ON DELETE CASCADE</code></strong>: Si se borra el registro padre, los hijos también se borran. Útil para relaciones de composición (ej: items de una venta).</p>
+<hr>
+<h2 id="14-feature-authdomain--entidades-y-contratos"><a class="header" href="#14-feature-authdomain--entidades-y-contratos">14. Feature <code>auth/domain</code> — Entidades y contratos</a></h2>
+<h3 id="srcfeaturesmodrs"><a class="header" href="#srcfeaturesmodrs"><code>src/features/mod.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod auth;
+<span class="boring">}</span></code></pre>
+<p>Declara la feature <code>auth</code>.</p>
+<h3 id="srcfeaturesauthmodrs"><a class="header" href="#srcfeaturesauthmodrs"><code>src/features/auth/mod.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod application;
+pub mod domain;
+pub mod infrastructure;
+pub mod presentation;
+<span class="boring">}</span></code></pre>
+<p>Cada feature tiene las cuatro capas.</p>
+<h3 id="srcfeaturesauthdomainmodrs"><a class="header" href="#srcfeaturesauthdomainmodrs"><code>src/features/auth/domain/mod.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod contracts;
+pub mod entities;
+<span class="boring">}</span></code></pre>
+<h3 id="srcfeaturesauthdomainentitiesrs"><a class="header" href="#srcfeaturesauthdomainentitiesrs"><code>src/features/auth/domain/entities.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use chrono::{DateTime, Utc};
+use serde::{Deserialize, Serialize};
+use sqlx::prelude::FromRow;
+use uuid::Uuid;
+
+/// Entidad de usuario (dominio).
+/// Representa un usuario del sistema.
+#[derive(Debug, Serialize, Deserialize, FromRow)]
+pub struct User {
+    pub id: Uuid,
+    pub name: String,
+    pub email: String,
+    pub email_verified: bool,
+    pub image: Option&lt;String&gt;,
+    pub role: Option&lt;String&gt;,
+    pub created_at: Option&lt;DateTime&lt;Utc&gt;&gt;,
+    pub updated_at: Option&lt;DateTime&lt;Utc&gt;&gt;,
+}
+
+/// Entidad de usuario con password.
+/// Se usa internamente en el servicio, nunca se expone en respuestas HTTP.
+#[derive(Debug, Serialize, Deserialize, FromRow)]
+pub struct UserWithPassword {
+    pub id: Uuid,
+    pub name: String,
+    pub email: String,
+    pub email_verified: bool,
+    pub image: Option&lt;String&gt;,
+    pub role: Option&lt;String&gt;,
+    pub password: Option&lt;String&gt;,
+    pub created_at: Option&lt;DateTime&lt;Utc&gt;&gt;,
+    pub updated_at: Option&lt;DateTime&lt;Utc&gt;&gt;,
+}
+
+/// Entidad de verification (códigos de verificación).
+#[derive(Debug, Serialize, Deserialize, FromRow)]
+pub struct Verification {
+    pub id: Uuid,
+    pub identifier: String,
+    pub value: String,
+    pub expires_at: DateTime&lt;Utc&gt;,
+    pub created_at: Option&lt;DateTime&lt;Utc&gt;&gt;,
+    pub updated_at: Option&lt;DateTime&lt;Utc&gt;&gt;,
+}
+<span class="boring">}</span></code></pre>
+<h3 id="explicación-11"><a class="header" href="#explicación-11">Explicación</a></h3>
+<p><strong><code>#[derive(Debug, Serialize, Deserialize, FromRow)]</code></strong>:</p>
+<ul>
+<li><code>Debug</code>: permite imprimir con <code>{:?}</code> para debugging.</li>
+<li><code>Serialize</code>: convierte a JSON (para respuestas HTTP).</li>
+<li><code>Deserialize</code>: convierte desde JSON (para requests HTTP, aunque no usemos User como request directo).</li>
+<li><code>FromRow</code>: mapea automáticamente filas de SQLx a este struct.</li>
+</ul>
+<p><strong><code>Option&lt;T&gt;</code></strong>: Las columnas que pueden ser NULL en la BD se modelan como <code>Option&lt;T&gt;</code>. SQLx mapea <code>NULL → None</code> y <code>NOT NULL → Some(valor)</code>. Si defines un campo como <code>String</code> pero la BD puede devolver NULL, SQLx dará error.</p>
+<p><strong><code>UserWithPassword</code></strong>: Es una entidad separada de <code>User</code> porque:</p>
+<ul>
+<li><code>User</code> no contiene password (se expone en respuestas).</li>
+<li><code>UserWithPassword</code> contiene password (solo se usa internamente para login).</li>
+</ul>
+<h3 id="srcfeaturesauthdomaincontractsmodrs"><a class="header" href="#srcfeaturesauthdomaincontractsmodrs"><code>src/features/auth/domain/contracts/mod.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod account_repository;
+pub mod session_repository;
+pub mod user_repository;
+pub mod verification_repository;
+<span class="boring">}</span></code></pre>
+<h3 id="srcfeaturesauthdomaincontractsuser_repositoryrs"><a class="header" href="#srcfeaturesauthdomaincontractsuser_repositoryrs"><code>src/features/auth/domain/contracts/user_repository.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use async_trait::async_trait;
+use uuid::Uuid;
+
+use crate::{
+    features::auth::domain::entities::User,
+    shared::errors::app_error::AppError,
+};
+
+/// Contrato para el repositorio de usuarios.
+/// Define las operaciones que la capa de aplicación puede realizar
+/// sin conocer la implementación concreta (SQLx, mock, etc.).
+#[async_trait]
+pub trait UserRepository: Send + Sync + 'static {
+    /// Busca un usuario por email.
+    async fn find_by_email(&amp;self, email: &amp;str) -&gt; Result&lt;Option&lt;User&gt;, AppError&gt;;
+
+    /// Busca un usuario por ID.
+    async fn find_by_id(&amp;self, id: Uuid) -&gt; Result&lt;Option&lt;User&gt;, AppError&gt;;
+}
+<span class="boring">}</span></code></pre>
+<h3 id="explicación-12"><a class="header" href="#explicación-12">Explicación</a></h3>
+<p><strong><code>#[async_trait]</code></strong>: Permite usar <code>async fn</code> dentro de un trait. Rust estable no soporta <code>async fn</code> en traits nativamente, así que esta macro transforma el trait para que devuelva <code>Pin&lt;Box&lt;dyn Future&lt;...&gt;&gt;&gt;</code>.</p>
+<p><strong><code>Send + Sync + 'static</code></strong>:</p>
+<ul>
+<li><code>Send</code>: el objeto puede transferirse entre hilos (necesario para Tokio).</li>
+<li><code>Sync</code>: se puede compartir referencia entre hilos.</li>
+<li><code>'static</code>: el objeto no contiene referencias prestadas.</li>
+</ul>
+<p><strong><code>Result&lt;Option&lt;User&gt;, AppError&gt;</code></strong>: <code>Option</code> indica que el usuario puede existir o no. No confundir con “error”: un email no encontrado NO es un error, es un <code>None</code> válido. Solo hay error si hay un problema con la BD.</p>
+<h3 id="srcfeaturesauthdomaincontractssession_repositoryrs"><a class="header" href="#srcfeaturesauthdomaincontractssession_repositoryrs"><code>src/features/auth/domain/contracts/session_repository.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use async_trait::async_trait;
+use chrono::{DateTime, Utc};
+use uuid::Uuid;
+
+use crate::{
+    features::auth::infrastructure::models::session::Session,
+    shared::errors::app_error::AppError,
+};
+
+/// Contrato para el repositorio de sesiones.
+#[async_trait]
+pub trait SessionRepository: Send + Sync + 'static {
+    /// Busca una sesión por token (refresh token).
+    async fn find_by_token(&amp;self, token: &amp;str) -&gt; Result&lt;Option&lt;Session&gt;, AppError&gt;;
+
+    /// Busca todas las sesiones de un usuario.
+    async fn find_by_user_id(&amp;self, user_id: Uuid) -&gt; Result&lt;Vec&lt;Session&gt;, AppError&gt;;
+
+    /// Elimina una sesión por token.
+    async fn delete_by_token(&amp;self, token: &amp;str) -&gt; Result&lt;(), AppError&gt;;
+
+    /// Elimina una sesión por ID.
+    async fn delete_by_id(&amp;self, id: Uuid) -&gt; Result&lt;(), AppError&gt;;
+
+    /// Elimina todas las sesiones de un usuario (ej: al resetear password).
+    async fn delete_by_user_id(&amp;self, user_id: Uuid) -&gt; Result&lt;(), AppError&gt;;
+
+    /// Crea una nueva sesión.
+    async fn create(
+        &amp;self,
+        user_id: Uuid,
+        token: &amp;str,
+        expires_at: DateTime&lt;Utc&gt;,
+        ip_address: Option&lt;&amp;str&gt;,
+        user_agent: Option&lt;&amp;str&gt;,
+    ) -&gt; Result&lt;(), AppError&gt;;
+}
+<span class="boring">}</span></code></pre>
+<p>Notar que <code>SessionRepository</code> devuelve <code>Session</code> (del módulo <code>infrastructure/models</code>, no de <code>domain/entities</code>). Esto es porque <code>Session</code> es más un registro de infraestructura (tiene <code>token</code>, <code>ip_address</code>, <code>user_agent</code>) que una entidad de dominio pura.</p>
+<h3 id="srcfeaturesauthdomaincontractsverification_repositoryrs"><a class="header" href="#srcfeaturesauthdomaincontractsverification_repositoryrs"><code>src/features/auth/domain/contracts/verification_repository.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use async_trait::async_trait;
+use chrono::{DateTime, Utc};
+
+use crate::{
+    features::auth::domain::entities::Verification,
+    shared::errors::app_error::AppError,
+};
+
+/// Contrato para el repositorio de códigos de verificación.
+#[async_trait]
+pub trait VerificationRepository: Send + Sync + 'static {
+    /// Crea un nuevo código de verificación.
+    async fn create(
+        &amp;self,
+        identifier: &amp;str,
+        value: &amp;str,
+        expires_at: DateTime&lt;Utc&gt;,
+    ) -&gt; Result&lt;(), AppError&gt;;
+
+    /// Busca un código por identifier + value.
+    async fn find_by_identifier_and_value(
+        &amp;self,
+        identifier: &amp;str,
+        value: &amp;str,
+    ) -&gt; Result&lt;Option&lt;Verification&gt;, AppError&gt;;
+
+    /// Elimina códigos de verificación por identifier.
+    async fn delete_by_identifier(&amp;self, identifier: &amp;str) -&gt; Result&lt;(), AppError&gt;;
+}
+<span class="boring">}</span></code></pre>
+<h3 id="srcfeaturesauthdomaincontractsaccount_repositoryrs"><a class="header" href="#srcfeaturesauthdomaincontractsaccount_repositoryrs"><code>src/features/auth/domain/contracts/account_repository.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use async_trait::async_trait;
+
+use crate::{
+    features::auth::infrastructure::models::credentials_account::CredentialsAccount,
+    shared::errors::app_error::AppError,
+};
+
+/// Contrato para el repositorio de cuentas (credenciales).
+#[async_trait]
+pub trait AccountRepository: Send + Sync + 'static {
+    /// Busca credenciales por email (hace JOIN entre users y account).
+    async fn find_credentials_by_email(
+        &amp;self,
+        email: &amp;str,
+    ) -&gt; Result&lt;Option&lt;CredentialsAccount&gt;, AppError&gt;;
+
+    /// Actualiza la contraseña de un usuario por email.
+    async fn update_password_by_email(
+        &amp;self,
+        email: &amp;str,
+        hashed_password: &amp;str,
+    ) -&gt; Result&lt;(), AppError&gt;;
+}
+<span class="boring">}</span></code></pre>
+<hr>
+<h2 id="15-feature-authinfrastructure--modelos-y-repositorios-sqlx"><a class="header" href="#15-feature-authinfrastructure--modelos-y-repositorios-sqlx">15. Feature <code>auth/infrastructure</code> — Modelos y repositorios SQLx</a></h2>
+<h3 id="srcfeaturesauthinfrastructuremodrs"><a class="header" href="#srcfeaturesauthinfrastructuremodrs"><code>src/features/auth/infrastructure/mod.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod mapper;
+pub mod models;
+pub mod sqlx;
+<span class="boring">}</span></code></pre>
+<h3 id="srcfeaturesauthinfrastructuremapperrs"><a class="header" href="#srcfeaturesauthinfrastructuremapperrs"><code>src/features/auth/infrastructure/mapper.rs</code></a></h3>
+<p>Este archivo está vacío en el proyecto original. Está preparado para futuros mapeadores entre entidades y DTOs.</p>
+<h3 id="srcfeaturesauthinfrastructuremodelsmodrs"><a class="header" href="#srcfeaturesauthinfrastructuremodelsmodrs"><code>src/features/auth/infrastructure/models/mod.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod credentials_account;
+pub mod session;
+<span class="boring">}</span></code></pre>
+<h3 id="srcfeaturesauthinfrastructuremodelssessionrs"><a class="header" href="#srcfeaturesauthinfrastructuremodelssessionrs"><code>src/features/auth/infrastructure/models/session.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use chrono::{DateTime, Utc};
+use serde::Serialize;
+use sqlx::prelude::FromRow;
+use uuid::Uuid;
+
+/// Fila de la tabla `session`.
+#[derive(Debug, Clone, FromRow, Serialize)]
+pub struct Session {
+    pub id: Uuid,
+    pub user_id: Uuid,
+    pub token: String,
+    pub expires_at: DateTime&lt;Utc&gt;,
+    pub ip_address: Option&lt;String&gt;,
+    pub user_agent: Option&lt;String&gt;,
+    pub created_at: Option&lt;DateTime&lt;Utc&gt;&gt;,
+    pub updated_at: Option&lt;DateTime&lt;Utc&gt;&gt;,
+}
+<span class="boring">}</span></code></pre>
+<h3 id="srcfeaturesauthinfrastructuremodelscredentials_accountrs"><a class="header" href="#srcfeaturesauthinfrastructuremodelscredentials_accountrs"><code>src/features/auth/infrastructure/models/credentials_account.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use chrono::{DateTime, Utc};
+use sqlx::prelude::FromRow;
+use uuid::Uuid;
+
+/// Resultado del JOIN entre users y account para login por credenciales.
+/// NO es una entidad de dominio — es un modelo de infraestructura
+/// que solo existe para mapear una query SQL específica.
+#[derive(Debug, FromRow)]
+pub struct CredentialsAccount {
+    pub user_id: Uuid,
+    pub name: String,
+    pub email: String,
+    pub email_verified: bool,
+    pub image: Option&lt;String&gt;,
+    pub role: Option&lt;String&gt;,
+    pub password: Option&lt;String&gt;,
+    pub created_at: Option&lt;DateTime&lt;Utc&gt;&gt;,
+    pub updated_at: Option&lt;DateTime&lt;Utc&gt;&gt;,
+}
+<span class="boring">}</span></code></pre>
+<p><strong>¿Por qué <code>CredentialsAccount</code> no implementa <code>Serialize</code>?</strong> Porque contiene <code>password</code> y nunca debe exponerse en una respuesta HTTP.</p>
+<h3 id="srcfeaturesauthinfrastructuresqlxmodrs"><a class="header" href="#srcfeaturesauthinfrastructuresqlxmodrs"><code>src/features/auth/infrastructure/sqlx/mod.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod account_repository;
+pub mod session_repository;
+pub mod user_respository;
+pub mod verification_repository;
+<span class="boring">}</span></code></pre>
+<h3 id="srcfeaturesauthinfrastructuresqlxuser_respositoryrs"><a class="header" href="#srcfeaturesauthinfrastructuresqlxuser_respositoryrs"><code>src/features/auth/infrastructure/sqlx/user_respository.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use async_trait::async_trait;
+use chrono::Utc;
+use sqlx::{PgPool, Postgres, Transaction};
+use uuid::Uuid;
+
+use crate::{
+    features::auth::domain::{contracts::user_repository::UserRepository, entities::User},
+    shared::errors::app_error::AppError,
+};
+
+/// Implementación concreta de UserRepository usando SQLx + PostgreSQL.
+#[derive(Clone)]
+pub struct SqlxUserRepository {
+    pool: PgPool,
+}
+
+impl SqlxUserRepository {
+    pub fn new(pool: PgPool) -&gt; Self {
+        Self { pool }
+    }
+}
+
+#[async_trait]
+impl UserRepository for SqlxUserRepository {
+    /// Busca un usuario por email (excluye soft-deleted).
+    async fn find_by_email(&amp;self, email: &amp;str) -&gt; Result&lt;Option&lt;User&gt;, AppError&gt; {
+        let user = sqlx::query_as!(
+            User,
+            r#"
+            SELECT
+                id,
+                name,
+                email,
+                email_verified,
+                image as "image?",
+                role as "role?",
+                created_at as "created_at?",
+                updated_at as "updated_at?"
+            FROM users
+            WHERE email = $1 AND deleted_at IS NULL
+            "#,
+            email
+        )
+        .fetch_optional(&amp;self.pool)
+        .await?;
+
+        Ok(user)
+    }
+
+    /// Busca un usuario por ID (excluye soft-deleted).
+    async fn find_by_id(&amp;self, id: Uuid) -&gt; Result&lt;Option&lt;User&gt;, AppError&gt; {
+        let user = sqlx::query_as!(
+            User,
+            r#"
+            SELECT
+                id,
+                name,
+                email,
+                email_verified,
+                image as "image?",
+                role as "role?",
+                created_at as "created_at?",
+                updated_at as "updated_at?"
+            FROM users
+            WHERE id = $1 AND deleted_at IS NULL
+            "#,
+            id
+        )
+        .fetch_optional(&amp;self.pool)
+        .await?;
+
+        Ok(user)
+    }
+}
+
+/// Operaciones que requieren transacción (fuera del trait).
+impl SqlxUserRepository {
+    /// Crea un nuevo usuario dentro de una transacción.
+    pub async fn create(
+        tx: &amp;mut Transaction&lt;'_, Postgres&gt;,
+        name: &amp;str,
+        email: &amp;str,
+        role: &amp;str,
+    ) -&gt; Result&lt;User, AppError&gt; {
+        let user: User = sqlx::query_as!(
+            User,
+            r#"
+            INSERT INTO users (
+                id, name, email, email_verified, role, created_at, updated_at
+            )
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING
+                id,
+                name,
+                email,
+                email_verified,
+                image as "image?",
+                role as "role?",
+                created_at as "created_at?",
+                updated_at as "updated_at?"
+            "#,
+            Uuid::new_v4(),
+            name,
+            email,
+            false,          // email_verified inicialmente false
+            role,
+            Utc::now(),
+            Utc::now(),
+        )
+        .fetch_one(tx.as_mut())  // 👈 usa la transacción, no el pool
+        .await?;
+
+        Ok(user)
+    }
+}
+<span class="boring">}</span></code></pre>
+<h3 id="explicación-de-sqlxquery_as"><a class="header" href="#explicación-de-sqlxquery_as">Explicación de <code>sqlx::query_as!</code></a></h3>
+<p>La macro <code>sqlx::query_as!</code>:</p>
+<ol>
+<li>Se conecta a la BD en tiempo de compilación (usa <code>DATABASE_URL</code> del entorno).</li>
+<li>Verifica que la tabla, columnas y tipos existan.</li>
+<li>Verifica que los tipos SQL sean compatibles con los tipos Rust.</li>
+<li>Si cambia la BD, el proyecto no compila hasta que actualices las queries.</li>
+</ol>
+<p><strong>El <code>?</code> en <code>as "image?"</code></strong>: SQLx es estricto con NULLs. Cuando una columna puede ser NULL en la BD, hay que marcarla con <code>?</code> para que SQLx sepa que debe mapearla a <code>Option&lt;T&gt;</code>. Sin el <code>?</code>, si la BD devuelve NULL, SQLx lanza error.</p>
+<p><strong><code>tx.as_mut()</code></strong>: En lugar de usar <code>&amp;self.pool</code> (una conexión del pool), usamos <code>tx.as_mut()</code> para ejecutar dentro de una transacción. Esto requiere que el método acepte <code>&amp;mut Transaction&lt;'_, Postgres&gt;</code> y no <code>&amp;self</code>.</p>
+<h3 id="srcfeaturesauthinfrastructuresqlxsession_repositoryrs"><a class="header" href="#srcfeaturesauthinfrastructuresqlxsession_repositoryrs"><code>src/features/auth/infrastructure/sqlx/session_repository.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use async_trait::async_trait;
+use chrono::{DateTime, Utc};
+use sqlx::PgPool;
+use uuid::Uuid;
+
+use crate::{
+    features::auth::{
+        domain::contracts::session_repository::SessionRepository,
+        infrastructure::models::session::Session,
+    },
+    shared::errors::app_error::AppError,
+};
+
+/// Implementación concreta de SessionRepository usando SQLx.
+#[derive(Clone)]
+pub struct SqlxSessionRepository {
+    pool: PgPool,
+}
+
+impl SqlxSessionRepository {
+    pub fn new(pool: PgPool) -&gt; Self {
+        Self { pool }
+    }
+}
+
+#[async_trait]
+impl SessionRepository for SqlxSessionRepository {
+    async fn find_by_token(&amp;self, token: &amp;str) -&gt; Result&lt;Option&lt;Session&gt;, AppError&gt; {
+        let session = sqlx::query_as!(
+            Session,
+            r#"
+            SELECT id, user_id, token, expires_at,
+                   ip_address, user_agent,
+                   created_at, updated_at
+            FROM session
+            WHERE token = $1
+            "#,
+            token
+        )
+        .fetch_optional(&amp;self.pool)
+        .await?;
+
+        Ok(session)
+    }
+
+    async fn find_by_user_id(&amp;self, user_id: Uuid) -&gt; Result&lt;Vec&lt;Session&gt;, AppError&gt; {
+        let sessions = sqlx::query_as!(
+            Session,
+            r#"
+            SELECT id, user_id, token, expires_at,
+                   ip_address, user_agent,
+                   created_at, updated_at
+            FROM session
+            WHERE user_id = $1
+            ORDER BY created_at DESC
+            "#,
+            user_id
+        )
+        .fetch_all(&amp;self.pool)
+        .await?;
+
+        Ok(sessions)
+    }
+
+    async fn delete_by_token(&amp;self, token: &amp;str) -&gt; Result&lt;(), AppError&gt; {
+        sqlx::query!(r#"DELETE FROM session WHERE token = $1"#, token)
+            .execute(&amp;self.pool)
+            .await?;
+
+        Ok(())
+    }
+
+    async fn delete_by_id(&amp;self, id: Uuid) -&gt; Result&lt;(), AppError&gt; {
+        sqlx::query!(r#"DELETE FROM session WHERE id = $1"#, id)
+            .execute(&amp;self.pool)
+            .await?;
+
+        Ok(())
+    }
+
+    async fn delete_by_user_id(&amp;self, user_id: Uuid) -&gt; Result&lt;(), AppError&gt; {
+        sqlx::query!(r#"DELETE FROM session WHERE user_id = $1"#, user_id)
+            .execute(&amp;self.pool)
+            .await?;
+
+        Ok(())
+    }
+
+    async fn create(
+        &amp;self,
+        user_id: Uuid,
+        token: &amp;str,
+        expires_at: DateTime&lt;Utc&gt;,
+        ip_address: Option&lt;&amp;str&gt;,
+        user_agent: Option&lt;&amp;str&gt;,
+    ) -&gt; Result&lt;(), AppError&gt; {
+        sqlx::query!(
+            r#"
+            INSERT INTO session (id, expires_at, token, user_id, ip_address, user_agent, created_at, updated_at)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+            "#,
+            Uuid::new_v4(),
+            expires_at,
+            token,
+            user_id,
+            ip_address,
+            user_agent,
+            Utc::now(),
+            Utc::now(),
+        )
+        .execute(&amp;self.pool)
+        .await?;
+
+        Ok(())
+    }
+}
+<span class="boring">}</span></code></pre>
+<h3 id="srcfeaturesauthinfrastructuresqlxverification_repositoryrs"><a class="header" href="#srcfeaturesauthinfrastructuresqlxverification_repositoryrs"><code>src/features/auth/infrastructure/sqlx/verification_repository.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use async_trait::async_trait;
+use chrono::{DateTime, Utc};
+use sqlx::{PgPool, Postgres, Transaction};
+use uuid::Uuid;
+
+use crate::{
+    features::auth::{
+        domain::{contracts::verification_repository::VerificationRepository, entities::Verification},
+    },
+    shared::errors::app_error::AppError,
+};
+
+/// Implementación concreta de VerificationRepository usando SQLx.
+#[derive(Clone)]
+pub struct SqlxVerificationRepository {
+    pool: PgPool,
+}
+
+impl SqlxVerificationRepository {
+    pub fn new(pool: PgPool) -&gt; Self {
+        Self { pool }
+    }
+}
+
+#[async_trait]
+impl VerificationRepository for SqlxVerificationRepository {
+    async fn create(
+        &amp;self,
+        identifier: &amp;str,
+        value: &amp;str,
+        expires_at: DateTime&lt;Utc&gt;,
+    ) -&gt; Result&lt;(), AppError&gt; {
+        sqlx::query!(
+            r#"
+            INSERT INTO verification (id, identifier, value, expires_at, created_at, updated_at)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            "#,
+            Uuid::new_v4(),
+            identifier,
+            value,
+            expires_at,
+            Utc::now(),
+            Utc::now(),
+        )
+        .execute(&amp;self.pool)
+        .await?;
+
+        Ok(())
+    }
+
+    async fn find_by_identifier_and_value(
+        &amp;self,
+        identifier: &amp;str,
+        value: &amp;str,
+    ) -&gt; Result&lt;Option&lt;Verification&gt;, AppError&gt; {
+        let record = sqlx::query_as!(
+            Verification,
+            r#"
+            SELECT id, identifier, value, expires_at, created_at, updated_at
+            FROM verification
+            WHERE identifier = $1 AND value = $2
+            "#,
+            identifier,
+            value,
+        )
+        .fetch_optional(&amp;self.pool)
+        .await?;
+
+        Ok(record)
+    }
+
+    async fn delete_by_identifier(&amp;self, identifier: &amp;str) -&gt; Result&lt;(), AppError&gt; {
+        sqlx::query!(r#"DELETE FROM verification WHERE identifier = $1"#, identifier)
+            .execute(&amp;self.pool)
+            .await?;
+
+        Ok(())
+    }
+}
+
+/// Operaciones que requieren transacción (fuera del trait).
+impl SqlxVerificationRepository {
+    /// Crea un código de verificación dentro de una transacción.
+    pub async fn create_tx(
+        tx: &amp;mut Transaction&lt;'_, Postgres&gt;,
+        identifier: &amp;str,
+        value: &amp;str,
+        expires_at: DateTime&lt;Utc&gt;,
+    ) -&gt; Result&lt;(), AppError&gt; {
+        sqlx::query!(
+            r#"
+            INSERT INTO verification (id, identifier, value, expires_at, created_at, updated_at)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            "#,
+            Uuid::new_v4(),
+            identifier,
+            value,
+            expires_at,
+            Utc::now(),
+            Utc::now(),
+        )
+        .execute(tx.as_mut())
+        .await?;
+
+        Ok(())
+    }
+}
+<span class="boring">}</span></code></pre>
+<h3 id="srcfeaturesauthinfrastructuresqlxaccount_repositoryrs"><a class="header" href="#srcfeaturesauthinfrastructuresqlxaccount_repositoryrs"><code>src/features/auth/infrastructure/sqlx/account_repository.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use async_trait::async_trait;
+use chrono::Utc;
+use sqlx::{PgPool, Postgres, Transaction};
+use uuid::Uuid;
+
+use crate::{
+    features::auth::{
+        domain::contracts::account_repository::AccountRepository,
+        infrastructure::models::credentials_account::CredentialsAccount,
+    },
+    shared::errors::app_error::AppError,
+};
+
+/// Implementación concreta de AccountRepository usando SQLx.
+#[derive(Clone)]
+pub struct SqlxAccountRepository {
+    pool: PgPool,
+}
+
+impl SqlxAccountRepository {
+    pub fn new(pool: PgPool) -&gt; Self {
+        Self { pool }
+    }
+}
+
+#[async_trait]
+impl AccountRepository for SqlxAccountRepository {
+    /// Busca credenciales por email (JOIN users + account).
+    /// Usa query_as sin macro porque el JOIN y las columnas son dinámicas.
+    async fn find_credentials_by_email(
+        &amp;self,
+        email: &amp;str,
+    ) -&gt; Result&lt;Option&lt;CredentialsAccount&gt;, AppError&gt; {
+        let result = sqlx::query_as::&lt;_, CredentialsAccount&gt;(
+            r#"
+            SELECT
+                u.id as user_id,
+                u.name,
+                u.email,
+                u.email_verified,
+                u.image,
+                u.role::text as role,
+                u.created_at,
+                u.updated_at,
+                a.password
+            FROM users u
+            JOIN account a ON a.user_id = u.id
+            WHERE u.email = $1
+              AND u.deleted_at IS NULL
+              AND a.provider_id = 'credentials'
+            "#,
+        )
+        .bind(email)
+        .fetch_optional(&amp;self.pool)
+        .await?;
+
+        Ok(result)
+    }
+
+    /// Actualiza la contraseña de un usuario por email.
+    async fn update_password_by_email(
+        &amp;self,
+        email: &amp;str,
+        hashed_password: &amp;str,
+    ) -&gt; Result&lt;(), AppError&gt; {
+        sqlx::query!(
+            r#"
+            UPDATE account
+            SET password = $1, updated_at = $2
+            WHERE provider_id = 'credentials'
+              AND account_id = $3
+            "#,
+            hashed_password,
+            Utc::now(),
+            email,
+        )
+        .execute(&amp;self.pool)
+        .await?;
+
+        Ok(())
+    }
+}
+
+/// Operaciones que requieren transacción (fuera del trait).
+impl SqlxAccountRepository {
+    /// Crea una cuenta (credenciales) dentro de una transacción.
+    pub async fn create(
+        tx: &amp;mut Transaction&lt;'_, Postgres&gt;,
+        email: &amp;str,
+        password: &amp;str,
+        user_id: Uuid,
+    ) -&gt; Result&lt;(), AppError&gt; {
+        sqlx::query!(
+            r#"
+            INSERT INTO account (
+                id, account_id, provider_id, user_id, password, created_at, updated_at
+            )
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            "#,
+            Uuid::new_v4(),
+            email,
+            "credentials",
+            user_id,
+            password,
+            Utc::now(),
+            Utc::now(),
+        )
+        .execute(tx.as_mut())
+        .await?;
+
+        Ok(())
+    }
+}
+<span class="boring">}</span></code></pre>
+<h3 id="explicación-de-query_astipo-_-sin-macro"><a class="header" href="#explicación-de-query_astipo-_-sin-macro">Explicación de <code>query_as::&lt;Tipo, _&gt;()</code> (sin macro)</a></h3>
+<p>En <code>find_credentials_by_email</code> usamos <code>sqlx::query_as::&lt;_, CredentialsAccount&gt;(...)</code> en lugar de <code>sqlx::query_as!(...)</code>:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let result = sqlx::query_as::&lt;_, CredentialsAccount&gt;(
+    r#"SELECT u.id as user_id, u.name, ... FROM users u JOIN account a ..."#
+)
+.bind(email)
+.fetch_optional(&amp;self.pool)
+.await?;
+<span class="boring">}</span></code></pre>
+<p><strong>¿Por qué no usar la macro <code>query_as!</code> aquí?</strong> Porque la query tiene un JOIN y columnas con alias (<code>u.id as user_id</code>) y tipo casteado (<code>u.role::text as role</code>). La macro <code>query_as!</code> a veces tiene problemas con estos casos (depende de la versión de SQLx). <code>query_as</code> sin macro funciona igual pero sin chequeo en compilación del SQL (solo verifica tipos en tiempo de ejecución).</p>
+<p><strong><code>.bind(email)</code></strong>: Conecta el primer parámetro <code>$1</code> al valor. En <code>query_as!</code>, los parámetros van como argumentos de la macro. En <code>query_as</code> (sin macro), usamos <code>.bind()</code>.</p>
+<hr>
+<h2 id="16-feature-authapplication--servicios-de-aplicación"><a class="header" href="#16-feature-authapplication--servicios-de-aplicación">16. Feature <code>auth/application</code> — Servicios de aplicación</a></h2>
+<h3 id="srcfeaturesauthapplicationmodrs"><a class="header" href="#srcfeaturesauthapplicationmodrs"><code>src/features/auth/application/mod.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod authentication_service;
+pub mod registration_service;
+<span class="boring">}</span></code></pre>
+<h3 id="srcfeaturesauthapplicationregistration_servicers"><a class="header" href="#srcfeaturesauthapplicationregistration_servicers"><code>src/features/auth/application/registration_service.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use chrono::Utc;
+
+use crate::{
+    features::auth::{
+        domain::{
+            contracts::{
+                session_repository::SessionRepository,
+                user_repository::UserRepository,
+                verification_repository::VerificationRepository,
+            },
+            entities::User,
+        },
+        infrastructure::sqlx::{
+            account_repository::SqlxAccountRepository,
+            session_repository::SqlxSessionRepository,
+            user_respository::SqlxUserRepository,
+            verification_repository::SqlxVerificationRepository,
+        },
+        presentation::dto::{
+            request::RegisterRequest,
+            response::{MessageResponse, RegisterResponse, UserResponse},
+        },
+    },
+    shared::{
+        errors::app_error::AppError,
+        security::{jwt, password::hash_password},
+        state::app_state::AppState,
+    },
+};
+
+/// Genera un código de verificación de 6 caracteres.
+fn generate_verification_code() -&gt; String {
+    use std::collections::hash_map::DefaultHasher;
+    use std::hash::{Hash, Hasher};
+    use std::time::{SystemTime, UNIX_EPOCH};
+
+    let seed = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_nanos();
+    let mut hasher = DefaultHasher::new();
+    seed.hash(&amp;mut hasher);
+    let hash = hasher.finish();
+
+    const CHARS: &amp;[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let mut code = String::with_capacity(6);
+    let mut h = hash;
+    for _ in 0..6 {
+        code.push(CHARS[(h as usize) % CHARS.len()] as char);
+        h /= CHARS.len() as u64;
+    }
+    code
+}
+
+/// Valida el rol y devuelve el string normalizado.
+fn map_role(request_role: Option&lt;String&gt;) -&gt; Result&lt;&amp;'static str, AppError&gt; {
+    match request_role.as_deref() {
+        Some("admin") =&gt; Ok("admin"),
+        Some("cajero") =&gt; Ok("cajero"),
+        Some(other) =&gt; Err(AppError::BadRequest(format!(
+            "Rol inválido '{}'. Solo se permite 'admin' o 'cajero'",
+            other
+        ))),
+        None =&gt; Ok("cajero"), // Por defecto, cajero
+    }
+}
+
+pub struct RegistrationService;
+
+impl RegistrationService {
+    /// Registra un nuevo usuario en el sistema.
+    ///
+    /// Flujo:
+    /// 1. Verifica que el email no esté duplicado.
+    /// 2. Hashea la contraseña.
+    /// 3. Crea usuario + account + verification code en una transacción.
+    /// 4. Genera tokens JWT.
+    /// 5. Crea sesión con refresh token.
+    pub async fn register_user(
+        state: &amp;AppState,
+        payload: RegisterRequest,
+    ) -&gt; Result&lt;RegisterResponse, AppError&gt; {
+        // ─── 1. Verificar email duplicado ───
+        let user_repo = SqlxUserRepository::new(state.db.clone());
+        let existing = user_repo.find_by_email(&amp;payload.email).await?;
+        if existing.is_some() {
+            return Err(AppError::Conflict("Email already registered".to_string()));
+        }
+
+        // ─── 2. Hashear password ───
+        let hashed_password: String = hash_password(&amp;payload.password)?;
+
+        // ─── 3. Iniciar transacción ───
+        let mut tx = state.db.begin().await?;
+
+        // Validar y obtener rol
+        let role = map_role(payload.role)?;
+
+        // Crear usuario (dentro de la tx)
+        let user: User = SqlxUserRepository::create(&amp;mut tx, &amp;payload.name, &amp;payload.email, role)
+            .await?;
+
+        // Crear account (dentro de la tx)
+        SqlxAccountRepository::create(&amp;mut tx, &amp;payload.email, &amp;hashed_password, user.id).await?;
+
+        // Generar código de verificación
+        let verification_code = generate_verification_code();
+
+        // Crear verification code (dentro de la tx)
+        SqlxVerificationRepository::create_tx(
+            &amp;mut tx,
+            &amp;payload.email,
+            &amp;verification_code,
+            Utc::now() + chrono::Duration::minutes(15),
+        )
+        .await?;
+
+        tracing::info!("Código de verificación para {}: {}", payload.email, verification_code);
+
+        // Confirmar transacción
+        tx.commit().await?;
+
+        // ─── 4. Generar tokens JWT ───
+        let token_pair = jwt::generate_tokens(
+            &amp;user.id.to_string(),
+            &amp;user.email,
+            user.role.as_deref().unwrap_or("cajero"),
+        )?;
+
+        // ─── 5. Crear sesión (fuera de la tx) ───
+        let session_repo = SqlxSessionRepository::new(state.db.clone());
+        session_repo
+            .create(
+                user.id,
+                &amp;token_pair.refresh_token,
+                Utc::now() + chrono::Duration::days(7),
+                None, // IP (se puede pasar desde el handler)
+                None, // User-Agent (se puede pasar desde el handler)
+            )
+            .await?;
+
+        // ─── 6. Armar respuesta ───
+        Ok(RegisterResponse {
+            message: "User created successfully. Please verify your email.".to_string(),
+            user: UserResponse::from(user),
+            access_token: token_pair.access_token,
+            refresh_token: token_pair.refresh_token,
+        })
+    }
+
+    // ─── Reenviar código de verificación ───
+
+    /// Reenvía el código de verificación para un email.
+    public async fn resend_verification(
+        state: &amp;AppState,
+        email: &amp;str,
+    ) -&gt; Result&lt;MessageResponse, AppError&gt; {
+        let user_repo = SqlxUserRepository::new(state.db.clone());
+        let verification_repo = SqlxVerificationRepository::new(state.db.clone());
+
+        let user = user_repo.find_by_email(email).await?;
+
+        match user {
+            Some(user) if user.email_verified =&gt; {
+                return Err(AppError::Conflict("Email already verified".to_string()));
+            }
+            Some(_) =&gt; {
+                // Eliminar código anterior y crear nuevo
+                verification_repo.delete_by_identifier(email).await?;
+
+                let code = generate_verification_code();
+                let expires_at = Utc::now() + chrono::Duration::minutes(15);
+
+                verification_repo.create(email, &amp;code, expires_at).await?;
+
+                tracing::info!("Nuevo código de verificación para {}: {}", email, code);
+
+                Ok(MessageResponse {
+                    message: "New verification code sent".to_string(),
+                })
+            }
+            None =&gt; {
+                // Mismo mensaje para anti-email-enumeration
+                Ok(MessageResponse {
+                    message: "If the email exists, a new verification code has been sent"
+                        .to_string(),
+                })
+            }
+        }
+    }
+}
+<span class="boring">}</span></code></pre>
+<h3 id="explicación-bloque-por-bloque-2"><a class="header" href="#explicación-bloque-por-bloque-2">Explicación bloque por bloque</a></h3>
+<p><strong>Transacciones</strong>: La operación de registro involucra 3 tablas (users, account, verification). Si falla la segunda inserción, la primera debe revertirse. Por eso usamos una transacción:</p>
+<ol>
+<li><code>let mut tx = state.db.begin().await?;</code> — inicia la transacción.</li>
+<li>Las operaciones reciben <code>&amp;mut tx</code> en lugar de <code>&amp;self.pool</code>.</li>
+<li><code>tx.commit().await?;</code> — confirma todo si no hubo errores.</li>
+<li>Si hay un <code>?</code> antes del commit, <code>tx</code> sale de scope y SQLx automáticamente hace rollback.</li>
+</ol>
+<p><strong>¿Por qué la sesión se crea fuera de la transacción?</strong> Porque la sesión no es parte del registro atómico. Si falla la creación de sesión, el usuario ya está registrado y puede reintentar el login.</p>
+<p><strong><code>generate_verification_code()</code></strong>: Función local que genera un código de 6 caracteres alfanuméricos. Usa el timestamp actual como semilla para un hash. No es criptográficamente segura, pero suficiente para códigos de verificación de corta duración.</p>
+<p><strong><code>map_role()</code></strong>: Valida que el rol sea ‘admin’ o ‘cajero’. Si no se especifica, por defecto ‘cajero’. Si se especifica algo inválido, devuelve <code>AppError::BadRequest</code>.</p>
+<h3 id="srcfeaturesauthapplicationauthentication_servicers"><a class="header" href="#srcfeaturesauthapplicationauthentication_servicers"><code>src/features/auth/application/authentication_service.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use chrono::Utc;
+
+use crate::{
+    features::auth::{
+        domain::contracts::{
+            account_repository::AccountRepository,
+            session_repository::SessionRepository,
+            user_repository::UserRepository,
+            verification_repository::VerificationRepository,
+        },
+        infrastructure::sqlx::{
+            account_repository::SqlxAccountRepository,
+            session_repository::SqlxSessionRepository,
+            user_respository::SqlxUserRepository,
+            verification_repository::SqlxVerificationRepository,
+        },
+        presentation::dto::{
+            MessageResponse, RegisterResponse, SessionListResponse, SessionResponse, UserResponse,
+        },
+    },
+    shared::{
+        errors::app_error::AppError,
+        helpers::generate::generate_code,
+        security::{
+            jwt,
+            password::{hash_password, verify_password},
+        },
+        state::app_state::AppState,
+    },
+};
+
+pub struct AuthenticationService;
+
+impl AuthenticationService {
+    // ─── Login ───
+
+    /// Autentica un usuario con email y password.
+    ///
+    /// Flujo:
+    /// 1. Busca credenciales por email (JOIN users + account).
+    /// 2. Verifica la contraseña con bcrypt.
+    /// 3. Genera tokens JWT.
+    /// 4. Crea una sesión con el refresh token.
+    pub async fn login(
+        state: &amp;AppState,
+        email: &amp;str,
+        password: &amp;str,
+    ) -&gt; Result&lt;RegisterResponse, AppError&gt; {
+        // 1. Buscar usuario + credenciales
+        let account_repo = SqlxAccountRepository::new(state.db.clone());
+        let account = account_repo
+            .find_credentials_by_email(email)
+            .await?
+            .ok_or_else(|| AppError::Unauthorized("Invalid credentials".to_string()))?;
+
+        // 2. Verificar que tenga password (no es OAuth)
+        let hashed_password = account
+            .password
+            .ok_or_else(|| AppError::Unauthorized("Invalid credentials".to_string()))?;
+
+        // 3. Verificar password con bcrypt
+        let valid = verify_password(password, &amp;hashed_password)?;
+        if !valid {
+            return Err(AppError::Unauthorized("Invalid credentials".to_string()));
+        }
+
+        // 4. Generar tokens JWT
+        let token_pair = jwt::generate_tokens(
+            &amp;account.user_id.to_string(),
+            &amp;account.email,
+            account.role.as_deref().unwrap_or("cajero"),
+        )?;
+
+        // 5. Crear sesión con refresh token
+        let session_repo = SqlxSessionRepository::new(state.db.clone());
+        session_repo
+            .create(
+                account.user_id,
+                &amp;token_pair.refresh_token,
+                Utc::now() + chrono::Duration::days(7),
+                None,
+                None,
+            )
+            .await?;
+
+        // 6. Armar response
+        let user_response = UserResponse {
+            id: account.user_id,
+            name: account.name,
+            email: account.email,
+            email_verified: account.email_verified,
+            role: account.role,
+            image: account.image,
+            created_at: account.created_at,
+            updated_at: account.updated_at,
+        };
+
+        Ok(RegisterResponse {
+            message: "Login successful".to_string(),
+            user: user_response,
+            access_token: token_pair.access_token,
+            refresh_token: token_pair.refresh_token,
+        })
+    }
+
+    // ─── Refresh Token ───
+
+    /// Refresca los tokens usando un refresh token válido.
+    ///
+    /// Implementa **token rotation**: invalida el refresh token anterior
+    /// y crea uno nuevo. Esto limita la ventana de robo de tokens.
+    pub async fn refresh(
+        state: &amp;AppState,
+        refresh_token: &amp;str,
+    ) -&gt; Result&lt;RegisterResponse, AppError&gt; {
+        // 1. Verificar JWT del refresh token
+        let claims = jwt::verify_refresh_token(refresh_token)?;
+        let user_id = uuid::Uuid::parse_str(&amp;claims.sub)
+            .map_err(|_| AppError::BadRequest("Invalid token payload".to_string()))?;
+
+        let user_repo = SqlxUserRepository::new(state.db.clone());
+        let session_repo = SqlxSessionRepository::new(state.db.clone());
+
+        // 2. Buscar sesión por token
+        let session = session_repo
+            .find_by_token(refresh_token)
+            .await?
+            .ok_or_else(|| AppError::Unauthorized("Invalid refresh token".to_string()))?;
+
+        // 3. Verificar que la sesión no haya expirado
+        if session.expires_at &lt; Utc::now() {
+            tracing::warn!("[refresh] Sesión expirada, eliminando");
+            session_repo.delete_by_token(refresh_token).await?;
+            return Err(AppError::Unauthorized("Session expired".to_string()));
+        }
+
+        // 4. Buscar usuario (con deleted_at IS NULL)
+        let user = user_repo
+            .find_by_id(user_id)
+            .await?
+            .ok_or_else(|| AppError::Unauthorized("User not found".to_string()))?;
+
+        // 5. Eliminar sesión anterior (token rotation)
+        session_repo.delete_by_token(refresh_token).await?;
+
+        // 6. Generar nuevos tokens
+        let token_pair = jwt::generate_tokens(
+            &amp;user.id.to_string(),
+            &amp;user.email,
+            user.role.as_deref().unwrap_or("cajero"),
+        )?;
+
+        // 7. Crear nueva sesión
+        session_repo
+            .create(
+                user.id,
+                &amp;token_pair.refresh_token,
+                Utc::now() + chrono::Duration::days(7),
+                None,
+                None,
+            )
+            .await?;
+
+        // 8. Armar response
+        Ok(RegisterResponse {
+            message: "Token refreshed successfully".to_string(),
+            user: UserResponse::from(user),
+            access_token: token_pair.access_token,
+            refresh_token: token_pair.refresh_token,
+        })
+    }
+
+    // ─── Logout ───
+
+    /// Cierra la sesión del usuario eliminando el refresh token de la BD.
+    pub async fn logout(
+        state: &amp;AppState,
+        refresh_token: &amp;str,
+    ) -&gt; Result&lt;MessageResponse, AppError&gt; {
+        let session_repo = SqlxSessionRepository::new(state.db.clone());
+        session_repo.delete_by_token(refresh_token).await?;
+
+        Ok(MessageResponse {
+            message: "Logged out successfully".to_string(),
+        })
+    }
+
+    // ─── Verify Email ───
+
+    /// Verifica el email de un usuario con un código de verificación.
+    pub async fn verify_email(
+        state: &amp;AppState,
+        identifier: &amp;str,
+        code: &amp;str,
+    ) -&gt; Result&lt;RegisterResponse, AppError&gt; {
+        let verification_repo = SqlxVerificationRepository::new(state.db.clone());
+        let user_repo = SqlxUserRepository::new(state.db.clone());
+        let session_repo = SqlxSessionRepository::new(state.db.clone());
+
+        // 1. Buscar verification code
+        let verification = verification_repo
+            .find_by_identifier_and_value(identifier, code)
+            .await?
+            .ok_or_else(|| AppError::Unauthorized("Invalid verification code".to_string()))?;
+
+        // 2. Verificar expiración
+        if verification.expires_at &lt; Utc::now() {
+            verification_repo.delete_by_identifier(identifier).await?;
+            return Err(AppError::Unauthorized("Verification code expired".to_string()));
+        }
+
+        // 3. Buscar usuario
+        let user = user_repo
+            .find_by_email(identifier)
+            .await?
+            .ok_or_else(|| AppError::NotFound("User not found".to_string()))?;
+
+        // 4. Actualizar email_verified en la BD
+        //    Usamos query directo porque es una operación simple
+        sqlx::query!(
+            "UPDATE users SET email_verified = true, updated_at = $1 WHERE id = $2",
+            Utc::now(),
+            user.id,
+        )
+        .execute(&amp;state.db)
+        .await?;
+
+        // 5. Eliminar verification code (ya no sirve)
+        verification_repo.delete_by_identifier(identifier).await?;
+
+        // 6. Generar nuevos tokens
+        let token_pair = jwt::generate_tokens(
+            &amp;user.id.to_string(),
+            &amp;user.email,
+            user.role.as_deref().unwrap_or("cajero"),
+        )?;
+
+        // 7. Crear nueva sesión
+        session_repo
+            .create(
+                user.id,
+                &amp;token_pair.refresh_token,
+                Utc::now() + chrono::Duration::days(7),
+                None,
+                None,
+            )
+            .await?;
+
+        // 8. Armar response
+        Ok(RegisterResponse {
+            message: "Email verified successfully".to_string(),
+            user: UserResponse::from(user),
+            access_token: token_pair.access_token,
+            refresh_token: token_pair.refresh_token,
+        })
+    }
+
+    // ─── Forgot Password ───
+
+    /// Inicia el proceso de recuperación de contraseña.
+    /// Genera un código de verificación y lo asocia al email.
+    ///
+    /// NOTA: No revela si el email existe o no (anti-enumeration).
+    pub async fn forgot_password(
+        state: &amp;AppState,
+        email: &amp;str,
+    ) -&gt; Result&lt;MessageResponse, AppError&gt; {
+        let verification_repo = SqlxVerificationRepository::new(state.db.clone());
+        let user_repo = SqlxUserRepository::new(state.db.clone());
+
+        // Verificar si el usuario existe (pero mismo mensaje para anti-enumeration)
+        let _user_exists = user_repo.find_by_email(email).await?.is_some();
+
+        // El mensaje es el mismo exista o no
+        if _user_exists {
+            // Generar reset code
+            let reset_code = generate_code();
+            let expires_at = Utc::now() + chrono::Duration::minutes(15);
+
+            // Eliminar códigos previos y crear nuevo
+            verification_repo
+                .delete_by_identifier(&amp;format!("reset:{email}"))
+                .await?;
+            verification_repo
+                .create(&amp;format!("reset:{email}"), &amp;reset_code, expires_at)
+                .await?;
+
+            tracing::info!("Reset code for {}: {}", email, reset_code);
+        }
+
+        Ok(MessageResponse {
+            message: "If the email exists, a reset code has been sent".to_string(),
+        })
+    }
+
+    // ─── Reset Password ───
+
+    /// Completa el proceso de recuperación de contraseña.
+    /// Verifica el código, actualiza la contraseña y elimina todas las sesiones.
+    pub async fn reset_password(
+        state: &amp;AppState,
+        email: &amp;str,
+        code: &amp;str,
+        new_password: &amp;str,
+    ) -&gt; Result&lt;MessageResponse, AppError&gt; {
+        let verification_repo = SqlxVerificationRepository::new(state.db.clone());
+        let user_repo = SqlxUserRepository::new(state.db.clone());
+        let account_repo = SqlxAccountRepository::new(state.db.clone());
+        let session_repo = SqlxSessionRepository::new(state.db.clone());
+
+        // 1. Buscar verification code con prefix reset:
+        let identifier = format!("reset:{email}");
+        let verification = verification_repo
+            .find_by_identifier_and_value(&amp;identifier, code)
+            .await?
+            .ok_or_else(|| AppError::Unauthorized("Invalid reset code".to_string()))?;
+
+        // 2. Verificar expiración
+        if verification.expires_at &lt; Utc::now() {
+            verification_repo.delete_by_identifier(&amp;identifier).await?;
+            return Err(AppError::Unauthorized("Reset code expired".to_string()));
+        }
+
+        // 3. Buscar usuario
+        let user = user_repo
+            .find_by_email(email)
+            .await?
+            .ok_or_else(|| AppError::NotFound("User not found".to_string()))?;
+
+        // 4. Hashear nueva password
+        let hashed = hash_password(new_password)?;
+
+        // 5. Actualizar password en account
+        account_repo
+            .update_password_by_email(email, &amp;hashed)
+            .await?;
+
+        // 6. Eliminar TODAS las sesiones del usuario (fuerza re-login)
+        session_repo.delete_by_user_id(user.id).await?;
+
+        // 7. Eliminar verification code
+        verification_repo.delete_by_identifier(&amp;identifier).await?;
+
+        Ok(MessageResponse {
+            message: "Password reset successfully. Please login with your new password."
+                .to_string(),
+        })
+    }
+
+    // ─── List Sessions ───
+
+    /// Obtiene todas las sesiones activas de un usuario.
+    pub async fn get_user_sessions(
+        state: &amp;AppState,
+        user_id: uuid::Uuid,
+    ) -&gt; Result&lt;SessionListResponse, AppError&gt; {
+        let session_repo = SqlxSessionRepository::new(state.db.clone());
+
+        let sessions = session_repo
+            .find_by_user_id(user_id)
+            .await?
+            .into_iter()
+            .map(SessionResponse::from_session)
+            .collect();
+
+        Ok(SessionListResponse { sessions })
+    }
+
+    // ─── Revoke Session ───
+
+    /// Revoca (elimina) una sesión específica de un usuario.
+    /// Verifica que la sesión pertenezca al usuario antes de eliminarla.
+    pub async fn revoke_session(
+        state: &amp;AppState,
+        user_id: uuid::Uuid,
+        session_id: uuid::Uuid,
+    ) -&gt; Result&lt;MessageResponse, AppError&gt; {
+        let session_repo = SqlxSessionRepository::new(state.db.clone());
+
+        // Buscar todas las sesiones del usuario y verificar que la session_id le pertenece
+        let sessions = session_repo.find_by_user_id(user_id).await?;
+        let found = sessions.iter().any(|s| s.id == session_id);
+
+        if !found {
+            return Err(AppError::NotFound("Session not found".to_string()));
+        }
+
+        session_repo.delete_by_id(session_id).await?;
+
+        Ok(MessageResponse {
+            message: "Session revoked successfully".to_string(),
+        })
+    }
+}
+<span class="boring">}</span></code></pre>
+<h3 id="explicación-de-los-patrones-de-seguridad"><a class="header" href="#explicación-de-los-patrones-de-seguridad">Explicación de los patrones de seguridad</a></h3>
+<p><strong>Anti-email-enumeration</strong> (en <code>forgot_password</code>):</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let _user_exists = user_repo.find_by_email(email).await?.is_some();
+
+if _user_exists {
+    // generar código...
+}
+
+// Mismo mensaje independientemente
+Ok(MessageResponse {
+    message: "If the email exists, a reset code has been sent".to_string(),
+})
+<span class="boring">}</span></code></pre>
+<p>El mensaje de respuesta es <strong>el mismo</strong> exista o no el email. Esto evita que un atacante pueda determinar qué emails están registrados.</p>
+<p><strong>Token rotation</strong> (en <code>refresh</code>):</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Eliminar sesión anterior
+session_repo.delete_by_token(refresh_token).await?;
+
+// Generar nuevos tokens
+let token_pair = jwt::generate_tokens(...)?;
+
+// Crear nueva sesión
+session_repo.create(user.id, &amp;token_pair.refresh_token, ...).await?;
+<span class="boring">}</span></code></pre>
+<p>Cada vez que se refresca un token, el anterior se invalida. Si un atacante roba un refresh token y lo usa, el token original deja de funcionar. El usuario legítimo recibe un error al intentar refrescar, lo que le alerta del robo.</p>
+<hr>
+<h2 id="17-feature-authpresentation--dtos-handlers-y-rutas"><a class="header" href="#17-feature-authpresentation--dtos-handlers-y-rutas">17. Feature <code>auth/presentation</code> — DTOs, handlers y rutas</a></h2>
+<h3 id="srcfeaturesauthpresentationmodrs"><a class="header" href="#srcfeaturesauthpresentationmodrs"><code>src/features/auth/presentation/mod.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod dto;
+pub mod handlers;
+pub mod routes;
+<span class="boring">}</span></code></pre>
+<h3 id="srcfeaturesauthpresentationdtomodrs"><a class="header" href="#srcfeaturesauthpresentationdtomodrs"><code>src/features/auth/presentation/dto/mod.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod request;
+pub mod response;
+<span class="boring">}</span></code></pre>
+<h3 id="srcfeaturesauthpresentationdtorequestrs"><a class="header" href="#srcfeaturesauthpresentationdtorequestrs"><code>src/features/auth/presentation/dto/request.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use serde::Deserialize;
+use validator::Validate;
+use uuid::Uuid;
+
+// ─── Login ───
+
+#[derive(Debug, Deserialize, Validate)]
+pub struct LoginRequest {
+    #[validate(email(message = "Invalid email format"))]
+    pub email: String,
+
+    #[validate(length(min = 8, message = "Password must be at least 8 characters"))]
+    pub password: String,
+}
+
+// ─── Refresh ───
+
+#[derive(Debug, Deserialize)]
+pub struct RefreshRequest {
+    #[serde(rename = "refreshToken")]
+    pub refresh_token: Option&lt;String&gt;,
+}
+
+// ─── Register ───
+
+#[derive(Debug, Deserialize, Validate)]
+pub struct RegisterRequest {
+    #[validate(length(min = 2, message = "Name must be at least 2 characters"))]
+    pub name: String,
+
+    #[validate(email(message = "Invalid email format"))]
+    pub email: String,
+
+    #[validate(length(min = 8, message = "Password must be at least 8 characters"))]
+    pub password: String,
+
+    pub role: Option&lt;String&gt;,
+}
+
+// ─── Verify Email ───
+
+#[derive(Debug, Deserialize, Validate)]
+pub struct VerifyEmailRequest {
+    #[validate(email(message = "Invalid email format"))]
+    pub identifier: String,
+
+    #[validate(length(min = 6, message = "Code must be at least 6 characters"))]
+    pub code: String,
+}
+
+// ─── Resend Verification ───
+
+#[derive(Debug, Deserialize, Validate)]
+pub struct ResendVerificationRequest {
+    #[validate(email(message = "Invalid email format"))]
+    pub email: String,
+}
+
+// ─── Forgot Password ───
+
+#[derive(Debug, Deserialize, Validate)]
+pub struct ForgotPasswordRequest {
+    #[validate(email(message = "Invalid email format"))]
+    pub email: String,
+}
+
+// ─── Reset Password ───
+
+#[derive(Debug, Deserialize, Validate)]
+pub struct ResetPasswordRequest {
+    #[validate(email(message = "Invalid email format"))]
+    pub email: String,
+
+    #[validate(length(min = 6, message = "Code must be at least 6 characters"))]
+    pub code: String,
+
+    #[validate(length(min = 8, message = "Password must be at least 8 characters"))]
+    pub new_password: String,
+}
+
+// ─── Revoke Session ───
+
+#[derive(Debug, Deserialize)]
+pub struct RevokeSessionParams {
+    pub session_id: Uuid,
+}
+<span class="boring">}</span></code></pre>
+<h3 id="explicación-13"><a class="header" href="#explicación-13">Explicación</a></h3>
+<p><strong><code>#[derive(Validate)]</code></strong>: Habilita las validaciones declarativas. Cada campo puede tener uno o más validadores.</p>
+<p><strong><code>#[serde(rename = "refreshToken")]</code></strong>: El campo <code>refresh_token</code> en Rust (snake_case) se mapea desde <code>refreshToken</code> en JSON (camelCase). Sin esto, el cliente tendría que enviar <code>refresh_token</code> en lugar de <code>refreshToken</code>.</p>
+<p><strong><code>Option&lt;String&gt;</code> en <code>RefreshRequest</code></strong>: El refresh token puede venir en el body o en una cookie. Si viene en cookie, el body puede estar vacío.</p>
+<h3 id="srcfeaturesauthpresentationdtoresponsers"><a class="header" href="#srcfeaturesauthpresentationdtoresponsers"><code>src/features/auth/presentation/dto/response.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use serde::Serialize;
+use uuid::Uuid;
+
+use crate::features::auth::{
+    domain::entities::User,
+    infrastructure::models::session::Session,
+};
+
+// ─── Register / Login Response ───
+
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct RegisterResponse {
+    pub message: String,
+    pub user: UserResponse,
+    pub access_token: String,
+    pub refresh_token: String,
+}
+
+// ─── User Response ───
+
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct UserResponse {
+    pub id: Uuid,
+    pub name: String,
+    pub email: String,
+    pub email_verified: bool,
+    pub role: Option&lt;String&gt;,
+    pub image: Option&lt;String&gt;,
+    pub created_at: Option&lt;chrono::DateTime&lt;chrono::Utc&gt;&gt;,
+    pub updated_at: Option&lt;chrono::DateTime&lt;chrono::Utc&gt;&gt;,
+}
+
+// ─── Session Response ───
+
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SessionResponse {
+    pub id: Uuid,
+    pub expires_at: chrono::DateTime&lt;chrono::Utc&gt;,
+    pub ip_address: Option&lt;String&gt;,
+    pub user_agent: Option&lt;String&gt;,
+    pub created_at: Option&lt;chrono::DateTime&lt;chrono::Utc&gt;&gt;,
+    pub updated_at: Option&lt;chrono::DateTime&lt;chrono::Utc&gt;&gt;,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_active: Option&lt;bool&gt;,
+}
+
+impl SessionResponse {
+    pub fn from_session(session: Session) -&gt; Self {
+        Self {
+            id: session.id,
+            expires_at: session.expires_at,
+            ip_address: session.ip_address,
+            user_agent: session.user_agent,
+            created_at: session.created_at,
+            updated_at: session.updated_at,
+            is_active: Some(session.expires_at &gt; chrono::Utc::now()),
+        }
+    }
+}
+
+// ─── Session List Response ───
+
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SessionListResponse {
+    pub sessions: Vec&lt;SessionResponse&gt;,
+}
+
+// ─── Message Response (para operaciones sin data compleja) ───
+
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct MessageResponse {
+    pub message: String,
+}
+
+// ─── Conversiones ───
+
+impl From&lt;User&gt; for UserResponse {
+    fn from(user: User) -&gt; Self {
+        UserResponse {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            email_verified: user.email_verified,
+            role: user.role,
+            image: user.image,
+            created_at: user.created_at,
+            updated_at: user.updated_at,
+        }
+    }
+}
+<span class="boring">}</span></code></pre>
+<h3 id="explicación-14"><a class="header" href="#explicación-14">Explicación</a></h3>
+<p><strong><code>#[serde(rename_all = "camelCase")]</code></strong>: Transforma automáticamente <code>snake_case</code> de Rust a <code>camelCase</code> de JavaScript. Ejemplo: <code>email_verified</code> → <code>emailVerified</code>, <code>access_token</code> → <code>accessToken</code>.</p>
+<p><strong><code>#[serde(skip_serializing_if = "Option::is_none")]</code></strong>: Si <code>is_active</code> es <code>None</code>, no se incluye en el JSON. Útil para respuestas donde algunos campos son opcionales.</p>
+<p><strong><code>SessionResponse::from_session(session)</code></strong>: Convierte un modelo de infraestructura (<code>Session</code>) a un DTO de respuesta. Calcula <code>is_active</code> comparando <code>expires_at</code> con la hora actual.</p>
+<p><strong><code>impl From&lt;User&gt; for UserResponse</code></strong>: Permite convertir un <code>User</code> en <code>UserResponse</code> con <code>UserResponse::from(user)</code> o simplemente <code>user.into()</code>.</p>
+<h3 id="srcfeaturesauthpresentationhandlersmodrs"><a class="header" href="#srcfeaturesauthpresentationhandlersmodrs"><code>src/features/auth/presentation/handlers/mod.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod forgot_password_handler;
+pub mod login_handler;
+pub mod logout_handler;
+pub mod refresh_handler;
+pub mod registration_handler;
+pub mod resend_verification_handler;
+pub mod reset_password_handler;
+pub mod session_handler;
+pub mod verify_email_handler;
+<span class="boring">}</span></code></pre>
+<h3 id="srcfeaturesauthpresentationhandlersregistration_handlerrs"><a class="header" href="#srcfeaturesauthpresentationhandlersregistration_handlerrs"><code>src/features/auth/presentation/handlers/registration_handler.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use axum::{Json, extract::State, http::StatusCode};
+use validator::Validate;
+
+use crate::{
+    features::auth::{
+        application::registration_service::RegistrationService,
+        presentation::dto::{
+            request::RegisterRequest, response::RegisterResponse,
+        },
+    },
+    shared::{errors::app_error::AppError, state::app_state::AppState},
+};
+
+/// POST /api/v1/auth/register
+/// Crea un nuevo usuario. Requiere rol admin.
+pub async fn register_user(
+    State(state): State&lt;AppState&gt;,
+    Json(payload): Json&lt;RegisterRequest&gt;,
+) -&gt; Result&lt;(StatusCode, Json&lt;RegisterResponse&gt;), AppError&gt; {
+    // Validar datos de entrada
+    payload.validate()?;
+
+    let response: RegisterResponse = RegistrationService::register_user(&amp;state, payload).await?;
+
+    Ok((StatusCode::CREATED, Json(response)))
+}
+<span class="boring">}</span></code></pre>
+<h3 id="srcfeaturesauthpresentationhandlerslogin_handlerrs"><a class="header" href="#srcfeaturesauthpresentationhandlerslogin_handlerrs"><code>src/features/auth/presentation/handlers/login_handler.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use axum::{Json, extract::State, http::StatusCode};
+use axum_extra::extract::CookieJar;
+use validator::Validate;
+
+use crate::{
+    features::auth::{
+        application::authentication_service::AuthenticationService,
+        presentation::dto::{request::LoginRequest, response::RegisterResponse},
+    },
+    shared::{
+        errors::app_error::AppError, security::cookies::set_auth_cookies,
+        state::app_state::AppState,
+    },
+};
+
+/// POST /api/v1/auth/login
+/// Autentica un usuario y devuelve tokens + cookies.
+pub async fn login_user(
+    State(state): State&lt;AppState&gt;,
+    jar: CookieJar,                                                          // ← cookies de la request
+    Json(payload): Json&lt;LoginRequest&gt;,
+) -&gt; Result&lt;(StatusCode, CookieJar, Json&lt;RegisterResponse&gt;), AppError&gt; {
+    payload.validate()?;
+
+    let response: RegisterResponse =
+        AuthenticationService::login(&amp;state, &amp;payload.email, &amp;payload.password).await?;
+
+    // Establecer cookies httpOnly con los tokens
+    let jar: CookieJar = set_auth_cookies(jar, &amp;response.access_token, &amp;response.refresh_token);
+
+    Ok((StatusCode::OK, jar, Json(response)))
+}
+<span class="boring">}</span></code></pre>
+<h3 id="srcfeaturesauthpresentationhandlerslogout_handlerrs"><a class="header" href="#srcfeaturesauthpresentationhandlerslogout_handlerrs"><code>src/features/auth/presentation/handlers/logout_handler.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use axum::{Json, extract::State, http::StatusCode};
+use axum_extra::extract::CookieJar;
+
+use crate::{
+    features::auth::{
+        application::authentication_service::AuthenticationService,
+        presentation::dto::MessageResponse,
+    },
+    shared::{
+        errors::app_error::AppError,
+        security::cookies::clear_auth_cookies,
+        state::app_state::AppState,
+    },
+};
+
+/// POST /api/v1/auth/logout
+/// Cierra la sesión y elimina las cookies de autenticación.
+pub async fn logout_user(
+    State(state): State&lt;AppState&gt;,
+    jar: CookieJar,
+) -&gt; Result&lt;(StatusCode, CookieJar, Json&lt;MessageResponse&gt;), AppError&gt; {
+    // Leer refresh token de cookie
+    let refresh_token = jar
+        .get("refreshToken")
+        .map(|c| c.value().to_string())
+        .ok_or_else(|| AppError::BadRequest("Refresh token required".to_string()))?;
+
+    let response = AuthenticationService::logout(&amp;state, &amp;refresh_token).await?;
+
+    // Eliminar cookies (max_age = 0)
+    let jar = clear_auth_cookies(jar);
+
+    Ok((StatusCode::OK, jar, Json(response)))
+}
+<span class="boring">}</span></code></pre>
+<h3 id="srcfeaturesauthpresentationhandlersrefresh_handlerrs"><a class="header" href="#srcfeaturesauthpresentationhandlersrefresh_handlerrs"><code>src/features/auth/presentation/handlers/refresh_handler.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use axum::{Json, extract::State, http::StatusCode};
+use axum_extra::extract::CookieJar;
+
+use crate::{
+    features::auth::{
+        application::authentication_service::AuthenticationService,
+        presentation::dto::{request::RefreshRequest, response::RegisterResponse},
+    },
+    shared::{
+        errors::app_error::AppError, security::cookies::set_auth_cookies,
+        state::app_state::AppState,
+    },
+};
+
+/// POST /api/v1/auth/refresh
+/// Refresca los tokens usando el refresh token (cookie o body).
+pub async fn refresh_token(
+    State(state): State&lt;AppState&gt;,
+    jar: CookieJar,
+    payload: Option&lt;Json&lt;RefreshRequest&gt;&gt;,  // ← puede ser None si viene en cookie
+) -&gt; Result&lt;(StatusCode, CookieJar, Json&lt;RegisterResponse&gt;), AppError&gt; {
+    // Primero intentar desde cookie httpOnly, luego body como fallback
+    let refresh_token: String = jar
+        .get("refreshToken")
+        .map(|c| c.value().to_string())
+        .or_else(|| {
+            payload.and_then(|p| p.refresh_token.clone())
+        })
+        .ok_or_else(|| AppError::BadRequest("Refresh token required".to_string()))?;
+
+    let response: RegisterResponse = AuthenticationService::refresh(&amp;state, &amp;refresh_token).await?;
+
+    let jar: CookieJar = set_auth_cookies(jar, &amp;response.access_token, &amp;response.refresh_token);
+
+    Ok((StatusCode::OK, jar, Json(response)))
+}
+<span class="boring">}</span></code></pre>
+<h3 id="srcfeaturesauthpresentationhandlersverify_email_handlerrs"><a class="header" href="#srcfeaturesauthpresentationhandlersverify_email_handlerrs"><code>src/features/auth/presentation/handlers/verify_email_handler.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use axum::{Json, extract::State, http::StatusCode};
+use axum_extra::extract::CookieJar;
+use validator::Validate;
+
+use crate::{
+    features::auth::{
+        application::authentication_service::AuthenticationService,
+        presentation::dto::{request::VerifyEmailRequest, response::MessageResponse},
+    },
+    shared::{
+        errors::app_error::AppError,
+        security::cookies::set_auth_cookies,
+        state::app_state::AppState,
+    },
+};
+
+/// POST /api/v1/auth/verify-email
+/// Verifica el email con el código de verificación.
+pub async fn verify_email(
+    State(state): State&lt;AppState&gt;,
+    jar: CookieJar,
+    Json(payload): Json&lt;VerifyEmailRequest&gt;,
+) -&gt; Result&lt;(StatusCode, CookieJar, Json&lt;MessageResponse&gt;), AppError&gt; {
+    payload.validate()?;
+
+    let response = AuthenticationService::verify_email(&amp;state, &amp;payload.identifier, &amp;payload.code).await?;
+
+    // Los tokens van SOLO en cookies, no en el body
+    let jar = set_auth_cookies(jar, &amp;response.access_token, &amp;response.refresh_token);
+
+    Ok((
+        StatusCode::OK,
+        jar,
+        Json(MessageResponse {
+            message: "Email verified successfully".to_string(),
+        }),
+    ))
+}
+<span class="boring">}</span></code></pre>
+<h3 id="srcfeaturesauthpresentationhandlersforgot_password_handlerrs"><a class="header" href="#srcfeaturesauthpresentationhandlersforgot_password_handlerrs"><code>src/features/auth/presentation/handlers/forgot_password_handler.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use axum::{Json, extract::State, http::StatusCode};
+use validator::Validate;
+
+use crate::{
+    features::auth::{
+        application::authentication_service::AuthenticationService,
+        presentation::dto::{request::ForgotPasswordRequest, response::MessageResponse},
+    },
+    shared::{errors::app_error::AppError, state::app_state::AppState},
+};
+
+/// POST /api/v1/auth/forgot-password
+/// Inicia el proceso de recuperación de contraseña.
+pub async fn forgot_password(
+    State(state): State&lt;AppState&gt;,
+    Json(payload): Json&lt;ForgotPasswordRequest&gt;,
+) -&gt; Result&lt;(StatusCode, Json&lt;MessageResponse&gt;), AppError&gt; {
+    payload.validate()?;
+
+    let response = AuthenticationService::forgot_password(&amp;state, &amp;payload.email).await?;
+
+    Ok((StatusCode::OK, Json(response)))
+}
+<span class="boring">}</span></code></pre>
+<h3 id="srcfeaturesauthpresentationhandlersreset_password_handlerrs"><a class="header" href="#srcfeaturesauthpresentationhandlersreset_password_handlerrs"><code>src/features/auth/presentation/handlers/reset_password_handler.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use axum::{Json, extract::State, http::StatusCode};
+use validator::Validate;
+
+use crate::{
+    features::auth::{
+        application::authentication_service::AuthenticationService,
+        presentation::dto::{request::ResetPasswordRequest, response::MessageResponse},
+    },
+    shared::{errors::app_error::AppError, state::app_state::AppState},
+};
+
+/// POST /api/v1/auth/reset-password
+/// Completa el proceso de recuperación de contraseña.
+pub async fn reset_password(
+    State(state): State&lt;AppState&gt;,
+    Json(payload): Json&lt;ResetPasswordRequest&gt;,
+) -&gt; Result&lt;(StatusCode, Json&lt;MessageResponse&gt;), AppError&gt; {
+    payload.validate()?;
+
+    let response = AuthenticationService::reset_password(
+        &amp;state,
+        &amp;payload.email,
+        &amp;payload.code,
+        &amp;payload.new_password,
+    )
+    .await?;
+
+    Ok((StatusCode::OK, Json(response)))
+}
+<span class="boring">}</span></code></pre>
+<h3 id="srcfeaturesauthpresentationhandlerssession_handlerrs"><a class="header" href="#srcfeaturesauthpresentationhandlerssession_handlerrs"><code>src/features/auth/presentation/handlers/session_handler.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use axum::{
+    Json,
+    extract::{Path, State},
+    http::StatusCode,
+    Extension,
+};
+use uuid::Uuid;
+
+use crate::{
+    features::auth::{
+        application::authentication_service::AuthenticationService,
+        presentation::dto::response::{MessageResponse, SessionListResponse},
+    },
+    shared::{
+        errors::app_error::AppError,
+        security::jwt::AccessTokenClaims,
+        state::app_state::AppState,
+    },
+};
+
+/// GET /api/v1/auth/sessions
+/// Obtiene todas las sesiones del usuario autenticado.
+pub async fn get_sessions(
+    State(state): State&lt;AppState&gt;,
+    Extension(claims): Extension&lt;AccessTokenClaims&gt;,  // ← del middleware
+) -&gt; Result&lt;(StatusCode, Json&lt;SessionListResponse&gt;), AppError&gt; {
+    let user_id = Uuid::parse_str(&amp;claims.sub)
+        .map_err(|_| AppError::BadRequest("Invalid token payload".to_string()))?;
+
+    let response = AuthenticationService::get_user_sessions(&amp;state, user_id).await?;
+
+    Ok((StatusCode::OK, Json(response)))
+}
+
+/// DELETE /api/v1/auth/sessions/{session_id}
+/// Revoca (elimina) una sesión específica.
+pub async fn revoke_session(
+    State(state): State&lt;AppState&gt;,
+    Extension(claims): Extension&lt;AccessTokenClaims&gt;,
+    Path(session_id): Path&lt;Uuid&gt;,  // ← de la URL: /sessions/{session_id}
+) -&gt; Result&lt;(StatusCode, Json&lt;MessageResponse&gt;), AppError&gt; {
+    let user_id = Uuid::parse_str(&amp;claims.sub)
+        .map_err(|_| AppError::BadRequest("Invalid token payload".to_string()))?;
+
+    let response = AuthenticationService::revoke_session(&amp;state, user_id, session_id).await?;
+
+    Ok((StatusCode::OK, Json(response)))
+}
+<span class="boring">}</span></code></pre>
+<h3 id="srcfeaturesauthpresentationhandlersresend_verification_handlerrs"><a class="header" href="#srcfeaturesauthpresentationhandlersresend_verification_handlerrs"><code>src/features/auth/presentation/handlers/resend_verification_handler.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use axum::{Json, extract::State, http::StatusCode};
+use validator::Validate;
+
+use crate::{
+    features::auth::{
+        application::registration_service::RegistrationService,
+        presentation::dto::{request::ResendVerificationRequest, response::MessageResponse},
+    },
+    shared::{errors::app_error::AppError, state::app_state::AppState},
+};
+
+/// POST /api/v1/auth/resend-verification
+/// Reenvía el código de verificación de email.
+pub async fn resend_verification(
+    State(state): State&lt;AppState&gt;,
+    Json(payload): Json&lt;ResendVerificationRequest&gt;,
+) -&gt; Result&lt;(StatusCode, Json&lt;MessageResponse&gt;), AppError&gt; {
+    payload.validate()?;
+
+    let response = RegistrationService::resend_verification(&amp;state, &amp;payload.email).await?;
+
+    Ok((StatusCode::OK, Json(response)))
+}
+<span class="boring">}</span></code></pre>
+<h3 id="srcfeaturesauthpresentationroutesrs"><a class="header" href="#srcfeaturesauthpresentationroutesrs"><code>src/features/auth/presentation/routes.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use axum::{
+    Router, middleware,
+    routing::{delete, get, post},
+};
+
+use crate::{
+    features::auth::presentation::handlers::{
+        forgot_password_handler, login_handler, logout_handler, refresh_handler,
+        registration_handler, resend_verification_handler, reset_password_handler, session_handler,
+        verify_email_handler,
+    },
+    shared::{security::auth_guard, state::app_state::AppState},
+};
+
+/// Define las rutas de autenticación.
+///
+ /// Organización:
+/// - Rutas públicas: login, refresh, logout, verify-email, forgot/reset password
+/// - Rutas de admin: register (solo admin)
+/// - Rutas de usuario autenticado: sessions (cualquier rol)
+pub fn routes() -&gt; Router&lt;AppState&gt; {
+    // Rutas accesibles sin autenticación
+    let public_routes = Router::new()
+        .route("/login", post(login_handler::login_user))
+        .route("/refresh", post(refresh_handler::refresh_token))
+        .route("/logout", post(logout_handler::logout_user))
+        .route("/verify-email", post(verify_email_handler::verify_email))
+        .route(
+            "/resend-verification",
+            post(resend_verification_handler::resend_verification),
+        )
+        .route(
+            "/forgot-password",
+            post(forgot_password_handler::forgot_password),
+        )
+        .route(
+            "/reset-password",
+            post(reset_password_handler::reset_password),
+        );
+
+    // Rutas solo para admin
+    let admin_routes = Router::new()
+        .route("/register", post(registration_handler::register_user))
+        .route_layer(middleware::from_fn(auth_guard::admin_middleware));
+
+    // Rutas para usuario autenticado (cualquier rol)
+    let user_routes = Router::new()
+        .route("/sessions", get(session_handler::get_sessions))
+        .route(
+            "/sessions/{session_id}",                           // ← Axum 0.8 usa {param}
+            delete(session_handler::revoke_session),
+        )
+        .route_layer(middleware::from_fn(auth_guard::require_auth_middleware));
+
+    // Combinar todo (el orden no importa porque son disjuntas)
+    public_routes.merge(admin_routes).merge(user_routes)
+}
+<span class="boring">}</span></code></pre>
+<h3 id="explicación-15"><a class="header" href="#explicación-15">Explicación</a></h3>
+<p><strong><code>Router::new()</code></strong>: Crea un router vacío.</p>
+<p><strong><code>.route("/login", post(login_handler::login_user))</code></strong>: Asocia el método POST a la ruta <code>/login</code> con el handler <code>login_user</code>. Notar que la ruta es relativa — cuando se monte en el router raíz con <code>.nest("/api/v1/auth", routes)</code>, la ruta completa será <code>/api/v1/auth/login</code>.</p>
+<p><strong><code>middleware::from_fn(auth_guard::admin_middleware)</code></strong>: Convierte nuestra función de middleware en un layer de Tower. <code>.route_layer(...)</code> aplica el middleware solo a las rutas de ese router específico.</p>
+<p><strong><code>.merge(admin_routes)</code></strong>: Combina las rutas de admin con las públicas. Si hubiera conflictos de ruta, el merge fallaría en compilación.</p>
+<hr>
+<h2 id="18-router-raíz-routesmodrs"><a class="header" href="#18-router-raíz-routesmodrs">18. Router raíz <code>routes/mod.rs</code></a></h2>
+<h3 id="srcroutesmodrs"><a class="header" href="#srcroutesmodrs"><code>src/routes/mod.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use axum::Router;
+
+use crate::{features, shared::state::app_state::AppState};
+
+/// Crea el router raíz de la aplicación.
+/// Monta todas las features bajo sus prefijos correspondientes.
+pub fn create_routes() -&gt; Router&lt;AppState&gt; {
+    Router::new().nest(
+        "/api/v1/auth",                                    // prefijo
+        features::auth::presentation::routes::routes(),    // sub-router de auth
+    )
+    // En el futuro:
+    // .nest("/api/v1/products", features::products::presentation::routes::routes())
+    // .nest("/api/v1/sales", features::sales::presentation::routes::routes())
+}
+<span class="boring">}</span></code></pre>
+<p><strong><code>.nest("/api/v1/auth", routes)</code></strong>: Monta todas las rutas de <code>auth</code> bajo el prefijo <code>/api/v1/auth</code>. Así, una ruta <code>/login</code> en el sub-router se convierte en <code>/api/v1/auth/login</code> a nivel global.</p>
+<hr>
+<h2 id="19-cómo-ejecutar-el-proyecto"><a class="header" href="#19-cómo-ejecutar-el-proyecto">19. Cómo ejecutar el proyecto</a></h2>
+<h3 id="paso-1-crear-la-base-de-datos"><a class="header" href="#paso-1-crear-la-base-de-datos">Paso 1: Crear la base de datos</a></h3>
+<pre><code class="language-bash"># Con psql
+createdb mi_negocio
+
+# O desde psql
+psql -U postgres -c "CREATE DATABASE mi_negocio;"
+</code></pre>
+<h3 id="paso-2-configurar-variables-de-entorno"><a class="header" href="#paso-2-configurar-variables-de-entorno">Paso 2: Configurar variables de entorno</a></h3>
+<p>Creá el archivo <code>.env</code>:</p>
+<pre><code class="language-env">DATABASE_URL=postgres://postgres:postgres@localhost:5432/mi_negocio
+FRONTEND_URL=http://localhost:3000
+JWT_SECRET=mi-clave-secreta-super-segura
+JWT_REFRESH_SECRET=mi-clave-refresh-super-segura
+NODE_ENV=development
+</code></pre>
+<h3 id="paso-3-ejecutar-las-migraciones"><a class="header" href="#paso-3-ejecutar-las-migraciones">Paso 3: Ejecutar las migraciones</a></h3>
+<pre><code class="language-bash"># Opción 1: Directamente con psql
+psql -U postgres -d mi_negocio -f src/database/migrations/20260629234600_full_schema.sql
+
+# Opción 2: Con la CLI de sqlx
+cargo install sqlx-cli
+sqlx migrate run
+</code></pre>
+<h3 id="paso-4-compilar-y-ejecutar"><a class="header" href="#paso-4-compilar-y-ejecutar">Paso 4: Compilar y ejecutar</a></h3>
+<pre><code class="language-bash"># Compilar (la primera vez toma varios minutos)
+cargo build
+
+# Ejecutar
+cargo run --bin server
+</code></pre>
+<p>Deberías ver:</p>
+<pre><code>INFO Conectando a la base de datos...
+INFO Servidor escuchando en http://0.0.0.0:4001
+</code></pre>
+<h3 id="paso-5-probar-los-endpoints"><a class="header" href="#paso-5-probar-los-endpoints">Paso 5: Probar los endpoints</a></h3>
+<pre><code class="language-bash"># Registrar un usuario
+curl -X POST http://localhost:4001/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@test.com","password":"admin1234"}'
+
+# Ver el código de verificación en los logs del servidor
+# (en producción enviarías un email)
+</code></pre>
+<hr>
+<h2 id="20-buenas-prácticas-y-errores-comunes"><a class="header" href="#20-buenas-prácticas-y-errores-comunes">20. Buenas prácticas y errores comunes</a></h2>
+<h3 id="buenas-prácticas"><a class="header" href="#buenas-prácticas">Buenas prácticas</a></h3>
+<ol>
+<li>
+<p><strong>Fast Fail</strong>: Si la BD no está disponible al iniciar, que el servidor no arranque (<code>expect</code> en <code>create_pool</code>). Es mejor que el orquestador reinicie a tener un servidor que funciona pero siempre devuelve 500.</p>
+</li>
+<li>
+<p><strong>Anti-email-enumeration</strong>: Siempre devolvé el mismo mensaje independientemente de si un email existe o no (ver <code>forgot_password</code>).</p>
+</li>
+<li>
+<p><strong>Token rotation</strong>: Cada refresh invalida el token anterior. Si un atacante roba un refresh token, al usarlo deja inválido el original.</p>
+</li>
+<li>
+<p><strong>httpOnly cookies</strong>: Los tokens JWT nunca son accesibles desde JavaScript. Esto previene ataques XSS.</p>
+</li>
+<li>
+<p><strong>bcrypt para passwords</strong>: Costo 10 como mínimo. SHA/MD5/texto plano NUNCA.</p>
+</li>
+<li>
+<p><strong>Transacciones</strong>: Cualquier operación que afecte múltiples tablas debe ser atómica (commit o rollback).</p>
+</li>
+<li>
+<p><strong>Soft delete</strong>: Marcar registros como eliminados (<code>deleted_at</code>) en lugar de borrarlos. Permite recuperación y mantiene integridad referencial.</p>
+</li>
+<li>
+<p><strong>UUID como PK</strong>: No exponen información (a diferencia de IDs auto-incrementales) y se pueden generar del lado del servidor.</p>
+</li>
+<li>
+<p><strong>Separación en capas</strong>: Domain (entidades + traits) → Application (servicios) → Infrastructure (SQLx) → Presentation (HTTP). Cada capa solo depende de las inferiores.</p>
+</li>
+<li>
+<p><strong>Logging estructurado</strong>: Usá <code>tracing::info!</code>, <code>tracing::warn!</code>, etc. Nunca <code>println!</code>. En producción, configurá formato JSON.</p>
+</li>
+<li>
+<p><strong>Errores consistentes</strong>: Todas las respuestas de error tienen el mismo formato JSON <code>{"error": "...", "message": "..."}</code>.</p>
+</li>
+<li>
+<p><strong>Validación en la capa de presentación</strong>: Los DTOs de request validan los datos de entrada con <code>validator</code>. La capa de aplicación recibe datos ya validados.</p>
+</li>
+</ol>
+<h3 id="errores-comunes"><a class="header" href="#errores-comunes">Errores comunes</a></h3>
+<ol>
+<li>
+<p><strong>Olvidar <code>#[derive(Clone)]</code> en <code>AppState</code></strong>: Axum necesita clonar el estado. Sin Clone, no compila.</p>
+</li>
+<li>
+<p><strong>No tener <code>DATABASE_URL</code> al compilar</strong>: Las macros <code>query!</code> y <code>query_as!</code> necesitan la BD en tiempo de compilación para verificar las queries.</p>
+</li>
+<li>
+<p><strong>No marcar columnas NULL con <code>?</code> en <code>query_as!</code></strong>: Si la columna puede ser NULL en la BD, usá <code>as "campo?"</code>. Sin el <code>?</code>, la compilación falla.</p>
+</li>
+<li>
+<p><strong>Usar <code>Float</code> para dinero</strong>: Los floats tienen errores de redondeo. Usá <code>DECIMAL(10,2)</code> en la BD y tipos enteros en Rust (centavos).</p>
+</li>
+<li>
+<p><strong>Orden incorrecto de layers</strong>: El último layer agregado es el primero en ejecutarse para requests. Poné CORS antes de Trace.</p>
+</li>
+<li>
+<p><strong>No usar <code>?</code> en handlers que devuelven <code>Result&lt;..., AppError&gt;</code></strong>: Si la función devuelve un error, usá <code>?</code> para que se convierta automáticamente a <code>AppError</code> via <code>From</code>.</p>
+</li>
+<li>
+<p><strong>Transacciones muy largas</strong>: Mantené las transacciones cortas. No hagas operaciones lentas (envío de email, etc.) dentro de una transacción.</p>
+</li>
+<li>
+<p><strong>Confundir <code>axum::serve</code> con la API vieja</strong>: En Axum 0.8, usá <code>let listener = TcpListener::bind(...).await?; axum::serve(listener, router).await?;</code>.</p>
+</li>
+<li>
+<p><strong>Olvidar <code>tower::ServiceExt</code> en tests</strong>: Para usar <code>.oneshot()</code> en tests necesitás <code>use tower::ServiceExt;</code>.</p>
+</li>
+<li>
+<p><strong>Exponer información sensible en errores</strong>: No incluyas el email en mensajes de error de login. Siempre “Invalid credentials”.</p>
+</li>
+</ol>
+<hr><div style="break-before: page; page-break-before: always;"></div>
 <h1 id="manual-de-usuario-backend-rust-con-axum"><a class="header" href="#manual-de-usuario-backend-rust-con-axum">Manual de Usuario: Backend Rust con Axum</a></h1>
 <p>Este manual proporciona una guía completa para configurar, comprender y ejecutar el proyecto de backend desarrollado en Rust utilizando el framework Axum. El proyecto implementa un sistema de autenticación robusto con PostgreSQL como base de datos principal, incluyendo gestión de sesiones, tokens JWT y manejo de cuentas de usuario.</p>
-<h2 id="índice"><a class="header" href="#índice">Índice</a></h2>
+<h2 id="índice-1"><a class="header" href="#índice-1">Índice</a></h2>
 <ol>
 <li><a href="#requisitos-previos">Requisitos Previos</a></li>
 <li><a href="#estructura-de-directorios">Estructura de Directorios</a></li>
@@ -1173,7 +5064,7 @@ pub fn routes() -&gt; Router&lt;crate::shared::state::DbState&gt; {
 <h1 id="manual-completo-backend-rasflow---rust--axum"><a class="header" href="#manual-completo-backend-rasflow---rust--axum">MANUAL COMPLETO: Backend RASFLOW - Rust + Axum</a></h1>
 <p>Este es el manual definitivo para entender, mantener y extender este backend. Está escrito para que puedas replicar cualquier cosa que necesites hacer en este proyecto. Vas a encontrar desde la estructura general hasta cómo agregar un nuevo endpoint completo con modelos, handlers, servicios, rutas, cache y base de datos.</p>
 <hr>
-<h2 id="índice-1"><a class="header" href="#índice-1">Índice</a></h2>
+<h2 id="índice-2"><a class="header" href="#índice-2">Índice</a></h2>
 <ol>
 <li><a href="#1-arquitectura-general-del-proyecto">Arquitectura General del Proyecto</a></li>
 <li><a href="#2-stack-tecnológico">Stack Tecnológico</a></li>
@@ -3276,7 +7167,7 @@ use crate::{
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="restix---manual-de-desarrollo-paso-a-paso"><a class="header" href="#restix---manual-de-desarrollo-paso-a-paso">Restix - Manual de Desarrollo Paso a Paso</a></h1>
 <p>Este manual te permite replicar el proyecto Restix desde cero. Restix es un cliente TUI (Terminal User Interface) para Redis construido con Rust y la librería ratatui.</p>
-<h2 id="índice-2"><a class="header" href="#índice-2">Índice</a></h2>
+<h2 id="índice-3"><a class="header" href="#índice-3">Índice</a></h2>
 <ol>
 <li><a href="#requisitos-previos">Requisitos Previos</a></li>
 <li><a href="#paso-1-crear-el-proyecto">Paso 1: Crear el Proyecto</a></li>
@@ -4290,7 +8181,7 @@ cargo run
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="manual-tauri-android--dev-debug-apk-y-release-apk"><a class="header" href="#manual-tauri-android--dev-debug-apk-y-release-apk">Manual: Tauri Android — Dev, Debug APK y Release APK</a></h1>
-<h2 id="índice-3"><a class="header" href="#índice-3">Índice</a></h2>
+<h2 id="índice-4"><a class="header" href="#índice-4">Índice</a></h2>
 <ol>
 <li><a href="#1-requisitos-previos">Requisitos previos</a></li>
 <li><a href="#2-configuración-inicial-del-proyecto">Configuración inicial del proyecto</a>
@@ -4540,7 +8431,7 @@ TAURI_DEV_HOST=192.168.0.9 pnpm tauri android dev
 <h1 id="fastify-init---manual-técnico-completo"><a class="header" href="#fastify-init---manual-técnico-completo">Fastify Init - Manual Técnico Completo</a></h1>
 <p>Este manual documenta todo el código del proyecto, explicando cada función, configuración e implementación.</p>
 <hr>
-<h2 id="índice-4"><a class="header" href="#índice-4">Índice</a></h2>
+<h2 id="índice-5"><a class="header" href="#índice-5">Índice</a></h2>
 <ol>
 <li><a href="#estructura-del-proyecto">Estructura del Proyecto</a></li>
 <li><a href="#configuración-principal">Configuración Principal</a></li>
@@ -7337,7 +11228,7 @@ bun start
 <p><strong>Stack:</strong> Node.js + TypeScript + Fastify + Prisma + PostgreSQL + Redis + JWT<br><strong>Patrón:</strong> Clean Architecture (Domain-Driven) con módulos</p>
 </blockquote>
 <hr>
-<h2 id="índice-5"><a class="header" href="#índice-5">Índice</a></h2>
+<h2 id="índice-6"><a class="header" href="#índice-6">Índice</a></h2>
 <ol>
 <li><a href="#1-introducción-y-arquitectura">Introducción y Arquitectura</a></li>
 <li><a href="#2-prerequisitos">Prerequisitos</a></li>
@@ -11374,7 +15265,7 @@ npm run dev
 <p><strong>Stack:</strong> Node.js + TypeScript + Express v5 + Prisma + PostgreSQL + Cloudflare R2 + Better-Auth<br><strong>Patrón:</strong> MVC con capa de servicios y repositorios</p>
 </blockquote>
 <hr>
-<h2 id="índice-6"><a class="header" href="#índice-6">ÍNDICE</a></h2>
+<h2 id="índice-7"><a class="header" href="#índice-7">ÍNDICE</a></h2>
 <ol>
 <li><a href="#1-introducción-y-stack-tecnológico">Introducción y Stack Tecnológico</a></li>
 <li><a href="#2-estructura-del-proyecto">Estructura del Proyecto</a></li>
@@ -13422,7 +17313,7 @@ if (err instanceof AppError) {
 </blockquote>
 <p>Manual de referencia para iniciar proyectos frontend con Next.js, basado en la arquitectura y convenciones establecidas en el proyecto.</p>
 <hr>
-<h2 id="índice-7"><a class="header" href="#índice-7">Índice</a></h2>
+<h2 id="índice-8"><a class="header" href="#índice-8">Índice</a></h2>
 <ol>
 <li><a href="#1-stack-principal">Stack Principal</a></li>
 <li><a href="#2-creación-del-proyecto">Creación del Proyecto</a></li>
@@ -15404,7 +19295,7 @@ export const getInitials = (name: string) =&gt; {
 <h1 id="manual-de-postgresql-en-debian--instalación-y-configuración-completa"><a class="header" href="#manual-de-postgresql-en-debian--instalación-y-configuración-completa">Manual de PostgreSQL en Debian — Instalación y Configuración Completa</a></h1>
 <p>PostgreSQL es un sistema de gestión de bases de datos relacional de código abierto, conocido por su robustez, extensibilidad y cumplimiento estricto del estándar SQL. Este manual cubre la instalación completa usando el repositorio oficial de PostgreSQL, la configuración del usuario <code>dev-espada</code> y la forma de acceder directamente con <code>psql</code> sin parámetros adicionales.</p>
 <hr>
-<h2 id="índice-8"><a class="header" href="#índice-8">Índice</a></h2>
+<h2 id="índice-9"><a class="header" href="#índice-9">Índice</a></h2>
 <ol>
 <li><a href="#1-requisitos-previos-1">Requisitos Previos</a></li>
 <li><a href="#2-desinstalación-completa-hacer-primero-si-ya-tienes-postgres">Desinstalación Completa</a></li>
@@ -15697,7 +19588,7 @@ sudo journalctl -u postgresql --no-pager -n 50
 <p><em>Para temas avanzados como replicación, particionado de tablas, extensiones o ajuste de rendimiento en producción, consultar la <a href="https://www.postgresql.org/docs/">documentación oficial de PostgreSQL</a>.</em></p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="manual-de-sqlx-con-rust-migraciones-y-uso-básico"><a class="header" href="#manual-de-sqlx-con-rust-migraciones-y-uso-básico">Manual de SQLx con Rust (Migraciones y uso básico)</a></h1>
-<h2 id="índice-9"><a class="header" href="#índice-9">Índice</a></h2>
+<h2 id="índice-10"><a class="header" href="#índice-10">Índice</a></h2>
 <ol>
 <li><a href="#instalar-sqlx-cli">Instalar SQLx CLI</a></li>
 <li><a href="#si-sigue-sin-funcionar">Si sigue sin funcionar</a></li>
@@ -15999,7 +19890,7 @@ struct User {
 <h2 id="manual-completo-de-redis-instalación--uso-avanzado"><a class="header" href="#manual-completo-de-redis-instalación--uso-avanzado">Manual Completo de Redis (Instalación → Uso Avanzado)</a></h2>
 <p>Redis es una base de datos en memoria orientada a estructuras de datos. Se utiliza principalmente para caché, colas, sesiones y sistemas de alta velocidad.</p>
 <hr>
-<h2 id="índice-10"><a class="header" href="#índice-10">Índice</a></h2>
+<h2 id="índice-11"><a class="header" href="#índice-11">Índice</a></h2>
 <ol>
 <li><a href="#qué-es-redis">¿Qué es Redis?</a></li>
 <li><a href="#instalación">Instalación</a></li>
@@ -16372,7 +20263,7 @@ DEL projects:user:1:page:1
 </ul>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="guía-completa-de-prisma-6"><a class="header" href="#guía-completa-de-prisma-6">Guía completa de Prisma 6</a></h1>
-<h2 id="índice-11"><a class="header" href="#índice-11">Índice</a></h2>
+<h2 id="índice-12"><a class="header" href="#índice-12">Índice</a></h2>
 <ol>
 <li><a href="#qué-es-prisma">¿Qué es Prisma?</a></li>
 <li><a href="#instalación-inicial-desde-0">Instalación inicial (desde 0)</a></li>
@@ -16383,7 +20274,7 @@ DEL projects:user:1:page:1
 <li><a href="#relaciones-entre-modelos">Relaciones entre modelos</a></li>
 <li><a href="#casos-especiales">Casos especiales</a></li>
 <li><a href="#troubleshooting-común">Troubleshooting común</a></li>
-<li><a href="#buenas-prácticas">Buenas prácticas</a></li>
+<li><a href="#buenas-prácticas-1">Buenas prácticas</a></li>
 <li><a href="#estructura-de-archivos">Estructura de archivos</a></li>
 <li><a href="#resumen-del-flujo-de-desarrollo">Resumen del flujo de desarrollo</a></li>
 </ol>
@@ -16616,7 +20507,7 @@ pnpm prisma migrate dev --name sync_current_state
 <h3 id="el-servidor-no-reconoce-el-nuevo-modelo"><a class="header" href="#el-servidor-no-reconoce-el-nuevo-modelo">El servidor no reconoce el nuevo modelo</a></h3>
 <p><strong>Reiniciar el servidor</strong> - El cliente se carga al inicio, no se actualiza en caliente.</p>
 <hr>
-<h2 id="buenas-prácticas"><a class="header" href="#buenas-prácticas">Buenas prácticas</a></h2>
+<h2 id="buenas-prácticas-1"><a class="header" href="#buenas-prácticas-1">Buenas prácticas</a></h2>
 <ol>
 <li><strong>Siempre ejecutar <code>prisma generate</code></strong> después de cambiar el schema</li>
 <li><strong>Reiniciar el servidor</strong> después de generate</li>
@@ -16648,7 +20539,7 @@ pnpm prisma migrate dev --name sync_current_state
 <p>¡Con esto ya sabés lo básico de Prisma para trabajar! 🚀</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="guía-completa-de-entity-framework-core"><a class="header" href="#guía-completa-de-entity-framework-core">Guía completa de Entity Framework Core</a></h1>
-<h2 id="índice-12"><a class="header" href="#índice-12">Índice</a></h2>
+<h2 id="índice-13"><a class="header" href="#índice-13">Índice</a></h2>
 <ul>
 <li><a href="#qué-es-ef-core">¿Qué es EF Core?</a></li>
 <li><a href="#arquitectura-del-proyecto-cursinet">Arquitectura del proyecto (Cursinet)</a></li>
@@ -16663,7 +20554,7 @@ pnpm prisma migrate dev --name sync_current_state
 <li><a href="#consultas-con-linq">Consultas con LINQ</a></li>
 <li><a href="#resolución-de-problemas-comunes">Resolución de problemas comunes</a></li>
 <li><a href="#inyección-de-dependencias">Inyección de dependencias</a></li>
-<li><a href="#buenas-prácticas-1">Buenas prácticas</a></li>
+<li><a href="#buenas-prácticas-2">Buenas prácticas</a></li>
 <li><a href="#resumen-del-flujo-de-desarrollo-1">Resumen del flujo de desarrollo</a></li>
 <li><a href="#referencia-rápida-de-comandos">Referencia rápida de comandos</a></li>
 </ul>
@@ -17156,7 +21047,7 @@ builder.Services.AddScoped&lt;IAuthService, AuthService&gt;();
 </code></pre>
 <p>Todos los servicios que se inyectan deben estar registrados, directa o indirectamente.</p>
 <hr>
-<h2 id="buenas-prácticas-1"><a class="header" href="#buenas-prácticas-1">Buenas prácticas</a></h2>
+<h2 id="buenas-prácticas-2"><a class="header" href="#buenas-prácticas-2">Buenas prácticas</a></h2>
 <ol>
 <li>
 <p><strong>Las entidades en Domain NO deben tener decoraciones de EF</strong> (ni <code>[Key]</code>, <code>[Required]</code>, etc.). Usá Fluent API en configuraciones separadas.</p>
@@ -17228,7 +21119,7 @@ dotnet ef database drop --force -s src/Api/Api.csproj -p src/Infrastructure/Infr
 <h1 id="aspnet-core-init---manual-técnico-completo"><a class="header" href="#aspnet-core-init---manual-técnico-completo">ASP.NET Core Init - Manual Técnico Completo</a></h1>
 <p>Manual completo para instalar y desarrollar con <strong>.NET 10</strong> en <strong>Debian 13 (Trixie)</strong>, incluyendo instalación, creación de API con Clean Architecture, Entity Framework Core, autenticación JWT, y comandos de administración.</p>
 <hr>
-<h2 id="índice-13"><a class="header" href="#índice-13">Índice</a></h2>
+<h2 id="índice-14"><a class="header" href="#índice-14">Índice</a></h2>
 <ol>
 <li><a href="#1-instalación-de-net-10-en-debian-13">Instalación de .NET 10 en Debian 13</a></li>
 <li><a href="#2-verificar-instalación">Verificar Instalación</a></li>
@@ -19900,7 +23791,7 @@ echo "  dotnet run"
 <p>Manual completo de la API backend de <strong>Cursinet</strong>, construida con <strong>.NET 10</strong>, <strong>Clean Architecture</strong> (5 capas), <strong>Entity Framework Core 10</strong>, <strong>PostgreSQL</strong>, <strong>JWT + RBAC</strong>, y <strong>Serilog</strong>.</p>
 <p>Cubre instalación, arquitectura completa, todas las entidades (32), todos los endpoints (10+ controladores), sistema de autenticación de 3 factores (JWT, API Key, Session), y guía de desarrollo.</p>
 <hr>
-<h2 id="índice-14"><a class="header" href="#índice-14">Índice</a></h2>
+<h2 id="índice-15"><a class="header" href="#índice-15">Índice</a></h2>
 <ol>
 <li><a href="#1-stack-tecnológico">Stack Tecnológico</a></li>
 <li><a href="#2-instalación-de-net-10-en-debian-13">Instalación de .NET 10 en Debian 13</a></li>
@@ -22924,7 +26815,7 @@ public class AuthServiceTests
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="primeros-pasos---react-native"><a class="header" href="#primeros-pasos---react-native">Primeros pasos - React Native</a></h1>
 <p>Este manual te guiará paso a paso para entender y desarrollar una aplicación de React Native desde 0. Usamos <strong>Expo</strong> con <strong>expo-router</strong>, que es la forma más moderna y recomendada de crear apps con React Native.</p>
-<h2 id="índice-15"><a class="header" href="#índice-15">Índice</a></h2>
+<h2 id="índice-16"><a class="header" href="#índice-16">Índice</a></h2>
 <ol>
 <li><a href="#1-requisitos-previos-2">Requisitos Previos</a></li>
 <li><a href="#2-instalación-del-proyecto">Instalación del Proyecto</a></li>
@@ -23390,7 +27281,7 @@ npx expo build:ios
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="guía-completa-instalación-y-configuración-de-matrix-synapse-con-docker"><a class="header" href="#guía-completa-instalación-y-configuración-de-matrix-synapse-con-docker">Guía Completa: Instalación y Configuración de Matrix Synapse con Docker</a></h1>
-<h2 id="índice-16"><a class="header" href="#índice-16">Índice</a></h2>
+<h2 id="índice-17"><a class="header" href="#índice-17">Índice</a></h2>
 <ol>
 <li><a href="#requisitos-previos">Requisitos previos</a></li>
 <li><a href="#instalación-de-docker-y-docker-compose">Instalación de Docker y Docker Compose</a></li>
@@ -23557,7 +27448,7 @@ user_directory_search_enabled: true
 <p>Para edición manual (uso no recomendado en producción):</p>
 <pre><code class="language-bash">sudo chmod -R 777 ./data
 </code></pre>
-<h3 id="explicación"><a class="header" href="#explicación">Explicación:</a></h3>
+<h3 id="explicación-16"><a class="header" href="#explicación-16">Explicación:</a></h3>
 <ul>
 <li><code>chown</code>: cambia propietario</li>
 <li><code>-R</code>: recursivo</li>
@@ -23749,7 +27640,7 @@ http://example.com:8008/_synapse/admin/v1/whois/@user:example.com
 <h1 id="manual-de-matrix---implementación-custom"><a class="header" href="#manual-de-matrix---implementación-custom">MANUAL DE MATRIX - Implementación Custom</a></h1>
 <p>Este documento explica cómo funciona la integración con Matrix en esta app, sin usar el SDK oficial (matrix-js-sdk). Se usa la <strong>REST API</strong> directamente.</p>
 <hr>
-<h2 id="índice-17"><a class="header" href="#índice-17">Índice</a></h2>
+<h2 id="índice-18"><a class="header" href="#índice-18">Índice</a></h2>
 <ol>
 <li><a href="#arquitectura-general">ARQUITECTURA GENERAL</a></li>
 <li><a href="#tipos-de-datos-types">TIPOS DE DATOS (Types)</a></li>
@@ -25332,7 +29223,7 @@ Pero lo ignora porque sender === currentUserId
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="16-introducción-a-las-redes"><a class="header" href="#16-introducción-a-las-redes">16. Introducción a las Redes</a></h1>
 <hr>
-<h2 id="índice-18"><a class="header" href="#índice-18">Índice</a></h2>
+<h2 id="índice-19"><a class="header" href="#índice-19">Índice</a></h2>
 <ul>
 <li><a href="#qué-es-una-red">¿Qué es una Red?</a></li>
 <li><a href="#ventajas-de-las-redes">Ventajas de las Redes</a></li>
@@ -25664,7 +29555,7 @@ Pero lo ignora porque sender === currentUserId
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="18-modelos-de-red"><a class="header" href="#18-modelos-de-red">18. Modelos de Red</a></h1>
 <hr>
-<h2 id="índice-19"><a class="header" href="#índice-19">Índice</a></h2>
+<h2 id="índice-20"><a class="header" href="#índice-20">Índice</a></h2>
 <ul>
 <li><a href="#qué-es-un-modelo-de-red">¿Qué es un Modelo de Red?</a></li>
 <li><a href="#importancia-de-los-modelos-de-red">Importancia de los Modelos de Red</a></li>
@@ -26022,7 +29913,7 @@ Señales eléctricas / ondas de radio
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="redes---direcciones-ip-y-subredes"><a class="header" href="#redes---direcciones-ip-y-subredes">Redes - Direcciones IP y Subredes</a></h1>
 <hr>
-<h2 id="índice-20"><a class="header" href="#índice-20">Índice</a></h2>
+<h2 id="índice-21"><a class="header" href="#índice-21">Índice</a></h2>
 <ul>
 <li><a href="#qué-es-una-dirección-ip">¿Qué es una Dirección IP?</a>
 <ul>
@@ -26332,7 +30223,7 @@ Señales eléctricas / ondas de radio
 <h2 id="introducción"><a class="header" href="#introducción">Introducción</a></h2>
 <p>Este manual te guiará paso a paso para analizar direcciones IPv4 y determinar la <strong>parte de red</strong>, la <strong>parte de host</strong>, la <strong>máscara de subred</strong>, la <strong>dirección de red</strong>, la <strong>dirección de broadcast</strong> y el <strong>rango de hosts utilizables</strong>. Este es un ejercicio fundamental para entender cómo funcionan las subredes y cómo los routers enrutan paquetes entre diferentes redes.</p>
 <hr>
-<h2 id="índice-21"><a class="header" href="#índice-21">Índice</a></h2>
+<h2 id="índice-22"><a class="header" href="#índice-22">Índice</a></h2>
 <ul>
 <li><a href="#1-conceptos-fundamentales">Conceptos Fundamentales</a></li>
 <li><a href="#2-metodología-paso-a-paso">Metodología Paso a Paso</a></li>
@@ -27151,7 +31042,7 @@ Broadcast: 192.168.10.255 (bits de host = 11111110 → 255)
 </blockquote>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="nat"><a href="#nat" class="header">NAT</a></h1>
-<h2 id="índice-22"><a class="header" href="#índice-22">Índice</a></h2>
+<h2 id="índice-23"><a class="header" href="#índice-23">Índice</a></h2>
 <ul>
 <li><a href="#qué-es-nat-y-cómo-actúa-en-nuestra-red">Qué es NAT y cómo actúa en nuestra red</a>
 <ul>
@@ -27272,7 +31163,7 @@ Broadcast: 192.168.10.255 (bits de host = 11111110 → 255)
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="22-direcciones-mac-y-switches"><a class="header" href="#22-direcciones-mac-y-switches">22. Direcciones MAC y Switches</a></h1>
 <hr>
-<h2 id="índice-23"><a class="header" href="#índice-23">Índice</a></h2>
+<h2 id="índice-24"><a class="header" href="#índice-24">Índice</a></h2>
 <ul>
 <li><a href="#introducción-a-la-capa-de-enlace-de-datos">Introducción a la Capa de Enlace de Datos</a></li>
 <li><a href="#qué-es-una-dirección-mac">¿Qué es una Dirección MAC?</a></li>
@@ -28184,7 +32075,7 @@ show ip arp
 <h1 id="cisco-packet-tracer--manual-de-comandos"><a class="header" href="#cisco-packet-tracer--manual-de-comandos">CISCO PACKET TRACER — Manual de Comandos</a></h1>
 <p><strong>Router · Switch · DHCP · IP Routes · VLANs</strong></p>
 <hr>
-<h2 id="índice-24"><a class="header" href="#índice-24">Índice</a></h2>
+<h2 id="índice-25"><a class="header" href="#índice-25">Índice</a></h2>
 <ol>
 <li><a href="#1-configuración-del-router">Configuración del Router</a></li>
 <li><a href="#2-configuración-del-switch">Configuración del Switch</a></li>
@@ -28564,7 +32455,7 @@ S1#  show interfaces Fa0/1 switchport       ! Detalle de un puerto
 <h1 id="manual-de-docker-en-debian--instalación-desinstalación-y-reinstalación-completa"><a class="header" href="#manual-de-docker-en-debian--instalación-desinstalación-y-reinstalación-completa">Manual de Docker en Debian — Instalación, Desinstalación y Reinstalación Completa</a></h1>
 <p>Docker es una plataforma de contenedores que permite empaquetar, distribuir y ejecutar aplicaciones en entornos aislados. Este manual cubre la instalación completa usando el repositorio oficial, la desinstalación limpia sin residuos, y el procedimiento de reinstalación desde cero.</p>
 <hr>
-<h2 id="índice-25"><a class="header" href="#índice-25">Índice</a></h2>
+<h2 id="índice-26"><a class="header" href="#índice-26">Índice</a></h2>
 <ol>
 <li><a href="#1-requisitos-previos-4">Requisitos Previos</a></li>
 <li><a href="#2-desinstalación-completa-hacer-primero-si-ya-tienes-docker">Desinstalación Completa</a></li>

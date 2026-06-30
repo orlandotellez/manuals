@@ -7,6 +7,7 @@
 ## Contenidos
 
 ## Rust
+- [Backend con Axum (Primeros pasos)](./docs/27-axum-init.md)
 - [Backend con Axum (techcomponents)](./docs/01-axum-techcomponents.md)
 - [Backend con Axum (rasflow)](./docs/02-axum-rasflow.md)
 - [Restix](./docs/12-restix.md)
