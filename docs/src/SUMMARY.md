@@ -17,6 +17,7 @@
 
 ## Fastify(NodeJs/TypeScript)
 - [Backend Fastify Primeros Pasos](./docs/19-fastify-init.md)
+- [Backend Fastify POS SYSTEM](./docs/28-fastify-pos-system.md)
 - [Backend Farmacia](./docs/17-fastify-backend.md)
 
 ## Express(NodeJs/Typescript)
