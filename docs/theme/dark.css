@@ -1,0 +1,59 @@
+/* Dark Theme - fondo negro #000000 */
+.dark {
+    --bg: #000000;
+    --fg: #e0e0e0;
+
+    --sidebar-bg: #0d0d0d;
+    --sidebar-fg: #c8c9db;
+    --sidebar-non-existant: #505254;
+    --sidebar-active: #58a6ff;
+    --sidebar-spacer: #1a1a1a;
+
+    --scrollbar: var(--sidebar-fg);
+
+    --icons: #6b6b6b;
+    --icons-hover: #b3b3b3;
+
+    --links: #58a6ff;
+
+    --inline-code-color: #f0883e;
+
+    --theme-popup-bg: #0d0d0d;
+    --theme-popup-border: #333333;
+    --theme-hover: #1a1a1a;
+
+    --quote-bg: #0a0a0a;
+    --quote-border: #1a1a1a;
+
+    --warning-border: #ff8e00;
+
+    --table-border-color: #1a1a1a;
+    --table-header-bg: #2a2a2a;
+    --table-alternate-bg: #0d0d0d;
+
+    --searchbar-border-color: #333;
+    --searchbar-bg: #1a1a1a;
+    --searchbar-fg: #fff;
+    --searchbar-shadow-color: #58a6ff;
+    --searchresults-header-fg: #666;
+    --searchresults-border-color: #333;
+    --searchresults-li-bg: #0d0d0d;
+    --search-mark-bg: #58a6ff;
+
+    --color-scheme: dark;
+
+    --copy-button-filter: invert(42%) sepia(0%) saturate(0%) brightness(85%) contrast(85%);
+    --copy-button-filter-hover: invert(53%) sepia(98%) saturate(644%) hue-rotate(180deg) brightness(101%) contrast(101%);
+
+    --footnote-highlight: #2668a6;
+
+    --overlay-bg: rgba(0, 0, 0, 0.6);
+
+    --blockquote-note-color: #58a6ff;
+    --blockquote-tip-color: #3fb950;
+    --blockquote-important-color: #bc8cff;
+    --blockquote-warning-color: #d29922;
+    --blockquote-caution-color: #f85149;
+
+    --sidebar-header-border-color: #58a6ff;
+}
