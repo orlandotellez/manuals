@@ -1,4 +1,4 @@
-# Manual URSINET — Backend en C# con ASP.NET Core, Entity Framework Core y PostgreSQL
+# Manual CURSINET — Backend en C# con ASP.NET Core, Entity Framework Core y PostgreSQL
 
 ### Plataforma educativa online (Cursinet API)
 
@@ -4616,6 +4616,3 @@ Niveles de autenticación:
 | Test | `/test` | 14+ |
 | **Total** | — | **~85+** |
 
----
-
-¡Fin del manual! Este documento contiene el código completo del proyecto `backend-ursinet` (Cursinet API), explicado línea por línea. 🚀
