@@ -57,3 +57,7 @@
 
     --sidebar-header-border-color: #58a6ff;
 }
+
+:root {
+    --content-max-width: 900px;
+}
