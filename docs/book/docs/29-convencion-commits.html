@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Crear apk con Tauri - Manuales</title>
+        <title>Conventional Commits - Manuales</title>
 
 
         <!-- Custom HTML head -->
@@ -175,265 +175,167 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="manual-tauri-android--dev-debug-apk-y-release-apk"><a class="header" href="#manual-tauri-android--dev-debug-apk-y-release-apk">Manual: Tauri Android — Dev, Debug APK y Release APK</a></h1>
-<h2 id="índice"><a class="header" href="#índice">Índice</a></h2>
-<ol>
-<li><a href="#1-requisitos-previos">Requisitos previos</a></li>
-<li><a href="#2-configuración-inicial-del-proyecto">Configuración inicial del proyecto</a>
+                        <h1 id="convención-de-commits"><a class="header" href="#convención-de-commits">Convención de Commits</a></h1>
+<p><a href="https://conventionalcommits.org"><img src="https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg" alt="Conventional Commits"></a></p>
+<p>Para mantener un historial de cambios claro, legible y consistente, todos los commits deben seguir este formato.</p>
+<h2 id="indice"><a class="header" href="#indice">Indice</a></h2>
 <ul>
-<li>2.1 <a href="#21-inicializar-el-proyecto-android">Inicializar el proyecto Android</a></li>
-<li>2.2 <a href="#22-configurar-viteconfigts">Configurar vite.config.ts</a></li>
-<li>2.3 <a href="#23-variables-de-entorno">Variables de entorno</a></li>
+<li><a href="#formato">Formato</a></li>
+<li><a href="#tipos-de-commit">Tipos de Commit</a></li>
+<li><a href="#alcance-scope">Alcance (scope)</a></li>
+<li><a href="#ejemplos-de-commits">Ejemplos de Commits</a></li>
+<li><a href="#reglas">Reglas</a></li>
+<li><a href="#cuerpo-del-commit-opcional">Cuerpo del Commit</a></li>
+<li><a href="#footer-opcional">Footer</a></li>
+<li><a href="#configuracion-recomendada">Configuracion recomendada</a></li>
+<li><a href="#buenas-practicas">Buenas practicas</a></li>
+<li><a href="#ejemplo-completo">Ejemplo completo</a></li>
 </ul>
-</li>
-<li><a href="#3-agregar-build-tools-al-path">Agregar build-tools al PATH</a></li>
-<li><a href="#4-modo-desarrollo-tauri-android-dev">Modo desarrollo (tauri android dev)</a>
-<ul>
-<li>4.1 <a href="#41-conectar-el-teléfono-por-usb">Conectar el teléfono por USB</a></li>
-<li>4.2 <a href="#42-configurar-adb-reverse-importante">Configurar ADB Reverse</a></li>
-<li>4.3 <a href="#43-problema-con-cloudflare-warp-u-otras-vpns">Problema con Cloudflare WARP u otras VPNs</a></li>
-<li>4.4 <a href="#44-correr-el-dev-server">Correr el dev server</a></li>
-</ul>
-</li>
-<li><a href="#5-apk-de-debug-para-pruebas-rápidas">APK de Debug</a></li>
-<li><a href="#6-apk-de-release-para-compartir-por-internet">APK de Release</a>
-<ul>
-<li>6.1 <a href="#61-crear-el-keystore-solo-una-vez">Crear el Keystore</a></li>
-<li>6.2 <a href="#62-configurar-envproduction">Configurar .env.production</a></li>
-<li>6.3 <a href="#63-compilar-el-apk-de-release">Compilar el APK de release</a></li>
-<li>6.4 <a href="#64-firmar-el-apk-manualmente">Firmar el APK manualmente</a></li>
-</ul>
-</li>
-<li><a href="#7-instalar-el-apk-en-android">Instalar el APK en Android</a></li>
-<li><a href="#8-resumen-rápido-de-comandos">Resumen rápido de comandos</a></li>
-<li><a href="#9-solución-de-problemas-comunes">Solución de problemas comunes</a></li>
-</ol>
-<hr>
-<h2 id="requisitos-previos"><a class="header" href="#requisitos-previos">Requisitos previos</a></h2>
-<ul>
-<li>Android SDK instalado (<code>~/Android/Sdk</code>)</li>
-<li>NDK instalado (Tauri lo detecta automáticamente)</li>
-<li>ADB disponible en el PATH</li>
-<li>Java JDK instalado</li>
-<li>Rust con target Android: <code>rustup target add aarch64-linux-android</code></li>
-</ul>
-<hr>
-<h2 id="2-configuración-inicial-del-proyecto"><a class="header" href="#2-configuración-inicial-del-proyecto">2. Configuración inicial del proyecto</a></h2>
-<h3 id="21-inicializar-el-proyecto-android"><a class="header" href="#21-inicializar-el-proyecto-android">2.1 Inicializar el proyecto Android</a></h3>
-<pre><code class="language-bash">pnpm tauri android init
+<h2 id="formato"><a class="header" href="#formato">Formato</a></h2>
+<pre><code>&lt;tipo&gt;(&lt;alcance&gt;): &lt;descripción breve&gt;
+&lt;tipo&gt;(&lt;alcance&gt;)!: &lt;descripción breve&gt;   (breaking change)
 </code></pre>
-<h3 id="22-configurar-viteconfigts"><a class="header" href="#22-configurar-viteconfigts">2.2 Configurar <code>vite.config.ts</code></a></h3>
-<p>El host debe escuchar en <code>0.0.0.0</code> para que el teléfono pueda conectarse:</p>
-<pre><code class="language-ts">const host = process.env.TAURI_DEV_HOST;
-
-export default defineConfig({
-  server: {
-    port: 1420,
-    strictPort: true,
-    host: host || "0.0.0.0", // importante: no dejar false
-    hmr: host
-      ? { protocol: "ws", host, port: 1421 }
-      : undefined,
-    watch: {
-      ignored: ["**/src-tauri/**"],
-    },
-  },
-});
+<p>El alcance es opcional. Si el cambio afecta a varias areas del sistema, puede omitirse.
+Para cambios que rompen compatibilidad hacia atras, agrega <code>!</code> antes de los dos puntos.</p>
+<p><strong>Ejemplos:</strong></p>
+<pre><code>feat(misiones): agregar nueva misión de reconocimiento
+feat(api)!: cambiar esquema de respuesta a JSON
 </code></pre>
-<h3 id="23-variables-de-entorno"><a class="header" href="#23-variables-de-entorno">2.3 Variables de entorno</a></h3>
-<p>Crear <code>.env</code>:</p>
-<pre><code class="language-env">VITE_API_URL="http://192.168.0.9:3000/api/v1"
-</code></pre>
-<blockquote>
-<p>⚠️ No uses <code>localhost</code> en la IP del backend para el APK de release — usa la IP real de tu PC o un servidor público.</p>
-</blockquote>
-<hr>
-<h2 id="3-agregar-build-tools-al-path"><a class="header" href="#3-agregar-build-tools-al-path">3. Agregar build-tools al PATH</a></h2>
-<p>Necesario para <code>zipalign</code> y <code>apksigner</code>:</p>
-<pre><code class="language-bash"># Ver versiones instaladas
-ls ~/Android/Sdk/build-tools/
-
-# Exportar la versión (cambia 35.0.0 por la tuya)
-export PATH="$PATH:$HOME/Android/Sdk/build-tools/35.0.0"
-
-# Para que sea permanente
-echo 'export PATH="$PATH:$HOME/Android/Sdk/build-tools/35.0.0"' &gt;&gt; ~/.bashrc
-source ~/.bashrc
-</code></pre>
-<hr>
-<h2 id="4-modo-desarrollo-tauri-android-dev"><a class="header" href="#4-modo-desarrollo-tauri-android-dev">4. Modo desarrollo (<code>tauri android dev</code>)</a></h2>
-<h3 id="41-conectar-el-teléfono-por-usb"><a class="header" href="#41-conectar-el-teléfono-por-usb">4.1 Conectar el teléfono por USB</a></h3>
-<p>Habilitar <strong>Depuración USB</strong> en el teléfono:</p>
-<ul>
-<li>Configuración → Acerca del teléfono → toca “Número de compilación” 7 veces</li>
-<li>Configuración → Opciones de desarrollador → Depuración USB ✓</li>
-</ul>
-<p>Verificar que el teléfono es detectado:</p>
-<pre><code class="language-bash">adb devices
-# Debe mostrar: XXXXXXX    device
-</code></pre>
-<p>Si dice <code>unauthorized</code>, desbloquea el teléfono y acepta el popup.</p>
-<h3 id="42-configurar-adb-reverse-importante"><a class="header" href="#42-configurar-adb-reverse-importante">4.2 Configurar ADB Reverse (importante)</a></h3>
-<p>Esto permite que el teléfono acceda al dev server y backend de tu PC por USB sin depender del WiFi:</p>
-<pre><code class="language-bash">adb reverse tcp:1420 tcp:1420   # Vite dev server
-adb reverse tcp:1421 tcp:1421   # Vite HMR (hot reload)
-adb reverse tcp:3000 tcp:3000   # Tu backend API
-</code></pre>
-<blockquote>
-<p>Repite estos comandos cada vez que desconectes y reconectes el teléfono.</p>
-</blockquote>
-<h3 id="43-problema-con-cloudflare-warp-u-otras-vpns"><a class="header" href="#43-problema-con-cloudflare-warp-u-otras-vpns">4.3 Problema con Cloudflare WARP u otras VPNs</a></h3>
-<p>Si tienes una VPN activa (WARP, Mullvad, etc.), Tauri puede detectar la IP de la VPN en vez de tu IP local, y el teléfono no podrá conectarse.</p>
-<p>Solución:</p>
-<pre><code class="language-bash"># Opción A: desconecta la VPN antes de correr dev
-warp-cli disconnect
-
-# Opción B: fuerza la IP local manualmente
-TAURI_DEV_HOST=192.168.0.9 pnpm tauri android dev
-</code></pre>
-<h3 id="44-correr-el-dev-server"><a class="header" href="#44-correr-el-dev-server">4.4 Correr el dev server</a></h3>
-<pre><code class="language-bash">pnpm tauri android dev
-</code></pre>
-<p>Tauri compilará, instalará la app en el teléfono y abrirá el WebView apuntando al dev server.</p>
-<hr>
-<h2 id="5-apk-de-debug-para-pruebas-rápidas"><a class="header" href="#5-apk-de-debug-para-pruebas-rápidas">5. APK de Debug (para pruebas rápidas)</a></h2>
-<p>No requiere firma. Útil para probar en tu propio dispositivo.</p>
-<pre><code class="language-bash">pnpm tauri android build --debug
-</code></pre>
-<p>El APK queda en:</p>
-<pre><code>src-tauri/gen/android/app/build/outputs/apk/debug/app-debug.apk
-</code></pre>
-<p>Instalar directo por USB:</p>
-<pre><code class="language-bash">adb install src-tauri/gen/android/app/build/outputs/apk/debug/app-debug.apk
-</code></pre>
-<blockquote>
-<p>⚠️ El APK debug <strong>no se puede subir a Play Store</strong> y puede ser más lento, pero funciona para compartir con testers.</p>
-</blockquote>
-<hr>
-<h2 id="6-apk-de-release-para-compartir-por-internet"><a class="header" href="#6-apk-de-release-para-compartir-por-internet">6. APK de Release (para compartir por internet)</a></h2>
-<h3 id="61-crear-el-keystore-solo-una-vez"><a class="header" href="#61-crear-el-keystore-solo-una-vez">6.1 Crear el Keystore (solo una vez)</a></h3>
-<p>El keystore es tu firma digital. <strong>Guárdalo en un lugar seguro — si lo pierdes no podrás actualizar la app.</strong></p>
-<pre><code class="language-bash">keytool -genkey -v \
-  -keystore mi-app.keystore \
-  -alias mi-app \
-  -keyalg RSA \
-  -keysize 2048 \
-  -validity 10000
-</code></pre>
-<p>Te pedirá:</p>
-<ul>
-<li>Contraseña del keystore</li>
-<li>Nombre, apellido, organización, ciudad, país (puedes dejar en blanco con Enter)</li>
-<li>Confirmar contraseña</li>
-</ul>
-<p>Verificar los alias del keystore:</p>
-<pre><code class="language-bash">keytool -list -keystore mi-app.keystore
-</code></pre>
-<h3 id="62-configurar-envproduction"><a class="header" href="#62-configurar-envproduction">6.2 Configurar <code>.env.production</code></a></h3>
-<pre><code class="language-env">VITE_API_URL="https://tu-servidor-publico.com/api/v1"
-</code></pre>
-<blockquote>
-<p>Si el APK es solo para tu red local (mismo WiFi), puedes usar tu IP local: <code>http://192.168.0.9:3000/api/v1</code></p>
-</blockquote>
-<h3 id="63-compilar-el-apk-de-release"><a class="header" href="#63-compilar-el-apk-de-release">6.3 Compilar el APK de release</a></h3>
-<pre><code class="language-bash">pnpm tauri android build
-</code></pre>
-<p>Genera un APK <strong>sin firmar</strong> en:</p>
-<pre><code>src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk
-</code></pre>
-<h3 id="64-firmar-el-apk-manualmente"><a class="header" href="#64-firmar-el-apk-manualmente">6.4 Firmar el APK manualmente</a></h3>
-<p><strong>Paso 1 — Alinear el APK:</strong></p>
-<pre><code class="language-bash">zipalign -v 4 \
-  src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk \
-  app-aligned.apk
-</code></pre>
-<p><strong>Paso 2 — Firmar:</strong></p>
-<pre><code class="language-bash">apksigner sign \
-  --ks mi-app.keystore \
-  --ks-key-alias mi-app \
-  --ks-pass pass:tu-contraseña \
-  --key-pass pass:tu-contraseña \
-  --out app-release.apk \
-  app-aligned.apk
-</code></pre>
-<p><strong>Paso 3 — Verificar la firma:</strong></p>
-<pre><code class="language-bash">apksigner verify app-release.apk
-# Debe decir: Verified using v1 scheme, v2 scheme...
-</code></pre>
-<p><strong>Limpiar archivos temporales:</strong></p>
-<pre><code class="language-bash">rm app-aligned.apk
-</code></pre>
-<p>El APK listo para compartir es <code>app-release.apk</code>.</p>
-<hr>
-<h2 id="7-instalar-el-apk-en-android"><a class="header" href="#7-instalar-el-apk-en-android">7. Instalar el APK en Android</a></h2>
-<h3 id="desde-pc-por-usb"><a class="header" href="#desde-pc-por-usb">Desde PC por USB:</a></h3>
-<pre><code class="language-bash">adb install app-release.apk
-</code></pre>
-<h3 id="desde-el-teléfono-descarga-directa"><a class="header" href="#desde-el-teléfono-descarga-directa">Desde el teléfono (descarga directa):</a></h3>
-<p>El usuario debe activar la instalación de fuentes desconocidas:</p>
-<ul>
-<li><strong>Android 8+:</strong> Configuración → Apps → (navegador o gestor de archivos) → Instalar apps desconocidas → Permitir</li>
-<li><strong>Android 7 o menos:</strong> Configuración → Seguridad → Fuentes desconocidas ✓</li>
-</ul>
-<p>Luego abrir el <code>.apk</code> desde el gestor de archivos y presionar <strong>Instalar</strong>.</p>
-<hr>
-<h2 id="8-resumen-rápido-de-comandos"><a class="header" href="#8-resumen-rápido-de-comandos">8. Resumen rápido de comandos</a></h2>
+<h2 id="tipos-de-commit"><a class="header" href="#tipos-de-commit">Tipos de Commit</a></h2>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>Acción</th><th>Comando</th></tr>
+<tr><th>Tipo</th><th>Descripción</th></tr>
 </thead>
 <tbody>
-<tr><td>Inicializar Android</td><td><code>pnpm tauri android init</code></td></tr>
-<tr><td>Dev con hot reload</td><td><code>pnpm tauri android dev</code></td></tr>
-<tr><td>ADB reverse (puertos)</td><td><code>adb reverse tcp:1420 tcp:1420</code></td></tr>
-<tr><td>Build debug</td><td><code>pnpm tauri android build --debug</code></td></tr>
-<tr><td>Build release (sin firma)</td><td><code>pnpm tauri android build</code></td></tr>
-<tr><td>Crear keystore</td><td><code>keytool -genkey -v -keystore mi-app.keystore -alias mi-app -keyalg RSA -keysize 2048 -validity 10000</code></td></tr>
-<tr><td>Alinear APK</td><td><code>zipalign -v 4 unsigned.apk aligned.apk</code></td></tr>
-<tr><td>Firmar APK</td><td><code>apksigner sign --ks mi-app.keystore ...</code></td></tr>
-<tr><td>Verificar firma</td><td><code>apksigner verify app-release.apk</code></td></tr>
-<tr><td>Instalar por USB</td><td><code>adb install app-release.apk</code></td></tr>
+<tr><td><strong>feat</strong></td><td>Nueva funcionalidad o característica</td></tr>
+<tr><td><strong>fix</strong></td><td>Corrección de errores</td></tr>
+<tr><td><strong>refactor</strong></td><td>Refactorización sin cambiar la lógica</td></tr>
+<tr><td><strong>docs</strong></td><td>Cambios en documentación</td></tr>
+<tr><td><strong>style</strong></td><td>Cambios de formato o estilo (sin afectar la lógica)</td></tr>
+<tr><td><strong>perf</strong></td><td>Mejoras de rendimiento</td></tr>
+<tr><td><strong>test</strong></td><td>Agregar o actualizar tests</td></tr>
+<tr><td><strong>chore</strong></td><td>Tareas de mantenimiento (deps, tooling, build, etc.)</td></tr>
+<tr><td><strong>ci</strong></td><td>Cambios en CI/CD o automatización</td></tr>
+<tr><td><strong>core</strong></td><td>Cambios en funcionalidad central o infraestructura</td></tr>
 </tbody>
 </table>
 </div>
+<h2 id="alcance-scope"><a class="header" href="#alcance-scope">Alcance (scope)</a></h2>
+<p>El alcance indica qué parte del sistema se ve afectada.</p>
+<p>Ejemplos comunes:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Alcance</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>ui</strong></td><td>Componentes de interfaz de usuario</td></tr>
+<tr><td><strong>auth</strong></td><td>Sistema de autenticación</td></tr>
+<tr><td><strong>api</strong></td><td>Endpoints o lógica backend</td></tr>
+<tr><td><strong>db</strong></td><td>Modelos o consultas de base de datos</td></tr>
+<tr><td><strong>config</strong></td><td>Configuración del proyecto</td></tr>
+<tr><td><strong>archivos</strong></td><td>Subida/descarga o manejo de archivos</td></tr>
+<tr><td><strong>routes</strong></td><td>Sistema de rutas o navegación</td></tr>
+<tr><td><strong>security</strong></td><td>Cambios de seguridad o validaciones</td></tr>
+<tr><td><strong>performance</strong></td><td>Optimizaciones de rendimiento</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>Puedes definir otros alcances según tu proyecto (por ejemplo <code>routes(admin)</code> o <code>service/chat</code>).</p>
+</blockquote>
+<h2 id="ejemplos-de-commits"><a class="header" href="#ejemplos-de-commits">Ejemplos de Commits</a></h2>
+<ul>
+<li><code>feat(ui): agregar componente SelectMulti con opción "Ninguno"</code></li>
+<li><code>fix(api): corregir error al formatear fechas en response</code></li>
+<li><code>refactor(hooks): simplificar lógica de sincronización con backend</code></li>
+<li><code>docs(readme): actualizar pasos de instalación</code></li>
+<li><code>style(button): ajustar padding y tipografía</code></li>
+<li><code>core(auth): mover validación de token al middleware</code></li>
+<li><code>perf(db): optimizar consulta de usuarios activos</code></li>
+<li><code>chore(deps): actualizar react a v18</code></li>
+<li><code>ci(github): agregar flujo de tests en pull requests</code></li>
+<li><code>feat(api)!: migrar a autenticacion por tokens (breaking change)</code></li>
+</ul>
+<h2 id="reglas"><a class="header" href="#reglas">Reglas</a></h2>
+<ul>
+<li><strong>Máximo 50 caracteres</strong> en la primera línea</li>
+<li>Usa <strong>modo imperativo</strong> (“agregar”, no “agregado” o “agrega”)</li>
+<li><strong>No pongas punto final</strong> en la descripción</li>
+<li>Deja <strong>una línea en blanco</strong> antes del cuerpo</li>
+<li>En el cuerpo explica el <strong>qué</strong> y el <strong>por qué</strong>, no el cómo</li>
+<li>En el cuerpo, máximo <strong>72 caracteres por línea</strong></li>
+</ul>
 <hr>
-<h2 id="9-solución-de-problemas-comunes"><a class="header" href="#9-solución-de-problemas-comunes">9. Solución de problemas comunes</a></h2>
-<h3 id="neterr_connection_refused-en-el-webview"><a class="header" href="#neterr_connection_refused-en-el-webview"><code>net::ERR_CONNECTION_REFUSED</code> en el WebView</a></h3>
+<h2 id="cuerpo-del-commit-opcional"><a class="header" href="#cuerpo-del-commit-opcional">Cuerpo del Commit (opcional)</a></h2>
+<p>Se usa para dar más contexto cuando el cambio no es trivial.</p>
+<p><strong>Ejemplo:</strong></p>
+<pre><code>Se agrega validación para evitar duplicados en la tabla de equipos.
+Esto evita errores al sincronizar datos con el backend.
+</code></pre>
+<hr>
+<h2 id="footer-opcional"><a class="header" href="#footer-opcional">Footer (opcional)</a></h2>
+<p>Se usa para asociar issues, referenciar tickets o indicar cambios mayores.
+Tambien puedes usar <code>!</code> despues del tipo/alcance como atajo para indicar un breaking change (ver <a href="#formato">Formato</a>).</p>
+<pre><code>Fixes #123
+
+Closes #456
+
+BREAKING CHANGE: ahora se requiere token de autenticación
+</code></pre>
+<hr>
+<h2 id="configuración-recomendada"><a class="header" href="#configuración-recomendada">Configuración recomendada</a></h2>
+<h4 id="1-plantilla-local-de-commit"><a class="header" href="#1-plantilla-local-de-commit">1. Plantilla local de commit</a></h4>
+<p>Guarda el contenido en un archivo llamado <code>.gitmessage</code> y ejecuta:</p>
+<pre><code>git config --local commit.template .gitmessage
+</code></pre>
+<h4 id="2-configuración-en-vs-code"><a class="header" href="#2-configuración-en-vs-code">2. Configuración en VS Code</a></h4>
+<p>Agrega esto en tu archivo settings.json:</p>
+<pre><code>{
+  "git.useEditorAsCommitInput": true,
+  "git.verboseCommit": true,
+  "git.enableSmartCommit": true,
+  "git.suggestSmartCommit": true,
+  "git.allowForcePush": false,
+  "conventionalCommits.showEditor": true,
+  "conventionalCommits.promptBody": true,
+  "conventionalCommits.promptFooter": true
+}
+</code></pre>
+<h4 id="3-github-copilot-commit-instructions"><a class="header" href="#3-github-copilot-commit-instructions">3. GitHub Copilot (commit instructions)</a></h4>
+<p>Instrucciones para generar mensajes coherentes:</p>
+<pre><code>→ Usa formato: &lt;tipo&gt;(&lt;alcance&gt;): &lt;descripción&gt; 
+→ Ej: feat(auth): implementar login con OAuth 
+→ Primera línea ≤50 chars, sin punto final 
+→ Cuerpo: qué + por qué, ≤72 chars/línea
+</code></pre>
+<h3 id="buenas-prácticas"><a class="header" href="#buenas-prácticas">Buenas prácticas</a></h3>
 <ul>
-<li>Verifica que Vite escucha en <code>0.0.0.0</code> (no en <code>false</code>)</li>
-<li>Corre <code>adb reverse</code> para todos los puertos necesarios</li>
-<li>Desconecta VPNs antes de correr <code>tauri android dev</code></li>
+<li>Usa un tipo y alcance que realmente describan el cambio</li>
+<li>Sé específico y conciso</li>
+<li>Si el cambio es grande, explica el contexto en el cuerpo</li>
+<li>Evita commits genéricos como “update” o “fix bug”</li>
+<li>Prioriza la claridad sobre la cantidad de palabras</li>
 </ul>
-<h3 id="failed-to-load-signer-entry-does-not-contain-a-key"><a class="header" href="#failed-to-load-signer-entry-does-not-contain-a-key"><code>Failed to load signer: entry does not contain a key</code></a></h3>
-<p>El alias del keystore no coincide. Verifica con:</p>
-<pre><code class="language-bash">keytool -list -keystore mi-app.keystore
+<h3 id="ejemplo-completo"><a class="header" href="#ejemplo-completo">Ejemplo completo</a></h3>
+<pre><code>feat(api): agregar endpoint para obtener movimientos recientes
+
+Se agrega un nuevo endpoint GET /movimientos/recentes para
+recuperar los últimos movimientos de la base de datos, filtrados
+por usuario y rango de fechas.
+
+Closes #45
 </code></pre>
-<h3 id="output-file-already-exists-en-zipalign"><a class="header" href="#output-file-already-exists-en-zipalign"><code>Output file already exists</code> en zipalign</a></h3>
-<p>Borra el archivo anterior:</p>
-<pre><code class="language-bash">rm -f app-aligned.apk app-release.apk
-</code></pre>
-<h3 id="zipalign-orden-no-encontrada"><a class="header" href="#zipalign-orden-no-encontrada"><code>zipalign: orden no encontrada</code></a></h3>
-<p>Agrega el build-tools al PATH:</p>
-<pre><code class="language-bash">export PATH="$PATH:$HOME/Android/Sdk/build-tools/35.0.0"
-</code></pre>
-<h3 id="la-app-instala-pero-no-carga-datos-failed-to-fetch"><a class="header" href="#la-app-instala-pero-no-carga-datos-failed-to-fetch">La app instala pero no carga datos (failed to fetch)</a></h3>
-<ul>
-<li>En debug/dev: corre <code>adb reverse tcp:3000 tcp:3000</code></li>
-<li>En release: el <code>VITE_API_URL</code> debe apuntar a un servidor público o IP local accesible</li>
-</ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../docs/12-restix.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../docs/13-docker-installation.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="../docs/19-fastify-init.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
-                            </a>
 
                         <div style="clear: both"></div>
                     </nav>
@@ -441,13 +343,10 @@ TAURI_DEV_HOST=192.168.0.9 pnpm tauri android dev
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../docs/12-restix.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../docs/13-docker-installation.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="../docs/19-fastify-init.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
-                    </a>
             </nav>
 
         </div>

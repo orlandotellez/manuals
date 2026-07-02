@@ -37,10 +37,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "dark";
-            window.path_to_searchindex_js = "searchindex-bd7a67cd.js";
+            window.path_to_searchindex_js = "searchindex-4e936f47.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-ec0afe72.js"></script>
+        <script src="toc-d723e34e.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -243,6 +243,10 @@
 <h2 id="docker"><a class="header" href="#docker">Docker</a></h2>
 <ul>
 <li><a href="#manual-de-docker-en-debian--instalación-desinstalación-y-reinstalación-completa">Docker Instalación</a></li>
+</ul>
+<h2 id="git-y-github"><a class="header" href="#git-y-github">Git y Github</a></h2>
+<ul>
+<li><a href="#convención-de-commits">Conventional Commits</a></li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="axum-manual--manual-paso-a-paso"><a class="header" href="#axum-manual--manual-paso-a-paso">Axum Manual — Manual Paso a Paso</a></h1>
@@ -38427,6 +38431,159 @@ docker system prune -a --volumes
 <p>Si Docker no funciona correctamente y los errores no tienen solución directa, la opción más fiable es hacer una desinstalación completa (ver <strong>Sección 2</strong>) y reinstalar desde cero (ver <strong>Sección 3</strong>). Este procedimiento resuelve la mayoría de los problemas causados por actualizaciones fallidas, conflictos de paquetes o configuraciones corruptas.</p>
 <hr>
 <p><em>Para profundizar en temas avanzados como Docker Swarm, seguridad en contenedores o desarrollo multi-etapa, consultar la <a href="https://docs.docker.com">documentación oficial de Docker</a>.</em></p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="convención-de-commits"><a class="header" href="#convención-de-commits">Convención de Commits</a></h1>
+<p><a href="https://conventionalcommits.org"><img src="https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg" alt="Conventional Commits"></a></p>
+<p>Para mantener un historial de cambios claro, legible y consistente, todos los commits deben seguir este formato.</p>
+<h2 id="indice"><a class="header" href="#indice">Indice</a></h2>
+<ul>
+<li><a href="#formato">Formato</a></li>
+<li><a href="#tipos-de-commit">Tipos de Commit</a></li>
+<li><a href="#alcance-scope">Alcance (scope)</a></li>
+<li><a href="#ejemplos-de-commits">Ejemplos de Commits</a></li>
+<li><a href="#reglas">Reglas</a></li>
+<li><a href="#cuerpo-del-commit-opcional">Cuerpo del Commit</a></li>
+<li><a href="#footer-opcional">Footer</a></li>
+<li><a href="#configuracion-recomendada">Configuracion recomendada</a></li>
+<li><a href="#buenas-practicas">Buenas practicas</a></li>
+<li><a href="#ejemplo-completo">Ejemplo completo</a></li>
+</ul>
+<h2 id="formato"><a class="header" href="#formato">Formato</a></h2>
+<pre><code>&lt;tipo&gt;(&lt;alcance&gt;): &lt;descripción breve&gt;
+&lt;tipo&gt;(&lt;alcance&gt;)!: &lt;descripción breve&gt;   (breaking change)
+</code></pre>
+<p>El alcance es opcional. Si el cambio afecta a varias areas del sistema, puede omitirse.
+Para cambios que rompen compatibilidad hacia atras, agrega <code>!</code> antes de los dos puntos.</p>
+<p><strong>Ejemplos:</strong></p>
+<pre><code>feat(misiones): agregar nueva misión de reconocimiento
+feat(api)!: cambiar esquema de respuesta a JSON
+</code></pre>
+<h2 id="tipos-de-commit"><a class="header" href="#tipos-de-commit">Tipos de Commit</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Tipo</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>feat</strong></td><td>Nueva funcionalidad o característica</td></tr>
+<tr><td><strong>fix</strong></td><td>Corrección de errores</td></tr>
+<tr><td><strong>refactor</strong></td><td>Refactorización sin cambiar la lógica</td></tr>
+<tr><td><strong>docs</strong></td><td>Cambios en documentación</td></tr>
+<tr><td><strong>style</strong></td><td>Cambios de formato o estilo (sin afectar la lógica)</td></tr>
+<tr><td><strong>perf</strong></td><td>Mejoras de rendimiento</td></tr>
+<tr><td><strong>test</strong></td><td>Agregar o actualizar tests</td></tr>
+<tr><td><strong>chore</strong></td><td>Tareas de mantenimiento (deps, tooling, build, etc.)</td></tr>
+<tr><td><strong>ci</strong></td><td>Cambios en CI/CD o automatización</td></tr>
+<tr><td><strong>core</strong></td><td>Cambios en funcionalidad central o infraestructura</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="alcance-scope"><a class="header" href="#alcance-scope">Alcance (scope)</a></h2>
+<p>El alcance indica qué parte del sistema se ve afectada.</p>
+<p>Ejemplos comunes:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Alcance</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>ui</strong></td><td>Componentes de interfaz de usuario</td></tr>
+<tr><td><strong>auth</strong></td><td>Sistema de autenticación</td></tr>
+<tr><td><strong>api</strong></td><td>Endpoints o lógica backend</td></tr>
+<tr><td><strong>db</strong></td><td>Modelos o consultas de base de datos</td></tr>
+<tr><td><strong>config</strong></td><td>Configuración del proyecto</td></tr>
+<tr><td><strong>archivos</strong></td><td>Subida/descarga o manejo de archivos</td></tr>
+<tr><td><strong>routes</strong></td><td>Sistema de rutas o navegación</td></tr>
+<tr><td><strong>security</strong></td><td>Cambios de seguridad o validaciones</td></tr>
+<tr><td><strong>performance</strong></td><td>Optimizaciones de rendimiento</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>Puedes definir otros alcances según tu proyecto (por ejemplo <code>routes(admin)</code> o <code>service/chat</code>).</p>
+</blockquote>
+<h2 id="ejemplos-de-commits"><a class="header" href="#ejemplos-de-commits">Ejemplos de Commits</a></h2>
+<ul>
+<li><code>feat(ui): agregar componente SelectMulti con opción "Ninguno"</code></li>
+<li><code>fix(api): corregir error al formatear fechas en response</code></li>
+<li><code>refactor(hooks): simplificar lógica de sincronización con backend</code></li>
+<li><code>docs(readme): actualizar pasos de instalación</code></li>
+<li><code>style(button): ajustar padding y tipografía</code></li>
+<li><code>core(auth): mover validación de token al middleware</code></li>
+<li><code>perf(db): optimizar consulta de usuarios activos</code></li>
+<li><code>chore(deps): actualizar react a v18</code></li>
+<li><code>ci(github): agregar flujo de tests en pull requests</code></li>
+<li><code>feat(api)!: migrar a autenticacion por tokens (breaking change)</code></li>
+</ul>
+<h2 id="reglas"><a class="header" href="#reglas">Reglas</a></h2>
+<ul>
+<li><strong>Máximo 50 caracteres</strong> en la primera línea</li>
+<li>Usa <strong>modo imperativo</strong> (“agregar”, no “agregado” o “agrega”)</li>
+<li><strong>No pongas punto final</strong> en la descripción</li>
+<li>Deja <strong>una línea en blanco</strong> antes del cuerpo</li>
+<li>En el cuerpo explica el <strong>qué</strong> y el <strong>por qué</strong>, no el cómo</li>
+<li>En el cuerpo, máximo <strong>72 caracteres por línea</strong></li>
+</ul>
+<hr>
+<h2 id="cuerpo-del-commit-opcional"><a class="header" href="#cuerpo-del-commit-opcional">Cuerpo del Commit (opcional)</a></h2>
+<p>Se usa para dar más contexto cuando el cambio no es trivial.</p>
+<p><strong>Ejemplo:</strong></p>
+<pre><code>Se agrega validación para evitar duplicados en la tabla de equipos.
+Esto evita errores al sincronizar datos con el backend.
+</code></pre>
+<hr>
+<h2 id="footer-opcional"><a class="header" href="#footer-opcional">Footer (opcional)</a></h2>
+<p>Se usa para asociar issues, referenciar tickets o indicar cambios mayores.
+Tambien puedes usar <code>!</code> despues del tipo/alcance como atajo para indicar un breaking change (ver <a href="#formato">Formato</a>).</p>
+<pre><code>Fixes #123
+
+Closes #456
+
+BREAKING CHANGE: ahora se requiere token de autenticación
+</code></pre>
+<hr>
+<h2 id="configuración-recomendada"><a class="header" href="#configuración-recomendada">Configuración recomendada</a></h2>
+<h4 id="1-plantilla-local-de-commit"><a class="header" href="#1-plantilla-local-de-commit">1. Plantilla local de commit</a></h4>
+<p>Guarda el contenido en un archivo llamado <code>.gitmessage</code> y ejecuta:</p>
+<pre><code>git config --local commit.template .gitmessage
+</code></pre>
+<h4 id="2-configuración-en-vs-code"><a class="header" href="#2-configuración-en-vs-code">2. Configuración en VS Code</a></h4>
+<p>Agrega esto en tu archivo settings.json:</p>
+<pre><code>{
+  "git.useEditorAsCommitInput": true,
+  "git.verboseCommit": true,
+  "git.enableSmartCommit": true,
+  "git.suggestSmartCommit": true,
+  "git.allowForcePush": false,
+  "conventionalCommits.showEditor": true,
+  "conventionalCommits.promptBody": true,
+  "conventionalCommits.promptFooter": true
+}
+</code></pre>
+<h4 id="3-github-copilot-commit-instructions"><a class="header" href="#3-github-copilot-commit-instructions">3. GitHub Copilot (commit instructions)</a></h4>
+<p>Instrucciones para generar mensajes coherentes:</p>
+<pre><code>→ Usa formato: &lt;tipo&gt;(&lt;alcance&gt;): &lt;descripción&gt; 
+→ Ej: feat(auth): implementar login con OAuth 
+→ Primera línea ≤50 chars, sin punto final 
+→ Cuerpo: qué + por qué, ≤72 chars/línea
+</code></pre>
+<h3 id="buenas-prácticas-3"><a class="header" href="#buenas-prácticas-3">Buenas prácticas</a></h3>
+<ul>
+<li>Usa un tipo y alcance que realmente describan el cambio</li>
+<li>Sé específico y conciso</li>
+<li>Si el cambio es grande, explica el contexto en el cuerpo</li>
+<li>Evita commits genéricos como “update” o “fix bug”</li>
+<li>Prioriza la claridad sobre la cantidad de palabras</li>
+</ul>
+<h3 id="ejemplo-completo"><a class="header" href="#ejemplo-completo">Ejemplo completo</a></h3>
+<pre><code>feat(api): agregar endpoint para obtener movimientos recientes
+
+Se agrega un nuevo endpoint GET /movimientos/recentes para
+recuperar los últimos movimientos de la base de datos, filtrados
+por usuario y rango de fechas.
+
+Closes #45
+</code></pre>
 
                     </main>
 
