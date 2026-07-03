@@ -36,7 +36,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "dark";
-            window.path_to_searchindex_js = "../searchindex-5527fbee.js";
+            window.path_to_searchindex_js = "../searchindex-9664174c.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-d723e34e.js"></script>
@@ -215,20 +215,21 @@
 <li><a href="#31-capa-application--notificationpreferenceservice">Capa Application — NotificationPreferenceService</a></li>
 <li><a href="#32-capa-application--usercrudservice">Capa Application — UserCrudService</a></li>
 <li><a href="#33-capa-infrastructure--dbcontext-y-configuraciones">Capa Infrastructure — DbContext y Configuraciones</a></li>
-<li><a href="#34-capa-infrastructure--repositorios">Capa Infrastructure — Repositorios</a></li>
-<li><a href="#35-capa-infrastructure--services-password-token-email">Capa Infrastructure — Services (Password, Token, Email)</a></li>
-<li><a href="#36-capa-infrastructure--paypal-adapter">Capa Infrastructure — PayPal Adapter</a></li>
-<li><a href="#37-capa-infrastructure--dataseeder">Capa Infrastructure — DataSeeder</a></li>
-<li><a href="#38-capa-api--middleware">Capa Api — Middleware</a></li>
-<li><a href="#39-capa-api--authorization-rbac">Capa Api — Authorization (RBAC)</a></li>
-<li><a href="#40-capa-api--helpers">Capa Api — Helpers</a></li>
-<li><a href="#41-capa-api--validators-fluentvalidation">Capa Api — Validators (FluentValidation)</a></li>
-<li><a href="#42-capa-api--controllers">Capa Api — Controllers</a></li>
-<li><a href="#43-capa-infrastructure--entity-configurations-ef-core">Capa Infrastructure — Entity Configurations EF Core</a></li>
-<li><a href="#44-capa-infrastructure--migraciones">Capa Infrastructure — Migraciones</a></li>
-<li><a href="#45-tests">Tests</a></li>
-<li><a href="#46-http-test-files">HTTP Test Files</a></li>
-<li><a href="#47-tabla-completa-de-endpoints">Tabla completa de Endpoints</a></li>
+<li><a href="#34-capa-infrastructure--passwordservice">Capa Infrastructure — PasswordService</a></li>
+<li><a href="#35-capa-infrastructure--tokenservice-jwt">Capa Infrastructure — TokenService (JWT)</a></li>
+<li><a href="#36-capa-infrastructure--emailservice-desarrollo">Capa Infrastructure — EmailService (Desarrollo)</a></li>
+<li><a href="#37-capa-infrastructure--paypal-adapter">Capa Infrastructure — PayPal Adapter</a></li>
+<li><a href="#38-capa-infrastructure--dataseeder">Capa Infrastructure — DataSeeder</a></li>
+<li><a href="#39-capa-api--errorhandlingmiddleware">Capa Api — ErrorHandlingMiddleware</a></li>
+<li><a href="#40-capa-api--authorization-rbac">Capa Api — Authorization (RBAC)</a></li>
+<li><a href="#41-capa-api--helpers">Capa Api — Helpers</a></li>
+<li><a href="#42-capa-api--validators-fluentvalidation">Capa Api — Validators (FluentValidation)</a></li>
+<li><a href="#43-capa-api--controllers">Capa Api — Controllers</a></li>
+<li><a href="#44-capa-infrastructure--entity-configurations-ef-core">Capa Infrastructure — Entity Configurations (EF Core)</a></li>
+<li><a href="#45-migraciones-ef-core">Migraciones EF Core</a></li>
+<li><a href="#46-tests">Tests</a></li>
+<li><a href="#47-http-test-files">HTTP Test Files</a></li>
+<li><a href="#48-tabla-completa-de-endpoints">Tabla completa de Endpoints</a></li>
 </ol>
 <hr>
 <h2 id="1-arquitectura-del-proyecto"><a class="header" href="#1-arquitectura-del-proyecto">1. Arquitectura del proyecto</a></h2>
@@ -239,53 +240,54 @@
 ├── src/
 │   ├── Domain/                         ← Capa de dominio (entidades, enums, excepciones)
 │   │   ├── Domain.csproj
-│   │   ├── Entities/                   ← 28 entidades
-│   │   ├── Enums/                      ← 6 enums
-│   │   └── Exceptions/                 ← AppException + factory
-│   │
-│   ├── Application/                    ← Capa de aplicación (servicios, interfaces, DTOs)
-│   │   ├── Application.csproj
-│   │   ├── Common/
-│   │   │   ├── Interfaces/             ← 17 interfaces de repositorio + 13 interfaces de servicio
-│   │   │   ├── Models/                 ← ~30 DTOs/records
-│   │   │   ├── Mapping/                ← 9 mappers estáticos
-│   │   │   ├── Helpers/                ← SlugHelper, Guard
-│   │   │   └── Authorization/          ← RolePermissions
-│   │   └── Features/                   ← 15 servicios de aplicación
-│   │
-│   ├── Infrastructure/                 ← Capa de infraestructura (EF Core, PayPal, servicios)
-│   │   ├── Infrastructure.csproj
-│   │   ├── Persistence/
-│   │   │   ├── ApplicationDbContext.cs
-│   │   │   ├── Configurations/         ← 28 configuraciones Fluent API
-│   │   │   ├── Repositories/           ← 17 repositorios
-│   │   │   └── DataSeeder.cs
-│   │   ├── Services/                   ← PasswordService, TokenService, EmailService
-│   │   ├── Adapters/
-│   │   │   ├── PayPal/                 ← PayPalOptions, Auth Handler, Payment Provider, Signature Validator
-│   │   │   └── Payments/              ← MockPaymentProvider
-│   │   └── Migrations/                 ← Migraciones EF Core
-│   │
-│   └── Api/                            ← Capa de presentación (controllers, middleware)
-│       ├── Api.csproj
-│       ├── Program.cs
-│       ├── appsettings.json
-│       ├── Controllers/                ← 17 controllers
-│       ├── Middleware/                  ← ErrorHandlingMiddleware
-│       ├── Authorization/               ← PermissionHandler, PermissionRequirement, RequirePermissionAttribute
-│       ├── Helpers/                     ← AuthHelper, CookieHelper, TokenHelper
-│       ├── Validators/                  ← ~25 FluentValidation validators
-│       └── http/                        ← Archivos .http para pruebas
-│
-├── Tests/
-│   └── Api.Tests/
-│       ├── Api.Tests.csproj
-│       ├── Controllers/                ← Tests de controllers
-│       ├── Authorization/              ← Tests de permisos
-│       ├── Middleware/                 ← Tests de middleware
-│       ├── PayPal/                     ← Tests de PayPal
-│       ├── Helpers/                    ← Tests de helpers
-│       └── TestInfrastructure/         ← Base classes
+    │   │   ├── Entities/                   ← 32 entidades
+    │   │   ├── Enums/                      ← 6 enums
+    │   │   └── Exceptions/                 ← AppException + factory
+    │   │
+    │   ├── Application/                    ← Capa de aplicación (servicios, interfaces, DTOs)
+    │   │   ├── Application.csproj
+    │   │   ├── Common/
+    │   │   │   ├── Interfaces/             ← 19 interfaces de repositorio + 22 interfaces de servicio
+    │   │   │   ├── Models/                 ← ~42 DTOs/records
+    │   │   │   ├── Mapping/                ← 10 mappers estáticos
+    │   │   │   ├── Helpers/                ← SlugHelper, Guard
+    │   │   │   └── Authorization/          ← RolePermissions
+    │   │   └── Features/                   ← 17 servicios de aplicación
+    │   │
+    │   ├── Infrastructure/                 ← Capa de infraestructura (EF Core, PayPal, servicios)
+    │   │   ├── Infrastructure.csproj
+    │   │   ├── Persistence/
+    │   │   │   ├── ApplicationDbContext.cs
+    │   │   │   ├── Configurations/         ← 32 configuraciones Fluent API
+    │   │   │   ├── Repositories/           ← 19 repositorios
+    │   │   │   └── DataSeeder.cs
+    │   │   ├── Services/                   ← PasswordService, TokenService, EmailService, SendGrid
+    │   │   ├── Adapters/
+    │   │   │   ├── PayPal/                 ← PayPalOptions, Auth Handler, Payment Provider, Signature Validator
+    │   │   │   └── Payments/              ← MockPaymentProvider
+    │   │   └── Migrations/                 ← Migraciones EF Core
+    │   │
+    │   └── Api/                            ← Capa de presentación (controllers, middleware)
+    │       ├── Api.csproj
+    │       ├── Program.cs                  ← ~30 líneas — delega en Extensions/
+    │       ├── appsettings.json
+    │       ├── Extensions/                 ← 8 clases de configuración (RateLimit, CORS, DB, Auth, etc.)
+    │       ├── Controllers/                ← 19 controllers
+    │       ├── Middleware/                  ← ErrorHandlingMiddleware
+    │       ├── Authorization/               ← PermissionHandler, PermissionRequirement, RequirePermissionAttribute
+    │       ├── Helpers/                     ← AuthHelper, CookieHelper, TokenHelper
+    │       ├── Validators/                  ← 29 FluentValidation validators
+    │       └── http/                        ← Archivos .http para pruebas
+    │
+    ├── Tests/
+    │   └── Api.Tests/
+    │       ├── Api.Tests.csproj
+    │       ├── Controllers/                ← Tests de controllers
+    │       ├── Authorization/              ← Tests de permisos
+    │       ├── Middleware/                 ← Tests de middleware
+    │       ├── PayPal/                     ← Tests de PayPal
+    │       ├── Helpers/                    ← Tests de helpers
+    │       └── TestInfrastructure/         ← Base classes
 </code></pre>
 <h3 id="patrón-clean-architecture"><a class="header" href="#patrón-clean-architecture">Patrón Clean Architecture</a></h3>
 <pre><code>Domain       → Entidades, Enums, Exceptions (sin dependencias)
@@ -389,294 +391,496 @@ Api          → Controllers, Middleware, Validators (orquesta todo)
 <h2 id="6-appsettingsjson"><a class="header" href="#6-appsettingsjson">6. <code>appsettings.json</code></a></h2>
 <pre><code class="language-json">{
   "ConnectionStrings": {
-    "DefaultConnection": "Host=localhost;Database=cursinet_db;Username=dev-espada;Password=espadaPOSTGRES"
+    "DefaultConnection": ""
   },
   "Jwt": {
-    "Secret": "your-super-secret-jwt-key-min-32-chars-long",
-    "RefreshSecret": "your-super-secret-refresh-key-min-32-chars",
+    "Secret": "",
+    "RefreshSecret": "",
     "AccessTokenExpiry": "00:15:00",
     "RefreshTokenExpiry": "7.00:00:00",
     "Issuer": "cursinet-api",
     "Audience": "cursinet-app"
   },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Warning",
+      "Cursinet.Infrastructure.Adapters.PayPal": "Debug"
+    }
+  },
+  "SendGrid": {
+    "FromEmail": "noreply@cursinet.com",
+    "FromName": "Cursinet",
+    "BaseUrl": "https://cursinet.vercel.app"
+  },
   "PayPal": {
-    "Enabled": false,
+    "Enabled": true,
     "IsSandbox": true,
     "BaseUrl": "https://api-m.sandbox.paypal.com",
     "ClientId": "",
     "ClientSecret": "",
-    "WebhookId": "",
-    "PlanIds": {
-      "Monthly": "",
-      "Yearly": "",
-      "Lifetime": ""
-    }
+    "WebhookId": ""
   }
 }
 </code></pre>
 <p><strong>Secciones:</strong></p>
 <ul>
-<li><code>ConnectionStrings.DefaultConnection</code> — Cadena de conexión PostgreSQL</li>
+<li><code>ConnectionStrings.DefaultConnection</code> — Cadena de conexión PostgreSQL (se configura via <code>dotnet user-secrets</code> o variable de entorno)</li>
 <li><code>Jwt</code> — Configuración JWT (secretos, expiración, issuer, audience)</li>
-<li><code>PayPal</code> — Configuración PayPal (sandbox/producción, credenciales, webhook, planes)</li>
+<li><code>Logging</code> — Niveles de log; PayPal en Debug para tracking de integración</li>
+<li><code>SendGrid</code> — Configuración de email transaccional en producción</li>
+<li><code>PayPal</code> — Configuración PayPal (sandbox/producción, credenciales, webhook)</li>
 </ul>
+<h2 id="61-secret-vars-con-net"><a class="header" href="#61-secret-vars-con-net">6.1 <code>Secret vars con .NET</code></a></h2>
+<p>Para poder ocultar las variables de appsettings al igual de que como se hace con un .env, usamos</p>
+<p>src/Api</p>
+<pre><code class="language-bash">dotnet user-secrets "clave" "valor"
+</code></pre>
+<p>Para poder listas los secrets:</p>
+<p>src/Api</p>
+<pre><code class="language-bash">dotnet user-secrets list
+</code></pre>
 <hr>
-<h2 id="7-programcs"><a class="header" href="#7-programcs">7. <code>Program.cs</code></a></h2>
+<h2 id="7-programcs--punto-de-entrada"><a class="header" href="#7-programcs--punto-de-entrada">7. <code>Program.cs</code> — Punto de entrada</a></h2>
+<p>El <code>Program.cs</code> original (monolítico, ~280 líneas) fue refactorizado en <strong>8 clases de extensión</strong> dentro de la carpeta <code>Extensions/</code>, cada una responsable de un área específica de configuración. Esto mantiene el punto de entrada limpio, facilita los tests unitarios y permite localizar configuraciones sin escrolear un archivo enorme.</p>
 <p><strong>Archivo completo:</strong></p>
-<pre><code class="language-csharp">using System.Text;
-using Microsoft.AspNetCore.RateLimiting;
-using Cursinet.Api.Authorization;
-using Cursinet.Api.Helpers;
-using Cursinet.Application.Common.Interfaces;
-using Cursinet.Application.Features.Categories;
+<pre><code class="language-csharp">using System.Text.Json.Serialization;
+using Cursinet.Api.Extensions;
 using FluentValidation;
-using Cursinet.Application.Features.Auth;
-using Cursinet.Application.Features.Courses;
-using Cursinet.Application.Features.Enrollments;
-using Cursinet.Application.Features.Modules;
-using Cursinet.Application.Features.Lessons;
-using Cursinet.Application.Features.Reviews;
-using Cursinet.Application.Features.Certificates;
-using Cursinet.Application.Features.Payments;
-using Cursinet.Application.Features.Users;
-using Cursinet.Application.Features.Analytics;
-using Cursinet.Application.Features.Bookmarks;
-using Cursinet.Application.Features.Comments;
-using Cursinet.Application.Features.LessonNotes;
-using Cursinet.Application.Features.NotificationPreferences;
-using Cursinet.Application.Features.Subscriptions;
-using Cursinet.Domain.Enums;
-using Cursinet.Api.Middleware;
-using Cursinet.Infrastructure.Persistence;
-using Cursinet.Infrastructure.Persistence.Repositories;
-using Cursinet.Infrastructure.Adapters.Payments;
-using Cursinet.Infrastructure.Adapters.PayPal;
-using Cursinet.Infrastructure.Services;
-using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
-</code></pre>
-<p><strong>Línea 1-31:</strong> Importaciones de todos los namespaces necesarios.</p>
-<pre><code class="language-csharp">builder.Services.AddRateLimiter(options =&gt;
-{
-    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
-    options.AddFixedWindowLimiter("Auth", opt =&gt;
-    {
-        opt.PermitLimit = 10;
-        opt.Window = TimeSpan.FromMinutes(1);
-        opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
-        opt.QueueLimit = 0;
-    });
-});
-</code></pre>
-<p><strong>Rate Limiter:</strong> Limita a 10 requests por minuto para rutas de auth (named policy “Auth”).</p>
-<pre><code class="language-csharp">builder.Services.AddCors(options =&gt;
-{
-    options.AddDefaultPolicy(policy =&gt;
-    {
-        policy.WithOrigins("http://localhost:3000")
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials();
-    });
-});
-</code></pre>
-<p><strong>CORS:</strong> Permite requests desde <code>http://localhost:3000</code> con cookies.</p>
-<pre><code class="language-csharp">builder.Services.AddControllers()
+
+builder.Services.AddControllers()
     .AddJsonOptions(options =&gt;
     {
-        options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
-</code></pre>
-<p><strong>JSON:</strong> Convierte enums a strings en lugar de números.</p>
-<pre><code class="language-csharp">builder.Services.AddOpenApi();
+
+builder.Services.AddOpenApi();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddValidatorsFromAssemblyContaining&lt;Program&gt;();
-</code></pre>
-<ul>
-<li><code>AddOpenApi()</code> — Swagger/OpenAPI</li>
-<li><code>AddHttpContextAccessor()</code> — Acceso a HttpContext desde clases sin herencia</li>
-<li><code>AddValidatorsFromAssemblyContaining&lt;Program&gt;()</code> — Registra todos los FluentValidation validators</li>
-</ul>
-<pre><code class="language-csharp">builder.Services.AddScoped&lt;CookieHelper&gt;();
-builder.Services.AddScoped&lt;TokenHelper&gt;();
-</code></pre>
-<p><strong>Helpers:</strong> Registra helpers de cookies y tokens.</p>
-<pre><code class="language-csharp">var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? "Host=localhost;Database=cursinet_db;Username=dev-espada;Password=espadaPOSTGRES";
 
-builder.Services.AddDbContext&lt;ApplicationDbContext&gt;(options =&gt;
-    options.UseNpgsql(connectionString, b =&gt; b.MigrationsAssembly("Infrastructure")));
-</code></pre>
-<p><strong>DbContext:</strong> Configura Entity Framework Core con PostgreSQL. <code>MigrationsAssembly("Infrastructure")</code> indica que las migraciones están en el proyecto Infrastructure.</p>
-<pre><code class="language-csharp">var jwtSecret = builder.Configuration["Jwt:Secret"]
-    ?? throw new InvalidOperationException("JWT Secret is not configured");
-var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "cursinet-api";
-var jwtAudience = builder.Configuration["Jwt:Audience"] ?? "cursinet-app";
-</code></pre>
-<p><strong>JWT Config:</strong> Lee secretos y configuración JWT.</p>
-<pre><code class="language-csharp">builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =&gt;
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)),
-            ValidIssuer = jwtIssuer,
-            ValidAudience = jwtAudience,
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ClockSkew = TimeSpan.Zero,
-        };
-
-        options.Events = new JwtBearerEvents
-        {
-            OnMessageReceived = context =&gt;
-            {
-                var accessToken = context.Request.Cookies["accessToken"];
-                if (!string.IsNullOrEmpty(accessToken))
-                {
-                    context.Token = accessToken;
-                }
-                return Task.CompletedTask;
-            }
-        };
-    });
-</code></pre>
-<p><strong>JWT Bearer Authentication:</strong></p>
-<ul>
-<li>Configura validación de tokens JWT</li>
-<li><code>OnMessageReceived</code>: También lee el token desde la cookie <code>accessToken</code> (además del header Authorization)</li>
-</ul>
-<pre><code class="language-csharp">builder.Services.AddSingleton&lt;IAuthorizationHandler, PermissionHandler&gt;();
-builder.Services.AddAuthorization(options =&gt;
-{
-    foreach (var permission in Permissions.All)
-    {
-        options.AddPolicy(permission, policy =&gt;
-            policy.Requirements.Add(new PermissionRequirement(permission)));
-    }
-});
-</code></pre>
-<p><strong>Authorization RBAC:</strong> Registra una policy por cada permiso del sistema (ej: <code>"courses:create"</code>, <code>"users:read"</code>).</p>
-<pre><code class="language-csharp">// ─── Registro de servicios de aplicación ───
-builder.Services.AddScoped&lt;IAuthService, AuthService&gt;();
-builder.Services.AddScoped&lt;ICategoryService, CategoryService&gt;();
-builder.Services.AddScoped&lt;ICourseService, CourseService&gt;();
-builder.Services.AddScoped&lt;IEnrollmentService, EnrollmentService&gt;();
-builder.Services.AddScoped&lt;IModuleService, ModuleService&gt;();
-builder.Services.AddScoped&lt;ILessonService, LessonService&gt;();
-builder.Services.AddScoped&lt;IReviewService, ReviewService&gt;();
-builder.Services.AddScoped&lt;ICertificateService, CertificateService&gt;();
-builder.Services.AddScoped&lt;IPaymentService, PaymentService&gt;();
-builder.Services.AddScoped&lt;IAnalyticsService, AnalyticsService&gt;();
-builder.Services.AddScoped&lt;IPasswordService, PasswordService&gt;();
-builder.Services.AddScoped&lt;ITokenService, TokenService&gt;();
-builder.Services.AddScoped&lt;IEmailService, DevEmailService&gt;();
-builder.Services.AddScoped&lt;IBookmarkService, BookmarkService&gt;();
-builder.Services.AddScoped&lt;IUserCrudService, UserCrudService&gt;();
-builder.Services.AddScoped&lt;ICommentService, CommentService&gt;();
-builder.Services.AddScoped&lt;ILessonNoteService, LessonNoteService&gt;();
-builder.Services.AddScoped&lt;INotificationPreferenceService, NotificationPreferenceService&gt;();
-builder.Services.AddScoped&lt;ISubscriptionService, SubscriptionService&gt;();
-
-// ─── Registro de repositorios ───
-builder.Services.AddScoped&lt;IUserRepository, UserRepository&gt;();
-builder.Services.AddScoped&lt;ICourseRepository, CourseRepository&gt;();
-builder.Services.AddScoped&lt;IEnrollmentRepository, EnrollmentRepository&gt;();
-builder.Services.AddScoped&lt;IModuleRepository, ModuleRepository&gt;();
-builder.Services.AddScoped&lt;ILessonRepository, LessonRepository&gt;();
-builder.Services.AddScoped&lt;ILessonProgressRepository, LessonProgressRepository&gt;();
-builder.Services.AddScoped&lt;ICategoryRepository, CategoryRepository&gt;();
-builder.Services.AddScoped&lt;IAccountRepository, AccountRepository&gt;();
-builder.Services.AddScoped&lt;ISessionRepository, SessionRepository&gt;();
-builder.Services.AddScoped&lt;IVerificationRepository, VerificationRepository&gt;();
-builder.Services.AddScoped&lt;IReviewRepository, ReviewRepository&gt;();
-builder.Services.AddScoped&lt;ICertificateRepository, CertificateRepository&gt;();
-builder.Services.AddScoped&lt;IPaymentRepository, PaymentRepository&gt;();
-builder.Services.AddScoped&lt;ICommentRepository, CommentRepository&gt;();
-builder.Services.AddScoped&lt;ILessonNoteRepository, LessonNoteRepository&gt;();
-builder.Services.AddScoped&lt;IUserNotificationPreferenceRepository, UserNotificationPreferenceRepository&gt;();
-builder.Services.AddScoped&lt;ISubscriptionRepository, SubscriptionRepository&gt;();
-builder.Services.AddScoped&lt;IBookmarkRepository, BookmarkRepository&gt;();
-</code></pre>
-<p><strong>DI Registrations:</strong> Registra todos los servicios y repositorios con <code>AddScoped</code> (una instancia por request HTTP).</p>
-<pre><code class="language-csharp">// ─── PayPal adapter wiring ───
-builder.Services.AddMemoryCache();
-builder.Services.AddTransient&lt;PayPalAuthenticationHandler&gt;();
-builder.Services.Configure&lt;PayPalOptions&gt;(builder.Configuration.GetSection(PayPalOptions.SectionName));
-
-builder.Services.AddHttpClient&lt;PayPalWebhookSignatureValidator&gt;()
-    .AddHttpMessageHandler&lt;PayPalAuthenticationHandler&gt;()
-    .ConfigureHttpClient((sp, c) =&gt;
-    {
-        var opts = sp.GetRequiredService&lt;IOptions&lt;PayPalOptions&gt;&gt;().Value;
-        c.BaseAddress = new Uri(opts.BaseUrl);
-        c.Timeout = TimeSpan.FromSeconds(15);
-    });
-builder.Services.AddScoped&lt;IPayPalWebhookSignatureValidator&gt;(sp =&gt;
-    sp.GetRequiredService&lt;PayPalWebhookSignatureValidator&gt;());
-builder.Services.AddScoped&lt;IPayPalWebhookEventRepository, PayPalWebhookEventRepository&gt;();
-
-var paypalEnabled = builder.Configuration.GetSection("PayPal").GetValue&lt;bool&gt;("Enabled");
-if (paypalEnabled)
-{
-    builder.Services.AddHttpClient&lt;PayPalPaymentProvider&gt;()
-        .AddHttpMessageHandler&lt;PayPalAuthenticationHandler&gt;()
-        .ConfigureHttpClient((sp, c) =&gt;
-        {
-            var opts = sp.GetRequiredService&lt;IOptions&lt;PayPalOptions&gt;&gt;().Value;
-            c.BaseAddress = new Uri(opts.BaseUrl);
-            c.Timeout = TimeSpan.FromSeconds(30);
-        });
-    builder.Services.AddScoped&lt;IPaymentProvider, PayPalPaymentProvider&gt;();
-}
-else
-{
-    builder.Services.AddScoped&lt;IPaymentProvider, MockPaymentProvider&gt;();
-}
-</code></pre>
-<p><strong>PayPal Wiring:</strong> Configura los HttpClients tipados con el authentication handler. Si <code>PayPal:Enabled</code> es false, usa <code>MockPaymentProvider</code>.</p>
-<pre><code class="language-csharp">builder.Services.AddScoped&lt;DataSeeder&gt;();
+builder.Services.AddRateLimiterConfiguration();
+builder.Services.AddCorsConfiguration(builder.Configuration);
+builder.Services.AddDatabase(builder.Configuration);
+builder.Services.AddAuthenticationConfiguration(builder.Configuration);
+builder.Services.AddAuthorizationConfiguration();
+builder.Services.AddApplicationServices(builder.Configuration);
+builder.Services.AddPayPal(builder.Configuration);
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    var seeder = scope.ServiceProvider.GetRequiredService&lt;DataSeeder&gt;();
-    await seeder.SeedAsync();
-}
-</code></pre>
-<p><strong>Seed:</strong> Ejecuta el DataSeeder al iniciar la aplicación.</p>
-<pre><code class="language-csharp">if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
+await app.ConfigureMiddlewareAsync();
 
-app.UseHttpsRedirection();
-app.UseCors();
-app.UseMiddleware&lt;ErrorHandlingMiddleware&gt;();
-app.UseAuthentication();
-app.UseAuthorization();
-app.MapControllers();
-app.MapGet("/health", () =&gt; "ok");
 app.Run();
 </code></pre>
-<p><strong>Middleware Pipeline:</strong></p>
+<p><strong>Línea por línea:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Línea</th><th>Propósito</th></tr>
+</thead>
+<tbody>
+<tr><td><code>AddRateLimiterConfiguration()</code></td><td>Rate limiter para endpoints de auth</td></tr>
+<tr><td><code>AddCorsConfiguration(config)</code></td><td>CORS configurable desde <code>Cors:AllowedOrigins</code></td></tr>
+<tr><td><code>AddDatabase(config)</code></td><td>DbContext + PostgreSQL</td></tr>
+<tr><td><code>AddAuthenticationConfiguration(config)</code></td><td>JWT Bearer + cookie reader</td></tr>
+<tr><td><code>AddAuthorizationConfiguration()</code></td><td>RBAC policies por permiso</td></tr>
+<tr><td><code>AddApplicationServices(config)</code></td><td>DI de servicios, repos, helpers, email, seeder</td></tr>
+<tr><td><code>AddPayPal(config)</code></td><td>PayPal adapter + MockPaymentProvider toggle</td></tr>
+<tr><td><code>ConfigureMiddlewareAsync()</code></td><td>Pipeline completo: migrate, seed, cors, auth, controllers</td></tr>
+</tbody>
+</table>
+</div>
+<p>Cada una de estas llamadas delega en una clase de extensión separada, documentada a continuación.</p>
+<hr>
+<h3 id="71-ratelimitextensionscs"><a class="header" href="#71-ratelimitextensionscs">7.1 <code>RateLimitExtensions.cs</code></a></h3>
+<pre><code class="language-csharp">using Microsoft.AspNetCore.RateLimiting;
+
+namespace Cursinet.Api.Extensions;
+
+public static class RateLimitExtensions
+{
+    public static IServiceCollection AddRateLimiterConfiguration(this IServiceCollection services)
+    {
+        services.AddRateLimiter(options =&gt;
+        {
+            options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+            options.AddFixedWindowLimiter("Auth", opt =&gt;
+            {
+                opt.PermitLimit = 10;
+                opt.Window = TimeSpan.FromMinutes(1);
+                opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+                opt.QueueLimit = 0;
+            });
+        });
+
+        return services;
+    }
+}
+</code></pre>
+<p><strong>Propósito:</strong> Limita a 10 requests por minuto en rutas de autenticación (named policy <code>"Auth"</code>). Previene ataques de fuerza bruta.</p>
+<hr>
+<h3 id="72-corsextensionscs"><a class="header" href="#72-corsextensionscs">7.2 <code>CorsExtensions.cs</code></a></h3>
+<pre><code class="language-csharp">using Microsoft.Extensions.Options;
+
+namespace Cursinet.Api.Extensions;
+
+public static class CorsExtensions
+{
+    public static IServiceCollection AddCorsConfiguration(this IServiceCollection services, IConfiguration configuration)
+    {
+        var allowedOrigins = configuration.GetSection("Cors:AllowedOrigins")
+            .Get&lt;string[]&gt;()
+            ?? ["http://localhost:3000", "http://localhost:3006"];
+
+        services.AddCors(options =&gt;
+        {
+            options.AddDefaultPolicy(policy =&gt;
+            {
+                policy.WithOrigins(allowedOrigins)
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+            });
+        });
+
+        return services;
+    }
+}
+</code></pre>
+<p><strong>Propósito:</strong> Configura CORS leyendo los orígenes permitidos desde <code>Cors:AllowedOrigins</code> en la configuración. Si no está configurado, permite <code>localhost:3000</code> (desarrollo) y <code>localhost:3006</code> (Docker). Soporta múltiples entornos sin hardcodear.</p>
+<hr>
+<h3 id="73-databaseextensionscs"><a class="header" href="#73-databaseextensionscs">7.3 <code>DatabaseExtensions.cs</code></a></h3>
+<pre><code class="language-csharp">using Cursinet.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+
+namespace Cursinet.Api.Extensions;
+
+public static class DatabaseExtensions
+{
+    public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
+    {
+        var connectionString = configuration.GetConnectionString("DefaultConnection")
+            ?? throw new InvalidOperationException(
+                "DefaultConnection string is not configured. Set it in appsettings.json, user secrets, or environment variables.");
+
+        services.AddDbContext&lt;ApplicationDbContext&gt;(options =&gt;
+            options.UseNpgsql(connectionString, b =&gt; b.MigrationsAssembly("Infrastructure")));
+
+        return services;
+    }
+}
+</code></pre>
+<p><strong>Propósito:</strong> Configura EF Core con PostgreSQL. Lanza <code>InvalidOperationException</code> si no hay connection string configurada (no usa fallback inseguro). Las migraciones se almacenan en el proyecto <code>Infrastructure</code>.</p>
+<hr>
+<h3 id="74-authenticationextensionscs"><a class="header" href="#74-authenticationextensionscs">7.4 <code>AuthenticationExtensions.cs</code></a></h3>
+<pre><code class="language-csharp">using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+
+namespace Cursinet.Api.Extensions;
+
+public static class AuthenticationExtensions
+{
+    public static IServiceCollection AddAuthenticationConfiguration(this IServiceCollection services, IConfiguration configuration)
+    {
+        var jwtSecret = configuration["Jwt:Secret"]
+            ?? throw new InvalidOperationException("JWT Secret is not configured");
+
+        var jwtIssuer = configuration["Jwt:Issuer"] ?? "cursinet-api";
+        var jwtAudience = configuration["Jwt:Audience"] ?? "cursinet-app";
+
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =&gt;
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)),
+                    ValidIssuer = jwtIssuer,
+                    ValidAudience = jwtAudience,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero,
+                };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =&gt;
+                    {
+                        var accessToken = context.Request.Cookies["accessToken"];
+                        if (!string.IsNullOrEmpty(accessToken))
+                        {
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+            });
+
+        return services;
+    }
+}
+</code></pre>
+<p><strong>Propósito:</strong> Configura JWT Bearer authentication. El token se lee tanto del header <code>Authorization</code> como de la cookie <code>accessToken</code> (para apps SPA que usan cookies httpOnly). <code>ClockSkew = TimeSpan.Zero</code> elimina el tolerancia por defecto de 5 minutos.</p>
+<hr>
+<h3 id="75-authorizationextensionscs"><a class="header" href="#75-authorizationextensionscs">7.5 <code>AuthorizationExtensions.cs</code></a></h3>
+<pre><code class="language-csharp">using Cursinet.Api.Authorization;
+using Cursinet.Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
+
+namespace Cursinet.Api.Extensions;
+
+public static class AuthorizationExtensions
+{
+    public static IServiceCollection AddAuthorizationConfiguration(this IServiceCollection services)
+    {
+        services.AddSingleton&lt;IAuthorizationHandler, PermissionHandler&gt;();
+        services.AddAuthorization(options =&gt;
+        {
+            foreach (var permission in Permissions.All)
+            {
+                options.AddPolicy(permission, policy =&gt;
+                    policy.Requirements.Add(new PermissionRequirement(permission)));
+            }
+        });
+
+        return services;
+    }
+}
+</code></pre>
+<p><strong>Propósito:</strong> Registra el <code>PermissionHandler</code> singleton y crea una policy por cada permiso definido en <code>Permissions.All</code>. Cada policy verifica que el usuario tenga ese permiso específico en su rol.</p>
+<hr>
+<h3 id="76-dependencyinjectionextensionscs"><a class="header" href="#76-dependencyinjectionextensionscs">7.6 <code>DependencyInjectionExtensions.cs</code></a></h3>
+<pre><code class="language-csharp">using Cursinet.Infrastructure.Services;
+using Cursinet.Application.Common.Interfaces;
+using Cursinet.Application.Features.Analytics;
+using Cursinet.Application.Features.Auth;
+using Cursinet.Application.Features.Bookmarks;
+using Cursinet.Application.Features.Categories;
+using Cursinet.Application.Features.Certificates;
+using Cursinet.Application.Features.Comments;
+using Cursinet.Application.Features.Courses;
+using Cursinet.Application.Features.Enrollments;
+using Cursinet.Application.Features.Instructor;
+using Cursinet.Application.Features.LessonNotes;
+using Cursinet.Application.Features.Lessons;
+using Cursinet.Application.Features.Modules;
+using Cursinet.Application.Features.NotificationPreferences;
+using Cursinet.Application.Features.Payments;
+using Cursinet.Application.Features.Reviews;
+using Cursinet.Application.Features.Subscriptions;
+using Cursinet.Application.Features.Users;
+using Cursinet.Api.Helpers;
+using Cursinet.Infrastructure.Persistence;
+using Cursinet.Infrastructure.Persistence.Repositories;
+
+namespace Cursinet.Api.Extensions;
+
+public static class DependencyInjectionExtensions
+{
+    public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
+    {
+        // Helpers
+        services.AddScoped&lt;CookieHelper&gt;();
+        services.AddScoped&lt;TokenHelper&gt;();
+
+        // SendGrid options
+        services.Configure&lt;SendGridOptions&gt;(
+            configuration.GetSection(SendGridOptions.SectionName));
+
+        // Services
+        services.AddScoped&lt;IAuthService, AuthService&gt;();
+        services.AddScoped&lt;ICategoryService, CategoryService&gt;();
+        services.AddScoped&lt;ICourseService, CourseService&gt;();
+        services.AddScoped&lt;IEnrollmentService, EnrollmentService&gt;();
+        services.AddScoped&lt;IModuleService, ModuleService&gt;();
+        services.AddScoped&lt;ILessonService, LessonService&gt;();
+        services.AddScoped&lt;IReviewService, ReviewService&gt;();
+        services.AddScoped&lt;ICertificateService, CertificateService&gt;();
+        services.AddScoped&lt;IPaymentService, PaymentService&gt;();
+        services.AddScoped&lt;IAnalyticsService, AnalyticsService&gt;();
+        services.AddScoped&lt;IInstructorDashboardService, InstructorDashboardService&gt;();
+        services.AddScoped&lt;IPasswordService, PasswordService&gt;();
+        services.AddScoped&lt;ITokenService, TokenService&gt;();
+        services.AddScoped&lt;IBookmarkService, BookmarkService&gt;();
+        services.AddScoped&lt;ICommentService, CommentService&gt;();
+        services.AddScoped&lt;ILessonNoteService, LessonNoteService&gt;();
+        services.AddScoped&lt;INotificationPreferenceService, NotificationPreferenceService&gt;();
+        services.AddScoped&lt;ISubscriptionService, SubscriptionService&gt;();
+        services.AddScoped&lt;IUserCrudService, UserCrudService&gt;();
+
+        // Email service: SendGrid si hay API key, DevEmailService como fallback
+        var sendGridApiKey = configuration["SendGrid:ApiKey"];
+        if (!string.IsNullOrEmpty(sendGridApiKey))
+        {
+            services.AddScoped&lt;IEmailService, SendGridEmailService&gt;();
+        }
+        else
+        {
+            services.AddScoped&lt;IEmailService, DevEmailService&gt;();
+        }
+
+        // Repositories
+        services.AddScoped&lt;IUserRepository, UserRepository&gt;();
+        services.AddScoped&lt;ICourseRepository, CourseRepository&gt;();
+        services.AddScoped&lt;IEnrollmentRepository, EnrollmentRepository&gt;();
+        services.AddScoped&lt;IModuleRepository, ModuleRepository&gt;();
+        services.AddScoped&lt;ILessonRepository, LessonRepository&gt;();
+        services.AddScoped&lt;ILessonProgressRepository, LessonProgressRepository&gt;();
+        services.AddScoped&lt;ICategoryRepository, CategoryRepository&gt;();
+        services.AddScoped&lt;IAccountRepository, AccountRepository&gt;();
+        services.AddScoped&lt;ISessionRepository, SessionRepository&gt;();
+        services.AddScoped&lt;IVerificationRepository, VerificationRepository&gt;();
+        services.AddScoped&lt;IReviewRepository, ReviewRepository&gt;();
+        services.AddScoped&lt;ICertificateRepository, CertificateRepository&gt;();
+        services.AddScoped&lt;IPaymentRepository, PaymentRepository&gt;();
+        services.AddScoped&lt;ICommentRepository, CommentRepository&gt;();
+        services.AddScoped&lt;ILessonNoteRepository, LessonNoteRepository&gt;();
+        services.AddScoped&lt;IUserNotificationPreferenceRepository, UserNotificationPreferenceRepository&gt;();
+        services.AddScoped&lt;ISubscriptionRepository, SubscriptionRepository&gt;();
+        services.AddScoped&lt;IBookmarkRepository, BookmarkRepository&gt;();
+
+        // Data seeder
+        services.AddScoped&lt;DataSeeder&gt;();
+
+        return services;
+    }
+}
+</code></pre>
+<p><strong>Propósito:</strong> Registro centralizado de dependencias. Incluye:</p>
+<ul>
+<li><strong>Helpers</strong> — CookieHelper, TokenHelper (para manejo de tokens en cookies)</li>
+<li><strong>Config</strong> — SendGridOptions desde <code>SendGrid</code> section</li>
+<li><strong>17 servicios</strong> de aplicación (incluye <code>InstructorDashboardService</code>)</li>
+<li><strong>Email condicional</strong> — <code>SendGridEmailService</code> si hay API key configurada, <code>DevEmailService</code> como fallback</li>
+<li><strong>19 repositorios</strong> (incluye Account, Session, Verification)</li>
+<li><strong>DataSeeder</strong> para datos iniciales</li>
+</ul>
+<hr>
+<h3 id="77-paypalextensionscs"><a class="header" href="#77-paypalextensionscs">7.7 <code>PayPalExtensions.cs</code></a></h3>
+<pre><code class="language-csharp">using Cursinet.Application.Common.Interfaces;
+using Cursinet.Infrastructure.Adapters.Payments;
+using Cursinet.Infrastructure.Adapters.PayPal;
+using Cursinet.Infrastructure.Persistence.Repositories;
+using Microsoft.Extensions.Options;
+
+namespace Cursinet.Api.Extensions;
+
+public static class PayPalExtensions
+{
+    public static IServiceCollection AddPayPal(this IServiceCollection services, IConfiguration configuration)
+    {
+        // PayPal adapter wiring. Token cache + auth handler + signature-validating HttpClient are registered
+        // up-front so the typed clients for PayPalPaymentProvider and PayPalWebhookSignatureValidator can
+        // attach the handler in their respective pipelines. IPaymentProvider resolution switches between
+        // the live PayPal adapter and MockPaymentProvider based on the PayPal:Enabled config toggle — no
+        // branching lives inside the application services.
+        services.AddMemoryCache();
+        services.AddTransient&lt;PayPalAuthenticationHandler&gt;();
+        services.Configure&lt;PayPalOptions&gt;(configuration.GetSection(PayPalOptions.SectionName));
+
+        services.AddHttpClient&lt;PayPalWebhookSignatureValidator&gt;()
+            .AddHttpMessageHandler&lt;PayPalAuthenticationHandler&gt;()
+            .ConfigureHttpClient((sp, c) =&gt;
+            {
+                var opts = sp.GetRequiredService&lt;IOptions&lt;PayPalOptions&gt;&gt;().Value;
+                c.BaseAddress = new Uri(opts.BaseUrl);
+                c.Timeout = TimeSpan.FromSeconds(15);
+            });
+        services.AddScoped&lt;IPayPalWebhookSignatureValidator&gt;(sp =&gt;
+            sp.GetRequiredService&lt;PayPalWebhookSignatureValidator&gt;());
+        services.AddScoped&lt;IPayPalWebhookEventRepository, PayPalWebhookEventRepository&gt;();
+
+        var paypalEnabled = configuration.GetSection("PayPal").GetValue&lt;bool&gt;("Enabled");
+        if (paypalEnabled)
+        {
+            services.AddHttpClient&lt;PayPalPaymentProvider&gt;()
+                .AddHttpMessageHandler&lt;PayPalAuthenticationHandler&gt;()
+                .ConfigureHttpClient((sp, c) =&gt;
+                {
+                    var opts = sp.GetRequiredService&lt;IOptions&lt;PayPalOptions&gt;&gt;().Value;
+                    c.BaseAddress = new Uri(opts.BaseUrl);
+                    c.Timeout = TimeSpan.FromSeconds(30);
+                });
+            // IPaymentProvider resuelve a través del typed client registrado arriba
+            // (AddHttpClient&lt;PayPalPaymentProvider&gt;) para que el HttpClient inyectado tenga el
+            // PayPalAuthenticationHandler en su pipeline.
+            services.AddScoped&lt;IPaymentProvider&gt;(sp =&gt;
+                sp.GetRequiredService&lt;PayPalPaymentProvider&gt;());
+        }
+        else
+        {
+            services.AddScoped&lt;IPaymentProvider, MockPaymentProvider&gt;();
+        }
+
+        return services;
+    }
+}
+</code></pre>
+<p><strong>Propósito:</strong> Wiring completo del adapter de PayPal:</p>
+<ul>
+<li><code>AddMemoryCache()</code> — Cache para tokens OAuth2</li>
+<li><code>PayPalAuthenticationHandler</code> — DelegatingHandler que obtiene y cachea tokens OAuth2</li>
+<li><code>PayPalWebhookSignatureValidator</code> — Valida firmas de webhook contra PayPal</li>
+<li><code>PayPalPaymentProvider</code> — Implementación live de <code>IPaymentProvider</code> (solo si <code>PayPal:Enabled = true</code>)</li>
+<li><code>MockPaymentProvider</code> — Implementación de desarrollo (fallback)</li>
+<li><code>IPayPalWebhookEventRepository</code> — Outbox de eventos PayPal para idempotencia</li>
+</ul>
+<hr>
+<h3 id="78-middlewareextensionscs"><a class="header" href="#78-middlewareextensionscs">7.8 <code>MiddlewareExtensions.cs</code></a></h3>
+<pre><code class="language-csharp">using Cursinet.Api.Middleware;
+using Cursinet.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+
+namespace Cursinet.Api.Extensions;
+
+public static class MiddlewareExtensions
+{
+    public static async Task&lt;WebApplication&gt; ConfigureMiddlewareAsync(this WebApplication app)
+    {
+        using (var scope = app.Services.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService&lt;ApplicationDbContext&gt;();
+
+            // Aplica migraciones pendientes (crea las tablas si no existen)
+            await context.Database.MigrateAsync();
+
+            var seeder = scope.ServiceProvider.GetRequiredService&lt;DataSeeder&gt;();
+            await seeder.SeedAsync();
+        }
+
+        if (app.Environment.IsDevelopment())
+        {
+            app.MapOpenApi();
+        }
+
+        app.UseHttpsRedirection();
+        app.UseCors();
+        app.UseMiddleware&lt;ErrorHandlingMiddleware&gt;();
+        app.UseAuthentication();
+        app.UseAuthorization();
+        app.MapControllers();
+        app.MapGet("/health", () =&gt; "ok");
+
+        return app;
+    }
+}
+</code></pre>
+<p><strong>Propósito:</strong> Pipeline completo de middleware:</p>
 <ol>
-<li><code>MapOpenApi()</code> — Swagger (solo development)</li>
-<li><code>UseHttpsRedirection()</code> — Redirección HTTPS</li>
-<li><code>UseCors()</code> — CORS</li>
-<li><code>UseMiddleware&lt;ErrorHandlingMiddleware&gt;()</code> — Error handler global</li>
-<li><code>UseAuthentication()</code> / <code>UseAuthorization()</code> — Auth</li>
-<li><code>MapControllers()</code> — Rutas de controllers</li>
-<li><code>MapGet("/health", () =&gt; "ok")</code> — Health check</li>
-<li><code>Run()</code> — Inicia el servidor</li>
+<li><strong>Auto-migrate</strong> — <code>MigrateAsync()</code> antes de seed (crea tablas automáticamente al iniciar)</li>
+<li><strong>Seed</strong> — Datos iniciales de desarrollo</li>
+<li><strong>Swagger</strong> — Solo en development</li>
+<li><strong>HttpsRedirection</strong> — Seguridad</li>
+<li><strong>CORS</strong> — Política configurada</li>
+<li><strong>ErrorHandlingMiddleware</strong> — Manejador global de errores</li>
+<li><strong>Auth</strong> — Authentication + Authorization</li>
+<li><strong>Controllers</strong> — Enruta requests</li>
+<li><strong>Health check</strong> — <code>GET /health</code> retorna <code>"ok"</code></li>
+<li><strong>Run</strong> — Inicia el servidor</li>
 </ol>
 <hr>
 <h2 id="8-capa-domain--entidades"><a class="header" href="#8-capa-domain--entidades">8. Capa Domain — Entidades</a></h2>
@@ -3482,39 +3686,114 @@ public class DevEmailService : IEmailService
 <p>En desarrollo, los emails solo se loggean a consola. En producción se reemplazaría con SendGrid/Mailgun/SMTP.</p>
 <hr>
 <h2 id="37-capa-infrastructure--paypal-adapter"><a class="header" href="#37-capa-infrastructure--paypal-adapter">37. Capa Infrastructure — PayPal Adapter</a></h2>
+<p>El adapter de PayPal está compuesto por 4 clases que implementan la interfaz <code>IPaymentProvider</code> y sus ayudantes:</p>
+<ol>
+<li><strong><code>PayPalOptions</code></strong> — Configuración vinculada de <code>appsettings.json</code></li>
+<li><strong><code>PayPalAuthenticationHandler</code></strong> — OAuth2 client_credentials con cache + retry</li>
+<li><strong><code>PayPalPaymentProvider</code></strong> — Implementación live de <code>IPaymentProvider</code> (Orders v2 + Billing Subscriptions + Refunds)</li>
+<li><strong><code>PayPalWebhookSignatureValidator</code></strong> — Verificación de firmas de webhook</li>
+<li><strong><code>MockPaymentProvider</code></strong> — Implementación de desarrollo sin red</li>
+</ol>
+<p>Todas dependen del namespace <code>Cursinet.Infrastructure.Adapters.PayPal</code> (excepto <code>MockPaymentProvider</code> que está en <code>Adapters.Payments</code>).</p>
+<hr>
 <h3 id="paypaloptionscs"><a class="header" href="#paypaloptionscs"><code>PayPalOptions.cs</code></a></h3>
-<pre><code class="language-csharp">namespace Cursinet.Infrastructure.Adapters.PayPal;
+<pre><code class="language-csharp">using System.Text.Json.Serialization;
 
+namespace Cursinet.Infrastructure.Adapters.PayPal;
+
+/// &lt;summary&gt;
+/// Configuración de la API REST de PayPal vinculada desde la sección de configuración &lt;c&gt;PayPal&lt;/c&gt;.
+/// &lt;/summary&gt;
 public class PayPalOptions
 {
     public const string SectionName = "PayPal";
+
+    /// &lt;summary&gt;URL base de la API REST de PayPal. Sandbox por defecto; sobrescribir a &lt;c&gt;https://api-m.paypal.com&lt;/c&gt; en producción.&lt;/summary&gt;
     public string BaseUrl { get; set; } = "https://api-m.sandbox.paypal.com";
+
     public string ClientId { get; set; } = string.Empty;
     public string ClientSecret { get; set; } = string.Empty;
+
+    /// &lt;summary&gt;Webhook ID asignado por el dashboard de desarrollador de PayPal. Requerido para verificación de firmas.&lt;/summary&gt;
     public string WebhookId { get; set; } = string.Empty;
+
+    /// &lt;summary&gt;Flag de conveniencia — cuando es true, apunta &lt;see cref="BaseUrl"/&gt; al host de sandbox al iniciar la app.&lt;/summary&gt;
     public bool IsSandbox { get; set; } = true;
+
+    /// &lt;summary&gt;
+    /// Mapping de los valores del enum &lt;c&gt;SubscriptionPlan&lt;/c&gt; (como strings: &lt;c&gt;Monthly&lt;/c&gt;, &lt;c&gt;Yearly&lt;/c&gt;,
+    /// &lt;c&gt;Lifetime&lt;/c&gt;) a los billing-plan ids de PayPal configurados en el merchant dashboard. Poblar
+    /// desde configuración: &lt;c&gt;PayPal:PlanIds:Monthly&lt;/c&gt;, &lt;c&gt;PayPal:PlanIds:Yearly&lt;/c&gt;, etc.
+    /// &lt;/summary&gt;
     public Dictionary&lt;string, string&gt; PlanIds { get; set; } = new(StringComparer.OrdinalIgnoreCase);
 }
 </code></pre>
+<p><strong>Campos clave:</strong></p>
+<ul>
+<li><code>BaseUrl</code> — Sandbox o producción. El <code>PayPalAuthenticationHandler</code> lee de acá.</li>
+<li><code>ClientId</code> / <code>ClientSecret</code> — Credenciales REST App de PayPal (se configuran via <code>dotnet user-secrets</code>).</li>
+<li><code>WebhookId</code> — Necesario para verificar firmas de webhook.</li>
+<li><code>PlanIds</code> — Mapping de planes de suscripción a billing-plan IDs de PayPal.</li>
+</ul>
+<hr>
 <h3 id="paypalauthenticationhandlercs"><a class="header" href="#paypalauthenticationhandlercs"><code>PayPalAuthenticationHandler.cs</code></a></h3>
-<pre><code class="language-csharp">public class PayPalAuthenticationHandler : DelegatingHandler
+<pre><code class="language-csharp">using System.Net;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+
+namespace Cursinet.Infrastructure.Adapters.PayPal;
+
+/// &lt;summary&gt;
+/// &lt;see cref="DelegatingHandler"/&gt; que adjunta un token de acceso Bearer a cada request saliente
+/// de la API REST de PayPal. Obtiene tokens mediante el grant OAuth2 &lt;c&gt;client_credentials&lt;/c&gt; en
+/// &lt;c&gt;/v1/oauth2/token&lt;/c&gt;, los cachea en &lt;see cref="IMemoryCache"/&gt;, y usa un
+/// &lt;see cref="SemaphoreSlim"/&gt; para evitar la estampida de refrescos cuando el cache expira bajo
+/// carga. También implementa un reintento único en 401.
+/// &lt;/summary&gt;
+public class PayPalAuthenticationHandler : DelegatingHandler
 {
     private const string CacheKey = "PayPal:AccessToken";
+    private const int TokenLifetimeSeconds = 32_400; // PayPal access tokens are ~9h.
+    private const int RefreshSkewSeconds = 300;      // Refrescar 5 min antes del expiry real
+    private const int MinimumCacheSeconds = 60;
+    private const int MinimumUsableExpiresIn = RefreshSkewSeconds + MinimumCacheSeconds;
+
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true,
+    };
+
     private readonly IMemoryCache _cache;
     private readonly PayPalOptions _options;
     private readonly ILogger&lt;PayPalAuthenticationHandler&gt; _logger;
     private readonly SemaphoreSlim _refreshLock = new(1, 1);
 
-    // Adquiere token OAuth2 vía client_credentials grant
-    // Cachea con double-checked-locking
-    // Retry automático en 401 (invalida cache, refresca, reenvía)
-
-    protected override async Task&lt;HttpResponseMessage&gt; SendAsync(HttpRequestMessage request, CancellationToken ct)
+    public PayPalAuthenticationHandler(
+        IMemoryCache cache,
+        IOptions&lt;PayPalOptions&gt; options,
+        ILogger&lt;PayPalAuthenticationHandler&gt; logger)
     {
-        var token = await GetOrRefreshTokenAsync(ct);
-        using var firstAttempt = await CloneRequestAsync(request, ct);
+        _cache = cache;
+        _options = options.Value;
+        _logger = logger;
+    }
+
+    protected override async Task&lt;HttpResponseMessage&gt; SendAsync(
+        HttpRequestMessage request,
+        CancellationToken cancellationToken)
+    {
+        var token = await GetOrRefreshTokenAsync(cancellationToken);
+
+        // Clonamos el request antes del primer envío para que el original nunca se consuma
+        using var firstAttempt = await CloneRequestAsync(request, cancellationToken);
         firstAttempt.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        var response = await base.SendAsync(firstAttempt, ct);
+
+        var response = await base.SendAsync(firstAttempt, cancellationToken);
 
         if (response.StatusCode != HttpStatusCode.Unauthorized)
             return response;
@@ -3523,46 +3802,300 @@ public class PayPalOptions
         _logger.LogWarning("PayPal 401; invalidando token y reintentando");
         response.Dispose();
         _cache.Remove(CacheKey);
-        var freshToken = await GetOrRefreshTokenAsync(ct);
-        using var retryAttempt = await CloneRequestAsync(request, ct);
+        var freshToken = await GetOrRefreshTokenAsync(cancellationToken);
+
+        using var retryAttempt = await CloneRequestAsync(request, cancellationToken);
         retryAttempt.Headers.Authorization = new AuthenticationHeaderValue("Bearer", freshToken);
-        return await base.SendAsync(retryAttempt, ct);
+        return await base.SendAsync(retryAttempt, cancellationToken);
     }
 
-    private async Task&lt;(string AccessToken, int? ExpiresIn)&gt; FetchNewTokenAsync(CancellationToken ct)
+    /// &lt;summary&gt;Double-checked-locking token retrieve/refresh.&lt;/summary&gt;
+    private async Task&lt;string&gt; GetOrRefreshTokenAsync(CancellationToken cancellationToken)
     {
-        // POST /v1/oauth2/token con Basic auth (client_id:client_secret)
-        // Retorna access_token + expires_in
+        if (_cache.TryGetValue&lt;string&gt;(CacheKey, out var cached) &amp;&amp; !string.IsNullOrEmpty(cached))
+            return cached;
+
+        await _refreshLock.WaitAsync(cancellationToken);
+        try
+        {
+            if (_cache.TryGetValue&lt;string&gt;(CacheKey, out cached) &amp;&amp; !string.IsNullOrEmpty(cached))
+                return cached;
+
+            var (accessToken, expiresIn) = await FetchNewTokenAsync(cancellationToken);
+            var ttlSeconds = (expiresIn is not null &amp;&amp; expiresIn &gt; MinimumUsableExpiresIn)
+                ? expiresIn.Value - RefreshSkewSeconds
+                : TokenLifetimeSeconds - RefreshSkewSeconds;
+            _cache.Set(CacheKey, accessToken, TimeSpan.FromSeconds(ttlSeconds));
+            return accessToken;
+        }
+        finally
+        {
+            _refreshLock.Release();
+        }
+    }
+
+    private async Task&lt;(string AccessToken, int? ExpiresIn)&gt; FetchNewTokenAsync(CancellationToken cancellationToken)
+    {
+        var authEndpoint = new Uri(new Uri(_options.BaseUrl), "/v1/oauth2/token");
+        var authRequest = new HttpRequestMessage(HttpMethod.Post, authEndpoint)
+        {
+            Content = new FormUrlEncodedContent(new Dictionary&lt;string, string&gt;
+            {
+                ["grant_type"] = "client_credentials",
+            }),
+        };
+
+        // Basic auth con client_id:client_secret
+        var credentials = Convert.ToBase64String(
+            Encoding.UTF8.GetBytes($"{_options.ClientId}:{_options.ClientSecret}"));
+        authRequest.Headers.Authorization = new AuthenticationHeaderValue("Basic", credentials);
+
+        using var response = await base.SendAsync(authRequest, cancellationToken);
+        var body = await response.Content.ReadAsStringAsync(cancellationToken);
+        if (!response.IsSuccessStatusCode)
+        {
+            _logger.LogError("PayPal token request failed: {Status}: {Body}", response.StatusCode, body);
+            throw new HttpRequestException($"PayPal token request failed: {(int)response.StatusCode}");
+        }
+
+        var parsed = JsonSerializer.Deserialize&lt;PayPalTokenResponse&gt;(body, JsonOptions);
+        return parsed is not null
+            ? (parsed.AccessToken, parsed.ExpiresIn)
+            : throw new InvalidOperationException("PayPal token endpoint returned an empty response.");
+    }
+
+    private static async Task&lt;HttpRequestMessage&gt; CloneRequestAsync(
+        HttpRequestMessage source, CancellationToken cancellationToken)
+    {
+        var clone = new HttpRequestMessage(source.Method, source.RequestUri)
+        {
+            Version = source.Version,
+            VersionPolicy = source.VersionPolicy,
+        };
+        foreach (var header in source.Headers)
+            clone.Headers.TryAddWithoutValidation(header.Key, header.Value);
+        if (source.Content is not null)
+        {
+            var bytes = await source.Content.ReadAsByteArrayAsync(cancellationToken);
+            clone.Content = new ByteArrayContent(bytes);
+            foreach (var header in source.Content.Headers)
+                clone.Content.Headers.TryAddWithoutValidation(header.Key, header.Value);
+        }
+        return clone;
+    }
+
+    private sealed record PayPalTokenResponse(
+        [property: JsonPropertyName("access_token")] string AccessToken,
+        [property: JsonPropertyName("expires_in")] int? ExpiresIn,
+        [property: JsonPropertyName("token_type")] string TokenType);
+}
+</code></pre>
+<p><strong>Comportamiento:</strong></p>
+<ol>
+<li>Cachea tokens OAuth2 con double-checked-locking (evita estampida de refrescos)</li>
+<li>TTL dinámico: respeta <code>expires_in</code> de PayPal, con 5 minutos de margen</li>
+<li>Reintento automático en 401: el request fallado es seguro porque PayPal rechaza en la capa de auth ANTES de ejecutar cualquier mutación</li>
+<li>Clona cada request antes de enviarlo para permitir reintentos</li>
+</ol>
+<hr>
+<h3 id="paypalpaymentprovidercs"><a class="header" href="#paypalpaymentprovidercs"><code>PayPalPaymentProvider.cs</code></a></h3>
+<p><code>PayPalPaymentProvider</code> es la clase más grande del adapter (~400 líneas). Implementa <code>IPaymentProvider</code> usando las APIs REST de PayPal:</p>
+<ul>
+<li><strong>Orders v2</strong> — <code>CreateOrderAsync</code> (POST <code>/v2/checkout/orders</code>), <code>CaptureOrderAsync</code> (POST <code>/v2/checkout/orders/{id}/capture</code>)</li>
+<li><strong>Billing Subscriptions</strong> — <code>CreateSubscriptionAsync</code> (POST <code>/v1/billing/subscriptions</code>), <code>CancelSubscriptionAsync</code> (POST <code>/v1/billing/subscriptions/{id}/cancel</code>)</li>
+<li><strong>Refunds</strong> — <code>RefundAsync</code> (POST <code>/v2/payments/captures/{id}/refund</code>)</li>
+</ul>
+<p>El código completo está en <code>backend/src/Infrastructure/Adapters/PayPal/PayPalPaymentProvider.cs</code>. Características clave:</p>
+<ul>
+<li><strong><code>PurchaseUnit</code> con <code>custom_id</code></strong> codifica <code>UserId:CourseId</code> para trazabilidad post-webhook</li>
+<li><strong>Captura con <code>Content-Type: application/json</code> obligatorio</strong> — PayPal rechaza con 415 si falta, incluso con body vacío</li>
+<li><strong>Validación de status de captura</strong> — Rechaza <code>DECLINED</code>/<code>FAILED</code> incluso si PayPal devuelve un capture id (divergencia silenciosa)</li>
+<li><strong>Plan IDs desde configuración</strong> — Los <code>billing_plan_id</code> se resuelven desde <code>PayPal.PlanIds</code> (sin hardcodear)</li>
+<li><strong>Errores mapeados a <code>AppException</code></strong> — 4xx → <code>PaymentProviderRejected</code>, 5xx → <code>InternalError</code></li>
+</ul>
+<p><strong>Endpoint reference:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>Endpoint PayPal</th><th>Propósito</th></tr>
+</thead>
+<tbody>
+<tr><td><code>CreateOrderAsync</code></td><td><code>POST /v2/checkout/orders</code></td><td>Crea orden con intent=CAPTURE</td></tr>
+<tr><td><code>CaptureOrderAsync</code></td><td><code>POST /v2/checkout/orders/{id}/capture</code></td><td>Captura orden aprobada</td></tr>
+<tr><td><code>CreateSubscriptionAsync</code></td><td><code>POST /v1/billing/subscriptions</code></td><td>Crea suscripción recurrente</td></tr>
+<tr><td><code>CancelSubscriptionAsync</code></td><td><code>POST /v1/billing/subscriptions/{id}/cancel</code></td><td>Cancela suscripción</td></tr>
+<tr><td><code>RefundAsync</code></td><td><code>POST /v2/payments/captures/{id}/refund</code></td><td>Reembolso (total o parcial)</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h3 id="paypalwebhooksignaturevalidatorcs"><a class="header" href="#paypalwebhooksignaturevalidatorcs"><code>PayPalWebhookSignatureValidator.cs</code></a></h3>
+<pre><code class="language-csharp">using System.Net.Http.Json;
+using System.Text.Json;
+using Cursinet.Application.Common.Interfaces;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+
+namespace Cursinet.Infrastructure.Adapters.PayPal;
+
+/// &lt;summary&gt;
+/// Adapter implementing &lt;see cref="IPayPalWebhookSignatureValidator"/&gt; by calling PayPal's
+/// &lt;c&gt;/v1/notifications/verify-webhook-signature&lt;/c&gt; endpoint. PayPal is the source of truth for
+/// signature verification — locally re-implementing the certificate / signature verification would
+/// duplicate fragile crypto paths.
+/// &lt;/summary&gt;
+public class PayPalWebhookSignatureValidator : IPayPalWebhookSignatureValidator
+{
+    private const string VerifyEndpoint = "/v1/notifications/verify-webhook-signature";
+
+    /// &lt;summary&gt;PayPal-controlled origin hosts we accept in &lt;c&gt;PAYPAL-CERT-URL&lt;/c&gt;. Anything else
+    /// is treated as untrusted (SSRF guard).&lt;/summary&gt;
+    private static readonly string[] TrustedCertHosts =
+    {
+        "api.paypal.com",
+        "api-m.paypal.com",
+        "api.sandbox.paypal.com",
+        "api-m.sandbox.paypal.com",
+    };
+
+    private readonly HttpClient _http;
+    private readonly PayPalOptions _options;
+    private readonly ILogger&lt;PayPalWebhookSignatureValidator&gt; _logger;
+
+    public PayPalWebhookSignatureValidator(
+        HttpClient http,
+        IOptions&lt;PayPalOptions&gt; options,
+        ILogger&lt;PayPalWebhookSignatureValidator&gt; logger)
+    {
+        _http = http;
+        _options = options.Value;
+        _logger = logger;
+    }
+
+    public async Task&lt;bool&gt; VerifyAsync(
+        string authAlgo, string certUrl, string transmissionId,
+        string transmissionSig, string transmissionTime,
+        string webhookEvent, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(_options.WebhookId))
+        {
+            _logger.LogWarning("PayPal webhook: WebhookId no configurado");
+            return false;
+        }
+
+        if (!IsTrustedCertUrl(certUrl))
+        {
+            _logger.LogWarning("cert_url no coincide con hosts de PayPal: {CertUrl}", certUrl);
+            return false;
+        }
+
+        var body = new
+        {
+            auth_algo = authAlgo,
+            cert_url = certUrl,
+            transmission_id = transmissionId,
+            transmission_sig = transmissionSig,
+            transmission_time = transmissionTime,
+            webhook_id = _options.WebhookId,
+            webhook_event = JsonElementFromString(webhookEvent),
+        };
+
+        using var request = new HttpRequestMessage(HttpMethod.Post,
+            new Uri(new Uri(_options.BaseUrl.TrimEnd('/') + "/"), VerifyEndpoint.TrimStart('/')))
+        {
+            Content = JsonContent.Create(body),
+        };
+
+        using var response = await _http.SendAsync(request, cancellationToken);
+        if (!response.IsSuccessStatusCode) return false;
+
+        using var doc = JsonDocument.Parse(await response.Content.ReadAsStringAsync(cancellationToken));
+        var status = doc.RootElement.TryGetProperty("verification_status", out var v)
+            ? v.GetString() : null;
+        return string.Equals(status, "SUCCESS", StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// &lt;summary&gt;SSRF guard: solo certificados de hosts PayPal conocidos.&lt;/summary&gt;
+    private static bool IsTrustedCertUrl(string certUrl)
+    {
+        if (string.IsNullOrWhiteSpace(certUrl) || !Uri.TryCreate(certUrl, UriKind.Absolute, out var uri))
+            return false;
+        return uri.Scheme == Uri.UriSchemeHttps
+            &amp;&amp; TrustedCertHosts.Any(h =&gt; string.Equals(uri.Host, h, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static JsonElement JsonElementFromString(string raw)
+    {
+        using var doc = JsonDocument.Parse(string.IsNullOrWhiteSpace(raw) ? "{}" : raw);
+        return doc.RootElement.Clone();
     }
 }
 </code></pre>
-<h3 id="paypalpaymentprovidercs"><a class="header" href="#paypalpaymentprovidercs"><code>PayPalPaymentProvider.cs</code></a></h3>
-<p>Implementa <code>IPaymentProvider</code> usando PayPal Orders v2 API:</p>
+<p><strong>Seguridad:</strong></p>
 <ul>
-<li><code>CreateOrderAsync</code>: POST <code>/v2/checkout/orders</code> con intent=CAPTURE</li>
-<li><code>CaptureOrderAsync</code>: POST <code>/v2/checkout/orders/{id}/capture</code></li>
-<li><code>CreateSubscriptionAsync</code>: POST <code>/v1/billing/subscriptions</code></li>
-<li><code>CancelSubscriptionAsync</code>: POST <code>/v1/billing/subscriptions/{id}/cancel</code></li>
-<li><code>RefundAsync</code>: POST <code>/v2/payments/captures/{id}/refund</code></li>
+<li>Verifica la firma del webhook contra el endpoint oficial de PayPal (no implementa crypto local)</li>
+<li><strong>SSRF guard</strong> — Solo acepta <code>cert_url</code> de hosts PayPal conocidos (<code>api.paypal.com</code>, <code>api-m.sandbox.paypal.com</code>, etc.)</li>
+<li><strong>WebhookId</strong> requerido — Sin él, la verificación falla silenciosamente (logea warning)</li>
 </ul>
-<h3 id="paypalwebhooksignaturevalidatorcs"><a class="header" href="#paypalwebhooksignaturevalidatorcs"><code>PayPalWebhookSignatureValidator.cs</code></a></h3>
-<pre><code class="language-csharp">public class PayPalWebhookSignatureValidator : IPayPalWebhookSignatureValidator
-{
-    // Verifica firma del webhook contra PayPal POST /v1/notifications/verify-webhook-signature
-    // Validación de cert_url contra hosts conocidos de PayPal (SSRF guard)
-    // Retorna true solo si verification_status == "SUCCESS"
-}
-</code></pre>
+<hr>
 <h3 id="mockpaymentprovidercs"><a class="header" href="#mockpaymentprovidercs"><code>MockPaymentProvider.cs</code></a></h3>
-<pre><code class="language-csharp">public sealed class MockPaymentProvider : IPaymentProvider
+<pre><code class="language-csharp">using Cursinet.Application.Common.Interfaces;
+using Cursinet.Application.Common.Models;
+
+namespace Cursinet.Infrastructure.Adapters.Payments;
+
+/// &lt;summary&gt;
+/// In-process mock adapter for &lt;see cref="IPaymentProvider"/&gt;. Returns synthesised order/capture ids
+/// without contacting any external service. Used when &lt;c&gt;PayPal:Enabled&lt;/c&gt; is false.
+/// &lt;/summary&gt;
+public sealed class MockPaymentProvider : IPaymentProvider
 {
     public string ProviderName =&gt; "mock";
-    // Genera IDs sintéticos con prefijo MOCK-
-    // Captura siempre retorna COMPLETED
-    // Útil para desarrollo y tests
+
+    public Task&lt;ProviderOrderResult&gt; CreateOrderAsync(
+        ProviderOrderRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        var id = $"MOCK-{request.UserId.ToString("N")[..8]}-" +
+                 $"{request.CourseId?.ToString("N")[..8] ?? "NOCRS"}-" +
+                 $"{request.Amount:0.00}-{Guid.NewGuid().ToString("N")[..6]}";
+        return Task.FromResult(new ProviderOrderResult(id, null, "CREATED"));
+    }
+
+    public Task&lt;ProviderCaptureResult&gt; CaptureOrderAsync(
+        string providerOrderId,
+        CancellationToken cancellationToken = default)
+        =&gt; Task.FromResult(new ProviderCaptureResult(providerOrderId, "COMPLETED", 0m, "USD"));
+
+    public Task&lt;ProviderSubscriptionResult&gt; CreateSubscriptionAsync(
+        ProviderSubscriptionRequest request,
+        CancellationToken cancellationToken = default)
+        =&gt; Task.FromResult(new ProviderSubscriptionResult(
+            $"MOCK-SUB-{Guid.NewGuid():N}", null, "ACTIVE", request.Plan.ToString()));
+
+    public Task&lt;bool&gt; CancelSubscriptionAsync(
+        string providerSubscriptionId,
+        CancellationToken cancellationToken = default)
+        =&gt; Task.FromResult(true);
+
+    public Task&lt;ProviderRefundResult&gt; RefundAsync(
+        string providerCaptureId, decimal? amount, string reason,
+        CancellationToken cancellationToken = default)
+        =&gt; Task.FromResult(new ProviderRefundResult(
+            $"MOCK-REFUND-{Guid.NewGuid():N}", "COMPLETED", amount ?? 0m));
 }
 </code></pre>
+<p><strong>Propósito:</strong> Desarrollo y tests. Genera IDs sintéticos con prefijo <code>MOCK-</code> sin contactar proveedores externos.</p>
 <hr>
+<h3 id="wiring-di"><a class="header" href="#wiring-di">Wiring (DI)</a></h3>
+<p>El registro de todos estos componentes está en <code>PayPalExtensions.AddPayPal()</code> (sección 7.7). El toggle <code>PayPal:Enabled</code> en <code>appsettings.json</code> determina si se usa el adapter live o el mock. No hay lógica condicional en los servicios de aplicación.</p>
+<pre><code class="language-mermaid">flowchart LR
+    PaymentService --&gt; IPaymentProvider
+    IPaymentProvider --&gt;|PayPal:Enabled=true| PayPalPaymentProvider
+    IPaymentProvider --&gt;|PayPal:Enabled=false| MockPaymentProvider
+    PayPalPaymentProvider --&gt; PayPalAuthenticationHandler
+    PayPalAuthenticationHandler --&gt; PayPalAPI
+</code></pre>
 <h2 id="38-capa-infrastructure--dataseeder"><a class="header" href="#38-capa-infrastructure--dataseeder">38. Capa Infrastructure — DataSeeder</a></h2>
 <pre><code class="language-csharp">namespace Cursinet.Infrastructure.Persistence;
 
@@ -4487,22 +5020,6 @@ dotnet ef database update -s src/Api/Api.csproj -p src/Infrastructure/Infrastruc
         <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
         <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
         <script>
