@@ -35,6 +35,7 @@
 
 ## ASPNET(C#)
 - [ASPNET Primeros Pasos](./docs/21-aspnet-init.md)
+- [ASPNET Modulo de Autenticación](./docs/30-aspnet-auth.md)
 - [ASPNET Cursinet](./docs/25-aspnet-cursinet.md)
 
 ## React Native
