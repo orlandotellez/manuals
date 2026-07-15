@@ -1,0 +1,2915 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>ASPNET Modulo de Autenticación - Manuales</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-0392ca55.css">
+        <link rel="stylesheet" href="../css/chrome-fc474251.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/dark-cca273e4.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "dark";
+            window.path_to_searchindex_js = "../searchindex-127313fe.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-63b230e8.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Manuales</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="aspnet-auth"><a class="header" href="#aspnet-auth">ASPNET AUTH</a></h1>
+<h2 id="manual-para-realizar-el-modulo-de-autenticación-con-aspnet"><a class="header" href="#manual-para-realizar-el-modulo-de-autenticación-con-aspnet">Manual para realizar el modulo de autenticación con ASPNET</a></h2>
+<h2 id="índice"><a class="header" href="#índice">Índice</a></h2>
+<ol>
+<li><a href="#1-arquitectura-general">Arquitectura General</a></li>
+<li><a href="#2-prerrequisitos">Prerrequisitos</a></li>
+<li><a href="#3-estructura-del-proyecto">Estructura del Proyecto</a></li>
+<li><a href="#4-lunadomain--capa-de-dominio">Luna.Domain — Capa de Dominio</a></li>
+<li><a href="#5-lunaapplication--capa-de-aplicación">Luna.Application — Capa de Aplicación</a></li>
+<li><a href="#6-lunainfrastructure--capa-de-infraestructura">Luna.Infrastructure — Capa de Infraestructura</a></li>
+<li><a href="#7-lunaapi--capa-de-presentación-api">Luna.Api — Capa de Presentación (API)</a></li>
+<li><a href="#8-flujo-completo-register">Flujo Completo: Register</a></li>
+<li><a href="#9-flujo-completo-login">Flujo Completo: Login</a></li>
+<li><a href="#10-flujo-completo-refresh">Flujo Completo: Refresh</a></li>
+<li><a href="#11-flujo-completo-logout">Flujo Completo: Logout</a></li>
+<li><a href="#12-comandos-para-replicar">Comandos para Replicar</a></li>
+</ol>
+<hr>
+<h2 id="1-arquitectura-general"><a class="header" href="#1-arquitectura-general">1. Arquitectura General</a></h2>
+<h3 id="11-principios"><a class="header" href="#11-principios">1.1. Principios</a></h3>
+<p>El proyecto sigue <strong>Clean Architecture</strong> con 4 capas:</p>
+<pre><code>┌─────────────────────────────────────────────┐
+│           Luna.Api (Presentación)            │
+│   Controllers, Middleware, Helpers, Config   │
+├─────────────────────────────────────────────┤
+│       Luna.Application (Casos de Uso)        │
+│   Interfaces, Servicios de Aplicación, DTOs  │
+├─────────────────────────────────────────────┤
+│     Luna.Infrastructure (Infraestructura)    │
+│   EF Core, Repositorios, JWT, BCrypt, Migs   │
+├─────────────────────────────────────────────┤
+│         Luna.Domain (Dominio/Núcleo)         │
+│   Entidades, Enums, Excepciones de Negocio   │
+└─────────────────────────────────────────────┘
+</code></pre>
+<h3 id="12-reglas-de-dependencia"><a class="header" href="#12-reglas-de-dependencia">1.2. Reglas de Dependencia</a></h3>
+<ul>
+<li><strong>Domain</strong> → No depende de nadie</li>
+<li><strong>Application</strong> → Depende de Domain</li>
+<li><strong>Infrastructure</strong> → Depende de Application</li>
+<li><strong>Api</strong> → Depende de Infrastructure y Application</li>
+</ul>
+<p>Las dependencias <strong>siempre apuntan hacia adentro</strong>. Domain nunca sabe de Application, Application nunca sabe de Infrastructure.</p>
+<h3 id="13-relación-entre-capas"><a class="header" href="#13-relación-entre-capas">1.3. Relación entre capas</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Capa</th><th>Responsabilidad</th><th>Tecnología</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Domain</strong></td><td>Entidades, reglas de negocio, enums, excepciones</td><td>C# puro</td></tr>
+<tr><td><strong>Application</strong></td><td>Casos de uso, contratos (interfaces), DTOs, mapeo</td><td>C# puro</td></tr>
+<tr><td><strong>Infrastructure</strong></td><td>Implementación de contratos, persistencia, JWT</td><td>EF Core, BCrypt, Npgsql</td></tr>
+<tr><td><strong>Api</strong></td><td>HTTP endpoints, middleware, DI, configuración</td><td>ASP.NET Core</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="14-stack-tecnológico"><a class="header" href="#14-stack-tecnológico">1.4. Stack Tecnológico</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Tecnología</th><th>Versión</th><th>Propósito</th></tr>
+</thead>
+<tbody>
+<tr><td>.NET</td><td>10.0</td><td>Runtime</td></tr>
+<tr><td>ASP.NET Core</td><td>10.0</td><td>API web</td></tr>
+<tr><td>Entity Framework Core</td><td>10.0</td><td>ORM</td></tr>
+<tr><td>Npgsql (PostgreSQL)</td><td>10.0</td><td>Driver BD</td></tr>
+<tr><td>BCrypt.Net-Next</td><td>4.2.0</td><td>Hash de contraseñas</td></tr>
+<tr><td>System.IdentityModel.Tokens.Jwt</td><td>8.19.1</td><td>JWT</td></tr>
+<tr><td>FluentValidation</td><td>11.3.1</td><td>Validación de requests</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="2-prerrequisitos"><a class="header" href="#2-prerrequisitos">2. Prerrequisitos</a></h2>
+<pre><code class="language-bash"># SDK .NET 10.0
+dotnet --version  # debe mostrar 10.0.x
+
+# PostgreSQL 16+
+psql --version    # debe mostrar 16.x
+
+# EF Core CLI
+dotnet tool install --global dotnet-ef
+</code></pre>
+<hr>
+<h2 id="3-estructura-del-proyecto"><a class="header" href="#3-estructura-del-proyecto">3. Estructura del Proyecto</a></h2>
+<pre><code>backend/
+├── src/
+│   ├── Luna.Api/
+│   │   ├── Controllers/
+│   │   │   └── AuthController.cs
+│   │   ├── Extensions/
+│   │   │   ├── CorsExtensions.cs
+│   │   │   ├── DatabaseExtensions.cs
+│   │   │   ├── DependencyInjectionExtensions.cs
+│   │   │   ├── MiddlewareExtensions.cs
+│   │   │   └── RateLimitExtensions.cs
+│   │   ├── Helpers/
+│   │   │   ├── AuthHelper.cs
+│   │   │   └── CookieHelper.cs
+│   │   ├── Middleware/
+│   │   │   └── ErrorHandlingMiddleware.cs
+│   │   ├── Properties/
+│   │   │   └── launchSettings.json
+│   │   ├── appsettings.json
+│   │   ├── appsettings.Development.json
+│   │   ├── Luna.Api.csproj
+│   │   ├── Luna.Api.http
+│   │   └── Program.cs
+│   ├── Luna.Application/
+│   │   ├── Common/
+│   │   │   ├── Interfaces/
+│   │   │   │   ├── IAccountRepository.cs
+│   │   │   │   ├── IAuthService.cs
+│   │   │   │   ├── IPasswordService.cs
+│   │   │   │   ├── ISessionRepository.cs
+│   │   │   │   ├── ITokenService.cs
+│   │   │   │   ├── IUserRepository.cs
+│   │   │   │   └── IVerificationRepository.cs
+│   │   │   ├── Mapping/
+│   │   │   │   └── MappingUser.cs
+│   │   │   └── Models/
+│   │   │       ├── AuthRequest.cs
+│   │   │       ├── AuthResult.cs
+│   │   │       ├── UserDto.cs
+│   │   │       └── UserRequest.cs
+│   │   ├── Features/
+│   │   │   └── Auth/
+│   │   │       └── AuthService.cs
+│   │   └── Luna.Application.csproj
+│   ├── Luna.Domain/
+│   │   ├── Entities/
+│   │   │   ├── Account.cs
+│   │   │   ├── Session.cs
+│   │   │   ├── User.cs
+│   │   │   └── Verification.cs
+│   │   ├── Enums/
+│   │   │   └── UserRole.cs
+│   │   ├── Exceptions/
+│   │   │   └── AppException.cs
+│   │   └── Luna.Domain.csproj
+│   └── Luna.Infrastructure/
+│       ├── Migrations/
+│       │   ├── 20260715031852_init.cs
+│       │   ├── 20260715031852_init.Designer.cs
+│       │   └── ApplicationDbContextModelSnapshot.cs
+│       ├── Persistence/
+│       │   ├── Configurations/
+│       │   │   ├── AccountConfiguration.cs
+│       │   │   ├── SessionConfiguration.cs
+│       │   │   ├── UserConfiguration.cs
+│       │   │   └── VerificationConfiguration.cs
+│       │   ├── Repositories/
+│       │   │   ├── AccountRepository.cs
+│       │   │   ├── SessionRepository.cs
+│       │   │   ├── UserRepository.cs
+│       │   │   └── VerificationRepository.cs
+│       │   └── ApplicationDbContext.cs
+│       └── Services/
+│           ├── PasswordService.cs
+│           └── TokenService.cs
+│       └── Luna.Infrastructure.csproj
+</code></pre>
+<hr>
+<h2 id="4-lunadomain--capa-de-dominio"><a class="header" href="#4-lunadomain--capa-de-dominio">4. Luna.Domain — Capa de Dominio</a></h2>
+<h3 id="41-lunadomaincsproj"><a class="header" href="#41-lunadomaincsproj">4.1. <code>Luna.Domain.csproj</code></a></h3>
+<pre><code class="language-xml">&lt;Project Sdk="Microsoft.NET.Sdk"&gt;
+
+  &lt;PropertyGroup&gt;
+    &lt;TargetFramework&gt;net10.0&lt;/TargetFramework&gt;
+    &lt;ImplicitUsings&gt;enable&lt;/ImplicitUsings&gt;
+    &lt;Nullable&gt;enable&lt;/Nullable&gt;
+    &lt;RootNamespace&gt;Luna.Domain&lt;/RootNamespace&gt;
+  &lt;/PropertyGroup&gt;
+
+&lt;/Project&gt;
+</code></pre>
+<p><strong>Explicación línea por línea:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Línea</th><th>Explicación</th></tr>
+</thead>
+<tbody>
+<tr><td><code>&lt;Project Sdk="Microsoft.NET.Sdk"&gt;</code></td><td>Proyecto .NET estándar (no es web). SDK básico para librerías de clases.</td></tr>
+<tr><td><code>&lt;TargetFramework&gt;net10.0&lt;/TargetFramework&gt;</code></td><td>Apunta a .NET 10.0</td></tr>
+<tr><td><code>&lt;ImplicitUsings&gt;enable&lt;/ImplicitUsings&gt;</code></td><td>Incluye automáticamente <code>using System</code>, <code>System.Collections.Generic</code>, <code>System.Linq</code>, <code>System.Threading.Tasks</code>, etc.</td></tr>
+<tr><td><code>&lt;Nullable&gt;enable&lt;/Nullable&gt;</code></td><td>Habilita tipos nullable (<code>string?</code>, <code>Guid?</code>). Obliga a declarar explícitamente cuando un valor puede ser null.</td></tr>
+<tr><td><code>&lt;RootNamespace&gt;Luna.Domain&lt;/RootNamespace&gt;</code></td><td>Namespace raíz. Todas las clases en este proyecto usan <code>Luna.Domain.*</code></td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h3 id="42-entitiesusercs"><a class="header" href="#42-entitiesusercs">4.2. <code>Entities/User.cs</code></a></h3>
+<pre><code class="language-csharp">using Luna.Domain.Enums;
+
+namespace Luna.Domain.Entities;
+
+public class User
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public bool EmailVerified { get; set; }
+    public string? Phone { get; set; }
+    public string? Image { get; set; }
+    public UserRole Role { get; set; }
+    public string? UserName { get; set; }
+    public string? Bio { get; set; }
+    public bool IsActive { get; set; }
+    public DateTime? LastSeenAt { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
+    public DateTime? DeletedAt { get; set; }       // Soft Delete
+    public Guid? DeletedByUserId { get; set; }     // Quién eliminó
+    public string? DeletedByName { get; set; }     // Nombre de quien eliminó
+    public int FailedLoginAttempts { get; set; }   // Intentos fallidos
+    public DateTime? LockoutEnd { get; set; }      // Fin del bloqueo
+}
+</code></pre>
+<p><strong>Explicación:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Propiedad</th><th>Tipo</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Id</code></td><td><code>Guid</code></td><td>Identificador único. Se genera con <code>gen_random_uuid()</code> en PostgreSQL.</td></tr>
+<tr><td><code>Name</code></td><td><code>string</code></td><td>Nombre completo del usuario. <code>= string.Empty</code> evita null.</td></tr>
+<tr><td><code>Email</code></td><td><code>string</code></td><td>Email único. Se crea índice único en DB.</td></tr>
+<tr><td><code>EmailVerified</code></td><td><code>bool</code></td><td>Si el email fue verificado. Default <code>false</code>.</td></tr>
+<tr><td><code>Phone</code></td><td><code>string?</code></td><td>Teléfono (opcional). <code>?</code> significa nullable.</td></tr>
+<tr><td><code>Image</code></td><td><code>string?</code></td><td>URL de la imagen de perfil (opcional).</td></tr>
+<tr><td><code>Role</code></td><td><code>UserRole</code></td><td>Enum: <code>User</code>, <code>Familiar</code>, <code>Professional</code>, <code>Admin</code>.</td></tr>
+<tr><td><code>UserName</code></td><td><code>string?</code></td><td>Nombre de usuario único (opcional). Tiene índice único.</td></tr>
+<tr><td><code>Bio</code></td><td><code>string?</code></td><td>Biografía (opcional).</td></tr>
+<tr><td><code>IsActive</code></td><td><code>bool</code></td><td>Si la cuenta está activa. Default <code>true</code>.</td></tr>
+<tr><td><code>LastSeenAt</code></td><td><code>DateTime?</code></td><td>Última vez que se conectó.</td></tr>
+<tr><td><code>CreatedAt</code></td><td><code>DateTime</code></td><td>Fecha de creación. Se auto-asigna en DB.</td></tr>
+<tr><td><code>UpdatedAt</code></td><td><code>DateTime</code></td><td>Fecha de última actualización.</td></tr>
+<tr><td><code>DeletedAt</code></td><td><code>DateTime?</code></td><td>Soft delete: si tiene fecha, el usuario está “borrado” lógicamente.</td></tr>
+<tr><td><code>DeletedByUserId</code></td><td><code>Guid?</code></td><td>ID del usuario que realizó el soft delete.</td></tr>
+<tr><td><code>DeletedByName</code></td><td><code>string?</code></td><td>Nombre de quien eliminó (para auditoría).</td></tr>
+<tr><td><code>FailedLoginAttempts</code></td><td><code>int</code></td><td>Contador de intentos fallidos de login. Para lockout.</td></tr>
+<tr><td><code>LockoutEnd</code></td><td><code>DateTime?</code></td><td>Fecha hasta la cual la cuenta está bloqueada.</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h3 id="43-entitiesaccountcs"><a class="header" href="#43-entitiesaccountcs">4.3. <code>Entities/Account.cs</code></a></h3>
+<pre><code class="language-csharp">namespace Luna.Domain.Entities;
+
+public class Account
+{
+    public Guid Id { get; set; }
+    public string AccountId { get; set; } = null!;          // ID del proveedor
+    public string ProviderId { get; set; } = null!;         // Proveedor: "credentials", "google", "github"
+    public Guid UserId { get; set; }                        // FK a User
+    public User User { get; set; } = null!;                 // Navigation property
+    public string? AccessToken { get; set; }                 // OAuth access token
+    public string? RefreshToken { get; set; }                // OAuth refresh token
+    public string? IdToken { get; set; }                     // OAuth ID token
+    public DateTime? AccessTokenExpiresAt { get; set; }
+    public DateTime? RefreshTokenExpiresAt { get; set; }
+    public string? Scope { get; set; }
+    public string? Password { get; set; }                    // Password hasheado (credentials)
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
+}
+</code></pre>
+<p><strong>Explicación:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Propiedad</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><code>AccountId</code></td><td>ID único del usuario EN EL PROVEEDOR. Para “credentials” es el <code>Id</code> del User. Para Google es el sub de Google.</td></tr>
+<tr><td><code>ProviderId</code></td><td>Identifica el proveedor de autenticación: <code>"credentials"</code> (email+password), <code>"google"</code>, <code>"github"</code>.</td></tr>
+<tr><td><code>UserId</code></td><td>FK hacia <code>User</code>. Relación N:1 (un usuario puede tener muchas cuentas: credentials + Google + GitHub).</td></tr>
+<tr><td><code>User</code></td><td>Navigation property para EF Core. <code>= null!</code> porque no se asigna hasta que EF la carga.</td></tr>
+<tr><td><code>Password</code></td><td>Solo para <code>ProviderId = "credentials"</code>. Guarda el hash de BCrypt, nunca texto plano.</td></tr>
+<tr><td><code>AccessToken/RefreshToken/IdToken</code></td><td>Tokens de OAuth para proveedores externos.</td></tr>
+<tr><td><code>Scope</code></td><td>Permisos solicitados en OAuth.</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Patrón importante:</strong> Account usa el patrón de <strong>proveedor de autenticación</strong>. Un usuario puede tener múltiples formas de autenticarse (email+password + Google + GitHub) y cada una es un Account distinto. Todas apuntan al mismo User.</p>
+<hr>
+<h3 id="44-entitiessessioncs"><a class="header" href="#44-entitiessessioncs">4.4. <code>Entities/Session.cs</code></a></h3>
+<pre><code class="language-csharp">namespace Luna.Domain.Entities;
+
+public class Session
+{
+    public Guid Id { get; set; }
+    public DateTime ExpiresAt { get; set; }
+    public string Token { get; set; } = string.Empty;      // Refresh token
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
+    public string? IpAddress { get; set; }
+    public string? UserAgent { get; set; }
+    public Guid UserId { get; set; }                       // FK a User
+    public User User { get; set; } = null!;
+}
+</code></pre>
+<p><strong>Explicación:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Propiedad</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Id</code></td><td>Identificador único.</td></tr>
+<tr><td><code>ExpiresAt</code></td><td>Fecha de expiración de la sesión. Default: 7 días desde creación.</td></tr>
+<tr><td><code>Token</code></td><td>El refresh token JWT. Se guarda para poder invalidarlo (logout, refresh rotation).</td></tr>
+<tr><td><code>IpAddress</code></td><td>Dirección IP desde donde se inició sesión (opcional, para auditoría).</td></tr>
+<tr><td><code>UserAgent</code></td><td>User-Agent del navegador/cliente (opcional, para auditoría).</td></tr>
+<tr><td><code>UserId</code></td><td>FK hacia User.</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Decisión arquitectónica:</strong> La sesión se identifica por el refresh token. No es una sesión tradicional de servidor con ID — es una sesión basada en token que se almacena en DB para poder revocarla. Esto permite:</p>
+<ul>
+<li>Invalidar todas las sesiones de un usuario (cambio de password, admin force logout)</li>
+<li>Rotación de refresh tokens (cada refresh invalida el anterior)</li>
+<li>Saber cuántas sesiones activas tiene un usuario</li>
+</ul>
+<hr>
+<h3 id="45-entitiesverificationcs"><a class="header" href="#45-entitiesverificationcs">4.5. <code>Entities/Verification.cs</code></a></h3>
+<pre><code class="language-csharp">namespace Luna.Domain.Entities;
+
+public class Verification
+{
+    public Guid Id { get; set; }
+    public string Identifier { get; set; } = null!;        // Email o teléfono
+    public string Value { get; set; } = null!;             // Código/token
+    public DateTime ExpiresAt { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
+}
+</code></pre>
+<p><strong>Explicación:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Propiedad</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Identifier</code></td><td>Identificador del usuario: puede ser un email o un número de teléfono.</td></tr>
+<tr><td><code>Value</code></td><td>El código/token de verificación (ej: “123456” para código de 6 dígitos).</td></tr>
+<tr><td><code>ExpiresAt</code></td><td>Fecha de expiración del código. Los códigos vencidos se limpian con <code>DeleteExpiredAsync()</code>.</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Propósito:</strong> Sirve para verificación de email, reseteo de password, verificación en dos pasos, etc. Actualmente las acciones en <code>IAuthService</code> están comentadas (no implementadas), pero la entidad ya está lista.</p>
+<hr>
+<h3 id="46-enumsuserrolecs"><a class="header" href="#46-enumsuserrolecs">4.6. <code>Enums/UserRole.cs</code></a></h3>
+<pre><code class="language-csharp">namespace Luna.Domain.Enums;
+
+public enum UserRole
+{
+    User,           // 0 — Usuario regular
+    Familiar,       // 1 — Familiar
+    Professional,   // 2 — Profesional
+    Admin           // 3 — Administrador
+}
+</code></pre>
+<p><strong>Explicación:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Valor</th><th>Nombre</th><th>Uso</th></tr>
+</thead>
+<tbody>
+<tr><td>0</td><td><code>User</code></td><td>Usuario normal del sistema</td></tr>
+<tr><td>1</td><td><code>Familiar</code></td><td>Rol de familiar (contexto de cuidado)</td></tr>
+<tr><td>2</td><td><code>Professional</code></td><td>Rol de profesional (doctor, terapeuta, etc.)</td></tr>
+<tr><td>3</td><td><code>Admin</code></td><td>Administrador con permisos totales</td></tr>
+</tbody>
+</table>
+</div>
+<p>El valor por defecto en DB es <code>0</code> (<code>User</code>). Los valores enteros permiten comparaciones de jerarquía (Admin &gt; Professional &gt; Familiar &gt; User).</p>
+<hr>
+<h3 id="47-exceptionsappexceptioncs"><a class="header" href="#47-exceptionsappexceptioncs">4.7. <code>Exceptions/AppException.cs</code></a></h3>
+<pre><code class="language-csharp">namespace Luna.Domain.Exceptions;
+
+// Excepción base de la aplicación con soporte para códigos HTTP
+public class AppException : Exception
+{
+    public int StatusCode { get; }        // Código HTTP (400, 401, 403, 404, 409, 422, 429, 500)
+    public string Code { get; }           // Código interno (BAD_REQUEST, UNAUTHORIZED, etc.)
+    public bool IsOperational { get; }    // Distingue errores operativos de bugs
+
+    public AppException(string message, int statusCode, string code) : base(message)
+    {
+        StatusCode = statusCode;
+        Code = code;
+        IsOperational = true;
+    }
+}
+
+// Factory estática para crear errores comunes sin repetir código
+public static class AppExceptions
+{
+    public static AppException BadRequest(string message = "Bad Request")
+        =&gt; new(message, 400, "BAD_REQUEST");
+
+    public static AppException Unauthorized(string message = "Unauthorized")
+        =&gt; new(message, 401, "UNAUTHORIZED");
+
+    public static AppException Forbidden(string message = "Forbidden")
+        =&gt; new(message, 403, "FORBIDDEN");
+
+    public static AppException NotFound(string message = "Not Found")
+        =&gt; new(message, 404, "NOT_FOUND");
+
+    public static AppException Conflict(string message = "Conflict")
+        =&gt; new(message, 409, "CONFLICT");
+
+    public static AppException UnprocessableEntity(string message = "Unprocessable Entity")
+        =&gt; new(message, 422, "UNPROCESSABLE_ENTITY");
+
+    public static AppException TooManyRequests(string message = "Too Many Requests")
+        =&gt; new(message, 429, "TOO_MANY_REQUESTS");
+
+    public static AppException InternalError(string message = "Internal Server Error")
+        =&gt; new(message, 500, "INTERNAL_SERVER_ERROR");
+}
+</code></pre>
+<p><strong>Explicación detallada:</strong></p>
+<p><strong><code>AppException</code></strong> es una excepción personalizada que lleva:</p>
+<ul>
+<li><code>StatusCode</code>: El código HTTP que se devolverá en la respuesta (400, 401, 404, etc.)</li>
+<li><code>Code</code>: Un código interno legible como <code>"UNAUTHORIZED"</code>, <code>"CONFLICT"</code>, etc. Útil para que el frontend pueda distinguir tipos de error sin parsear mensajes.</li>
+<li><code>IsOperational</code>: Distingue errores <strong>operativos</strong> (esperados, como “contraseña incorrecta”) de errores de <strong>programación</strong> (bugs). Los operativos son seguros de mostrar al usuario. Los de programación no.</li>
+</ul>
+<p><strong><code>AppExceptions</code></strong> es una <strong>clase factory</strong> estática. Cada método estático crea una <code>AppException</code> con los valores correctos:</p>
+<pre><code class="language-csharp">// En lugar de:
+throw new AppException("Email already registered", 409, "CONFLICT");
+
+// Usás:
+throw AppExceptions.Conflict("Email already registered");
+</code></pre>
+<p>Esto evita errores de tipeo en los códigos y hace el código más legible.</p>
+<p><strong>Uso en el Middleware:</strong> Cuando el <code>ErrorHandlingMiddleware</code> captura una excepción:</p>
+<ul>
+<li>Si es <code>AppException</code> → devuelve <code>StatusCode</code> y <code>Code</code> específicos</li>
+<li>Si es cualquier otra → devuelve 500 Internal Server Error (nunca expone detalles internos)</li>
+</ul>
+<hr>
+<h2 id="5-lunaapplication--capa-de-aplicación"><a class="header" href="#5-lunaapplication--capa-de-aplicación">5. Luna.Application — Capa de Aplicación</a></h2>
+<h3 id="51-lunaapplicationcsproj"><a class="header" href="#51-lunaapplicationcsproj">5.1. <code>Luna.Application.csproj</code></a></h3>
+<pre><code class="language-xml">&lt;Project Sdk="Microsoft.NET.Sdk"&gt;
+
+  &lt;ItemGroup&gt;
+    &lt;ProjectReference Include="..\Luna.Domain\Luna.Domain.csproj" /&gt;
+  &lt;/ItemGroup&gt;
+
+  &lt;PropertyGroup&gt;
+    &lt;TargetFramework&gt;net10.0&lt;/TargetFramework&gt;
+    &lt;ImplicitUsings&gt;enable&lt;/ImplicitUsings&gt;
+    &lt;Nullable&gt;enable&lt;/Nullable&gt;
+    &lt;RootNamespace&gt;Luna.Application&lt;/RootNamespace&gt;
+  &lt;/PropertyGroup&gt;
+
+&lt;/Project&gt;
+</code></pre>
+<p><strong>Explicación:</strong> Depende solo de <code>Luna.Domain</code>. No tiene referencia a Infrastructure ni a Api. Esto es <strong>la regla de oro de Clean Architecture</strong>: la capa de aplicación NO sabe nada de infraestructura. Solo define <strong>contratos</strong> (interfaces) que Infrastructure implementa.</p>
+<hr>
+<h3 id="52-commoninterfaces--contratos"><a class="header" href="#52-commoninterfaces--contratos">5.2. <code>Common/Interfaces/</code> — Contratos</a></h3>
+<p>Todos los contratos (interfaces) viven acá. Son abstracciones que define la aplicación y que la infraestructura implementa. La aplicación los usa sin saber cómo están implementados.</p>
+<hr>
+<h4 id="iuserrepositorycs"><a class="header" href="#iuserrepositorycs"><code>IUserRepository.cs</code></a></h4>
+<pre><code class="language-csharp">using Luna.Application.Common.Models;
+using Luna.Domain.Entities;
+
+namespace Luna.Application.Common.Interfaces;
+
+public interface IUserRepository
+{
+    Task&lt;List&lt;User&gt;&gt; GetAllAsync(UserFilter filter);
+    Task&lt;User?&gt; GetByEmailAsync(string email);
+    Task&lt;User?&gt; GetByIdAsync(Guid id);
+    Task&lt;User&gt; CreateAsync(User user);
+    Task&lt;User&gt; UpdateAsync(User user);
+    Task SoftDeleteAsync(Guid id, Guid deletedByUserId, string deletedByName);
+    Task RestoreAsync(Guid id);
+}
+</code></pre>
+<p><strong>Cada método explica:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>Qué hace</th></tr>
+</thead>
+<tbody>
+<tr><td><code>GetAllAsync(UserFilter)</code></td><td>Lista usuarios con filtros: búsqueda, rol, activos, eliminados</td></tr>
+<tr><td><code>GetByEmailAsync(string)</code></td><td>Busca usuario por email (excluye soft-deleted por defecto)</td></tr>
+<tr><td><code>GetByIdAsync(Guid)</code></td><td>Busca usuario por ID (excluye soft-deleted)</td></tr>
+<tr><td><code>CreateAsync(User)</code></td><td>Crea nuevo usuario en DB</td></tr>
+<tr><td><code>UpdateAsync(User)</code></td><td>Actualiza usuario existente</td></tr>
+<tr><td><code>SoftDeleteAsync(Guid, Guid, string)</code></td><td>Marca como eliminado (no borra físicamente)</td></tr>
+<tr><td><code>RestoreAsync(Guid)</code></td><td>Restaura un usuario soft-deleted</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h4 id="iaccountrepositorycs"><a class="header" href="#iaccountrepositorycs"><code>IAccountRepository.cs</code></a></h4>
+<pre><code class="language-csharp">using Luna.Domain.Entities;
+
+namespace Luna.Application.Common.Interfaces;
+
+public interface IAccountRepository
+{
+    Task&lt;Account?&gt; GetByProviderAndAccountIdAsync(string providerId, string accountId);
+    Task&lt;List&lt;Account&gt;&gt; GetByUserIdAsync(Guid userId);
+    Task&lt;Account?&gt; GetCredentialsByEmailAsync(string email);
+    Task&lt;Account?&gt; GetCredentialsByUserIdAsync(Guid userId);
+    Task&lt;Account&gt; CreateAsync(Account account);
+    Task&lt;Account&gt; UpdateAsync(Account account);
+    Task DeleteAsync(Guid id);
+    Task DeleteByUserIdAsync(Guid userId);
+}
+</code></pre>
+<p><strong>Método clave: <code>GetCredentialsByEmailAsync</code></strong></p>
+<pre><code class="language-csharp">Task&lt;Account?&gt; GetCredentialsByEmailAsync(string email);
+</code></pre>
+<p>Busca la cuenta de tipo “credentials” (email+password) asociada a un email. Hace un <code>Include(a =&gt; a.User)</code> porque necesita acceder al User para verificar si está activo, si tiene soft-delete, etc.</p>
+<hr>
+<h4 id="isessionrepositorycs"><a class="header" href="#isessionrepositorycs"><code>ISessionRepository.cs</code></a></h4>
+<pre><code class="language-csharp">using Luna.Domain.Entities;
+
+namespace Luna.Application.Common.Interfaces;
+
+public interface ISessionRepository
+{
+    Task&lt;Session&gt; CreateAsync(Session session);
+    Task&lt;Session?&gt; GetByTokenAsync(string token);
+    Task&lt;List&lt;Session&gt;&gt; GetByUserIdAsync(Guid userId);
+    Task DeleteAsync(string token);
+    Task DeleteByUserIdAsync(Guid userId);
+    Task&lt;int&gt; DeleteExpiredAsync();
+}
+</code></pre>
+<p><strong>Métodos importantes:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><code>GetByTokenAsync(string)</code></td><td>Busca sesión por el refresh token. Fundamental para <code>RefreshAsync()</code> y <code>LogoutAsync()</code>.</td></tr>
+<tr><td><code>DeleteAsync(string)</code></td><td>Elimina por token (no por ID). Se usa en logout y refresh rotation.</td></tr>
+<tr><td><code>DeleteByUserIdAsync(Guid)</code></td><td>Elimina TODAS las sesiones de un usuario. Sirve para “cerrar sesión en todos lados”.</td></tr>
+<tr><td><code>DeleteExpiredAsync()</code></td><td>Limpia sesiones vencidas (tarea de mantenimiento).</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h4 id="iverificationrepositorycs"><a class="header" href="#iverificationrepositorycs"><code>IVerificationRepository.cs</code></a></h4>
+<pre><code class="language-csharp">using Luna.Domain.Entities;
+
+namespace Luna.Application.Common.Interfaces;
+
+public interface IVerificationRepository
+{
+    Task&lt;Verification&gt; CreateAsync(Verification verification);
+    Task&lt;Verification?&gt; GetByIdentifierAsync(string identifier);
+    Task&lt;Verification?&gt; GetByIdentifierAndValueAsync(string identifier, string value);
+    Task DeleteAsync(Guid id);
+    Task DeleteByIdentifierAsync(string identifier);
+    Task&lt;int&gt; DeleteExpiredAsync();
+}
+</code></pre>
+<p><strong>Detalle de los métodos de búsqueda:</strong></p>
+<ul>
+<li><code>GetByIdentifierAsync("user@email.com")</code> → Busca el código de verificación <strong>válido</strong> (no expirado) más reciente para ese email. Útil para reenviar códigos.</li>
+<li><code>GetByIdentifierAndValueAsync("user@email.com", "123456")</code> → Busca un código específico para un identificador. Se usa para <strong>verificar</strong> que el código ingresado por el usuario sea correcto y no haya expirado.</li>
+</ul>
+<hr>
+<h4 id="itokenservicecs"><a class="header" href="#itokenservicecs"><code>ITokenService.cs</code></a></h4>
+<pre><code class="language-csharp">using System.Security.Claims;
+using Luna.Domain.Enums;
+
+namespace Luna.Application.Common.Interfaces;
+
+public interface ITokenService
+{
+    (string accessToken, string refreshToken) GenerateTokens(Guid userId, string email, UserRole role);
+    ClaimsPrincipal? ValidateAccessToken(string token);
+    ClaimsPrincipal? ValidateRefreshToken(string token);
+}
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><code>GenerateTokens(userId, email, role)</code></td><td>Genera un par de tokens: access + refresh. Devuelve tupla.</td></tr>
+<tr><td><code>ValidateAccessToken(token)</code></td><td>Valida un access token usando <code>_secret</code>. Devuelve los claims si es válido, <code>null</code> si no.</td></tr>
+<tr><td><code>ValidateRefreshToken(token)</code></td><td>Valida un refresh token usando <code>_refreshSecret</code>. Devuelve los claims si es válido, <code>null</code> si no.</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Decisión:</strong> Access y refresh tokens se firman con <strong>distintas claves secretas</strong> (<code>_secret</code> y <code>_refreshSecret</code>). Esto es seguridad en capas — si comprometés una clave, la otra sigue siendo segura. Además el refresh token se guarda en DB (en Sessions) para poder revocarlo.</p>
+<hr>
+<h4 id="ipasswordservicecs"><a class="header" href="#ipasswordservicecs"><code>IPasswordService.cs</code></a></h4>
+<pre><code class="language-csharp">namespace Luna.Application.Common.Interfaces;
+
+public interface IPasswordService
+{
+    string HashPassword(string password);
+    bool VerifyPassword(string password, string hash);
+}
+</code></pre>
+<p>Contrato mínimo: hashear y verificar. La implementación usa BCrypt.</p>
+<hr>
+<h4 id="iauthservicecs"><a class="header" href="#iauthservicecs"><code>IAuthService.cs</code></a></h4>
+<pre><code class="language-csharp">using Luna.Application.Common.Models;
+
+namespace Luna.Application.Common.Interfaces;
+
+public interface IAuthService
+{
+    Task&lt;AuthResponse&gt; RegisterAsync(RegisterRequest request);
+    Task&lt;AuthResponse&gt; LoginAsync(LoginRequest request);
+    Task&lt;RefreshResponse&gt; RefreshAsync(string refreshToken);
+    Task LogoutAsync(string refreshToken);
+    // Métodos comentados (para implementación futura):
+    //Task&lt;AuthResponse&gt; VerifyEmailAsync(string identifier, string code);
+    //Task ResendVerificationAsync(string email);
+    //Task&lt;ForgotPasswordResponse&gt; ForgotPasswordAsync(string email);
+    //Task&lt;ResetPasswordResponse&gt; ResetPasswordAsync(string email, string code, string newPassword);
+    //Task&lt;UserDto&gt; UpdateMyProfileAsync(Guid userId, UpdateMyProfileRequest request);
+    //Task&lt;UserDto&gt; ChangePasswordAsync(Guid userId, ChangePasswordRequest request);
+}
+</code></pre>
+<p><strong>Métodos implementados vs comentados:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Método</th><th>Estado</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><code>RegisterAsync</code></td><td>✅ Implementado</td><td>Registro con email+password</td></tr>
+<tr><td><code>LoginAsync</code></td><td>✅ Implementado</td><td>Login con email+password</td></tr>
+<tr><td><code>RefreshAsync</code></td><td>✅ Implementado</td><td>Rotación de tokens</td></tr>
+<tr><td><code>LogoutAsync</code></td><td>✅ Implementado</td><td>Cierre de sesión</td></tr>
+<tr><td><code>VerifyEmailAsync</code></td><td>❌ Pendiente</td><td>Verificar email con código</td></tr>
+<tr><td><code>ResendVerificationAsync</code></td><td>❌ Pendiente</td><td>Reenviar código</td></tr>
+<tr><td><code>ForgotPasswordAsync</code></td><td>❌ Pendiente</td><td>Olvidé mi contraseña</td></tr>
+<tr><td><code>ResetPasswordAsync</code></td><td>❌ Pendiente</td><td>Resetear contraseña</td></tr>
+<tr><td><code>UpdateMyProfileAsync</code></td><td>❌ Pendiente</td><td>Actualizar perfil</td></tr>
+<tr><td><code>ChangePasswordAsync</code></td><td>❌ Pendiente</td><td>Cambiar contraseña</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h3 id="53-commoninterfacesirepositorycs-no-existe"><a class="header" href="#53-commoninterfacesirepositorycs-no-existe">5.3. <code>Common/Interfaces/IRepository.cs</code> (no existe)</a></h3>
+<p>Si el proyecto creciera, se podría crear un <code>IRepository&lt;T&gt;</code> genérico para no repetir <code>CreateAsync</code>, <code>UpdateAsync</code>, <code>DeleteAsync</code> en cada repositorio. Por ahora cada repositorio tiene su propia interfaz porque las consultas son muy específicas.</p>
+<hr>
+<h3 id="54-commonmodels--dtos-data-transfer-objects"><a class="header" href="#54-commonmodels--dtos-data-transfer-objects">5.4. <code>Common/Models/</code> — DTOs (Data Transfer Objects)</a></h3>
+<h4 id="authrequestcs"><a class="header" href="#authrequestcs"><code>AuthRequest.cs</code></a></h4>
+<pre><code class="language-csharp">namespace Luna.Application.Common.Models;
+
+public record LoginRequest(string Email, string Password);
+public record RegisterRequest(string Name, string Email, string Password);
+public record RefreshRequest(string RefreshToken);
+public record VerifyEmailRequest(string Identifier, string Code);
+public record ForgotPasswordRequest(string Email);
+public record ResetPasswordRequest(string Email, string Code, string NewPassword);
+public record ResendVerificactionRequest(string Email);
+public record UpdateMyProfileRequest(string? Name, string? Bio, string? Phone, string? Username, string? Image);
+public record ChangePasswordRequest(string CurrentPassword, string NewPassword);
+</code></pre>
+<p><strong>Explicación:</strong></p>
+<p>Usamos <strong><code>record</code></strong> en vez de <code>class</code> porque:</p>
+<ol>
+<li><strong>Inmutabilidad</strong>: los records son inmutables por defecto. Una vez creados, no se modifican.</li>
+<li><strong>Sintaxis concisa</strong>: <code>record RegisterRequest(string Name, string Email, string Password)</code> — una línea declara el tipo, el constructor, y las propiedades.</li>
+<li><strong>Value equality</strong>: dos records son iguales si tienen los mismos valores, no la misma referencia.</li>
+<li><strong>Deconstruction</strong>: podés desarmarlos fácilmente: <code>var (name, email, password) = request;</code></li>
+</ol>
+<p>Cada record representa el body de un request HTTP. Los campos nullables (<code>string?</code>) indican que el campo es opcional en el request.</p>
+<hr>
+<h4 id="authresultcs"><a class="header" href="#authresultcs"><code>AuthResult.cs</code></a></h4>
+<pre><code class="language-csharp">namespace Luna.Application.Common.Models;
+
+public record AuthResponse
+{
+    public string Message { get; init; } = string.Empty;
+    public UserDto? User { get; init; }
+    public string AccessToken { get; init; } = string.Empty;
+    public string RefreshToken { get; init; } = string.Empty;
+}
+
+public record RefreshResponse
+{
+    public string Message { get; init; } = string.Empty;
+    public string AccessToken { get; init; } = string.Empty;
+    public string RefreshToken { get; init; } = string.Empty;
+}
+
+public record ForgotPasswordResponse
+{
+    public string Message { get; init; } = string.Empty;
+    public DateTime ExpiresAt { get; init; }
+}
+
+public record ResetPasswordResponse
+{
+    public string Message { get; init; } = string.Empty;
+}
+</code></pre>
+<p><strong>Explicación:</strong></p>
+<p>Usamos <code>{ get; init; }</code> en vez de <code>{ get; set; }</code>. La diferencia:</p>
+<ul>
+<li><code>init</code> permite asignar SOLO en la inicialización (constructor o object initializer). Después es inmutable.</li>
+<li>Es una práctica de seguridad: una vez que la respuesta se construye, no debería modificarse.</li>
+</ul>
+<pre><code class="language-csharp">// Así se usan:
+var response = new AuthResponse
+{
+    Message = "Login successful",
+    User = userDto,
+    AccessToken = accessToken,
+    RefreshToken = refreshToken
+};
+// response.Message = "otra cosa"; // ❌ Error de compilación
+</code></pre>
+<hr>
+<h4 id="userdtocs"><a class="header" href="#userdtocs"><code>UserDto.cs</code></a></h4>
+<pre><code class="language-csharp">using Luna.Domain.Enums;
+
+namespace Luna.Application.Common.Models;
+
+public record UserDto
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public bool EmailVerified { get; set; }
+    public string? Phone { get; set; }
+    public string? Image { get; set; }
+    public UserRole Role { get; set; }
+    public string? UserName { get; set; }
+    public string? Bio { get; set; }
+    public bool IsActive { get; set; }
+    public DateTime? LastSeenAt { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime? DeletedAt { get; set; }
+    public Guid? DeletedByUserId { get; set; }
+    public string? DeletedByName { get; set; }
+}
+</code></pre>
+<p><strong>¿Por qué un DTO separado si es casi igual a la entidad User?</strong></p>
+<ol>
+<li><strong>Seguridad</strong>: Nunca expongas la entidad directamente. El DTO controla qué campos se devuelven. Por ejemplo, si <code>User</code> tuviera <code>PasswordHash</code>, no lo incluirías en el DTO.</li>
+<li><strong>Evolución separada</strong>: La entidad puede cambiar (ej: agregar <code>LastLoginIp</code>) sin cambiar la API. O la API puede devolver datos calculados (ej: <code>FullName = $"{FirstName} {LastName}"</code>) que no existen en la entidad.</li>
+<li><strong>Serialización</strong>: Los DTOs pueden tener anotaciones <code>[JsonPropertyName]</code> o <code>[Ignore]</code> sin contaminar la entidad.</li>
+</ol>
+<hr>
+<h4 id="userrequestcs"><a class="header" href="#userrequestcs"><code>UserRequest.cs</code></a></h4>
+<pre><code class="language-csharp">using Luna.Domain.Enums;
+
+namespace Luna.Application.Common.Models;
+
+public record CreateUserRequest(
+    string Name,
+    string Email,
+    string Password,
+    UserRole Role,
+    string? Phone = null
+);
+
+public record UpdateUserRequest(
+    string? Name,
+    string? Email,
+    UserRole? Role,
+    string? Phone,
+    string? Bio,
+    string? UserName,
+    bool? IsActive
+);
+
+public record UserFilter(
+    string? Search,
+    UserRole? Role,
+    bool? IsActive,
+    bool? IncludeDeleted
+);
+</code></pre>
+<p><strong>UserFilter</strong> es interesante: usa el <strong>patrón Query Object</strong> (o Specification). En vez de pasar 4 parámetros separados a <code>GetAllAsync</code>, pasás un objeto que encapsula todos los filtros. Ventajas:</p>
+<ul>
+<li>Si agregás un filtro, no cambiás la firma del método</li>
+<li>Podés pasar <code>null</code> para omitir un filtro</li>
+<li>Es fácil de serializar/deserializar desde query strings</li>
+</ul>
+<hr>
+<h3 id="55-commonmappingmappingusercs"><a class="header" href="#55-commonmappingmappingusercs">5.5. <code>Common/Mapping/MappingUser.cs</code></a></h3>
+<pre><code class="language-csharp">using Luna.Application.Common.Models;
+using Luna.Domain.Entities;
+using Luna.Domain.Exceptions;
+
+namespace Luna.Application.Common.Mapping;
+
+public static class MappingUser
+{
+    public static UserDto MapUserToDto(this User user)
+    {
+        if (user == null)
+            throw AppExceptions.UnprocessableEntity(nameof(user));
+
+        return new UserDto
+        {
+            Id = user.Id,
+            Name = user.Name,
+            Email = user.Email,
+            EmailVerified = user.EmailVerified,
+            Phone = user.Phone,
+            Image = user.Image,
+            Role = user.Role,
+            UserName = user.UserName,
+            Bio = user.Bio,
+            IsActive = user.IsActive,
+            LastSeenAt = user.LastSeenAt,
+            CreatedAt = user.CreatedAt,
+            DeletedAt = user.DeletedAt,
+            DeletedByUserId = user.DeletedByUserId,
+            DeletedByName = user.DeletedByName,
+        };
+    }
+}
+</code></pre>
+<p><strong>Explicación:</strong></p>
+<p>Es un <strong>extension method</strong> (<code>this User user</code>). Esto permite escribir:</p>
+<pre><code class="language-csharp">var userDto = user.MapUserToDto();
+</code></pre>
+<p>en vez de:</p>
+<pre><code class="language-csharp">var userDto = MappingUser.MapUserToDto(user);
+</code></pre>
+<p>El <code>if (user == null)</code> es una <strong>guard clause</strong> — lanza una excepción temprano si alguien pasa null. Es mejor que dejar que se produzca un <code>NullReferenceException</code> en algún lugar oscuro.</p>
+<p>Notá que <strong>no se mapean campos sensibles</strong>. Si <code>User</code> tuviera <code>PasswordHash</code> o <code>FailedLoginAttempts</code>, no se incluirían en el DTO. Esto es control de acceso a nivel de código.</p>
+<hr>
+<h3 id="56-featuresauthauthservicecs--el-corazón-de-la-autenticación"><a class="header" href="#56-featuresauthauthservicecs--el-corazón-de-la-autenticación">5.6. <code>Features/Auth/AuthService.cs</code> — El Corazón de la Autenticación</a></h3>
+<pre><code class="language-csharp">using System.Security.Claims;
+using Luna.Application.Common.Interfaces;
+using Luna.Application.Common.Models;
+using Luna.Application.Common.Mapping;
+using Luna.Domain.Exceptions;
+using Luna.Domain.Entities;
+using Luna.Domain.Enums;
+
+namespace Luna.Application.Features.Auth;
+
+public class AuthService : IAuthService
+{
+    // Dependencias inyectadas vía constructor
+    private readonly IUserRepository _userRepository;
+    private readonly IAccountRepository _accountRepository;
+    private readonly ISessionRepository _sessionRepository;
+    private readonly IPasswordService _passwordService;
+    private readonly ITokenService _tokenService;
+
+    public AuthService(
+        IUserRepository userRepository,
+        IAccountRepository accountRepository,
+        ISessionRepository sessionRepository,
+        IPasswordService passwordService,
+        ITokenService tokenService)
+    {
+        _userRepository = userRepository;
+        _accountRepository = accountRepository;
+        _sessionRepository = sessionRepository;
+        _passwordService = passwordService;
+        _tokenService = tokenService;
+    }
+</code></pre>
+<p><strong>Inyección de dependencias:</strong> <code>AuthService</code> recibe <strong>5 dependencias</strong>, todas por interfaz. No sabe si <code>IPasswordService</code> usa BCrypt o Argon2. No sabe si <code>ITokenService</code> genera JWT o tokens opacos. Solo sabe que cumplen con el contrato.</p>
+<hr>
+<h4 id="registerasync--registro-de-usuario"><a class="header" href="#registerasync--registro-de-usuario"><code>RegisterAsync</code> — Registro de Usuario</a></h4>
+<pre><code class="language-csharp">    public async Task&lt;AuthResponse&gt; RegisterAsync(RegisterRequest request)
+    {
+        // 1. Verificar que el email no esté registrado
+        var existingUser = await _userRepository.GetByEmailAsync(request.Email);
+        if (existingUser != null)
+            throw AppExceptions.Conflict("Email already registered");
+
+        // 2. Hashear la contraseña
+        var hashedPassword = _passwordService.HashPassword(request.Password);
+
+        // 3. Crear entidad User
+        var user = new User
+        {
+            Id = Guid.NewGuid(),
+            Name = request.Name,
+            Email = request.Email,
+            Role = UserRole.User,
+            IsActive = true,
+            EmailVerified = false,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+        await _userRepository.CreateAsync(user);
+
+        // 4. Crear Account de tipo "credentials"
+        var account = new Account
+        {
+            Id = Guid.NewGuid(),
+            AccountId = user.Id.ToString(),
+            ProviderId = "credentials",
+            UserId = user.Id,
+            Password = hashedPassword,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+        await _accountRepository.CreateAsync(account);
+
+        // 5. Generar tokens JWT
+        var (accessToken, refreshToken) = _tokenService.GenerateTokens(
+            user.Id, user.Email, user.Role);
+
+        // 6. Crear sesión con el refresh token
+        var session = new Session
+        {
+            Id = Guid.NewGuid(),
+            UserId = user.Id,
+            Token = refreshToken,
+            ExpiresAt = DateTime.UtcNow.AddDays(7),
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+        await _sessionRepository.CreateAsync(session);
+
+        // 7. Armar respuesta
+        var response = new AuthResponse
+        {
+            Message = "User created sucessfully. Please veriry your email",
+            User = user.MapUserToDto(),
+            AccessToken = accessToken,
+            RefreshToken = refreshToken
+        };
+
+        return response;
+    }
+</code></pre>
+<p><strong>Flujo paso a paso:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Paso</th><th>Acción</th><th>Por qué</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td><td>Verificar email duplicado</td><td>No permitir dos usuarios con el mismo email</td></tr>
+<tr><td>2</td><td>Hashear password</td><td>NUNCA guardar contraseñas en texto plano</td></tr>
+<tr><td>3</td><td>Crear User</td><td>La entidad principal del usuario</td></tr>
+<tr><td>4</td><td>Crear Account</td><td>Asocia el método de auth “credentials” al User</td></tr>
+<tr><td>5</td><td>Generar tokens</td><td>El access token dura 15 min, el refresh 7 días</td></tr>
+<tr><td>6</td><td>Crear Session</td><td>Guarda el refresh token para revocación futura</td></tr>
+<tr><td>7</td><td>Devolver respuesta</td><td>Incluye tokens para que el frontend los guarde</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Decisión:</strong> El registro <strong>ya devuelve tokens</strong> y crea una sesión. El usuario no necesita loguearse después de registrarse. Es una decisión de UX.</p>
+<hr>
+<h4 id="loginasync--inicio-de-sesión"><a class="header" href="#loginasync--inicio-de-sesión"><code>LoginAsync</code> — Inicio de Sesión</a></h4>
+<pre><code class="language-csharp">    public async Task&lt;AuthResponse&gt; LoginAsync(LoginRequest request)
+    {
+        // 1. Buscar cuenta por email
+        var account = await _accountRepository.GetCredentialsByEmailAsync(request.Email);
+        if (account == null)
+            throw AppExceptions.Unauthorized("Invalid credentials");
+
+        // 2. Verificar contraseña
+        if (account.Password == null ||
+            !_passwordService.VerifyPassword(request.Password, account.Password))
+            throw AppExceptions.Unauthorized("Invalid credentials");
+
+        // 3. Obtener usuario asociado a la cuenta
+        var user = await _userRepository.GetByIdAsync(account.UserId);
+        if (user == null)
+            throw AppExceptions.Unauthorized("User not found");
+
+        // 4. Verificar que no esté soft-deleted
+        if (user.DeletedAt != null)
+            throw AppExceptions.Unauthorized("Account has been deactivated");
+
+        // 5. Generar nuevos tokens
+        var (accessToken, refreshToken) = _tokenService.GenerateTokens(
+            user.Id, user.Email, user.Role);
+
+        // 6. Crear nueva sesión
+        var session = new Session { ... };
+        await _sessionRepository.CreateAsync(session);
+
+        // 7. Responder
+        return new AuthResponse { ... };
+    }
+</code></pre>
+<p><strong>Flujo paso a paso:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Paso</th><th>Acción</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td><td>Busca Account con <code>ProviderId == "credentials"</code> por email. Usa <code>Include(a =&gt; a.User)</code> porque la query joinnea User.</td></tr>
+<tr><td>2</td><td>Verifica el hash de la contraseña usando BCrypt. Mensaje genérico “Invalid credentials” (no revela si el email existe o no).</td></tr>
+<tr><td>3</td><td>Obtiene el User por ID (el Include de Account podría no traer User si no se configuró eager loading).</td></tr>
+<tr><td>4</td><td>Verifica soft delete. Usuario eliminado lógicamente no puede loguearse.</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Seguridad:</strong> El mensaje de error es genérico (<code>"Invalid credentials"</code>) para no dar pistas sobre qué dato es incorrecto (email o password). Esto previene ataques de enumeración de usuarios.</p>
+<hr>
+<h4 id="refreshasync--rotación-de-tokens"><a class="header" href="#refreshasync--rotación-de-tokens"><code>RefreshAsync</code> — Rotación de Tokens</a></h4>
+<pre><code class="language-csharp">    public async Task&lt;RefreshResponse&gt; RefreshAsync(string refreshToken)
+    {
+        // 1. Validar el refresh token JWT (firma, expiración)
+        var principal = _tokenService.ValidateRefreshToken(refreshToken);
+        if (principal == null)
+            throw AppExceptions.Unauthorized("Invalid or expired refresh token");
+
+        // 2. Extraer userId del token
+        var userIdClaim = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (!Guid.TryParse(userIdClaim, out var userId))
+            throw AppExceptions.Unauthorized("Invalid refresh token");
+
+        // 3. Buscar la sesión activa en DB por ese token
+        var existingSession = await _sessionRepository.GetByTokenAsync(refreshToken);
+        if (existingSession == null)
+            throw AppExceptions.Unauthorized("Session not found");
+
+        // 4. Verificar expiración de la sesión
+        if (existingSession.ExpiresAt &lt; DateTime.UtcNow)
+            throw AppExceptions.Unauthorized("Session expired");
+
+        // 5. Verificar que el usuario existe y está activo
+        var user = await _userRepository.GetByIdAsync(userId);
+        if (user == null || user.DeletedAt != null)
+            throw AppExceptions.Unauthorized("User not found or deactivated");
+
+        // 6. Generar NUEVOS tokens (rotación)
+        var (newAccessToken, newRefreshToken) = _tokenService.GenerateTokens(
+            user.Id, user.Email, user.Role);
+
+        // 7. ELIMINAR la sesión anterior (invalida el refresh token viejo)
+        await _sessionRepository.DeleteAsync(refreshToken);
+
+        // 8. CREAR nueva sesión con el nuevo refresh token
+        var newSession = new Session { ... };
+        await _sessionRepository.CreateAsync(newSession);
+
+        return new RefreshResponse { ... };
+    }
+</code></pre>
+<p><strong>¿Por qué 4 verificaciones para el refresh token?</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Nivel</th><th>Verificación</th><th>Qué previene</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td><td>JWT validation (firma + exp)</td><td>Token falsificado o expirado</td></tr>
+<tr><td>2</td><td>Extraer userId</td><td>Token mal formado</td></tr>
+<tr><td>3</td><td>Sesión existe en DB</td><td>Token revocado o ya usado (por rotación anterior)</td></tr>
+<tr><td>4</td><td>Sesión no expirada</td><td>Token válido pero sesión expirada</td></tr>
+<tr><td>5</td><td>Usuario activo</td><td>Usuario eliminado no puede refrescar</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Rotación de refresh tokens</strong> (pasos 7 y 8): Cada vez que se refresca, el token anterior se invalida y se crea uno nuevo. Esto significa que si alguien roba un refresh token y lo usa, el siguiente refresh del usuario legítimo fallará (porque el token ya fue usado/invalidado). El usuario legítimo tiene que volver a loguearse.</p>
+<p>Esto se conoce como <strong>refresh token rotation</strong> y es una práctica de seguridad recomendada por OAuth 2.0.</p>
+<hr>
+<h4 id="logoutasync"><a class="header" href="#logoutasync"><code>LogoutAsync</code></a></h4>
+<pre><code class="language-csharp">    public async Task LogoutAsync(string refreshToken)
+    {
+        await _sessionRepository.DeleteAsync(refreshToken);
+    }
+</code></pre>
+<p>Simplemente elimina la sesión de la DB. Así el refresh token queda invalidado. Si alguien intenta usar ese token después, en el paso 3 de <code>RefreshAsync</code> no encontrará la sesión y fallará con “Session not found”.</p>
+<hr>
+<h2 id="6-lunainfrastructure--capa-de-infraestructura"><a class="header" href="#6-lunainfrastructure--capa-de-infraestructura">6. Luna.Infrastructure — Capa de Infraestructura</a></h2>
+<h3 id="61-lunainfrastructurecsproj"><a class="header" href="#61-lunainfrastructurecsproj">6.1. <code>Luna.Infrastructure.csproj</code></a></h3>
+<pre><code class="language-xml">&lt;Project Sdk="Microsoft.NET.Sdk"&gt;
+
+  &lt;ItemGroup&gt;
+    &lt;ProjectReference Include="..\Luna.Application\Luna.Application.csproj" /&gt;
+  &lt;/ItemGroup&gt;
+
+  &lt;ItemGroup&gt;
+    &lt;PackageReference Include="BCrypt.Net-Next" Version="4.2.0" /&gt;
+    &lt;PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0" /&gt;
+    &lt;PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" /&gt;
+    &lt;PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.19.1" /&gt;
+  &lt;/ItemGroup&gt;
+
+  &lt;PropertyGroup&gt;
+    &lt;TargetFramework&gt;net10.0&lt;/TargetFramework&gt;
+    &lt;ImplicitUsings&gt;enable&lt;/ImplicitUsings&gt;
+    &lt;Nullable&gt;enable&lt;/Nullable&gt;
+    &lt;RootNamespace&gt;Luna.Infrastructure&lt;/RootNamespace&gt;
+  &lt;/PropertyGroup&gt;
+
+&lt;/Project&gt;
+</code></pre>
+<p><strong>Paquetes:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Paquete</th><th>Versión</th><th>Propósito</th></tr>
+</thead>
+<tbody>
+<tr><td><code>BCrypt.Net-Next</code></td><td>4.2.0</td><td>Hash de contraseñas con algoritmo BCrypt</td></tr>
+<tr><td><code>Microsoft.EntityFrameworkCore</code></td><td>10.0.0</td><td>ORM para acceso a datos</td></tr>
+<tr><td><code>Npgsql.EntityFrameworkCore.PostgreSQL</code></td><td>10.0.0</td><td>Driver de PostgreSQL para EF Core</td></tr>
+<tr><td><code>System.IdentityModel.Tokens.Jwt</code></td><td>8.19.1</td><td>Generación y validación de JWT</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h3 id="62-persistenceapplicationdbcontextcs"><a class="header" href="#62-persistenceapplicationdbcontextcs">6.2. <code>Persistence/ApplicationDbContext.cs</code></a></h3>
+<pre><code class="language-csharp">using Luna.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+
+namespace Luna.Infrastructure.Persistence;
+
+public class ApplicationDbContext : DbContext
+{
+    public ApplicationDbContext(DbContextOptions&lt;ApplicationDbContext&gt; options)
+        : base(options) { }
+
+    public DbSet&lt;User&gt; Users =&gt; Set&lt;User&gt;();
+    public DbSet&lt;Account&gt; Accounts =&gt; Set&lt;Account&gt;();
+    public DbSet&lt;Session&gt; Sessions =&gt; Set&lt;Session&gt;();
+    public DbSet&lt;Verification&gt; Verifications =&gt; Set&lt;Verification&gt;();
+
+    // Configuración adicional se carga desde Configurations/
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfigurationsFromAssembly(
+            typeof(ApplicationDbContext).Assembly);
+        base.OnModelCreating(modelBuilder);
+    }
+}
+</code></pre>
+<p><strong>Explicación:</strong></p>
+<ul>
+<li>
+<p><code>Users =&gt; Set&lt;User&gt;()</code> — Es una propiedad <code>DbSet&lt;T&gt;</code> que usa <strong>expression-bodied member</strong> con <code>=&gt;</code>. Es equivalente a:</p>
+<pre><code class="language-csharp">public DbSet&lt;User&gt; Users { get { return Set&lt;User&gt;(); } }
+</code></pre>
+<p><code>Set&lt;User&gt;()</code> es un método de <code>DbContext</code> que devuelve el <code>DbSet</code> para la entidad.</p>
+</li>
+<li>
+<p><code>ApplyConfigurationsFromAssembly(...)</code> — Busca automáticamente todas las clases que implementan <code>IEntityTypeConfiguration&lt;T&gt;</code> en el assembly de <code>ApplicationDbContext</code> y las aplica. Esto permite tener configuraciones separadas por entidad en lugar de un <code>OnModelCreating</code> gigante.</p>
+</li>
+</ul>
+<hr>
+<h3 id="63-persistenceconfigurations--mapeo-de-entidades-a-tablas"><a class="header" href="#63-persistenceconfigurations--mapeo-de-entidades-a-tablas">6.3. <code>Persistence/Configurations/</code> — Mapeo de Entidades a Tablas</a></h3>
+<h4 id="userconfigurationcs"><a class="header" href="#userconfigurationcs"><code>UserConfiguration.cs</code></a></h4>
+<pre><code class="language-csharp">using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Luna.Domain.Entities;
+using Luna.Domain.Enums;
+
+namespace Luna.Infrastructure.Persistence.Configurations;
+
+public class UserConfiguration : IEntityTypeConfiguration&lt;User&gt;
+{
+    public void Configure(EntityTypeBuilder&lt;User&gt; builder)
+    {
+        builder.ToTable("Users");
+        builder.HasKey(u =&gt; u.Id);
+        builder.Property(u =&gt; u.Id).HasDefaultValueSql("gen_random_uuid()");
+
+        builder.Property(u =&gt; u.Name).IsRequired().HasColumnName("name").HasMaxLength(255);
+        builder.Property(u =&gt; u.Email).IsRequired().HasColumnName("email").HasMaxLength(255);
+        builder.HasIndex(u =&gt; u.Email).IsUnique();
+
+        builder.Property(u =&gt; u.EmailVerified).HasColumnName("email_verified")
+            .IsRequired().HasDefaultValue(false);
+
+        builder.Property(u =&gt; u.Phone).HasColumnName("phone");
+        builder.Property(u =&gt; u.Image).HasColumnName("image");
+
+        builder.Property(u =&gt; u.Role).HasColumnName("role")
+            .IsRequired().HasDefaultValue(UserRole.User);
+
+        builder.Property(u =&gt; u.UserName).HasColumnName("username").HasMaxLength(50);
+        builder.HasIndex(u =&gt; u.UserName).IsUnique();
+
+        builder.Property(u =&gt; u.Bio).HasColumnName("bio");
+
+        builder.Property(u =&gt; u.IsActive).HasColumnName("is_active")
+            .IsRequired().HasDefaultValue(true);
+
+        builder.Property(u =&gt; u.LastSeenAt).HasColumnName("last_seen_at");
+
+        builder.HasIndex(u =&gt; u.Role);
+        builder.HasIndex(u =&gt; u.CreatedAt).HasDatabaseName("idx_users_created_at");
+
+        builder.Property(u =&gt; u.CreatedAt).IsRequired().HasColumnName("created_at")
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
+        builder.Property(u =&gt; u.UpdatedAt).IsRequired().HasColumnName("updated_at")
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
+        builder.Property(u =&gt; u.DeletedAt).HasColumnName("deleted_at");
+        builder.Property(u =&gt; u.DeletedByUserId).HasColumnName("deleted_by_user_id");
+        builder.Property(u =&gt; u.DeletedByName).HasColumnName("deleted_by_name").HasMaxLength(255);
+    }
+}
+</code></pre>
+<p><strong>Decisiones de diseño en UserConfiguration:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Configuración</th><th>Explicación</th></tr>
+</thead>
+<tbody>
+<tr><td><code>ToTable("Users")</code></td><td>La tabla se llama “Users” en PostgreSQL (plural, PascalCase).</td></tr>
+<tr><td><code>HasDefaultValueSql("gen_random_uuid()")</code></td><td>PostgreSQL genera el UUID automáticamente con su función nativa. Más rápido que generar Guid en C#.</td></tr>
+<tr><td><code>HasColumnName("name")</code></td><td>Las columnas se mapean a snake_case en DB. <code>Name</code> en C# → <code>name</code> en PostgreSQL.</td></tr>
+<tr><td><code>HasMaxLength(255)</code></td><td>Define tamaño máximo de columna. Es buena práctica para índices.</td></tr>
+<tr><td><code>HasDefaultValue(UserRole.User)</code></td><td>El valor por defecto del enum en DB es 0 (User).</td></tr>
+<tr><td><code>HasDefaultValueSql("CURRENT_TIMESTAMP")</code></td><td>PostgreSQL asigna la fecha automáticamente. Usa la hora del servidor de BD.</td></tr>
+<tr><td><code>HasIndex(u =&gt; u.Email).IsUnique()</code></td><td>Índice único en email. Garantiza unicidad a nivel DB.</td></tr>
+</tbody>
+</table>
+</div>
+<h4 id="accountconfigurationcs"><a class="header" href="#accountconfigurationcs"><code>AccountConfiguration.cs</code></a></h4>
+<pre><code class="language-csharp">public class AccountConfiguration : IEntityTypeConfiguration&lt;Account&gt;
+{
+    public void Configure(EntityTypeBuilder&lt;Account&gt; builder)
+    {
+        builder.ToTable("Account");
+        builder.HasKey(a =&gt; a.Id);
+        builder.Property(a =&gt; a.Id).HasColumnName("id")
+            .HasDefaultValueSql("gen_random_uuid()");
+
+        builder.Property(a =&gt; a.AccountId).IsRequired().HasColumnName("account_id");
+        builder.HasIndex(a =&gt; a.AccountId);
+
+        builder.Property(a =&gt; a.ProviderId).IsRequired().HasColumnName("provider_id");
+        builder.HasIndex(a =&gt; a.ProviderId);
+
+        // Índice compuesto único: un provider no puede tener dos veces el mismo accountId
+        builder.HasIndex(a =&gt; new { a.ProviderId, a.AccountId }).IsUnique();
+
+        builder.Property(a =&gt; a.UserId).IsRequired().HasColumnName("user_id");
+        builder.HasIndex(a =&gt; a.UserId);
+
+        // Relación N:1 con User
+        builder.HasOne(a =&gt; a.User)
+            .WithMany()                            // User no tiene una colección de Accounts (por ahora)
+            .HasForeignKey(a =&gt; a.UserId)
+            .OnDelete(DeleteBehavior.Cascade);     // Si se borra el User, se borran sus Accounts
+
+        builder.Property(a =&gt; a.Password).HasColumnName("password");
+
+        builder.Property(a =&gt; a.CreatedAt).IsRequired()
+            .HasDefaultValueSql("CURRENT_TIMESTAMP").HasColumnName("created_at");
+        builder.Property(a =&gt; a.UpdatedAt).IsRequired()
+            .HasDefaultValueSql("CURRENT_TIMESTAMP").HasColumnName("updated_at");
+    }
+}
+</code></pre>
+<p><strong>Clave:</strong> <code>HasIndex(a =&gt; new { a.ProviderId, a.AccountId }).IsUnique()</code> crea un <strong>índice compuesto único</strong>. Esto garantiza que no puedas tener dos cuentas de Google con el mismo AccountId. La combinación (ProviderId + AccountId) es única.</p>
+<h4 id="sessionconfigurationcs"><a class="header" href="#sessionconfigurationcs"><code>SessionConfiguration.cs</code></a></h4>
+<pre><code class="language-csharp">public class SessionConfiguration : IEntityTypeConfiguration&lt;Session&gt;
+{
+    public void Configure(EntityTypeBuilder&lt;Session&gt; builder)
+    {
+        builder.ToTable("Sessions");
+        builder.HasKey(s =&gt; s.Id);
+        builder.Property(s =&gt; s.Id).HasDefaultValueSql("gen_random_uuid()");
+
+        builder.Property(s =&gt; s.ExpiresAt).IsRequired().HasColumnName("expires_at");
+
+        builder.Property(s =&gt; s.Token).IsRequired().HasColumnName("token");
+        builder.HasIndex(s =&gt; s.Token).IsUnique();  // El refresh token debe ser único
+
+        builder.Property(s =&gt; s.CreatedAt).IsRequired().HasColumnName("created_at")
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
+        builder.Property(s =&gt; s.UpdatedAt).IsRequired().HasColumnName("updated_at")
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+        builder.Property(s =&gt; s.IpAddress).HasColumnName("ip_address");
+        builder.Property(s =&gt; s.UserAgent).HasColumnName("user_agent");
+
+        builder.Property(s =&gt; s.UserId).IsRequired().HasColumnName("user_id");
+        builder.HasIndex(s =&gt; s.UserId);
+        builder.HasIndex(s =&gt; s.ExpiresAt);  // Índice para limpiar sesiones vencidas
+
+        builder.HasOne(s =&gt; s.User)
+            .WithMany()
+            .HasForeignKey(s =&gt; s.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+    }
+}
+</code></pre>
+<p><strong>Índices importantes:</strong></p>
+<ol>
+<li><code>HasIndex(s =&gt; s.Token).IsUnique()</code> — El refresh token es único. Se busca por token en <code>GetByTokenAsync()</code> y <code>DeleteAsync()</code>.</li>
+<li><code>HasIndex(s =&gt; s.ExpiresAt)</code> — Permite buscar eficientemente sesiones vencidas para <code>DeleteExpiredAsync()</code>.</li>
+</ol>
+<h4 id="verificationconfigurationcs"><a class="header" href="#verificationconfigurationcs"><code>VerificationConfiguration.cs</code></a></h4>
+<pre><code class="language-csharp">public class VerificationConfiguration : IEntityTypeConfiguration&lt;Verification&gt;
+{
+    public void Configure(EntityTypeBuilder&lt;Verification&gt; builder)
+    {
+        builder.ToTable("Verification");
+
+        builder.HasKey(v =&gt; v.Id);
+        builder.Property(v =&gt; v.Id).HasColumnName("id")
+            .HasDefaultValueSql("gen_random_uuid()");
+
+        builder.Property(v =&gt; v.Identifier).IsRequired().HasColumnName("identifier");
+        builder.HasIndex(v =&gt; v.Identifier);
+
+        builder.Property(v =&gt; v.Value).IsRequired().HasColumnName("value");
+        builder.HasIndex(v =&gt; v.Value);
+
+        builder.Property(v =&gt; v.ExpiresAt).IsRequired().HasColumnName("expires_at");
+        builder.HasIndex(v =&gt; v.ExpiresAt);
+
+        builder.Property(v =&gt; v.CreatedAt).IsRequired()
+            .HasDefaultValueSql("CURRENT_TIMESTAMP").HasColumnName("created_at");
+        builder.Property(v =&gt; v.UpdatedAt).IsRequired()
+            .HasDefaultValueSql("CURRENT_TIMESTAMP").HasColumnName("updated_at");
+    }
+}
+</code></pre>
+<hr>
+<h3 id="64-persistencerepositories--implementación-de-acceso-a-datos"><a class="header" href="#64-persistencerepositories--implementación-de-acceso-a-datos">6.4. <code>Persistence/Repositories/</code> — Implementación de Acceso a Datos</a></h3>
+<h4 id="userrepositorycs"><a class="header" href="#userrepositorycs"><code>UserRepository.cs</code></a></h4>
+<pre><code class="language-csharp">using Luna.Application.Common.Interfaces;
+using Luna.Application.Common.Models;
+using Luna.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+
+namespace Luna.Infrastructure.Persistence.Repositories;
+
+public class UserRepository : IUserRepository
+{
+    private readonly ApplicationDbContext _context;
+
+    public UserRepository(ApplicationDbContext context)
+    {
+        _context = context;
+    }
+</code></pre>
+<p><strong><code>GetAllAsync</code> con filtros dinámicos:</strong></p>
+<pre><code class="language-csharp">    public async Task&lt;List&lt;User&gt;&gt; GetAllAsync(UserFilter filter)
+    {
+        IQueryable&lt;User&gt; query = _context.Users.AsQueryable();
+
+        // Filtro: excluir soft-deleted por defecto
+        if (filter.IncludeDeleted != true)
+            query = query.Where(u =&gt; u.DeletedAt == null);
+
+        // Filtro: búsqueda por nombre o email (case-insensitive)
+        if (!string.IsNullOrWhiteSpace(filter.Search))
+        {
+            var search = filter.Search;
+            query = query.Where(u =&gt;
+                EF.Functions.ILike(u.Name, $"%{search}%") ||
+                EF.Functions.ILike(u.Email, $"%{search}%"));
+        }
+
+        // Filtro: por rol
+        if (filter.Role.HasValue)
+            query = query.Where(u =&gt; u.Role == filter.Role.Value);
+
+        // Filtro: por estado activo
+        if (filter.IsActive.HasValue)
+            query = query.Where(u =&gt; u.IsActive == filter.IsActive.Value);
+
+        return await query.OrderByDescending(u =&gt; u.CreatedAt).ToListAsync();
+    }
+</code></pre>
+<p><strong>Cómo funciona el filtro dinámico:</strong></p>
+<ol>
+<li><code>_context.Users.AsQueryable()</code> — Obtiene un <code>IQueryable&lt;User&gt;</code>, que es una consulta que NO se ha ejecutado todavía.</li>
+<li>Cada <code>query = query.Where(...)</code> agrega condiciones a la consulta SQL. Si el filtro no se especifica, no se agrega.</li>
+<li>Al final, <code>ToListAsync()</code> ejecuta la consulta en DB.</li>
+</ol>
+<p><strong>Ejemplo:</strong> Si llamás <code>GetAllAsync(new UserFilter { Search = "orlando", Role = UserRole.User })</code>, el SQL generado será:</p>
+<pre><code class="language-sql">SELECT * FROM "Users" AS u
+WHERE u."DeletedAt" IS NULL
+  AND (u."Name" ILIKE '%orlando%' OR u."Email" ILIKE '%orlando%')
+  AND u."Role" = 0
+ORDER BY u."CreatedAt" DESC
+</code></pre>
+<p>Si llamás <code>GetAllAsync(new UserFilter { IncludeDeleted = true })</code>, el SQL será simplemente:</p>
+<pre><code class="language-sql">SELECT * FROM "Users" AS u
+ORDER BY u."CreatedAt" DESC
+</code></pre>
+<p><strong><code>EF.Functions.ILike</code></strong> es una función de EF Core PostgreSQL que genera <code>ILIKE</code> en SQL. <code>ILIKE</code> es LIKE pero <strong>case-insensitive</strong>. Así “Orlando”, “ORLANDO”, “orlando” todas matchean.</p>
+<p><strong><code>GetByIdAsync</code> y <code>GetByEmailAsync</code>:</strong></p>
+<pre><code class="language-csharp">    public async Task&lt;User?&gt; GetByIdAsync(Guid id)
+    {
+        return await _context.Users
+            .FirstOrDefaultAsync(u =&gt; u.Id == id &amp;&amp; u.DeletedAt == null);
+    }
+
+    public async Task&lt;User?&gt; GetByEmailAsync(string email)
+    {
+        return await _context.Users
+            .FirstOrDefaultAsync(u =&gt; u.Email == email &amp;&amp; u.DeletedAt == null);
+    }
+</code></pre>
+<p>Ambos excluyen usuarios soft-deleted. Si querés incluir eliminados, usás <code>RestoreAsync</code> que usa <code>IgnoreQueryFilters()</code>.</p>
+<p><strong><code>SoftDeleteAsync</code>:</strong></p>
+<pre><code class="language-csharp">    public async Task SoftDeleteAsync(Guid id, Guid deletedByUserId, string deletedByName)
+    {
+        var user = await _context.Users.FindAsync(id);
+        if (user != null)
+        {
+            user.DeletedAt = DateTime.UtcNow;
+            user.DeletedByUserId = deletedByUserId;
+            user.DeletedByName = deletedByName;
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+        }
+    }
+</code></pre>
+<p>No borra el registro. Le setea <code>DeletedAt</code>, <code>DeletedByUserId</code> y <code>DeletedByName</code>. El <code>GetByIdAsync</code> y <code>GetByEmailAsync</code> lo excluyen automáticamente.</p>
+<p><strong><code>RestoreAsync</code>:</strong></p>
+<pre><code class="language-csharp">    public async Task RestoreAsync(Guid id)
+    {
+        var user = await _context.Users
+            .IgnoreQueryFilters()             // Incluye soft-deleted
+            .FirstOrDefaultAsync(u =&gt; u.Id == id);
+        if (user != null)
+        {
+            user.DeletedAt = null;
+            user.DeletedByUserId = null;
+            user.DeletedByName = null;
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+        }
+    }
+</code></pre>
+<p><code>IgnoreQueryFilters()</code> es necesario porque EF Core no tiene un query filter global en este proyecto. Pero si lo agregaran (ej: <code>builder.HasQueryFilter(u =&gt; u.DeletedAt == null)</code>), <code>RestoreAsync</code> lo necesitaría para encontrar usuarios eliminados.</p>
+<hr>
+<h4 id="accountrepositorycs"><a class="header" href="#accountrepositorycs"><code>AccountRepository.cs</code></a></h4>
+<pre><code class="language-csharp">    public async Task&lt;Account?&gt; GetCredentialsByEmailAsync(string email)
+    {
+        return await _context.Accounts
+            .Include(a =&gt; a.User)
+            .FirstOrDefaultAsync(a =&gt;
+                a.ProviderId == "credentials" &amp;&amp; a.User.Email == email);
+    }
+</code></pre>
+<p><strong>¿Por qué <code>Include(a =&gt; a.User)</code>?</strong> Porque necesitamos acceder a <code>User.Email</code> en el filtro. Sin el Include, EF Core haría lazy loading (otra consulta) o fallaría si está deshabilitado. Además, el <code>AuthService.LoginAsync()</code> usa <code>account.User.Email</code> después, así que lo necesitamos cargado.</p>
+<p><strong>Nota:</strong> Filtra por <code>ProviderId == "credentials"</code>. Esto es clave porque:</p>
+<ul>
+<li>Un usuario puede tener una cuenta de Google (<code>ProviderId = "google"</code>)</li>
+<li>Y otra de credentials (<code>ProviderId = "credentials"</code>)</li>
+<li>El login con email+password SOLO debe buscar en accounts de tipo “credentials”</li>
+</ul>
+<hr>
+<h4 id="sessionrepositorycs"><a class="header" href="#sessionrepositorycs"><code>SessionRepository.cs</code></a></h4>
+<pre><code class="language-csharp">    public async Task DeleteAsync(string token)
+    {
+        var session = await _context.Sessions
+            .FirstOrDefaultAsync(s =&gt; s.Token == token);
+        if (session != null)
+        {
+            _context.Sessions.Remove(session);
+            await _context.SaveChangesAsync();
+        }
+    }
+</code></pre>
+<p>Elimina por <strong>token</strong> (no por ID). Esto permite logout con solo el refresh token, sin necesidad de saber el ID de la sesión.</p>
+<pre><code class="language-csharp">    public async Task&lt;int&gt; DeleteExpiredAsync()
+    {
+        var expiredSessions = await _context.Sessions
+            .Where(s =&gt; s.ExpiresAt &lt; DateTime.UtcNow)
+            .ToListAsync();
+        int count = expiredSessions.Count;
+        _context.Sessions.RemoveRange(expiredSessions);
+        await _context.SaveChangesAsync();
+        return count;
+    }
+</code></pre>
+<p>Limpia sesiones expiradas. Devuelve cuántas eliminó. Útil para tareas programadas (ej: cada hora).</p>
+<hr>
+<h4 id="verificationrepositorycs"><a class="header" href="#verificationrepositorycs"><code>VerificationRepository.cs</code></a></h4>
+<pre><code class="language-csharp">    public async Task&lt;Verification?&gt; GetByIdentifierAsync(string identifier)
+    {
+        return await _context.Verifications
+            .Where(v =&gt; v.Identifier == identifier &amp;&amp; v.ExpiresAt &gt; DateTime.UtcNow)
+            .OrderByDescending(v =&gt; v.CreatedAt)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task&lt;Verification?&gt; GetByIdentifierAndValueAsync(
+        string identifier, string value)
+    {
+        return await _context.Verifications
+            .Where(v =&gt; v.Identifier == identifier
+                     &amp;&amp; v.Value == value
+                     &amp;&amp; v.ExpiresAt &gt; DateTime.UtcNow)
+            .OrderByDescending(v =&gt; v.CreatedAt)
+            .FirstOrDefaultAsync();
+    }
+</code></pre>
+<p>Ambos métodos:</p>
+<ol>
+<li>Filtran por identificador (email/teléfono)</li>
+<li>Solo devuelven códigos <strong>no expirados</strong> (<code>ExpiresAt &gt; DateTime.UtcNow</code>)</li>
+<li>Ordenan por fecha de creación descendente (el más reciente primero)</li>
+<li>Devuelven solo el primero (el más reciente)</li>
+</ol>
+<hr>
+<h3 id="65-services--implementación-de-servicios-de-infraestructura"><a class="header" href="#65-services--implementación-de-servicios-de-infraestructura">6.5. <code>Services/</code> — Implementación de Servicios de Infraestructura</a></h3>
+<h4 id="passwordservicecs"><a class="header" href="#passwordservicecs"><code>PasswordService.cs</code></a></h4>
+<pre><code class="language-csharp">using Luna.Application.Common.Interfaces;
+
+namespace Luna.Infrastructure.Services;
+
+public class PasswordService : IPasswordService
+{
+    public string HashPassword(string password)
+        =&gt; BCrypt.Net.BCrypt.HashPassword(password);
+
+    public bool VerifyPassword(string password, string hash)
+        =&gt; BCrypt.Net.BCrypt.Verify(password, hash);
+}
+</code></pre>
+<p><strong>BCrypt:</strong></p>
+<ul>
+<li><code>HashPassword(password)</code> → genera un hash de 60 caracteres que incluye el salt automáticamente.</li>
+<li><code>VerifyPassword(password, hash)</code> → extrae el salt del hash, lo aplica a la password, y compara.</li>
+<li>Es <strong>deliberadamente lento</strong> (~100ms). Esto hace que ataques de fuerza bruta sean imprácticos.</li>
+<li>No necesitamos almacenar el salt por separado — BCrypt lo incluye en el hash mismo.</li>
+</ul>
+<hr>
+<h4 id="tokenservicecs"><a class="header" href="#tokenservicecs"><code>TokenService.cs</code></a></h4>
+<pre><code class="language-csharp">using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Luna.Application.Common.Interfaces;
+using Luna.Domain.Enums;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Configuration;
+
+namespace Luna.Infrastructure.Services;
+
+public class TokenService : ITokenService
+{
+    private readonly string _secret;
+    private readonly string _refreshSecret;
+    private readonly string _issuer;
+    private readonly string _audience;
+    private readonly TimeSpan _accessTokenExpiry;
+    private readonly TimeSpan _refreshTokenExpiry;
+
+    public TokenService(IConfiguration configuration)
+    {
+        // Lee todas las configuraciones JWT del appsettings.json
+        _secret = configuration["Jwt:Secret"]
+            ?? throw new InvalidOperationException("JWT Secret is not configured");
+        _refreshSecret = configuration["Jwt:RefreshSecret"]
+            ?? throw new InvalidOperationException("JWT RefreshSecret is not configured");
+        _issuer = configuration["Jwt:Issuer"] ?? "cursinet-api";
+        _audience = configuration["Jwt:Audience"] ?? "cursinet-app";
+        _accessTokenExpiry = TimeSpan.Parse(
+            configuration["Jwt:AccessTokenExpiry"] ?? "00:15:00");
+        _refreshTokenExpiry = TimeSpan.Parse(
+            configuration["Jwt:RefreshTokenExpiry"] ?? "7.00:00:00");
+    }
+</code></pre>
+<p><strong>Constructor:</strong> Recibe <code>IConfiguration</code> (no strings sueltos). Esto es mejor porque:</p>
+<ol>
+<li>Todas las configuraciones vienen del mismo lugar</li>
+<li>El DI resuelve <code>IConfiguration</code> automáticamente</li>
+<li>No necesitamos registros complejos en DI</li>
+</ol>
+<p>El operador <code>??</code> ataja <code>null</code> pero <strong>no</strong> strings vacíos. Si <code>Jwt:Secret</code> es <code>""</code>, pasa y después explota. Esto es un bug conocido que dejamos así para discutirlo.</p>
+<p><strong><code>GenerateTokens</code>:</strong></p>
+<pre><code class="language-csharp">    public (string accessToken, string refreshToken) GenerateTokens(
+        Guid userId, string email, UserRole role)
+    {
+        var accessToken = GenerateAccessToken(userId, email, role);
+        var refreshToken = GenerateRefreshToken(userId);
+        return (accessToken, refreshToken);
+    }
+</code></pre>
+<p>Usa <strong>tuplas</strong> (<code>(string, string)</code>) en vez de un objeto. Es más liviano para métodos que devuelven exactamente 2 valores.</p>
+<p><strong><code>GenerateAccessToken</code>:</strong></p>
+<pre><code class="language-csharp">    private string GenerateAccessToken(Guid userId, string email, UserRole role)
+    {
+        // 1. Crear clave simétrica a partir del secret
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secret));
+
+        // 2. Crear credencial de firma con algoritmo HMAC-SHA256
+        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        // 3. Definir claims (información del usuario dentro del token)
+        var claims = new List&lt;Claim&gt;
+        {
+            new(ClaimTypes.NameIdentifier, userId.ToString()),
+            new(JwtRegisteredClaimNames.Email, email),
+            new(ClaimTypes.Role, role.ToString()),
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        };
+
+        // 4. Crear el token JWT
+        var token = new JwtSecurityToken(
+            issuer: _issuer,           // Quién emitió el token
+            audience: _audience,       // Para quién es el token
+            claims: claims,            // Datos del usuario
+            expires: DateTime.UtcNow.Add(_accessTokenExpiry),  // Expiración
+            signingCredentials: credentials  // Firma
+        );
+
+        // 5. Serializar a string
+        return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+</code></pre>
+<p><strong>Las partes de un JWT:</strong></p>
+<pre><code>Header:    { "alg": "HS256", "typ": "JWT" }
+Payload:   {
+             "nameidentifier": "c46f17a7-...",  ← ClaimTypes.NameIdentifier
+             "email": "user@email.com",           ← JwtRegisteredClaimNames.Email
+             "role": "User",                      ← ClaimTypes.Role
+             "jti": "a1b2c3d4-...",               ← JwtRegisteredClaimNames.Jti (ID único)
+             "exp": 1700000000,                   ← Expiración
+             "iss": "cursinet-api",               ← Issuer
+             "aud": "cursinet-app"                ← Audience
+           }
+Signature: HMACSHA256(base64urlEncode(header) + "." + base64urlEncode(payload), secret)
+</code></pre>
+<p><strong><code>GenerateRefreshToken</code>:</strong></p>
+<pre><code class="language-csharp">    private string GenerateRefreshToken(Guid userId)
+    {
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_refreshSecret));
+        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        var claims = new[]
+        {
+            new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        };
+
+        var token = new JwtSecurityToken(
+            issuer: _issuer,
+            audience: _audience,
+            claims: claims,
+            expires: DateTime.UtcNow.Add(_refreshTokenExpiry),
+            signingCredentials: credentials
+        );
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+</code></pre>
+<p><strong>Diferencia con access token:</strong> el refresh token NO incluye <code>email</code> ni <code>role</code> en los claims. Solo lleva <code>NameIdentifier</code> (userId) y <code>Jti</code> (ID único del token). Menos datos = menos exposición si se filtra.</p>
+<p><strong><code>ValidateToken</code>:</strong></p>
+<pre><code class="language-csharp">    private ClaimsPrincipal? ValidateToken(string token, string secret)
+    {
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
+        var tokenHandler = new JwtSecurityTokenHandler();
+
+        try
+        {
+            var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,   // Verifica la firma
+                IssuerSigningKey = key,            // Clave para verificar la firma
+                ValidIssuer = _issuer,             // Issuer esperado
+                ValidAudience = _audience,         // Audience esperado
+                ValidateIssuer = true,             // Verifica el issuer
+                ValidateAudience = true,           // Verifica el audience
+                ValidateLifetime = true,           // Verifica expiración
+                ClockSkew = TimeSpan.Zero,         // Sin tolerancia de tiempo
+            }, out _);
+
+            return principal;  // Si llega acá, el token es válido
+        }
+        catch
+        {
+            return null;  // Token inválido o expirado
+        }
+    }
+</code></pre>
+<p><strong><code>ClockSkew = TimeSpan.Zero</code></strong> — Por defecto, .NET da 5 minutos de tolerancia para diferencias de reloj entre servidores. Como tenemos un solo servidor, seteamos a cero para máxima seguridad.</p>
+<p><strong><code>catch</code> sin especificar tipo</strong> — Atrapa cualquier excepción (token expirado, firma inválida, formato incorrecto) y devuelve <code>null</code>. El llamador (AuthService) sabe que <code>null</code> significa “token inválido”.</p>
+<hr>
+<h3 id="66-migrations--migraciones-de-base-de-datos"><a class="header" href="#66-migrations--migraciones-de-base-de-datos">6.6. <code>Migrations/</code> — Migraciones de Base de Datos</a></h3>
+<h4 id="20260715031852_initcs"><a class="header" href="#20260715031852_initcs"><code>20260715031852_init.cs</code></a></h4>
+<pre><code class="language-csharp">using System;
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace Luna.Infrastructure.Migrations
+{
+    public partial class init : Migration
+    {
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            // Crea tabla Users
+            migrationBuilder.CreateTable(name: "Users", columns: ...);
+
+            // Crea tabla Verifications
+            migrationBuilder.CreateTable(name: "Verifications", columns: ...);
+
+            // Crea tabla Accounts (con FK a Users)
+            migrationBuilder.CreateTable(name: "Accounts", columns: ...);
+
+            // Crea tabla Sessions (con FK a Users)
+            migrationBuilder.CreateTable(name: "Sessions", columns: ...);
+
+            // Crea índices
+            migrationBuilder.CreateIndex(name: "IX_Accounts_UserId", ...);
+            migrationBuilder.CreateIndex(name: "IX_Sessions_UserId", ...);
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            // Rollback: elimina en orden inverso (primero hijos, luego padres)
+            migrationBuilder.DropTable(name: "Accounts");
+            migrationBuilder.DropTable(name: "Sessions");
+            migrationBuilder.DropTable(name: "Verifications");
+            migrationBuilder.DropTable(name: "Users");
+        }
+    }
+}
+</code></pre>
+<p><strong>¿Por qué no se ven todos los índices de las configuraciones aquí?</strong> Porque la migración se generó con EF Core. Las configuraciones de las entidades (<code>UserConfiguration</code>, etc.) definen índices únicos y compuestos que EF Core incluye automáticamente en la migración. Sin embargo, por temas de la versión de EF Core 10.0.9, algunos índices de las configuraciones más finas (como <code>HasIndex(u =&gt; u.Role)</code>) pueden no haberse generado porque el snapshot de la migración es anterior a agregar esas configuraciones.</p>
+<p><strong>Para regenerar migraciones desde cero:</strong></p>
+<pre><code class="language-bash">dotnet ef migrations remove -s src/Luna.Api/Luna.Api.csproj -p src/Luna.Infrastructure/Luna.Infrastructure.csproj
+dotnet ef migrations add init -s src/Luna.Api/Luna.Api.csproj -p src/Luna.Infrastructure/Luna.Infrastructure.csproj
+</code></pre>
+<hr>
+<h2 id="7-lunaapi--capa-de-presentación"><a class="header" href="#7-lunaapi--capa-de-presentación">7. Luna.Api — Capa de Presentación</a></h2>
+<h3 id="71-lunaapicsproj"><a class="header" href="#71-lunaapicsproj">7.1. <code>Luna.Api.csproj</code></a></h3>
+<pre><code class="language-xml">&lt;Project Sdk="Microsoft.NET.Sdk.Web"&gt;
+
+  &lt;PropertyGroup&gt;
+    &lt;TargetFramework&gt;net10.0&lt;/TargetFramework&gt;
+    &lt;Nullable&gt;enable&lt;/Nullable&gt;
+    &lt;ImplicitUsings&gt;enable&lt;/ImplicitUsings&gt;
+    &lt;RootNamespace&gt;Luna.Api&lt;/RootNamespace&gt;
+  &lt;/PropertyGroup&gt;
+
+  &lt;ItemGroup&gt;
+    &lt;PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" /&gt;
+    &lt;PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.0" /&gt;
+    &lt;PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.8" /&gt;
+    &lt;PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.9"&gt;
+      &lt;IncludeAssets&gt;runtime; build; native; contentfiles; analyzers; buildtransitive&lt;/IncludeAssets&gt;
+      &lt;PrivateAssets&gt;all&lt;/PrivateAssets&gt;
+    &lt;/PackageReference&gt;
+  &lt;/ItemGroup&gt;
+
+  &lt;ItemGroup&gt;
+    &lt;ProjectReference Include="..\Luna.Infrastructure\Luna.Infrastructure.csproj" /&gt;
+    &lt;ProjectReference Include="..\Luna.Application\Luna.Application.csproj" /&gt;
+  &lt;/ItemGroup&gt;
+
+&lt;/Project&gt;
+</code></pre>
+<p><strong>Paquetes adicionales (no están en Infrastructure):</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Paquete</th><th>Propósito</th></tr>
+</thead>
+<tbody>
+<tr><td><code>FluentValidation.AspNetCore</code></td><td>Validación automática de requests usando FluentValidation</td></tr>
+<tr><td><code>Microsoft.AspNetCore.Authentication.JwtBearer</code></td><td>Middleware de autenticación JWT para ASP.NET Core</td></tr>
+<tr><td><code>Microsoft.AspNetCore.OpenApi</code></td><td>Generación de OpenAPI/Swagger</td></tr>
+<tr><td><code>Microsoft.EntityFrameworkCore.Design</code></td><td>Necesario para comandos <code>dotnet ef</code> desde el startup project</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong><code>Microsoft.EntityFrameworkCore.Design</code></strong> tiene <code>PrivateAssets=all</code> porque solo es necesaria en tiempo de diseño (para generar migraciones), no en runtime.</p>
+<hr>
+<h3 id="72-programcs"><a class="header" href="#72-programcs">7.2. <code>Program.cs</code></a></h3>
+<pre><code class="language-csharp">using System.Text.Json.Serialization;
+using Luna.Api.Extensions;
+using FluentValidation;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// 1. Configurar JSON serialización
+builder.Services.AddControllers()
+    .AddJsonOptions(options =&gt;
+    {
+        // Convierte enums a strings en vez de números
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+
+// 2. OpenAPI / Swagger
+builder.Services.AddOpenApi();
+
+// 3. HttpContextAccessor (para helpers que necesitan HttpContext)
+builder.Services.AddHttpContextAccessor();
+
+// 4. FluentValidation (busca validadores en este assembly)
+builder.Services.AddValidatorsFromAssemblyContaining&lt;Program&gt;();
+
+// 5. Extensiones configurables
+builder.Services.AddRateLimiterConfiguration();      // Rate limiting
+builder.Services.AddCorsConfiguration(builder.Configuration); // CORS
+builder.Services.AddDatabaseConfiguration(builder.Configuration); // EF Core
+builder.Services.AddApplicationServices(builder.Configuration);  // DI
+
+var app = builder.Build();
+
+// 6. Configurar middleware pipeline
+await app.ConfigureMiddlewareAsync();
+
+app.Run();
+</code></pre>
+<p><strong>Orden de los <code>Add*</code> en services:</strong> No importa el orden. Pero el orden de los <code>Use*</code> (middleware) sí importa — es el orden en que se ejecutan en cada request.</p>
+<p><strong><code>JsonStringEnumConverter</code>:</strong> Hace que los enums se serialicen como strings:</p>
+<pre><code class="language-json">// Sin converter: "role": 0
+// Con converter:  "role": "User"
+</code></pre>
+<p>Esto es mucho más legible para APIs públicas.</p>
+<hr>
+<h3 id="73-extensions--métodos-de-extensión-para-configuración"><a class="header" href="#73-extensions--métodos-de-extensión-para-configuración">7.3. <code>Extensions/</code> — Métodos de Extensión para Configuración</a></h3>
+<h4 id="databaseextensionscs"><a class="header" href="#databaseextensionscs"><code>DatabaseExtensions.cs</code></a></h4>
+<pre><code class="language-csharp">using Microsoft.EntityFrameworkCore;
+using Luna.Infrastructure.Persistence;
+
+namespace Luna.Api.Extensions;
+
+public static class DatabaseExtensions
+{
+    public static IServiceCollection AddDatabaseConfiguration(
+        this IServiceCollection services, IConfiguration configuration)
+    {
+        var connectionString = configuration.GetConnectionString("DefaultConnection")
+            ?? throw new InvalidOperationException(
+                "DefaultConnection string is not configured.");
+
+        services.AddDbContext&lt;ApplicationDbContext&gt;(options =&gt;
+            options.UseNpgsql(connectionString,
+                b =&gt; b.MigrationsAssembly("Luna.Infrastructure")));
+
+        return services;
+    }
+}
+</code></pre>
+<p><strong><code>MigrationsAssembly("Luna.Infrastructure")</code></strong> — Esto le dice a EF Core que las migraciones se encuentran en el assembly <code>Luna.Infrastructure</code>. Es necesario porque el startup project es <code>Luna.Api</code>, pero las migraciones están en <code>Luna.Infrastructure</code>. Sin esto, EF Core buscaría las migraciones en <code>Luna.Api</code> y no las encontraría.</p>
+<hr>
+<h4 id="dependencyinjectionextensionscs"><a class="header" href="#dependencyinjectionextensionscs"><code>DependencyInjectionExtensions.cs</code></a></h4>
+<pre><code class="language-csharp">using Luna.Api.Helpers;
+using Luna.Application.Features.Auth;
+using Luna.Application.Common.Interfaces;
+using Luna.Infrastructure.Persistence.Repositories;
+using Luna.Infrastructure.Services;
+
+namespace Luna.Api.Extensions;
+
+public static class DependencyInjectionExtensions
+{
+    public static IServiceCollection AddApplicationServices(
+        this IServiceCollection services, IConfiguration configuration)
+    {
+        // Helpers (HTTP-specific)
+        services.AddScoped&lt;CookieHelper&gt;();
+
+        // Services — Application Layer
+        services.AddScoped&lt;IAuthService, AuthService&gt;();
+
+        // Services — Infrastructure Layer
+        services.AddScoped&lt;ITokenService, TokenService&gt;();
+        services.AddScoped&lt;IPasswordService, PasswordService&gt;();
+
+        // Repositories
+        services.AddScoped&lt;IUserRepository, UserRepository&gt;();
+        services.AddScoped&lt;IAccountRepository, AccountRepository&gt;();
+        services.AddScoped&lt;ISessionRepository, SessionRepository&gt;();
+
+        return services;
+    }
+}
+</code></pre>
+<p><strong>Registro de DI:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Interfaz</th><th>Implementación</th><th>Lifetime</th><th>Razón</th></tr>
+</thead>
+<tbody>
+<tr><td><code>IAuthService</code></td><td><code>AuthService</code></td><td>Scoped</td><td>Tiene estado (DbContext)</td></tr>
+<tr><td><code>ITokenService</code></td><td><code>TokenService</code></td><td>Scoped</td><td>Podría ser Singleton, pero ok</td></tr>
+<tr><td><code>IPasswordService</code></td><td><code>PasswordService</code></td><td>Scoped</td><td>Podría ser Singleton, no tiene estado</td></tr>
+<tr><td><code>IUserRepository</code></td><td><code>UserRepository</code></td><td>Scoped</td><td>Depende de DbContext (Scoped)</td></tr>
+<tr><td><code>IAccountRepository</code></td><td><code>AccountRepository</code></td><td>Scoped</td><td>Idem</td></tr>
+<tr><td><code>ISessionRepository</code></td><td><code>SessionRepository</code></td><td>Scoped</td><td>Idem</td></tr>
+<tr><td><code>CookieHelper</code></td><td><code>CookieHelper</code></td><td>Scoped</td><td>Depende de IHttpContextAccessor</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Obsesión con Scoped:</strong> Todos los servicios son Scoped porque <code>ApplicationDbContext</code> es Scoped (por defecto en <code>AddDbContext</code>). Un servicio que depende de DbContext debe tener el mismo o menor lifetime que DbContext. Singleton+Scoped = error.</p>
+<hr>
+<h4 id="corsextensionscs"><a class="header" href="#corsextensionscs"><code>CorsExtensions.cs</code></a></h4>
+<pre><code class="language-csharp">namespace Luna.Api.Extensions;
+
+public static class CorsExtesions   // Nota: typo en el nombre de la clase
+{
+    public static IServiceCollection AddCorsConfiguration(
+        this IServiceCollection services, IConfiguration configuration)
+    {
+        var allowedOrigins = configuration.GetSection("Cors:AllowedOrigins")
+            .Get&lt;string[]&gt;()
+            ?? ["http://localhost:3000"];       // Default para desarrollo
+
+        services.AddCors(options =&gt;
+        {
+            options.AddDefaultPolicy(policy =&gt;
+            {
+                policy.WithOrigins(allowedOrigins)
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();    // Necesario para cookies
+            });
+        });
+
+        return services;
+    }
+}
+</code></pre>
+<p><strong><code>AllowCredentials()</code></strong> es FUNDAMENTAL. Si no lo ponés, el browser no va a enviar las cookies de autenticación (accessToken, refreshToken) en los requests. Pero ojo: <code>AllowCredentials()</code> es incompatible con <code>AllowAnyOrigin()</code>. Por eso usamos <code>WithOrigins(allowedOrigins)</code> con orígenes específicos.</p>
+<p><strong>Default:</strong> <code>["http://localhost:3000"]</code> para desarrollo con frontend en React/Vite.</p>
+<hr>
+<h4 id="ratelimitextensionscs"><a class="header" href="#ratelimitextensionscs"><code>RateLimitExtensions.cs</code></a></h4>
+<pre><code class="language-csharp">using Microsoft.AspNetCore.RateLimiting;
+
+namespace Luna.Api.Extensions;
+
+public static class RateLimitExtensions
+{
+    public static IServiceCollection AddRateLimiterConfiguration(
+        this IServiceCollection services)
+    {
+        services.AddRateLimiter(options =&gt;
+        {
+            options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+            // Política "Auth": 10 requests por minuto
+            options.AddFixedWindowLimiter("Auth", opt =&gt;
+            {
+                opt.PermitLimit = 10;
+                opt.Window = TimeSpan.FromMinutes(1);
+                opt.QueueProcessingOrder =
+                    System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+                opt.QueueLimit = 0;  // Sin cola, rechaza inmediatamente
+            });
+        });
+
+        return services;
+    }
+}
+</code></pre>
+<p><strong>Fixed Window Limiter:</strong> Una ventana fija de 1 minuto. Si en un minuto se superan 10 requests, el resto son rechazados hasta que empiece el próximo minuto.</p>
+<p><strong>Uso:</strong> Para aplicar a un endpoint, se usa <code>[EnableRateLimiting("Auth")]</code> en el controller o action. Si no se aplica a ningún endpoint, el rate limiter está configurado pero no activo.</p>
+<hr>
+<h4 id="middlewareextensionscs"><a class="header" href="#middlewareextensionscs"><code>MiddlewareExtensions.cs</code></a></h4>
+<pre><code class="language-csharp">using Luna.Api.Middleware;
+using Luna.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+
+namespace Luna.Api.Extensions;
+
+public static class MiddlewareExtensions
+{
+    public static async Task&lt;WebApplication&gt; ConfigureMiddlewareAsync(
+        this WebApplication app)
+    {
+        // Ejecutar migraciones pendientes automáticamente al iniciar
+        using (var scope = app.Services.CreateScope())
+        {
+            var context = scope.ServiceProvider
+                .GetRequiredService&lt;ApplicationDbContext&gt;();
+            await context.Database.MigrateAsync();
+        }
+
+        if (app.Environment.IsDevelopment())
+        {
+            app.MapOpenApi();
+        }
+
+        app.UseHttpsRedirection();
+        app.UseCors();
+
+        app.UseResponseCaching();
+
+        app.UseMiddleware&lt;ErrorHandlingMiddleware&gt;();
+
+        app.UseAuthentication();
+        app.UseAuthorization();
+
+        app.MapControllers();
+
+        // Health check endpoint
+        app.MapGet("/health", () =&gt; "ok");
+
+        return app;
+    }
+}
+</code></pre>
+<p><strong>Orden del middleware pipeline (importante):</strong></p>
+<pre><code>Request →
+  1. HttpsRedirection
+  2. CORS
+  3. ResponseCaching
+  4. ErrorHandlingMiddleware  ← Atrapa errores de todo lo que sigue
+  5. Authentication           ← Valida JWT
+  6. Authorization            ← Verifica roles
+  7. MapControllers           ← Ejecuta el controller
+Response ←
+</code></pre>
+<p><strong><code>ErrorHandlingMiddleware</code> va ANTES de Authentication/Authorization.</strong> Esto es clave porque si el middleware de autenticación falla, el error se propaga hacia arriba y el ErrorHandlingMiddleware lo captura y devuelve un JSON bonito en vez de un HTML feo.</p>
+<p><strong><code>context.Database.MigrateAsync()</code>:</strong> Aplica migraciones automáticamente al iniciar la app. Esto es práctico para desarrollo pero peligroso en producción — en producción se usan migraciones controladas (CI/CD).</p>
+<hr>
+<h3 id="74-middlewareerrorhandlingmiddlewarecs"><a class="header" href="#74-middlewareerrorhandlingmiddlewarecs">7.4. <code>Middleware/ErrorHandlingMiddleware.cs</code></a></h3>
+<pre><code class="language-csharp">using System.Net;
+using System.Text.Json;
+using Luna.Domain.Exceptions;
+
+namespace Luna.Api.Middleware;
+
+public class ErrorHandlingMiddleware
+{
+    private readonly RequestDelegate _next;
+    private readonly ILogger&lt;ErrorHandlingMiddleware&gt; _logger;
+
+    public ErrorHandlingMiddleware(RequestDelegate next,
+        ILogger&lt;ErrorHandlingMiddleware&gt; logger)
+    {
+        _next = next;
+        _logger = logger;
+    }
+
+    public async Task InvokeAsync(HttpContext context)
+    {
+        try
+        {
+            await _next(context);  // Ejecuta el resto del pipeline
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex,
+                "Ocurrió un error no controlado en la ruta {Path}",
+                context.Request.Path);
+            await HandleExceptionAsync(context, ex);
+        }
+    }
+
+    private static Task HandleExceptionAsync(
+        HttpContext context, Exception exception)
+    {
+        context.Response.ContentType = "application/json";
+
+        // Asigna código HTTP según el tipo de excepción
+        context.Response.StatusCode = exception switch
+        {
+            AppException appEx =&gt; appEx.StatusCode,
+            _ =&gt; (int)HttpStatusCode.InternalServerError
+        };
+
+        if (exception is AppException appException)
+        {
+            var response = new
+            {
+                type = "https://tools.ietf.org/html/rfc7807",  // RFC 7807 Problem Details
+                title = appException.StatusCode switch
+                {
+                    400 =&gt; "Bad Request",
+                    401 =&gt; "Unauthorized",
+                    403 =&gt; "Forbidden",
+                    404 =&gt; "Not Found",
+                    409 =&gt; "Conflict",
+                    422 =&gt; "Unprocessable Entity",
+                    _ =&gt; "Error"
+                },
+                status = appException.StatusCode,
+                detail = appException.Message,
+                code = appException.Code
+            };
+            return context.Response.WriteAsync(JsonSerializer.Serialize(response));
+        }
+        else
+        {
+            // Errores inesperados: no exponer detalles internos
+            var response = new
+            {
+                type = "https://tools.ietf.org/html/rfc7807",
+                title = "Internal Server Error",
+                status = 500,
+                detail = "An unexpected error occurred. Please try again later.",
+                code = "internal.error"
+            };
+            return context.Response.WriteAsync(JsonSerializer.Serialize(response));
+        }
+    }
+}
+</code></pre>
+<p><strong>Ejemplo de respuesta de error:</strong></p>
+<pre><code class="language-json">{
+    "type": "https://tools.ietf.org/html/rfc7807",
+    "title": "Conflict",
+    "status": 409,
+    "detail": "Email already registered",
+    "code": "CONFLICT"
+}
+</code></pre>
+<p><strong>Seguridad:</strong> Errores no operativos (bugs) nunca exponen detalles internos. Siempre devuelven:</p>
+<pre><code class="language-json">{
+    "type": "https://tools.ietf.org/html/rfc7807",
+    "title": "Internal Server Error",
+    "status": 500,
+    "detail": "An unexpected error occurred. Please try again later.",
+    "code": "internal.error"
+}
+</code></pre>
+<p>Nada de stack traces, nada de “NullReferenceException en línea 42”. Solo un mensaje genérico.</p>
+<hr>
+<h3 id="75-helpers--clases-de-ayuda-http"><a class="header" href="#75-helpers--clases-de-ayuda-http">7.5. <code>Helpers/</code> — Clases de Ayuda HTTP</a></h3>
+<h4 id="authhelpercs"><a class="header" href="#authhelpercs"><code>AuthHelper.cs</code></a></h4>
+<pre><code class="language-csharp">using System.Security.Claims;
+using Luna.Domain.Enums;
+using Luna.Domain.Exceptions;
+
+namespace Luna.Api.Helpers;
+
+public static class AuthHelper
+{
+    // Obtiene el userId del token JWT actual
+    public static Guid? GetCurrentUserId(this HttpContext httpContext)
+    {
+        var userIdClaim = httpContext.User
+            .FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        return userIdClaim != null &amp;&amp; Guid.TryParse(userIdClaim, out var userId)
+            ? userId
+            : null;
+    }
+
+    // Obtiene el rol del usuario actual (lanza excepción si no está autenticado)
+    public static UserRole GetCurrentUserRole(this HttpContext httpContext)
+    {
+        var roleClaim = httpContext.User
+            .FindFirst(ClaimTypes.Role)?.Value
+            ?? throw AppExceptions.Unauthorized("User role claim is missing");
+
+        if (!Enum.TryParse&lt;UserRole&gt;(roleClaim, out var role))
+            throw AppExceptions.Unauthorized($"Invalid user role: {roleClaim}");
+
+        return role;
+    }
+
+    // Obtiene el rol del usuario actual (devuelve null si no está autenticado)
+    public static UserRole? GetCurrentUserRoleOrDefault(this HttpContext httpContext)
+    {
+        var roleClaim = httpContext.User
+            .FindFirst(ClaimTypes.Role)?.Value;
+        if (roleClaim == null) return null;
+
+        if (!Enum.TryParse&lt;UserRole&gt;(roleClaim, out var role))
+            throw AppExceptions.Unauthorized($"Invalid user role: {roleClaim}");
+
+        return role;
+    }
+}
+</code></pre>
+<p><strong>¿Por qué son extension methods de <code>HttpContext</code>?</strong></p>
+<p>Porque así se usan naturalmente:</p>
+<pre><code class="language-csharp">// En un controller:
+var userId = HttpContext.GetCurrentUserId();
+</code></pre>
+<p>Sin tener que inyectar ni crear instancias. Son funciones estáticas que operan sobre el HttpContext.</p>
+<p><strong><code>GetCurrentUserId</code> devuelve <code>Guid?</code> (nullable):</strong> Si el usuario no está autenticado, devuelve <code>null</code> en vez de lanzar excepción. Esto permite:</p>
+<pre><code class="language-csharp">var currentUserId = HttpContext.GetCurrentUserId();
+if (currentUserId.HasValue)
+{
+    // Usuario autenticado — comportamiento especial
+}
+// Si no, sigue normalmente
+</code></pre>
+<hr>
+<h4 id="cookiehelpercs"><a class="header" href="#cookiehelpercs"><code>CookieHelper.cs</code></a></h4>
+<pre><code class="language-csharp">namespace Luna.Api.Helpers;
+
+public class CookieHelper
+{
+    private readonly IWebHostEnvironment _environment;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
+    public CookieHelper(
+        IWebHostEnvironment environment,
+        IHttpContextAccessor httpContextAccessor)
+    {
+        _environment = environment;
+        _httpContextAccessor = httpContextAccessor;
+    }
+
+    public void SetAuthCookies(string accessToken, string refreshToken)
+    {
+        var response = _httpContextAccessor.HttpContext?.Response;
+        if (response == null) return;
+
+        bool isProduction = _environment.IsProduction();
+
+        var accessTokenOptions = new CookieOptions
+        {
+            Path = "/",
+            HttpOnly = true,             // No accesible desde JavaScript
+            Secure = isProduction,       // Solo HTTPS en producción
+            SameSite = SameSiteMode.Strict,  // No enviar en requests cross-site
+            Expires = DateTimeOffset.UtcNow.AddMinutes(15)
+        };
+
+        var refreshTokenOptions = new CookieOptions
+        {
+            Path = "/",
+            HttpOnly = true,
+            Secure = isProduction,
+            SameSite = SameSiteMode.Strict,
+            Expires = DateTimeOffset.UtcNow.AddDays(7)
+        };
+
+        response.Cookies.Append("accessToken", accessToken, accessTokenOptions);
+        response.Cookies.Append("refreshToken", refreshToken, refreshTokenOptions);
+    }
+
+    public void ClearAuthCookies()
+    {
+        var response = _httpContextAccessor.HttpContext?.Response;
+        if (response == null) return;
+
+        var cookieOptions = new CookieOptions { Path = "/" };
+        response.Cookies.Delete("accessToken", cookieOptions);
+        response.Cookies.Delete("refreshToken", cookieOptions);
+    }
+}
+</code></pre>
+<p><strong>Cookie options explicados:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Opción</th><th>Valor</th><th>Por qué</th></tr>
+</thead>
+<tbody>
+<tr><td><code>HttpOnly = true</code></td><td>No accesible desde JS</td><td>Previene XSS: un script injected no puede leer los tokens</td></tr>
+<tr><td><code>Secure = isProduction</code></td><td>Solo HTTPS en prod</td><td>En desarrollo HTTP está bien, en producción obligatorio HTTPS</td></tr>
+<tr><td><code>SameSite = Strict</code></td><td>No se envía cross-site</td><td>Previene CSRF: si visitás un sitio malicioso, no envía las cookies</td></tr>
+<tr><td><code>Expires</code></td><td>15 min / 7 días</td><td>Coincide con la expiración de los tokens JWT</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h3 id="76-controllersauthcontrollercs"><a class="header" href="#76-controllersauthcontrollercs">7.6. <code>Controllers/AuthController.cs</code></a></h3>
+<pre><code class="language-csharp">using Luna.Application.Common.Interfaces;
+using Luna.Application.Common.Models;
+using Luna.Api.Helpers;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Luna.Api.Controllers;
+
+[ApiController]
+[Route("api/v1/auth")]
+public class AuthController : ControllerBase
+{
+    private readonly IAuthService _authService;
+    private readonly CookieHelper _cookieHelper;
+
+    public AuthController(
+        IAuthService authService,
+        CookieHelper cookieHelper)
+    {
+        _authService = authService;
+        _cookieHelper = cookieHelper;
+    }
+</code></pre>
+<p><strong><code>[ApiController]</code></strong> y <strong><code>[Route("api/v1/auth")]</code></strong>:</p>
+<ul>
+<li><code>[ApiController]</code> habilita comportamientos automáticos: validación de modelos, inferencia de bindings, etc.</li>
+<li>La ruta base es <code>/api/v1/auth</code>. Versionado explícito en la URL (v1).</li>
+</ul>
+<hr>
+<h4 id="post-apiv1authregister"><a class="header" href="#post-apiv1authregister"><code>POST /api/v1/auth/register</code></a></h4>
+<pre><code class="language-csharp">    [HttpPost("register")]
+    public async Task&lt;ActionResult&lt;AuthResponse&gt;&gt; Register(
+        [FromBody] RegisterRequest request)
+    {
+        // Si el usuario ya está autenticado, no puede registrarse
+        var currentUserId = HttpContext.GetCurrentUserId();
+        if (currentUserId.HasValue)
+            return Conflict("Already logged in. Please logout before creating a new account.");
+
+        var result = await _authService.RegisterAsync(request);
+
+        // Setear cookies con los tokens
+        _cookieHelper.SetAuthCookies(result.AccessToken, result.RefreshToken);
+
+        // 201 Created
+        return CreatedAtAction(null, new
+        {
+            message = result.Message,
+            user = result.User
+        });
+    }
+</code></pre>
+<p><strong>¿Por qué 201 Created y no 200 OK?</strong></p>
+<ul>
+<li><code>POST /register</code> crea un recurso (usuario) → 201 Created es más preciso</li>
+<li><code>POST /login</code> no crea nada, solo autentica → 200 OK</li>
+</ul>
+<p><strong>¿Por qué setear cookies si también devolvemos tokens en el body?</strong>
+Las cookies permiten autenticación automática en requests subsecuentes (el browser las envía solas). Los tokens en el body son para el frontend que quiera usarlos explícitamente (ej: almacenarlos en memoria). Es tener ambas opciones.</p>
+<hr>
+<h4 id="post-apiv1authlogin"><a class="header" href="#post-apiv1authlogin"><code>POST /api/v1/auth/login</code></a></h4>
+<pre><code class="language-csharp">    [HttpPost("login")]
+    public async Task&lt;ActionResult&lt;AuthResponse&gt;&gt; Login(
+        [FromBody] LoginRequest request)
+    {
+        var currentUserId = HttpContext.GetCurrentUserId();
+
+        var result = await _authService.LoginAsync(request);
+
+        // Si había una sesión previa (otro usuario logueado), limpiar cookies
+        if (currentUserId.HasValue &amp;&amp; currentUserId != result.User?.Id)
+            _cookieHelper.ClearAuthCookies();
+
+        _cookieHelper.SetAuthCookies(result.AccessToken, result.RefreshToken);
+
+        return Ok(new
+        {
+            message = result.Message,
+            user = result.User
+        });
+    }
+</code></pre>
+<p><strong>Caso borde:</strong> Si el usuario A está logueado (tiene cookies) y alguien hace login con usuario B, se limpian las cookies viejas y se setean las nuevas. Esto previene que queden cookies huérfanas.</p>
+<hr>
+<h4 id="post-apiv1authrefresh"><a class="header" href="#post-apiv1authrefresh"><code>POST /api/v1/auth/refresh</code></a></h4>
+<pre><code class="language-csharp">    [HttpPost("refresh")]
+    public async Task&lt;ActionResult&lt;RefreshResponse&gt;&gt; Refresh(
+        [FromBody] RefreshRequest? request = null)
+    {
+        // Obtener refresh token de la cookie
+        var refreshToken = Request.Cookies["refreshToken"] ?? string.Empty;
+        if (string.IsNullOrEmpty(refreshToken))
+            return BadRequest(new { error = "Refresh token is required" });
+
+        var result = await _authService.RefreshAsync(refreshToken);
+
+        // Setear nuevas cookies (rotación)
+        _cookieHelper.SetAuthCookies(result.AccessToken, result.RefreshToken);
+
+        return Ok(result);
+    }
+</code></pre>
+<p><strong>¿Por qué leer de cookie y no del body?</strong></p>
+<ul>
+<li>El refresh token está en cookie HttpOnly → más seguro</li>
+<li>El body <code>RefreshRequest</code> existe como fallback (parámetro nullable)</li>
+<li>La cookie es la fuente primaria</li>
+</ul>
+<hr>
+<h4 id="post-apiv1authlogout"><a class="header" href="#post-apiv1authlogout"><code>POST /api/v1/auth/logout</code></a></h4>
+<pre><code class="language-csharp">    [HttpPost("logout")]
+    public async Task&lt;ActionResult&gt; Logout()
+    {
+        var refreshToken = Request.Cookies["refreshToken"] ?? string.Empty;
+        if (!string.IsNullOrEmpty(refreshToken))
+            await _authService.LogoutAsync(refreshToken);
+
+        _cookieHelper.ClearAuthCookies();
+        return Ok(new { message = "Logged out successfully" });
+    }
+</code></pre>
+<p><strong>Importante:</strong> Siempre limpia las cookies, incluso si el token no existe o la eliminación falla. El usuario debe poder “salir” aunque haya problemas de DB.</p>
+<hr>
+<h3 id="77-appsettingsjson-y-appsettingsdevelopmentjson"><a class="header" href="#77-appsettingsjson-y-appsettingsdevelopmentjson">7.7. <code>appsettings.json</code> y <code>appsettings.Development.json</code></a></h3>
+<h4 id="appsettingsjson-base"><a class="header" href="#appsettingsjson-base"><code>appsettings.json</code> (base)</a></h4>
+<pre><code class="language-json">{
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=localhost;Database=luna_db;Username=user;Password=password"
+  },
+  "Jwt": {
+    "Secret": "dsasdfasdfasfd",
+    "RefreshSecret": "asdfasdfdasfadsf",
+    "AccessTokenExpiry": "00:15:00",
+    "RefreshTokenExpiry": "7.00:00:00",
+    "Issuer": "cursinet-api",
+    "Audience": "cursinet-app"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*"
+}
+</code></pre>
+<h4 id="appsettingsdevelopmentjson"><a class="header" href="#appsettingsdevelopmentjson"><code>appsettings.Development.json</code></a></h4>
+<pre><code class="language-json">{
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=localhost;Database=luna_db;Username=user;Password=password"
+  },
+  "Jwt": {
+    "Secret": "asjdfañlsjfas",
+    "RefreshSecret": "slkjdfñlasjfalñs",
+    "AccessTokenExpiry": "00:15:00",
+    "RefreshTokenExpiry": "7.00:00:00",
+    "Issuer": "luna-api",
+    "Audience": "luna-app"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  }
+}
+</code></pre>
+<p><strong>⚠️ Problema conocido:</strong> <code>appsettings.Development.json</code> tiene <code>"Secret": ""</code> y <code>"RefreshSecret": ""</code>. Esto pisa los valores de <code>appsettings.json</code> y causa el error <code>IDX10703: key length is zero</code>. Solución: poner secrets reales en Development.json o eliminar las claves vacías.</p>
+<p><strong>Orden de sobreescritura de configuraciones:</strong></p>
+<ol>
+<li><code>appsettings.json</code> (base, valores por defecto)</li>
+<li><code>appsettings.{Environment}.json</code> (pisa los anteriores según el entorno)</li>
+<li>Variables de entorno (pisan todo)</li>
+<li>Command-line arguments (pisan todo)</li>
+</ol>
+<hr>
+<h3 id="78-propertieslaunchsettingsjson"><a class="header" href="#78-propertieslaunchsettingsjson">7.8. <code>Properties/launchSettings.json</code></a></h3>
+<pre><code class="language-json">{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "http": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:5274",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "https": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "applicationUrl": "https://localhost:7175;http://localhost:5274",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
+</code></pre>
+<p><strong>Puertos:</strong></p>
+<ul>
+<li>HTTP: <code>5274</code></li>
+<li>HTTPS: <code>7175</code></li>
+</ul>
+<hr>
+<h2 id="8-flujo-completo-register"><a class="header" href="#8-flujo-completo-register">8. Flujo Completo: Register</a></h2>
+<pre><code>Cliente                          API Server                      PostgreSQL
+  │                                │                                │
+  │  POST /api/v1/auth/register    │                                │
+  │  {name, email, password}       │                                │
+  │───────────────────────────────&gt;│                                │
+  │                                │                                │
+  │                                │ 1. Verificar email duplicado   │
+  │                                │──────────────────────────────&gt;│
+  │                                │&lt;──────────────────────────────│
+  │                                │                                │
+  │                                │ 2. Hashear password (BCrypt)   │
+  │                                │                                │
+  │                                │ 3. INSERT User                 │
+  │                                │──────────────────────────────&gt;│
+  │                                │&lt;──────────────────────────────│
+  │                                │                                │
+  │                                │ 4. INSERT Account (credentials)│
+  │                                │──────────────────────────────&gt;│
+  │                                │&lt;──────────────────────────────│
+  │                                │                                │
+  │                                │ 5. Generar JWT tokens          │
+  │                                │    (access + refresh)          │
+  │                                │                                │
+  │                                │ 6. INSERT Session              │
+  │                                │    (guarda refresh token)      │
+  │                                │──────────────────────────────&gt;│
+  │                                │&lt;──────────────────────────────│
+  │                                │                                │
+  │  Set-Cookie: accessToken       │                                │
+  │  Set-Cookie: refreshToken      │                                │
+  │  201 {user, message}           │                                │
+  │&lt;───────────────────────────────│                                │
+</code></pre>
+<p><strong>Archivos involucrados:</strong></p>
+<ol>
+<li><code>AuthController.cs</code> — Recibe request, llama a AuthService</li>
+<li><code>AuthService.cs</code> — Orquesta la lógica</li>
+<li><code>UserRepository.cs</code> — Verifica email, crea User</li>
+<li><code>AccountRepository.cs</code> — Crea Account</li>
+<li><code>PasswordService.cs</code> — Hashea password</li>
+<li><code>TokenService.cs</code> — Genera JWT</li>
+<li><code>SessionRepository.cs</code> — Crea sesión</li>
+<li><code>CookieHelper.cs</code> — Setea cookies</li>
+<li><code>MappingUser.cs</code> — Mapea User → UserDto</li>
+</ol>
+<hr>
+<h2 id="9-flujo-completo-login"><a class="header" href="#9-flujo-completo-login">9. Flujo Completo: Login</a></h2>
+<pre><code>Cliente                          API Server                      PostgreSQL
+  │                                │                                │
+  │  POST /api/v1/auth/login       │                                │
+  │  {email, password}             │                                │
+  │───────────────────────────────&gt;│                                │
+  │                                │                                │
+  │                                │ 1. Buscar Account por email    │
+  │                                │    (solo "credentials")        │
+  │                                │──────────────────────────────&gt;│
+  │                                │&lt;────────── Account + User ────│
+  │                                │                                │
+  │                                │ 2. Verificar password (BCrypt) │
+  │                                │                                │
+  │                                │ 3. Verificar User activo       │
+  │                                │    (no soft-deleted)           │
+  │                                │                                │
+  │                                │ 4. Generar nuevos tokens       │
+  │                                │                                │
+  │                                │ 5. INSERT nueva Session        │
+  │                                │──────────────────────────────&gt;│
+  │                                │&lt;──────────────────────────────│
+  │                                │                                │
+  │  Set-Cookie (nuevos tokens)    │                                │
+  │  200 {user, message}           │                                │
+  │&lt;───────────────────────────────│                                │
+</code></pre>
+<hr>
+<h2 id="10-flujo-completo-refresh"><a class="header" href="#10-flujo-completo-refresh">10. Flujo Completo: Refresh</a></h2>
+<pre><code>Cliente                          API Server                      PostgreSQL
+  │                                │                                │
+  │  POST /api/v1/auth/refresh     │                                │
+  │  Cookie: refreshToken=xxx      │                                │
+  │───────────────────────────────&gt;│                                │
+  │                                │                                │
+  │                                │ 1. Validar JWT refresh token   │
+  │                                │    (firma HMAC, expiración)    │
+  │                                │                                │
+  │                                │ 2. Extraer userId del token    │
+  │                                │                                │
+  │                                │ 3. Buscar Session por token    │
+  │                                │──────────────────────────────&gt;│
+  │                                │&lt;──────────────────────────────│
+  │                                │                                │
+  │                                │ 4. Verificar sesión no expirada│
+  │                                │                                │
+  │                                │ 5. Verificar usuario activo    │
+  │                                │                                │
+  │                                │ 6. Generar NUEVOS tokens       │
+  │                                │                                │
+  │                                │ 7. DELETE sesión vieja         │
+  │                                │──────────────────────────────&gt;│
+  │                                │                                │
+  │                                │ 8. INSERT nueva sesión         │
+  │                                │──────────────────────────────&gt;│
+  │                                │&lt;──────────────────────────────│
+  │                                │                                │
+  │  Set-Cookie (nuevos tokens)    │                                │
+  │  200 {new tokens, message}     │                                │
+  │&lt;───────────────────────────────│                                │
+</code></pre>
+<p><strong>Rotación de tokens:</strong> El refresh token anterior queda invalidado después de usarlo. Si alguien lo robó y lo usó, el usuario legítimo tendrá que hacer login otra vez.</p>
+<hr>
+<h2 id="11-flujo-completo-logout"><a class="header" href="#11-flujo-completo-logout">11. Flujo Completo: Logout</a></h2>
+<pre><code>Cliente                          API Server                      PostgreSQL
+  │                                │                                │
+  │  POST /api/v1/auth/logout      │                                │
+  │  Cookie: refreshToken=xxx      │                                │
+  │───────────────────────────────&gt;│                                │
+  │                                │                                │
+  │                                │ 1. Leer refreshToken de cookie │
+  │                                │                                │
+  │                                │ 2. DELETE Session por token    │
+  │                                │──────────────────────────────&gt;│
+  │                                │&lt;──────────────────────────────│
+  │                                │                                │
+  │  Clear-Cookie (ambos tokens)   │                                │
+  │  200 {message}                 │                                │
+  │&lt;───────────────────────────────│                                │
+</code></pre>
+<hr>
+<h2 id="12-comandos-para-replicar"><a class="header" href="#12-comandos-para-replicar">12. Comandos para Replicar</a></h2>
+<h3 id="121-crear-el-proyecto-desde-cero"><a class="header" href="#121-crear-el-proyecto-desde-cero">12.1. Crear el proyecto desde cero</a></h3>
+<pre><code class="language-bash"># Crear solución (opcional)
+mkdir backend &amp;&amp; cd backend
+
+# Crear proyectos
+dotnet new classlib -n Luna.Domain -o src/Luna.Domain
+dotnet new classlib -n Luna.Application -o src/Luna.Application
+dotnet new classlib -n Luna.Infrastructure -o src/Luna.Infrastructure
+dotnet new webapi -n Luna.Api -o src/Luna.Api --no-openapi
+
+# Agregar referencias entre proyectos
+dotnet add src/Luna.Application/Luna.Application.csproj reference src/Luna.Domain/Luna.Domain.csproj
+dotnet add src/Luna.Infrastructure/Luna.Infrastructure.csproj reference src/Luna.Application/Luna.Application.csproj
+dotnet add src/Luna.Api/Luna.Api.csproj reference src/Luna.Application/Luna.Application.csproj
+dotnet add src/Luna.Api/Luna.Api.csproj reference src/Luna.Infrastructure/Luna.Infrastructure.csproj
+</code></pre>
+<h3 id="122-agregar-paquetes-nuget"><a class="header" href="#122-agregar-paquetes-nuget">12.2. Agregar paquetes NuGet</a></h3>
+<pre><code class="language-bash"># Infrastructure
+dotnet add src/Luna.Infrastructure/Luna.Infrastructure.csproj package BCrypt.Net-Next --version 4.2.0
+dotnet add src/Luna.Infrastructure/Luna.Infrastructure.csproj package Microsoft.EntityFrameworkCore --version 10.0.0
+dotnet add src/Luna.Infrastructure/Luna.Infrastructure.csproj package Npgsql.EntityFrameworkCore.PostgreSQL --version 10.0.0
+dotnet add src/Luna.Infrastructure/Luna.Infrastructure.csproj package System.IdentityModel.Tokens.Jwt --version 8.19.1
+
+# Api
+dotnet add src/Luna.Api/Luna.Api.csproj package FluentValidation.AspNetCore --version 11.3.1
+dotnet add src/Luna.Api/Luna.Api.csproj package Microsoft.AspNetCore.Authentication.JwtBearer --version 10.0.0
+dotnet add src/Luna.Api/Luna.Api.csproj package Microsoft.AspNetCore.OpenApi --version 10.0.8
+dotnet add src/Luna.Api/Luna.Api.csproj package Microsoft.EntityFrameworkCore.Design --version 10.0.9
+</code></pre>
+<h3 id="123-crear-migraciones"><a class="header" href="#123-crear-migraciones">12.3. Crear migraciones</a></h3>
+<pre><code class="language-bash"># Asegurarse de tener EF CLI
+dotnet tool install --global dotnet-ef
+
+# Crear migración inicial
+dotnet ef migrations add init \
+  -s src/Luna.Api/Luna.Api.csproj \
+  -p src/Luna.Infrastructure/Luna.Infrastructure.csproj
+
+# Aplicar migraciones a la DB
+dotnet ef database update \
+  -s src/Luna.Api/Luna.Api.csproj \
+  -p src/Luna.Infrastructure/Luna.Infrastructure.csproj
+</code></pre>
+<h3 id="124-crear-la-base-de-datos-en-postgresql"><a class="header" href="#124-crear-la-base-de-datos-en-postgresql">12.4. Crear la base de datos en PostgreSQL</a></h3>
+<pre><code class="language-sql">-- Opción 1: Desde psql
+CREATE DATABASE luna_db;
+
+-- Opción 2: Usando dotnet (crea automáticamente al migrar si no existe)
+-- Configurar connection string en appsettings.json
+</code></pre>
+<h3 id="125-ejecutar-el-proyecto"><a class="header" href="#125-ejecutar-el-proyecto">12.5. Ejecutar el proyecto</a></h3>
+<pre><code class="language-bash"># Desde la carpeta backend/
+dotnet run --project src/Luna.Api/Luna.Api.csproj
+
+# O desde src/Luna.Api/
+dotnet run
+
+# La API arranca en:
+# http://localhost:5274
+# https://localhost:7175 (si usás HTTPS)
+</code></pre>
+<h3 id="126-probar-endpoints"><a class="header" href="#126-probar-endpoints">12.6. Probar endpoints</a></h3>
+<pre><code class="language-bash"># Health check
+curl http://localhost:5274/health
+
+# Registrar usuario
+curl -X POST http://localhost:5274/api/v1/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Orlando", "email": "orlando@email.com", "password": "MiPassword123!"}'
+
+# Login
+curl -X POST http://localhost:5274/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email": "orlando@email.com", "password": "MiPassword123!"}'
+
+# Logout
+curl -X POST http://localhost:5274/api/v1/auth/logout \
+  -H "Cookie: refreshToken=TOKEN_OBTENIDO_EN_LOGIN"
+</code></pre>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../docs/21-aspnet-init.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../docs/25-aspnet-cursinet.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../docs/21-aspnet-init.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../docs/25-aspnet-cursinet.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-09f2665d.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-c22b7243.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../theme/dark-6e51c595.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
