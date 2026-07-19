@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Crear apk con Tauri - Manuales</title>
+        <title>React Native Generar Apk - Manuales</title>
 
 
         <!-- Custom HTML head -->
@@ -175,263 +175,420 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="manual-tauri-android--dev-debug-apk-y-release-apk"><a class="header" href="#manual-tauri-android--dev-debug-apk-y-release-apk">Manual: Tauri Android — Dev, Debug APK y Release APK</a></h1>
-<h2 id="índice"><a class="header" href="#índice">Índice</a></h2>
+                        <h1 id="manual-expo-react-native--dev-apk-debug-y-apk-release"><a class="header" href="#manual-expo-react-native--dev-apk-debug-y-apk-release">Manual: Expo React Native — Dev, APK Debug y APK Release</a></h1>
+<h2 id="indice"><a class="header" href="#indice">Indice</a></h2>
 <ol>
 <li><a href="#1-requisitos-previos">Requisitos previos</a></li>
-<li><a href="#2-configuración-inicial-del-proyecto">Configuración inicial del proyecto</a>
+<li><a href="#2-estructura-del-proyecto">Estructura del proyecto</a></li>
+<li><a href="#3-modo-desarrollo-expo-start">Modo desarrollo (expo start)</a></li>
+<li><a href="#4-build-de-apk-development-build">Build de APK (Development Build)</a>
 <ul>
-<li>2.1 <a href="#21-inicializar-el-proyecto-android">Inicializar el proyecto Android</a></li>
-<li>2.2 <a href="#22-configurar-viteconfigts">Configurar vite.config.ts</a></li>
-<li>2.3 <a href="#23-variables-de-entorno">Variables de entorno</a></li>
+<li>4.4 <a href="#44-ejecutar-en-modo-debug-y-release-con-expo-runandroid">Ejecutar en modo Debug y Release con expo run:android</a></li>
 </ul>
 </li>
-<li><a href="#3-agregar-build-tools-al-path">Agregar build-tools al PATH</a></li>
-<li><a href="#4-modo-desarrollo-tauri-android-dev">Modo desarrollo (tauri android dev)</a>
+<li><a href="#5-apk-de-debug">APK de Debug</a></li>
+<li><a href="#6-apk-de-release">APK de Release</a>
 <ul>
-<li>4.1 <a href="#41-conectar-el-teléfono-por-usb">Conectar el teléfono por USB</a></li>
-<li>4.2 <a href="#42-configurar-adb-reverse-importante">Configurar ADB Reverse</a></li>
-<li>4.3 <a href="#43-problema-con-cloudflare-warp-u-otras-vpns">Problema con Cloudflare WARP u otras VPNs</a></li>
-<li>4.4 <a href="#44-correr-el-dev-server">Correr el dev server</a></li>
-</ul>
-</li>
-<li><a href="#5-apk-de-debug-para-pruebas-rápidas">APK de Debug</a></li>
-<li><a href="#6-apk-de-release-para-compartir-por-internet">APK de Release</a>
-<ul>
-<li>6.1 <a href="#61-crear-el-keystore-solo-una-vez">Crear el Keystore</a></li>
-<li>6.2 <a href="#62-configurar-envproduction">Configurar .env.production</a></li>
-<li>6.3 <a href="#63-compilar-el-apk-de-release">Compilar el APK de release</a></li>
-<li>6.4 <a href="#64-firmar-el-apk-manualmente">Firmar el APK manualmente</a></li>
+<li>6.1 <a href="#61-crear-el-keystore">Crear el Keystore</a></li>
+<li>6.2 <a href="#62-configurar-appconfigts">Configurar app.config.ts</a></li>
+<li>6.3 <a href="#63-compilar-aabapk-de-release-con-eas">Compilar AAB/APK de release con EAS</a></li>
+<li>6.4 <a href="#64-build-local-sin-eas">Build local (sin EAS)</a></li>
+<li>6.5 <a href="#65-apk-universal-desde-aab-con-bundletool">APK universal desde AAB con bundletool</a></li>
 </ul>
 </li>
 <li><a href="#7-instalar-el-apk-en-android">Instalar el APK en Android</a></li>
-<li><a href="#8-resumen-rápido-de-comandos">Resumen rápido de comandos</a></li>
-<li><a href="#9-solución-de-problemas-comunes">Solución de problemas comunes</a></li>
+<li><a href="#8-resumen-rapido-de-comandos">Resumen rapido de comandos</a></li>
+<li><a href="#9-solucion-de-problemas-comunes">Solucion de problemas comunes</a></li>
 </ol>
 <hr>
-<h2 id="requisitos-previos"><a class="header" href="#requisitos-previos">Requisitos previos</a></h2>
-<ul>
-<li>Android SDK instalado (<code>~/Android/Sdk</code>)</li>
-<li>NDK instalado (Tauri lo detecta automáticamente)</li>
-<li>ADB disponible en el PATH</li>
-<li>Java JDK instalado</li>
-<li>Rust con target Android: <code>rustup target add aarch64-linux-android</code></li>
-</ul>
-<hr>
-<h2 id="2-configuración-inicial-del-proyecto"><a class="header" href="#2-configuración-inicial-del-proyecto">2. Configuración inicial del proyecto</a></h2>
-<h3 id="21-inicializar-el-proyecto-android"><a class="header" href="#21-inicializar-el-proyecto-android">2.1 Inicializar el proyecto Android</a></h3>
-<pre><code class="language-bash">pnpm tauri android init
+<h2 id="1-requisitos-previos"><a class="header" href="#1-requisitos-previos">1. Requisitos previos</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Herramienta</th><th>Como verificar</th><th>Donde obtenerla</th></tr>
+</thead>
+<tbody>
+<tr><td>Node.js 18+</td><td><code>node -v</code></td><td><a href="https://nodejs.org">nodejs.org</a></td></tr>
+<tr><td>npm / pnpm</td><td><code>pnpm -v</code></td><td><code>npm i -g pnpm</code></td></tr>
+<tr><td>Expo CLI</td><td><code>npx expo --version</code></td><td>Viene con el proyecto</td></tr>
+<tr><td>Android SDK</td><td><code>echo $ANDROID_HOME</code></td><td><a href="https://developer.android.com/studio">Android Studio</a></td></tr>
+<tr><td>Java JDK 17+</td><td><code>java -version</code></td><td>OpenJDK o bundle de Android Studio</td></tr>
+<tr><td>ADB</td><td><code>adb --version</code></td><td>Android SDK platform-tools</td></tr>
+<tr><td>Dispositivo Android</td><td>—</td><td>Fisico o emulador</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="configurar-android-sdk"><a class="header" href="#configurar-android-sdk">Configurar Android SDK</a></h3>
+<p>Agrega esto a tu <code>~/.bashrc</code> o <code>~/.zshrc</code>:</p>
+<pre><code class="language-bash">export ANDROID_HOME=$HOME/Android/Sdk
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
+export PATH=$PATH:$ANDROID_HOME/build-tools/35.0.0
 </code></pre>
-<h3 id="22-configurar-viteconfigts"><a class="header" href="#22-configurar-viteconfigts">2.2 Configurar <code>vite.config.ts</code></a></h3>
-<p>El host debe escuchar en <code>0.0.0.0</code> para que el teléfono pueda conectarse:</p>
-<pre><code class="language-ts">const host = process.env.TAURI_DEV_HOST;
-
-export default defineConfig({
-  server: {
-    port: 1420,
-    strictPort: true,
-    host: host || "0.0.0.0", // importante: no dejar false
-    hmr: host
-      ? { protocol: "ws", host, port: 1421 }
-      : undefined,
-    watch: {
-      ignored: ["**/src-tauri/**"],
-    },
-  },
-});
+<pre><code class="language-bash">source ~/.bashrc
 </code></pre>
-<h3 id="23-variables-de-entorno"><a class="header" href="#23-variables-de-entorno">2.3 Variables de entorno</a></h3>
-<p>Crear <code>.env</code>:</p>
-<pre><code class="language-env">VITE_API_URL="http://192.168.0.9:3000/api/v1"
-</code></pre>
-<blockquote>
-<p>⚠️ No uses <code>localhost</code> en la IP del backend para el APK de release — usa la IP real de tu PC o un servidor público.</p>
-</blockquote>
-<hr>
-<h2 id="3-agregar-build-tools-al-path"><a class="header" href="#3-agregar-build-tools-al-path">3. Agregar build-tools al PATH</a></h2>
-<p>Necesario para <code>zipalign</code> y <code>apksigner</code>:</p>
-<pre><code class="language-bash"># Ver versiones instaladas
-ls ~/Android/Sdk/build-tools/
-
-# Exportar la versión (cambia 35.0.0 por la tuya)
-export PATH="$PATH:$HOME/Android/Sdk/build-tools/35.0.0"
-
-# Para que sea permanente
-echo 'export PATH="$PATH:$HOME/Android/Sdk/build-tools/35.0.0"' &gt;&gt; ~/.bashrc
-source ~/.bashrc
-</code></pre>
-<hr>
-<h2 id="4-modo-desarrollo-tauri-android-dev"><a class="header" href="#4-modo-desarrollo-tauri-android-dev">4. Modo desarrollo (<code>tauri android dev</code>)</a></h2>
-<h3 id="41-conectar-el-teléfono-por-usb"><a class="header" href="#41-conectar-el-teléfono-por-usb">4.1 Conectar el teléfono por USB</a></h3>
-<p>Habilitar <strong>Depuración USB</strong> en el teléfono:</p>
-<ul>
-<li>Configuración → Acerca del teléfono → toca “Número de compilación” 7 veces</li>
-<li>Configuración → Opciones de desarrollador → Depuración USB ✓</li>
-</ul>
-<p>Verificar que el teléfono es detectado:</p>
+<h3 id="verificar-que-adb-detecta-el-telefono"><a class="header" href="#verificar-que-adb-detecta-el-telefono">Verificar que ADB detecta el telefono</a></h3>
 <pre><code class="language-bash">adb devices
-# Debe mostrar: XXXXXXX    device
+# List of devices attached
+# XXXXXXX    device
 </code></pre>
-<p>Si dice <code>unauthorized</code>, desbloquea el teléfono y acepta el popup.</p>
-<h3 id="42-configurar-adb-reverse-importante"><a class="header" href="#42-configurar-adb-reverse-importante">4.2 Configurar ADB Reverse (importante)</a></h3>
-<p>Esto permite que el teléfono acceda al dev server y backend de tu PC por USB sin depender del WiFi:</p>
-<pre><code class="language-bash">adb reverse tcp:1420 tcp:1420   # Vite dev server
-adb reverse tcp:1421 tcp:1421   # Vite HMR (hot reload)
-adb reverse tcp:3000 tcp:3000   # Tu backend API
-</code></pre>
-<blockquote>
-<p>Repite estos comandos cada vez que desconectes y reconectes el teléfono.</p>
-</blockquote>
-<h3 id="43-problema-con-cloudflare-warp-u-otras-vpns"><a class="header" href="#43-problema-con-cloudflare-warp-u-otras-vpns">4.3 Problema con Cloudflare WARP u otras VPNs</a></h3>
-<p>Si tienes una VPN activa (WARP, Mullvad, etc.), Tauri puede detectar la IP de la VPN en vez de tu IP local, y el teléfono no podrá conectarse.</p>
-<p>Solución:</p>
-<pre><code class="language-bash"># Opción A: desconecta la VPN antes de correr dev
-warp-cli disconnect
-
-# Opción B: fuerza la IP local manualmente
-TAURI_DEV_HOST=192.168.0.9 pnpm tauri android dev
-</code></pre>
-<h3 id="44-correr-el-dev-server"><a class="header" href="#44-correr-el-dev-server">4.4 Correr el dev server</a></h3>
-<pre><code class="language-bash">pnpm tauri android dev
-</code></pre>
-<p>Tauri compilará, instalará la app en el teléfono y abrirá el WebView apuntando al dev server.</p>
+<p>Si dice <code>unauthorized</code>, desbloquea el telefono y acepta el permiso de depuracion USB.</p>
 <hr>
-<h2 id="5-apk-de-debug-para-pruebas-rápidas"><a class="header" href="#5-apk-de-debug-para-pruebas-rápidas">5. APK de Debug (para pruebas rápidas)</a></h2>
-<p>No requiere firma. Útil para probar en tu propio dispositivo.</p>
-<pre><code class="language-bash">pnpm tauri android build --debug
+<h2 id="2-estructura-del-proyecto"><a class="header" href="#2-estructura-del-proyecto">2. Estructura del proyecto</a></h2>
+<pre><code>definitive-app/
+├── app/                    # Expo Router (screens)
+├── src/                    # Logica de negocio
+├── assets/                 # Imagenes, fuentes
+├── android/                # Proyecto nativo (generado con prebuild)
+├── app.json                # Configuracion de Expo
+├── app.config.ts           # Config dinamica
+├── tsconfig.json
+└── package.json
+</code></pre>
+<p>Para build nativo (APK), Expo necesita primero generar la carpeta <code>android/</code>:</p>
+<pre><code class="language-bash">npx expo prebuild
+</code></pre>
+<p>Esto genera el proyecto Android nativo usando versiones compatibles con tu SDK de Expo.</p>
+<hr>
+<h2 id="3-modo-desarrollo-expo-start"><a class="header" href="#3-modo-desarrollo-expo-start">3. Modo desarrollo (<code>expo start</code>)</a></h2>
+<h3 id="31-limpiar-cache-y-arrancar"><a class="header" href="#31-limpiar-cache-y-arrancar">3.1 Limpiar cache y arrancar</a></h3>
+<pre><code class="language-bash">pnpm expo start -c
+</code></pre>
+<p>El flag <code>-c</code> limpia el cache de Metro. <strong>Usalo siempre que cambies imports, rutas o configuracion.</strong></p>
+<h3 id="32-conectar-el-telefono"><a class="header" href="#32-conectar-el-telefono">3.2 Conectar el telefono</a></h3>
+<p><strong>Opcion A — Expo Go (recomendado para desarrollo rapido):</strong></p>
+<ol>
+<li>Instala <strong>Expo Go</strong> desde Google Play en tu telefono.</li>
+<li>Escanea el QR que aparece en la terminal o en http://localhost:8081.</li>
+<li>La app se recarga automaticamente al guardar cambios.</li>
+</ol>
+<p><strong>Opcion B — Development Build:</strong></p>
+<p>Si necesitas modulos nativos que Expo Go no soporta, necesitas un <a href="https://docs.expo.dev/development/create-development-builds/">Development Build</a>:</p>
+<pre><code class="language-bash">npx expo run:android
+</code></pre>
+<p>Para este proyecto <strong>Expo Go es suficiente</strong> porque solo usamos modulos compatibles.</p>
+<h3 id="33-adb-reverse-si-usas-wifi-o-backend-local"><a class="header" href="#33-adb-reverse-si-usas-wifi-o-backend-local">3.3 ADB Reverse (si usas WiFi o backend local)</a></h3>
+<p>Si la app necesita conectar a un backend en tu PC:</p>
+<pre><code class="language-bash">adb reverse tcp:8081 tcp:8081   # Metro bundler
+adb reverse tcp:3000 tcp:3000   # Tu backend (si aplica)
+</code></pre>
+<hr>
+<h2 id="4-build-de-apk-development-build"><a class="header" href="#4-build-de-apk-development-build">4. Build de APK (Development Build)</a></h2>
+<p>Un Development Build es una version de tu app que se instala en el telefono y <strong>reemplaza a Expo Go</strong>. Te permite usar modulos nativos no soportados en Expo Go y recibir actualizaciones OTA.</p>
+<h3 id="41-prebuild-del-proyecto-nativo"><a class="header" href="#41-prebuild-del-proyecto-nativo">4.1 Prebuild del proyecto nativo</a></h3>
+<pre><code class="language-bash">npx expo prebuild --clean
+</code></pre>
+<p>Esto genera la carpeta <code>android/</code>. Si ya existe, <code>--clean</code> la regenera desde cero.</p>
+<h3 id="42-development-build-con-eas"><a class="header" href="#42-development-build-con-eas">4.2 Development Build con EAS</a></h3>
+<p><strong>Requerido:</strong> Necesitas una cuenta en <a href="https://expo.dev">expo.dev</a> (gratis).</p>
+<pre><code class="language-bash">npx eas build --profile development --platform android
+</code></pre>
+<p>Esto compila en la nube de Expo y te da un link para descargar el APK.</p>
+<h3 id="43-development-build-local"><a class="header" href="#43-development-build-local">4.3 Development Build local</a></h3>
+<p>Sin EAS, podes compilar localmente:</p>
+<pre><code class="language-bash">npx expo run:android
+</code></pre>
+<p>Compila directo en tu maquina y <strong>lo instala automaticamente</strong> en el telefono conectado por USB.</p>
+<h3 id="44-ejecutar-en-modo-debug-y-release-con-expo-runandroid"><a class="header" href="#44-ejecutar-en-modo-debug-y-release-con-expo-runandroid">4.4 Ejecutar en modo Debug y Release con <code>expo run:android</code></a></h3>
+<h4 id="ejecutar-en-modo-debug-el-mas-comun"><a class="header" href="#ejecutar-en-modo-debug-el-mas-comun">Ejecutar en modo Debug (el mas comun)</a></h4>
+<pre><code class="language-bash">pnpm expo run:android
+</code></pre>
+<p>o explicitamente:</p>
+<pre><code class="language-bash">pnpm expo run:android --variant debug
+</code></pre>
+<p>Compila la app y la instala automaticamente en el telefono conectado por USB.</p>
+<h4 id="ejecutar-en-modo-release"><a class="header" href="#ejecutar-en-modo-release">Ejecutar en modo Release</a></h4>
+<pre><code class="language-bash">pnpm expo run:android --variant release
+</code></pre>
+<p>o en algunas versiones:</p>
+<pre><code class="language-bash">pnpm expo run:android --configuration Release
+</code></pre>
+<p>Compila la version Release, la instala directamente en el telefono y ya podes compartir el APK que se genera.</p>
+<h4 id="limpiar-antes-de-compilar"><a class="header" href="#limpiar-antes-de-compilar">Limpiar antes de compilar</a></h4>
+<pre><code class="language-bash">pnpm expo run:android --variant release --clear
+</code></pre>
+<p>o</p>
+<pre><code class="language-bash">pnpm expo prebuild --clean
+pnpm expo run:android --variant release
+</code></pre>
+<h4 id="instalar-un-apk-ya-compilado"><a class="header" href="#instalar-un-apk-ya-compilado">Instalar un APK ya compilado</a></h4>
+<pre><code class="language-bash">adb install -r android/app/build/outputs/apk/release/app-release.apk
+</code></pre>
+<h4 id="ubicacion-del-apk"><a class="header" href="#ubicacion-del-apk">Ubicacion del APK</a></h4>
+<p>Despues de compilar:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Modo</th><th>Ruta</th></tr>
+</thead>
+<tbody>
+<tr><td>Debug</td><td><code>android/app/build/outputs/apk/debug/app-debug.apk</code></td></tr>
+<tr><td>Release</td><td><code>android/app/build/outputs/apk/release/app-release.apk</code></td></tr>
+</tbody>
+</table>
+</div>
+<h4 id="si-queres-que-automaticamente-aparezca-en-tu-telefono"><a class="header" href="#si-queres-que-automaticamente-aparezca-en-tu-telefono">Si queres que automaticamente aparezca en tu telefono</a></h4>
+<p>Con el telefono conectado por USB y la depuracion USB activada:</p>
+<pre><code class="language-bash">pnpm expo run:android --variant release
+</code></pre>
+<p>Ese comando:</p>
+<ol>
+<li>Compila el APK de Release.</li>
+<li>Lo instala automaticamente en el telefono.</li>
+<li>Ademas deja el archivo APK en:
+<code>android/app/build/outputs/apk/release/app-release.apk</code>
+que es el que podes enviar por WhatsApp, Telegram o subir a Drive.</li>
+</ol>
+<h4 id="otros-flags-utiles"><a class="header" href="#otros-flags-utiles">Otros flags utiles</a></h4>
+<pre><code class="language-bash">pnpm expo run:android --device
+</code></pre>
+<p>Permite elegir un dispositivo si tenes varios conectados.</p>
+<pre><code class="language-bash">pnpm expo run:android --no-build-cache
+</code></pre>
+<p>Fuerza una compilacion sin usar la cache de Gradle.</p>
+<pre><code class="language-bash">pnpm expo run:android --port 8082
+</code></pre>
+<p>Usa un puerto diferente para Metro.</p>
+<hr>
+<h2 id="5-apk-de-debug"><a class="header" href="#5-apk-de-debug">5. APK de Debug</a></h2>
+<p>Para compartir con testers o probar en otros dispositivos sin Expo Go.</p>
+<h3 id="51-con-eas-build"><a class="header" href="#51-con-eas-build">5.1 Con EAS Build</a></h3>
+<pre><code class="language-bash">npx eas build --profile preview --platform android
+</code></pre>
+<p>En <code>eas.json</code> necesitas tener el perfil:</p>
+<pre><code class="language-json">{
+  "build": {
+    "preview": {
+      "android": {
+        "buildType": "apk"
+      }
+    }
+  }
+}
+</code></pre>
+<h3 id="52-build-local-desde-android-studio"><a class="header" href="#52-build-local-desde-android-studio">5.2 Build local desde Android Studio</a></h3>
+<pre><code class="language-bash">cd android
+./gradlew assembleDebug
 </code></pre>
 <p>El APK queda en:</p>
-<pre><code>src-tauri/gen/android/app/build/outputs/apk/debug/app-debug.apk
+<pre><code>android/app/build/outputs/apk/debug/app-debug.apk
 </code></pre>
-<p>Instalar directo por USB:</p>
-<pre><code class="language-bash">adb install src-tauri/gen/android/app/build/outputs/apk/debug/app-debug.apk
-</code></pre>
-<blockquote>
-<p>⚠️ El APK debug <strong>no se puede subir a Play Store</strong> y puede ser más lento, pero funciona para compartir con testers.</p>
-</blockquote>
 <hr>
-<h2 id="6-apk-de-release-para-compartir-por-internet"><a class="header" href="#6-apk-de-release-para-compartir-por-internet">6. APK de Release (para compartir por internet)</a></h2>
+<h2 id="6-apk-de-release"><a class="header" href="#6-apk-de-release">6. APK de Release</a></h2>
+<p>Para distribuir la app (terceros, Play Store, etc.).</p>
 <h3 id="61-crear-el-keystore-solo-una-vez"><a class="header" href="#61-crear-el-keystore-solo-una-vez">6.1 Crear el Keystore (solo una vez)</a></h3>
-<p>El keystore es tu firma digital. <strong>Guárdalo en un lugar seguro — si lo pierdes no podrás actualizar la app.</strong></p>
+<p>El keystore es <strong>tu firma digital</strong>. Si lo perdes, no podes actualizar la app en Play Store.</p>
 <pre><code class="language-bash">keytool -genkey -v \
-  -keystore mi-app.keystore \
-  -alias mi-app \
+  -keystore definitive-app.keystore \
+  -alias definitive-app \
   -keyalg RSA \
   -keysize 2048 \
   -validity 10000
 </code></pre>
-<p>Te pedirá:</p>
+<p>Te va a pedir:</p>
 <ul>
-<li>Contraseña del keystore</li>
-<li>Nombre, apellido, organización, ciudad, país (puedes dejar en blanco con Enter)</li>
-<li>Confirmar contraseña</li>
+<li>Contrasena del keystore (guardala)</li>
+<li>Nombre, organizacion, ciudad, pais (podes poner lo que quieras)</li>
+<li>Confirmar contrasena</li>
 </ul>
-<p>Verificar los alias del keystore:</p>
-<pre><code class="language-bash">keytool -list -keystore mi-app.keystore
+<p><strong>Verificar el keystore:</strong></p>
+<pre><code class="language-bash">keytool -list -keystore definitive-app.keystore
 </code></pre>
-<h3 id="62-configurar-envproduction"><a class="header" href="#62-configurar-envproduction">6.2 Configurar <code>.env.production</code></a></h3>
-<pre><code class="language-env">VITE_API_URL="https://tu-servidor-publico.com/api/v1"
+<p><strong>Guardalo en un lugar seguro.</strong> Recomendacion: <code>~/keystores/definitive-app.keystore</code></p>
+<pre><code class="language-bash">mkdir -p ~/keystores
+mv definitive-app.keystore ~/keystores/
 </code></pre>
-<blockquote>
-<p>Si el APK es solo para tu red local (mismo WiFi), puedes usar tu IP local: <code>http://192.168.0.9:3000/api/v1</code></p>
-</blockquote>
-<h3 id="63-compilar-el-apk-de-release"><a class="header" href="#63-compilar-el-apk-de-release">6.3 Compilar el APK de release</a></h3>
-<pre><code class="language-bash">pnpm tauri android build
+<h3 id="62-configurar-appconfigts"><a class="header" href="#62-configurar-appconfigts">6.2 Configurar app.config.ts</a></h3>
+<p>En <code>app.config.ts</code> agrega la configuracion de Android:</p>
+<pre><code class="language-ts">import type { ConfigContext } from 'expo/config';
+
+export default ({ config }: ConfigContext) =&gt; {
+  return {
+    ...config,
+    name: 'definitive-app',
+    slug: 'definitive-app',
+    version: '1.0.0',
+    orientation: 'portrait',
+    icon: './assets/icon.png',
+    userInterfaceStyle: 'light',
+    splash: {
+      backgroundColor: '#fff5f5',
+    },
+    android: {
+      package: 'com.tunombre.definitiveapp', // unico por app
+      adaptiveIcon: {
+        foregroundImage: './assets/adaptive-icon.png',
+        backgroundColor: '#fff5f5',
+      },
+    },
+    web: {
+      bundler: 'metro',
+      favicon: './assets/favicon.png',
+    },
+  };
+};
 </code></pre>
-<p>Genera un APK <strong>sin firmar</strong> en:</p>
-<pre><code>src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk
+<h3 id="63-compilar-aabapk-de-release-con-eas"><a class="header" href="#63-compilar-aabapk-de-release-con-eas">6.3 Compilar AAB/APK de release con EAS</a></h3>
+<pre><code class="language-bash">npx eas build --profile production --platform android
 </code></pre>
-<h3 id="64-firmar-el-apk-manualmente"><a class="header" href="#64-firmar-el-apk-manualmente">6.4 Firmar el APK manualmente</a></h3>
-<p><strong>Paso 1 — Alinear el APK:</strong></p>
+<p>En <code>eas.json</code>:</p>
+<pre><code class="language-json">{
+  "build": {
+    "production": {
+      "android": {
+        "buildType": "app-bundle"
+      }
+    }
+  }
+}
+</code></pre>
+<p>EAS te va a pedir subir el keystore la primera vez. Expo lo guarda seguro.</p>
+<h3 id="64-build-local-sin-eas"><a class="header" href="#64-build-local-sin-eas">6.4 Build local (sin EAS)</a></h3>
+<pre><code class="language-bash">cd android
+./gradlew bundleRelease   # Genera AAB (Play Store)
+./gradlew assembleRelease # Genera APK
+</code></pre>
+<p><strong>Para firmar el APK manualmente:</strong></p>
+<p>Paso 1 — Alinear:</p>
 <pre><code class="language-bash">zipalign -v 4 \
-  src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk \
+  android/app/build/outputs/apk/release/app-release-unsigned.apk \
   app-aligned.apk
 </code></pre>
-<p><strong>Paso 2 — Firmar:</strong></p>
+<p>Paso 2 — Firmar:</p>
 <pre><code class="language-bash">apksigner sign \
-  --ks mi-app.keystore \
-  --ks-key-alias mi-app \
-  --ks-pass pass:tu-contraseña \
-  --key-pass pass:tu-contraseña \
-  --out app-release.apk \
+  --ks ~/keystores/definitive-app.keystore \
+  --ks-key-alias definitive-app \
+  --ks-pass pass:TU_CONTRASENA \
+  --key-pass pass:TU_CONTRASENA \
+  --out definitive-app-release.apk \
   app-aligned.apk
 </code></pre>
-<p><strong>Paso 3 — Verificar la firma:</strong></p>
-<pre><code class="language-bash">apksigner verify app-release.apk
+<p>Paso 3 — Verificar:</p>
+<pre><code class="language-bash">apksigner verify definitive-app-release.apk
 # Debe decir: Verified using v1 scheme, v2 scheme...
 </code></pre>
-<p><strong>Limpiar archivos temporales:</strong></p>
+<p>Paso 4 — Limpiar:</p>
 <pre><code class="language-bash">rm app-aligned.apk
 </code></pre>
-<p>El APK listo para compartir es <code>app-release.apk</code>.</p>
+<h3 id="65-apk-universal-desde-aab-con-bundletool"><a class="header" href="#65-apk-universal-desde-aab-con-bundletool">6.5 APK universal desde AAB con bundletool</a></h3>
+<p>Si generaste AAB (Play Store) pero queres un APK para instalar directo:</p>
+<pre><code class="language-bash"># Descargar bundletool si no lo tenes
+# https://github.com/google/bundletool/releases
+
+java -jar bundletool-all-1.17.0.jar build-apks \
+  --bundle=android/app/build/outputs/bundle/release/app-release.aab \
+  --output=definitive-app.apks \
+  --mode=universal
+
+# Extraer el APK del .apks (que es un zip)
+unzip definitive-app.apks -d app-apk
+</code></pre>
+<p>El APK universal esta en <code>app-apk/universal.apk</code>.</p>
 <hr>
 <h2 id="7-instalar-el-apk-en-android"><a class="header" href="#7-instalar-el-apk-en-android">7. Instalar el APK en Android</a></h2>
-<h3 id="desde-pc-por-usb"><a class="header" href="#desde-pc-por-usb">Desde PC por USB:</a></h3>
-<pre><code class="language-bash">adb install app-release.apk
+<h3 id="desde-pc-por-usb"><a class="header" href="#desde-pc-por-usb">Desde PC por USB</a></h3>
+<pre><code class="language-bash">adb install definitive-app-release.apk
 </code></pre>
-<h3 id="desde-el-teléfono-descarga-directa"><a class="header" href="#desde-el-teléfono-descarga-directa">Desde el teléfono (descarga directa):</a></h3>
-<p>El usuario debe activar la instalación de fuentes desconocidas:</p>
+<p>Si ya esta instalada una version anterior:</p>
+<pre><code class="language-bash">adb install -r definitive-app-release.apk   # -r = reemplazar
+</code></pre>
+<h3 id="desde-el-telefono-descarga-directa"><a class="header" href="#desde-el-telefono-descarga-directa">Desde el telefono (descarga directa)</a></h3>
+<ol>
+<li>Pasa el APK al telefono (Google Drive, WhatsApp, cable USB).</li>
+<li>Abri el archivo <code>.apk</code> desde el gestor de archivos.</li>
+<li>Si te pide permisos de “Instalar apps desconocidas”:
 <ul>
-<li><strong>Android 8+:</strong> Configuración → Apps → (navegador o gestor de archivos) → Instalar apps desconocidas → Permitir</li>
-<li><strong>Android 7 o menos:</strong> Configuración → Seguridad → Fuentes desconocidas ✓</li>
+<li>Android 8+: Configuracion → Apps → (tu gestor de archivos) → Instalar apps desconocidas → Permitir</li>
+<li>Android 7 o menos: Configuracion → Seguridad → Fuentes desconocidas ✓</li>
 </ul>
-<p>Luego abrir el <code>.apk</code> desde el gestor de archivos y presionar <strong>Instalar</strong>.</p>
+</li>
+<li>Presiona <strong>Instalar</strong>.</li>
+</ol>
 <hr>
-<h2 id="8-resumen-rápido-de-comandos"><a class="header" href="#8-resumen-rápido-de-comandos">8. Resumen rápido de comandos</a></h2>
+<h2 id="8-resumen-rapido-de-comandos"><a class="header" href="#8-resumen-rapido-de-comandos">8. Resumen rapido de comandos</a></h2>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>Acción</th><th>Comando</th></tr>
+<tr><th>Accion</th><th>Comando</th></tr>
 </thead>
 <tbody>
-<tr><td>Inicializar Android</td><td><code>pnpm tauri android init</code></td></tr>
-<tr><td>Dev con hot reload</td><td><code>pnpm tauri android dev</code></td></tr>
-<tr><td>ADB reverse (puertos)</td><td><code>adb reverse tcp:1420 tcp:1420</code></td></tr>
-<tr><td>Build debug</td><td><code>pnpm tauri android build --debug</code></td></tr>
-<tr><td>Build release (sin firma)</td><td><code>pnpm tauri android build</code></td></tr>
-<tr><td>Crear keystore</td><td><code>keytool -genkey -v -keystore mi-app.keystore -alias mi-app -keyalg RSA -keysize 2048 -validity 10000</code></td></tr>
+<tr><td>Dev server (limpiando cache)</td><td><code>pnpm expo start -c</code></td></tr>
+<tr><td>Dev server (sin limpiar)</td><td><code>pnpm expo start</code></td></tr>
+<tr><td>Abrir en Android</td><td>Escanear QR con Expo Go</td></tr>
+<tr><td>Prebuild proyecto nativo</td><td><code>npx expo prebuild --clean</code></td></tr>
+<tr><td>Development Build local</td><td><code>npx expo run:android</code></td></tr>
+<tr><td>Build debug local</td><td><code>cd android &amp;&amp; ./gradlew assembleDebug</code></td></tr>
+<tr><td>Build release local (APK)</td><td><code>cd android &amp;&amp; ./gradlew assembleRelease</code></td></tr>
+<tr><td>Build release local (AAB)</td><td><code>cd android &amp;&amp; ./gradlew bundleRelease</code></td></tr>
+<tr><td>Build con EAS (development)</td><td><code>npx eas build --profile development --platform android</code></td></tr>
+<tr><td>Build con EAS (preview)</td><td><code>npx eas build --profile preview --platform android</code></td></tr>
+<tr><td>Build con EAS (production)</td><td><code>npx eas build --profile production --platform android</code></td></tr>
+<tr><td>Crear keystore</td><td><code>keytool -genkey -v -keystore app.keystore -alias app -keyalg RSA -keysize 2048 -validity 10000</code></td></tr>
 <tr><td>Alinear APK</td><td><code>zipalign -v 4 unsigned.apk aligned.apk</code></td></tr>
-<tr><td>Firmar APK</td><td><code>apksigner sign --ks mi-app.keystore ...</code></td></tr>
+<tr><td>Firmar APK</td><td><code>apksigner sign --ks app.keystore ...</code></td></tr>
 <tr><td>Verificar firma</td><td><code>apksigner verify app-release.apk</code></td></tr>
-<tr><td>Instalar por USB</td><td><code>adb install app-release.apk</code></td></tr>
+<tr><td>Instalar APK por USB</td><td><code>adb install app-release.apk</code></td></tr>
+<tr><td>AAB a APK universal</td><td><code>java -jar bundletool.jar build-apks --bundle=app.aab --output=app.apks --mode=universal</code></td></tr>
 </tbody>
 </table>
 </div>
 <hr>
-<h2 id="9-solución-de-problemas-comunes"><a class="header" href="#9-solución-de-problemas-comunes">9. Solución de problemas comunes</a></h2>
-<h3 id="neterr_connection_refused-en-el-webview"><a class="header" href="#neterr_connection_refused-en-el-webview"><code>net::ERR_CONNECTION_REFUSED</code> en el WebView</a></h3>
+<h2 id="9-solucion-de-problemas-comunes"><a class="header" href="#9-solucion-de-problemas-comunes">9. Solucion de problemas comunes</a></h2>
+<h3 id="neterr_connection_refused-en-el-telefono"><a class="header" href="#neterr_connection_refused-en-el-telefono"><code>net::ERR_CONNECTION_REFUSED</code> en el telefono</a></h3>
 <ul>
-<li>Verifica que Vite escucha en <code>0.0.0.0</code> (no en <code>false</code>)</li>
-<li>Corre <code>adb reverse</code> para todos los puertos necesarios</li>
-<li>Desconecta VPNs antes de correr <code>tauri android dev</code></li>
+<li>Asegurate de estar en la <strong>misma red WiFi</strong>.</li>
+<li>Si usas VPN (WARP, Mullvad), desconectala.</li>
+<li>Proba con el tunel de Expo: en vez de LAN, Expo te da opcion de <strong>Tunnel</strong> (mas lento pero funciona con VPN).</li>
 </ul>
-<h3 id="failed-to-load-signer-entry-does-not-contain-a-key"><a class="header" href="#failed-to-load-signer-entry-does-not-contain-a-key"><code>Failed to load signer: entry does not contain a key</code></a></h3>
-<p>El alias del keystore no coincide. Verifica con:</p>
-<pre><code class="language-bash">keytool -list -keystore mi-app.keystore
-</code></pre>
-<h3 id="output-file-already-exists-en-zipalign"><a class="header" href="#output-file-already-exists-en-zipalign"><code>Output file already exists</code> en zipalign</a></h3>
-<p>Borra el archivo anterior:</p>
-<pre><code class="language-bash">rm -f app-aligned.apk app-release.apk
-</code></pre>
-<h3 id="zipalign-orden-no-encontrada"><a class="header" href="#zipalign-orden-no-encontrada"><code>zipalign: orden no encontrada</code></a></h3>
-<p>Agrega el build-tools al PATH:</p>
-<pre><code class="language-bash">export PATH="$PATH:$HOME/Android/Sdk/build-tools/35.0.0"
-</code></pre>
-<h3 id="la-app-instala-pero-no-carga-datos-failed-to-fetch"><a class="header" href="#la-app-instala-pero-no-carga-datos-failed-to-fetch">La app instala pero no carga datos (failed to fetch)</a></h3>
+<h3 id="expo-start--c-abre-la-app-pero-esta-en-blanco"><a class="header" href="#expo-start--c-abre-la-app-pero-esta-en-blanco"><code>expo start -c</code> abre la app pero esta en blanco</a></h3>
 <ul>
-<li>En debug/dev: corre <code>adb reverse tcp:3000 tcp:3000</code></li>
-<li>En release: el <code>VITE_API_URL</code> debe apuntar a un servidor público o IP local accesible</li>
+<li>Revisa si hay errores en la terminal de Metro.</li>
+<li>Proba limpiar node_modules y reinstalar:
+<pre><code class="language-bash">rm -rf node_modules &amp;&amp; npm install
+pnpm expo start -c
+</code></pre>
+</li>
+</ul>
+<h3 id="npx-expo-runandroid-falla-con-error-de-sdk"><a class="header" href="#npx-expo-runandroid-falla-con-error-de-sdk"><code>npx expo run:android</code> falla con error de SDK</a></h3>
+<ul>
+<li>Verifica que <code>$ANDROID_HOME</code> apunte a la ruta correcta.</li>
+<li>Abri Android Studio → SDK Manager → instala Android SDK 35 (la que usa Expo 54).</li>
+</ul>
+<h3 id="adb-command-not-found"><a class="header" href="#adb-command-not-found"><code>adb: command not found</code></a></h3>
+<ul>
+<li>Agrega Android SDK al PATH:
+<pre><code class="language-bash">export PATH=$PATH:$HOME/Android/Sdk/platform-tools
+</code></pre>
+</li>
+</ul>
+<h3 id="el-apk-no-se-instala-en-el-telefono-app-no-instalada"><a class="header" href="#el-apk-no-se-instala-en-el-telefono-app-no-instalada">El APK no se instala en el telefono (“App no instalada”)</a></h3>
+<ul>
+<li>Ya existe una version firmada con otro keystore. Desinstalala primero.</li>
+<li>Si es debug, asegurate que la version previa tambien era debug (firmada con el debug keystore de Android SDK).</li>
+<li>Proba con: <code>adb uninstall com.tunombre.definitiveapp</code></li>
+</ul>
+<h3 id="process-didupdatenodemodules-se-repite-infinito"><a class="header" href="#process-didupdatenodemodules-se-repite-infinito"><code>process: didUpdateNodeModules</code> se repite infinito</a></h3>
+<ul>
+<li>Expo Router a veces se enloquece con los <code>node_modules</code>. Mata el proceso y corre <code>pnpm expo start -c</code> de nuevo.</li>
+</ul>
+<h3 id="la-app-se-ve-mal-despues-de-npx-expo-prebuild"><a class="header" href="#la-app-se-ve-mal-despues-de-npx-expo-prebuild">La app se ve mal despues de <code>npx expo prebuild</code></a></h3>
+<ul>
+<li>Proba limpiar todo:
+<pre><code class="language-bash">npx expo prebuild --clean
+</code></pre>
+</li>
 </ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../docs/12-restix.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../docs/05-react-native-primeros-pasos.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="../docs/19-fastify-init.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../docs/07-matrix-synapse.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -441,11 +598,11 @@ TAURI_DEV_HOST=192.168.0.9 pnpm tauri android dev
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../docs/12-restix.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../docs/05-react-native-primeros-pasos.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="../docs/19-fastify-init.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../docs/07-matrix-synapse.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>

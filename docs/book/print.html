@@ -37,10 +37,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "dark";
-            window.path_to_searchindex_js = "searchindex-127313fe.js";
+            window.path_to_searchindex_js = "searchindex-886f9d72.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-63b230e8.js"></script>
+        <script src="toc-536c3e5e.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -225,6 +225,7 @@
 <h2 id="react-native"><a class="header" href="#react-native">React Native</a></h2>
 <ul>
 <li><a href="#primeros-pasos---react-native">React Native Primeros Pasos</a></li>
+<li><a href="#manual-expo-react-native--dev-apk-debug-y-apk-release">React Native Generar Apk</a></li>
 </ul>
 <h2 id="matrix-synapse"><a class="header" href="#matrix-synapse">Matrix Synapse</a></h2>
 <ul>
@@ -36136,6 +36137,411 @@ npx expo build:android
 npx expo build:ios
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div>
+<h1 id="manual-expo-react-native--dev-apk-debug-y-apk-release"><a class="header" href="#manual-expo-react-native--dev-apk-debug-y-apk-release">Manual: Expo React Native — Dev, APK Debug y APK Release</a></h1>
+<h2 id="indice"><a class="header" href="#indice">Indice</a></h2>
+<ol>
+<li><a href="#1-requisitos-previos-3">Requisitos previos</a></li>
+<li><a href="#2-estructura-del-proyecto-1">Estructura del proyecto</a></li>
+<li><a href="#3-modo-desarrollo-expo-start">Modo desarrollo (expo start)</a></li>
+<li><a href="#4-build-de-apk-development-build">Build de APK (Development Build)</a>
+<ul>
+<li>4.4 <a href="#44-ejecutar-en-modo-debug-y-release-con-expo-runandroid">Ejecutar en modo Debug y Release con expo run:android</a></li>
+</ul>
+</li>
+<li><a href="#5-apk-de-debug">APK de Debug</a></li>
+<li><a href="#6-apk-de-release">APK de Release</a>
+<ul>
+<li>6.1 <a href="#61-crear-el-keystore">Crear el Keystore</a></li>
+<li>6.2 <a href="#62-configurar-appconfigts">Configurar app.config.ts</a></li>
+<li>6.3 <a href="#63-compilar-aabapk-de-release-con-eas">Compilar AAB/APK de release con EAS</a></li>
+<li>6.4 <a href="#64-build-local-sin-eas">Build local (sin EAS)</a></li>
+<li>6.5 <a href="#65-apk-universal-desde-aab-con-bundletool">APK universal desde AAB con bundletool</a></li>
+</ul>
+</li>
+<li><a href="#7-instalar-el-apk-en-android-1">Instalar el APK en Android</a></li>
+<li><a href="#8-resumen-rapido-de-comandos">Resumen rapido de comandos</a></li>
+<li><a href="#9-solucion-de-problemas-comunes">Solucion de problemas comunes</a></li>
+</ol>
+<hr>
+<h2 id="1-requisitos-previos-3"><a class="header" href="#1-requisitos-previos-3">1. Requisitos previos</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Herramienta</th><th>Como verificar</th><th>Donde obtenerla</th></tr>
+</thead>
+<tbody>
+<tr><td>Node.js 18+</td><td><code>node -v</code></td><td><a href="https://nodejs.org">nodejs.org</a></td></tr>
+<tr><td>npm / pnpm</td><td><code>pnpm -v</code></td><td><code>npm i -g pnpm</code></td></tr>
+<tr><td>Expo CLI</td><td><code>npx expo --version</code></td><td>Viene con el proyecto</td></tr>
+<tr><td>Android SDK</td><td><code>echo $ANDROID_HOME</code></td><td><a href="https://developer.android.com/studio">Android Studio</a></td></tr>
+<tr><td>Java JDK 17+</td><td><code>java -version</code></td><td>OpenJDK o bundle de Android Studio</td></tr>
+<tr><td>ADB</td><td><code>adb --version</code></td><td>Android SDK platform-tools</td></tr>
+<tr><td>Dispositivo Android</td><td>—</td><td>Fisico o emulador</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="configurar-android-sdk"><a class="header" href="#configurar-android-sdk">Configurar Android SDK</a></h3>
+<p>Agrega esto a tu <code>~/.bashrc</code> o <code>~/.zshrc</code>:</p>
+<pre><code class="language-bash">export ANDROID_HOME=$HOME/Android/Sdk
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
+export PATH=$PATH:$ANDROID_HOME/build-tools/35.0.0
+</code></pre>
+<pre><code class="language-bash">source ~/.bashrc
+</code></pre>
+<h3 id="verificar-que-adb-detecta-el-telefono"><a class="header" href="#verificar-que-adb-detecta-el-telefono">Verificar que ADB detecta el telefono</a></h3>
+<pre><code class="language-bash">adb devices
+# List of devices attached
+# XXXXXXX    device
+</code></pre>
+<p>Si dice <code>unauthorized</code>, desbloquea el telefono y acepta el permiso de depuracion USB.</p>
+<hr>
+<h2 id="2-estructura-del-proyecto-1"><a class="header" href="#2-estructura-del-proyecto-1">2. Estructura del proyecto</a></h2>
+<pre><code>definitive-app/
+├── app/                    # Expo Router (screens)
+├── src/                    # Logica de negocio
+├── assets/                 # Imagenes, fuentes
+├── android/                # Proyecto nativo (generado con prebuild)
+├── app.json                # Configuracion de Expo
+├── app.config.ts           # Config dinamica
+├── tsconfig.json
+└── package.json
+</code></pre>
+<p>Para build nativo (APK), Expo necesita primero generar la carpeta <code>android/</code>:</p>
+<pre><code class="language-bash">npx expo prebuild
+</code></pre>
+<p>Esto genera el proyecto Android nativo usando versiones compatibles con tu SDK de Expo.</p>
+<hr>
+<h2 id="3-modo-desarrollo-expo-start"><a class="header" href="#3-modo-desarrollo-expo-start">3. Modo desarrollo (<code>expo start</code>)</a></h2>
+<h3 id="31-limpiar-cache-y-arrancar"><a class="header" href="#31-limpiar-cache-y-arrancar">3.1 Limpiar cache y arrancar</a></h3>
+<pre><code class="language-bash">pnpm expo start -c
+</code></pre>
+<p>El flag <code>-c</code> limpia el cache de Metro. <strong>Usalo siempre que cambies imports, rutas o configuracion.</strong></p>
+<h3 id="32-conectar-el-telefono"><a class="header" href="#32-conectar-el-telefono">3.2 Conectar el telefono</a></h3>
+<p><strong>Opcion A — Expo Go (recomendado para desarrollo rapido):</strong></p>
+<ol>
+<li>Instala <strong>Expo Go</strong> desde Google Play en tu telefono.</li>
+<li>Escanea el QR que aparece en la terminal o en http://localhost:8081.</li>
+<li>La app se recarga automaticamente al guardar cambios.</li>
+</ol>
+<p><strong>Opcion B — Development Build:</strong></p>
+<p>Si necesitas modulos nativos que Expo Go no soporta, necesitas un <a href="https://docs.expo.dev/development/create-development-builds/">Development Build</a>:</p>
+<pre><code class="language-bash">npx expo run:android
+</code></pre>
+<p>Para este proyecto <strong>Expo Go es suficiente</strong> porque solo usamos modulos compatibles.</p>
+<h3 id="33-adb-reverse-si-usas-wifi-o-backend-local"><a class="header" href="#33-adb-reverse-si-usas-wifi-o-backend-local">3.3 ADB Reverse (si usas WiFi o backend local)</a></h3>
+<p>Si la app necesita conectar a un backend en tu PC:</p>
+<pre><code class="language-bash">adb reverse tcp:8081 tcp:8081   # Metro bundler
+adb reverse tcp:3000 tcp:3000   # Tu backend (si aplica)
+</code></pre>
+<hr>
+<h2 id="4-build-de-apk-development-build"><a class="header" href="#4-build-de-apk-development-build">4. Build de APK (Development Build)</a></h2>
+<p>Un Development Build es una version de tu app que se instala en el telefono y <strong>reemplaza a Expo Go</strong>. Te permite usar modulos nativos no soportados en Expo Go y recibir actualizaciones OTA.</p>
+<h3 id="41-prebuild-del-proyecto-nativo"><a class="header" href="#41-prebuild-del-proyecto-nativo">4.1 Prebuild del proyecto nativo</a></h3>
+<pre><code class="language-bash">npx expo prebuild --clean
+</code></pre>
+<p>Esto genera la carpeta <code>android/</code>. Si ya existe, <code>--clean</code> la regenera desde cero.</p>
+<h3 id="42-development-build-con-eas"><a class="header" href="#42-development-build-con-eas">4.2 Development Build con EAS</a></h3>
+<p><strong>Requerido:</strong> Necesitas una cuenta en <a href="https://expo.dev">expo.dev</a> (gratis).</p>
+<pre><code class="language-bash">npx eas build --profile development --platform android
+</code></pre>
+<p>Esto compila en la nube de Expo y te da un link para descargar el APK.</p>
+<h3 id="43-development-build-local"><a class="header" href="#43-development-build-local">4.3 Development Build local</a></h3>
+<p>Sin EAS, podes compilar localmente:</p>
+<pre><code class="language-bash">npx expo run:android
+</code></pre>
+<p>Compila directo en tu maquina y <strong>lo instala automaticamente</strong> en el telefono conectado por USB.</p>
+<h3 id="44-ejecutar-en-modo-debug-y-release-con-expo-runandroid"><a class="header" href="#44-ejecutar-en-modo-debug-y-release-con-expo-runandroid">4.4 Ejecutar en modo Debug y Release con <code>expo run:android</code></a></h3>
+<h4 id="ejecutar-en-modo-debug-el-mas-comun"><a class="header" href="#ejecutar-en-modo-debug-el-mas-comun">Ejecutar en modo Debug (el mas comun)</a></h4>
+<pre><code class="language-bash">pnpm expo run:android
+</code></pre>
+<p>o explicitamente:</p>
+<pre><code class="language-bash">pnpm expo run:android --variant debug
+</code></pre>
+<p>Compila la app y la instala automaticamente en el telefono conectado por USB.</p>
+<h4 id="ejecutar-en-modo-release"><a class="header" href="#ejecutar-en-modo-release">Ejecutar en modo Release</a></h4>
+<pre><code class="language-bash">pnpm expo run:android --variant release
+</code></pre>
+<p>o en algunas versiones:</p>
+<pre><code class="language-bash">pnpm expo run:android --configuration Release
+</code></pre>
+<p>Compila la version Release, la instala directamente en el telefono y ya podes compartir el APK que se genera.</p>
+<h4 id="limpiar-antes-de-compilar"><a class="header" href="#limpiar-antes-de-compilar">Limpiar antes de compilar</a></h4>
+<pre><code class="language-bash">pnpm expo run:android --variant release --clear
+</code></pre>
+<p>o</p>
+<pre><code class="language-bash">pnpm expo prebuild --clean
+pnpm expo run:android --variant release
+</code></pre>
+<h4 id="instalar-un-apk-ya-compilado"><a class="header" href="#instalar-un-apk-ya-compilado">Instalar un APK ya compilado</a></h4>
+<pre><code class="language-bash">adb install -r android/app/build/outputs/apk/release/app-release.apk
+</code></pre>
+<h4 id="ubicacion-del-apk"><a class="header" href="#ubicacion-del-apk">Ubicacion del APK</a></h4>
+<p>Despues de compilar:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Modo</th><th>Ruta</th></tr>
+</thead>
+<tbody>
+<tr><td>Debug</td><td><code>android/app/build/outputs/apk/debug/app-debug.apk</code></td></tr>
+<tr><td>Release</td><td><code>android/app/build/outputs/apk/release/app-release.apk</code></td></tr>
+</tbody>
+</table>
+</div>
+<h4 id="si-queres-que-automaticamente-aparezca-en-tu-telefono"><a class="header" href="#si-queres-que-automaticamente-aparezca-en-tu-telefono">Si queres que automaticamente aparezca en tu telefono</a></h4>
+<p>Con el telefono conectado por USB y la depuracion USB activada:</p>
+<pre><code class="language-bash">pnpm expo run:android --variant release
+</code></pre>
+<p>Ese comando:</p>
+<ol>
+<li>Compila el APK de Release.</li>
+<li>Lo instala automaticamente en el telefono.</li>
+<li>Ademas deja el archivo APK en:
+<code>android/app/build/outputs/apk/release/app-release.apk</code>
+que es el que podes enviar por WhatsApp, Telegram o subir a Drive.</li>
+</ol>
+<h4 id="otros-flags-utiles"><a class="header" href="#otros-flags-utiles">Otros flags utiles</a></h4>
+<pre><code class="language-bash">pnpm expo run:android --device
+</code></pre>
+<p>Permite elegir un dispositivo si tenes varios conectados.</p>
+<pre><code class="language-bash">pnpm expo run:android --no-build-cache
+</code></pre>
+<p>Fuerza una compilacion sin usar la cache de Gradle.</p>
+<pre><code class="language-bash">pnpm expo run:android --port 8082
+</code></pre>
+<p>Usa un puerto diferente para Metro.</p>
+<hr>
+<h2 id="5-apk-de-debug"><a class="header" href="#5-apk-de-debug">5. APK de Debug</a></h2>
+<p>Para compartir con testers o probar en otros dispositivos sin Expo Go.</p>
+<h3 id="51-con-eas-build"><a class="header" href="#51-con-eas-build">5.1 Con EAS Build</a></h3>
+<pre><code class="language-bash">npx eas build --profile preview --platform android
+</code></pre>
+<p>En <code>eas.json</code> necesitas tener el perfil:</p>
+<pre><code class="language-json">{
+  "build": {
+    "preview": {
+      "android": {
+        "buildType": "apk"
+      }
+    }
+  }
+}
+</code></pre>
+<h3 id="52-build-local-desde-android-studio"><a class="header" href="#52-build-local-desde-android-studio">5.2 Build local desde Android Studio</a></h3>
+<pre><code class="language-bash">cd android
+./gradlew assembleDebug
+</code></pre>
+<p>El APK queda en:</p>
+<pre><code>android/app/build/outputs/apk/debug/app-debug.apk
+</code></pre>
+<hr>
+<h2 id="6-apk-de-release"><a class="header" href="#6-apk-de-release">6. APK de Release</a></h2>
+<p>Para distribuir la app (terceros, Play Store, etc.).</p>
+<h3 id="61-crear-el-keystore-solo-una-vez-1"><a class="header" href="#61-crear-el-keystore-solo-una-vez-1">6.1 Crear el Keystore (solo una vez)</a></h3>
+<p>El keystore es <strong>tu firma digital</strong>. Si lo perdes, no podes actualizar la app en Play Store.</p>
+<pre><code class="language-bash">keytool -genkey -v \
+  -keystore definitive-app.keystore \
+  -alias definitive-app \
+  -keyalg RSA \
+  -keysize 2048 \
+  -validity 10000
+</code></pre>
+<p>Te va a pedir:</p>
+<ul>
+<li>Contrasena del keystore (guardala)</li>
+<li>Nombre, organizacion, ciudad, pais (podes poner lo que quieras)</li>
+<li>Confirmar contrasena</li>
+</ul>
+<p><strong>Verificar el keystore:</strong></p>
+<pre><code class="language-bash">keytool -list -keystore definitive-app.keystore
+</code></pre>
+<p><strong>Guardalo en un lugar seguro.</strong> Recomendacion: <code>~/keystores/definitive-app.keystore</code></p>
+<pre><code class="language-bash">mkdir -p ~/keystores
+mv definitive-app.keystore ~/keystores/
+</code></pre>
+<h3 id="62-configurar-appconfigts"><a class="header" href="#62-configurar-appconfigts">6.2 Configurar app.config.ts</a></h3>
+<p>En <code>app.config.ts</code> agrega la configuracion de Android:</p>
+<pre><code class="language-ts">import type { ConfigContext } from 'expo/config';
+
+export default ({ config }: ConfigContext) =&gt; {
+  return {
+    ...config,
+    name: 'definitive-app',
+    slug: 'definitive-app',
+    version: '1.0.0',
+    orientation: 'portrait',
+    icon: './assets/icon.png',
+    userInterfaceStyle: 'light',
+    splash: {
+      backgroundColor: '#fff5f5',
+    },
+    android: {
+      package: 'com.tunombre.definitiveapp', // unico por app
+      adaptiveIcon: {
+        foregroundImage: './assets/adaptive-icon.png',
+        backgroundColor: '#fff5f5',
+      },
+    },
+    web: {
+      bundler: 'metro',
+      favicon: './assets/favicon.png',
+    },
+  };
+};
+</code></pre>
+<h3 id="63-compilar-aabapk-de-release-con-eas"><a class="header" href="#63-compilar-aabapk-de-release-con-eas">6.3 Compilar AAB/APK de release con EAS</a></h3>
+<pre><code class="language-bash">npx eas build --profile production --platform android
+</code></pre>
+<p>En <code>eas.json</code>:</p>
+<pre><code class="language-json">{
+  "build": {
+    "production": {
+      "android": {
+        "buildType": "app-bundle"
+      }
+    }
+  }
+}
+</code></pre>
+<p>EAS te va a pedir subir el keystore la primera vez. Expo lo guarda seguro.</p>
+<h3 id="64-build-local-sin-eas"><a class="header" href="#64-build-local-sin-eas">6.4 Build local (sin EAS)</a></h3>
+<pre><code class="language-bash">cd android
+./gradlew bundleRelease   # Genera AAB (Play Store)
+./gradlew assembleRelease # Genera APK
+</code></pre>
+<p><strong>Para firmar el APK manualmente:</strong></p>
+<p>Paso 1 — Alinear:</p>
+<pre><code class="language-bash">zipalign -v 4 \
+  android/app/build/outputs/apk/release/app-release-unsigned.apk \
+  app-aligned.apk
+</code></pre>
+<p>Paso 2 — Firmar:</p>
+<pre><code class="language-bash">apksigner sign \
+  --ks ~/keystores/definitive-app.keystore \
+  --ks-key-alias definitive-app \
+  --ks-pass pass:TU_CONTRASENA \
+  --key-pass pass:TU_CONTRASENA \
+  --out definitive-app-release.apk \
+  app-aligned.apk
+</code></pre>
+<p>Paso 3 — Verificar:</p>
+<pre><code class="language-bash">apksigner verify definitive-app-release.apk
+# Debe decir: Verified using v1 scheme, v2 scheme...
+</code></pre>
+<p>Paso 4 — Limpiar:</p>
+<pre><code class="language-bash">rm app-aligned.apk
+</code></pre>
+<h3 id="65-apk-universal-desde-aab-con-bundletool"><a class="header" href="#65-apk-universal-desde-aab-con-bundletool">6.5 APK universal desde AAB con bundletool</a></h3>
+<p>Si generaste AAB (Play Store) pero queres un APK para instalar directo:</p>
+<pre><code class="language-bash"># Descargar bundletool si no lo tenes
+# https://github.com/google/bundletool/releases
+
+java -jar bundletool-all-1.17.0.jar build-apks \
+  --bundle=android/app/build/outputs/bundle/release/app-release.aab \
+  --output=definitive-app.apks \
+  --mode=universal
+
+# Extraer el APK del .apks (que es un zip)
+unzip definitive-app.apks -d app-apk
+</code></pre>
+<p>El APK universal esta en <code>app-apk/universal.apk</code>.</p>
+<hr>
+<h2 id="7-instalar-el-apk-en-android-1"><a class="header" href="#7-instalar-el-apk-en-android-1">7. Instalar el APK en Android</a></h2>
+<h3 id="desde-pc-por-usb-1"><a class="header" href="#desde-pc-por-usb-1">Desde PC por USB</a></h3>
+<pre><code class="language-bash">adb install definitive-app-release.apk
+</code></pre>
+<p>Si ya esta instalada una version anterior:</p>
+<pre><code class="language-bash">adb install -r definitive-app-release.apk   # -r = reemplazar
+</code></pre>
+<h3 id="desde-el-telefono-descarga-directa"><a class="header" href="#desde-el-telefono-descarga-directa">Desde el telefono (descarga directa)</a></h3>
+<ol>
+<li>Pasa el APK al telefono (Google Drive, WhatsApp, cable USB).</li>
+<li>Abri el archivo <code>.apk</code> desde el gestor de archivos.</li>
+<li>Si te pide permisos de “Instalar apps desconocidas”:
+<ul>
+<li>Android 8+: Configuracion → Apps → (tu gestor de archivos) → Instalar apps desconocidas → Permitir</li>
+<li>Android 7 o menos: Configuracion → Seguridad → Fuentes desconocidas ✓</li>
+</ul>
+</li>
+<li>Presiona <strong>Instalar</strong>.</li>
+</ol>
+<hr>
+<h2 id="8-resumen-rapido-de-comandos"><a class="header" href="#8-resumen-rapido-de-comandos">8. Resumen rapido de comandos</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Accion</th><th>Comando</th></tr>
+</thead>
+<tbody>
+<tr><td>Dev server (limpiando cache)</td><td><code>pnpm expo start -c</code></td></tr>
+<tr><td>Dev server (sin limpiar)</td><td><code>pnpm expo start</code></td></tr>
+<tr><td>Abrir en Android</td><td>Escanear QR con Expo Go</td></tr>
+<tr><td>Prebuild proyecto nativo</td><td><code>npx expo prebuild --clean</code></td></tr>
+<tr><td>Development Build local</td><td><code>npx expo run:android</code></td></tr>
+<tr><td>Build debug local</td><td><code>cd android &amp;&amp; ./gradlew assembleDebug</code></td></tr>
+<tr><td>Build release local (APK)</td><td><code>cd android &amp;&amp; ./gradlew assembleRelease</code></td></tr>
+<tr><td>Build release local (AAB)</td><td><code>cd android &amp;&amp; ./gradlew bundleRelease</code></td></tr>
+<tr><td>Build con EAS (development)</td><td><code>npx eas build --profile development --platform android</code></td></tr>
+<tr><td>Build con EAS (preview)</td><td><code>npx eas build --profile preview --platform android</code></td></tr>
+<tr><td>Build con EAS (production)</td><td><code>npx eas build --profile production --platform android</code></td></tr>
+<tr><td>Crear keystore</td><td><code>keytool -genkey -v -keystore app.keystore -alias app -keyalg RSA -keysize 2048 -validity 10000</code></td></tr>
+<tr><td>Alinear APK</td><td><code>zipalign -v 4 unsigned.apk aligned.apk</code></td></tr>
+<tr><td>Firmar APK</td><td><code>apksigner sign --ks app.keystore ...</code></td></tr>
+<tr><td>Verificar firma</td><td><code>apksigner verify app-release.apk</code></td></tr>
+<tr><td>Instalar APK por USB</td><td><code>adb install app-release.apk</code></td></tr>
+<tr><td>AAB a APK universal</td><td><code>java -jar bundletool.jar build-apks --bundle=app.aab --output=app.apks --mode=universal</code></td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="9-solucion-de-problemas-comunes"><a class="header" href="#9-solucion-de-problemas-comunes">9. Solucion de problemas comunes</a></h2>
+<h3 id="neterr_connection_refused-en-el-telefono"><a class="header" href="#neterr_connection_refused-en-el-telefono"><code>net::ERR_CONNECTION_REFUSED</code> en el telefono</a></h3>
+<ul>
+<li>Asegurate de estar en la <strong>misma red WiFi</strong>.</li>
+<li>Si usas VPN (WARP, Mullvad), desconectala.</li>
+<li>Proba con el tunel de Expo: en vez de LAN, Expo te da opcion de <strong>Tunnel</strong> (mas lento pero funciona con VPN).</li>
+</ul>
+<h3 id="expo-start--c-abre-la-app-pero-esta-en-blanco"><a class="header" href="#expo-start--c-abre-la-app-pero-esta-en-blanco"><code>expo start -c</code> abre la app pero esta en blanco</a></h3>
+<ul>
+<li>Revisa si hay errores en la terminal de Metro.</li>
+<li>Proba limpiar node_modules y reinstalar:
+<pre><code class="language-bash">rm -rf node_modules &amp;&amp; npm install
+pnpm expo start -c
+</code></pre>
+</li>
+</ul>
+<h3 id="npx-expo-runandroid-falla-con-error-de-sdk"><a class="header" href="#npx-expo-runandroid-falla-con-error-de-sdk"><code>npx expo run:android</code> falla con error de SDK</a></h3>
+<ul>
+<li>Verifica que <code>$ANDROID_HOME</code> apunte a la ruta correcta.</li>
+<li>Abri Android Studio → SDK Manager → instala Android SDK 35 (la que usa Expo 54).</li>
+</ul>
+<h3 id="adb-command-not-found"><a class="header" href="#adb-command-not-found"><code>adb: command not found</code></a></h3>
+<ul>
+<li>Agrega Android SDK al PATH:
+<pre><code class="language-bash">export PATH=$PATH:$HOME/Android/Sdk/platform-tools
+</code></pre>
+</li>
+</ul>
+<h3 id="el-apk-no-se-instala-en-el-telefono-app-no-instalada"><a class="header" href="#el-apk-no-se-instala-en-el-telefono-app-no-instalada">El APK no se instala en el telefono (“App no instalada”)</a></h3>
+<ul>
+<li>Ya existe una version firmada con otro keystore. Desinstalala primero.</li>
+<li>Si es debug, asegurate que la version previa tambien era debug (firmada con el debug keystore de Android SDK).</li>
+<li>Proba con: <code>adb uninstall com.tunombre.definitiveapp</code></li>
+</ul>
+<h3 id="process-didupdatenodemodules-se-repite-infinito"><a class="header" href="#process-didupdatenodemodules-se-repite-infinito"><code>process: didUpdateNodeModules</code> se repite infinito</a></h3>
+<ul>
+<li>Expo Router a veces se enloquece con los <code>node_modules</code>. Mata el proceso y corre <code>pnpm expo start -c</code> de nuevo.</li>
+</ul>
+<h3 id="la-app-se-ve-mal-despues-de-npx-expo-prebuild"><a class="header" href="#la-app-se-ve-mal-despues-de-npx-expo-prebuild">La app se ve mal despues de <code>npx expo prebuild</code></a></h3>
+<ul>
+<li>Proba limpiar todo:
+<pre><code class="language-bash">npx expo prebuild --clean
+</code></pre>
+</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div>
 <h1 id="guía-completa-instalación-y-configuración-de-matrix-synapse-con-docker"><a class="header" href="#guía-completa-instalación-y-configuración-de-matrix-synapse-con-docker">Guía Completa: Instalación y Configuración de Matrix Synapse con Docker</a></h1>
 <h2 id="índice-19"><a class="header" href="#índice-19">Índice</a></h2>
 <ol>
@@ -36158,7 +36564,7 @@ npx expo build:ios
 <li><a href="#listar-archivos-en-una-room">Listar archivos en una room</a></li>
 </ol>
 <hr>
-<h2 id="1-requisitos-previos-3"><a class="header" href="#1-requisitos-previos-3">1. Requisitos previos</a></h2>
+<h2 id="1-requisitos-previos-4"><a class="header" href="#1-requisitos-previos-4">1. Requisitos previos</a></h2>
 <ul>
 <li>Sistema basado en Linux (Ubuntu recomendado)</li>
 <li>Acceso con privilegios <code>sudo</code></li>
@@ -41313,7 +41719,7 @@ S1#  show interfaces Fa0/1 switchport       ! Detalle de un puerto
 <hr>
 <h2 id="índice-28"><a class="header" href="#índice-28">Índice</a></h2>
 <ol>
-<li><a href="#1-requisitos-previos-4">Requisitos Previos</a></li>
+<li><a href="#1-requisitos-previos-5">Requisitos Previos</a></li>
 <li><a href="#2-desinstalación-completa-hacer-primero-si-ya-tienes-docker">Desinstalación Completa</a></li>
 <li><a href="#3-instalación-desde-el-repositorio-oficial-1">Instalación desde el Repositorio Oficial</a></li>
 <li><a href="#4-verificar-la-instalación-1">Verificar la Instalación</a></li>
@@ -41323,7 +41729,7 @@ S1#  show interfaces Fa0/1 switchport       ! Detalle de un puerto
 <li><a href="#8-solución-de-problemas">Solución de Problemas</a></li>
 </ol>
 <hr>
-<h2 id="1-requisitos-previos-4"><a class="header" href="#1-requisitos-previos-4">1. Requisitos Previos</a></h2>
+<h2 id="1-requisitos-previos-5"><a class="header" href="#1-requisitos-previos-5">1. Requisitos Previos</a></h2>
 <h3 id="sistema-operativo-soportado"><a class="header" href="#sistema-operativo-soportado">Sistema operativo soportado</a></h3>
 <ul>
 <li>Debian Bullseye (11), Bookworm (12) o superior</li>
@@ -41649,7 +42055,7 @@ docker system prune -a --volumes
 <h1 id="convención-de-commits"><a class="header" href="#convención-de-commits">Convención de Commits</a></h1>
 <p><a href="https://conventionalcommits.org"><img src="https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg" alt="Conventional Commits"></a></p>
 <p>Para mantener un historial de cambios claro, legible y consistente, todos los commits deben seguir este formato.</p>
-<h2 id="indice"><a class="header" href="#indice">Indice</a></h2>
+<h2 id="indice-1"><a class="header" href="#indice-1">Indice</a></h2>
 <ul>
 <li><a href="#formato">Formato</a></li>
 <li><a href="#tipos-de-commit">Tipos de Commit</a></li>
@@ -41822,6 +42228,22 @@ Closes #45
         <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
         <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
         <script>

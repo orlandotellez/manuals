@@ -42,6 +42,7 @@ Mis manuales de desarrollo
 
 ## React Native
 - [React Native Primeros Pasos](./docs/05-react-native-primeros-pasos.md)
+- [React Native Generar Apk](./docs/31-react-native-apk-release.md)
 
 ## Matrix Synapse
 - [Matrix Synapse](./docs/07-matrix-synapse.md)
