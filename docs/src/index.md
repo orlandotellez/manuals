@@ -62,3 +62,6 @@ Mis manuales de desarrollo
 
 ## Git y Github
 - [Conventional commits](./docs/29-convencion-commits.md)
+
+## Linux
+- [Instalar aplicaciones en Linux](./docs/32-install-apps-linux.md)

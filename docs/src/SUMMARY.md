@@ -60,3 +60,6 @@
 
 ## Git y Github
 - [Conventional Commits](./docs/29-convencion-commits.md)
+
+## Linux
+- [Instalar aplicaciones en Linux](./docs/32-install-apps-linux.md)

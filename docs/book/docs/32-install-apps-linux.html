@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Redis - Manuales</title>
+        <title>Instalar aplicaciones en Linux - Manuales</title>
 
 
         <!-- Custom HTML head -->
@@ -175,392 +175,385 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h2 id="manual-completo-de-redis-instalación--uso-avanzado"><a class="header" href="#manual-completo-de-redis-instalación--uso-avanzado">Manual Completo de Redis (Instalación → Uso Avanzado)</a></h2>
-<p>Redis es una base de datos en memoria orientada a estructuras de datos. Se utiliza principalmente para caché, colas, sesiones y sistemas de alta velocidad.</p>
+                        <h1 id="manual-practico-instalar-aplicaciones-appimage-tar-y-deb-en-linux"><a class="header" href="#manual-practico-instalar-aplicaciones-appimage-tar-y-deb-en-linux">Manual practico: Instalar aplicaciones <code>.AppImage</code>, <code>.tar.*</code> y <code>.deb</code> en Linux</a></h1>
+<p>Este manual funciona en la mayoria de distribuciones basadas en Debian (Ubuntu, Linux Mint, Pop!_OS, KDE Neon, etc.).</p>
 <hr>
-<h2 id="índice"><a class="header" href="#índice">Índice</a></h2>
+<h2 id="indice"><a class="header" href="#indice">Indice</a></h2>
 <ol>
-<li><a href="#qué-es-redis">¿Qué es Redis?</a></li>
-<li><a href="#instalación">Instalación</a></li>
-<li><a href="#uso-básico-con-redis-cli">Uso básico con redis-cli</a></li>
-<li><a href="#tipos-de-datos">Tipos de datos</a></li>
-<li><a href="#comandos-esenciales">Comandos esenciales</a></li>
-<li><a href="#monitoreo">Monitoreo</a></li>
-<li><a href="#patrón-cache-aside">Patrón Cache-Aside</a></li>
-<li><a href="#ejemplo-de-clave">Ejemplo de clave</a></li>
-<li><a href="#invalidación-de-caché">Invalidación de caché</a></li>
-<li><a href="#integración-con-rust">Integración con Rust</a></li>
-<li><a href="#persistencia">Persistencia</a></li>
-<li><a href="#configuración-importante">Configuración importante</a></li>
-<li><a href="#performance">Performance</a></li>
-<li><a href="#errores-comunes">Errores comunes</a></li>
-<li><a href="#comandos-avanzados">Comandos avanzados</a></li>
-<li><a href="#ejemplo-completo">Ejemplo completo</a></li>
-<li><a href="#arquitectura-típica">Arquitectura típica</a></li>
-<li><a href="#cuándo-usar-redis">Cuándo usar Redis</a></li>
-<li><a href="#conceptos-fundamentales">Conceptos Fundamentales</a></li>
-<li><a href="#comandos-esenciales-cli">Comandos Esenciales (CLI)</a></li>
-<li><a href="#resumen">Resumen</a></li>
+<li><a href="#1-tipos-de-paquetes">Tipos de paquetes</a></li>
+<li><a href="#2-instalar-paquetes-deb">Instalar paquetes .deb</a></li>
+<li><a href="#3-instalar-appimage">Instalar AppImage</a></li>
+<li><a href="#4-crear-un-acceso-al-menu">Crear un acceso al menu</a></li>
+<li><a href="#5-instalar-programas-desde-archivos-tar">Instalar programas desde archivos TAR</a></li>
+<li><a href="#6-si-el-tar-trae-un-instalador">Si el TAR trae un instalador</a></li>
+<li><a href="#7-si-el-tar-no-trae-instalador">Si el TAR no trae instalador</a></li>
+<li><a href="#8-donde-guardar-aplicaciones-portables">Donde guardar aplicaciones portables</a></li>
+<li><a href="#9-donde-guardar-iconos">Donde guardar iconos</a></li>
+<li><a href="#10-crear-un-acceso-directo-completo">Crear un acceso directo completo</a></li>
+<li><a href="#11-actualizar-el-menu">Actualizar el menu</a></li>
+<li><a href="#12-buscar-aplicaciones-instaladas">Buscar aplicaciones instaladas</a></li>
+<li><a href="#13-desinstalar">Desinstalar</a></li>
+<li><a href="#14-script-para-instalar-automaticamente-appimage">Script para instalar automaticamente AppImage</a></li>
+<li><a href="#15-herramienta-recomendada-gear-lever">Herramienta recomendada: Gear Lever</a></li>
+<li><a href="#16-resumen-rapido">Resumen rapido</a></li>
 </ol>
 <hr>
-<h1 id="1-qué-es-redis"><a class="header" href="#1-qué-es-redis">1. ¿Qué es Redis?</a></h1>
-<p>Redis (Remote Dictionary Server) es:</p>
+<h2 id="1-tipos-de-paquetes"><a class="header" href="#1-tipos-de-paquetes">1. Tipos de paquetes</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Tipo</th><th>Se instala?</th><th>Necesita apt?</th><th>Aparece en el menu automaticamente?</th></tr>
+</thead>
+<tbody>
+<tr><td><code>.deb</code></td><td>Si</td><td>Si</td><td>Si</td></tr>
+<tr><td><code>.AppImage</code></td><td>No (es portable)</td><td>No</td><td>No</td></tr>
+<tr><td><code>.tar.gz</code> / <code>.tar.xz</code></td><td>Depende</td><td>No</td><td>No</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Explicacion:</strong></p>
 <ul>
-<li>Base de datos en memoria (RAM)</li>
-<li>Modelo key-value</li>
-<li>No relacional</li>
-<li>Extremadamente rápida (latencias en microsegundos)</li>
-<li>Soporta múltiples estructuras de datos</li>
-</ul>
-<p>Casos de uso:</p>
-<ul>
-<li>Caché</li>
-<li>Sesiones de usuario</li>
-<li>Rate limiting</li>
-<li>Sistemas de colas</li>
-<li>Leaderboards</li>
+<li>Los <code>.deb</code> son paquetes nativos de Debian/Ubuntu. El sistema los reconoce e integra completamente: crean accesos directos, iconos y se gestionan con <code>apt</code>.</li>
+<li>Los <code>.AppImage</code> son ejecutables portables. No modifiquen el sistema, pero tampoco se integran automaticamente con el menu.</li>
+<li>Los <code>.tar.*</code> son archivos comprimidos que pueden contener cualquier cosa. La integracion depende de lo que traigan dentro.</li>
 </ul>
 <hr>
-<h1 id="2-instalación"><a class="header" href="#2-instalación">2. Instalación</a></h1>
-<h2 id="linux-ubuntudebian"><a class="header" href="#linux-ubuntudebian">Linux (Ubuntu/Debian)</a></h2>
-<pre><code class="language-bash">sudo apt update
-sudo apt install redis-server -y
-</code></pre>
-<p>Verificar instalación:</p>
-<pre><code class="language-bash">redis-server --version
-redis-cli ping
-</code></pre>
-<p>Respuesta esperada:</p>
-<pre><code class="language-bash">PONG
-</code></pre>
-<hr>
-<h2 id="macos"><a class="header" href="#macos">macOS</a></h2>
-<pre><code class="language-bash">brew install redis
-brew services start redis
-</code></pre>
-<hr>
-<h2 id="windows"><a class="header" href="#windows">Windows</a></h2>
-<p>Opciones:</p>
-<ul>
-<li>WSL (recomendado)</li>
-<li>Docker:</li>
-</ul>
-<pre><code class="language-bash">docker run -d -p 6379:6379 redis
-</code></pre>
-<hr>
-<h2 id="cloud-railway-u-otros"><a class="header" href="#cloud-railway-u-otros">Cloud (Railway u otros)</a></h2>
-<ul>
-<li>Crear instancia Redis</li>
-<li>Conectarse vía:</li>
-</ul>
-<pre><code class="language-bash">redis-cli -u &lt;URL&gt;
-</code></pre>
-<hr>
-<h1 id="3-uso-básico-con-redis-cli"><a class="header" href="#3-uso-básico-con-redis-cli">3. Uso básico con redis-cli</a></h1>
-<p>Abrir consola:</p>
-<pre><code class="language-bash">redis-cli
+<h2 id="2-instalar-paquetes-deb"><a class="header" href="#2-instalar-paquetes-deb">2. Instalar paquetes .deb</a></h2>
+<p>Es el metodo mas sencillo. El sistema se encarga de todo.</p>
+<pre><code class="language-bash">sudo apt install ./archivo.deb
 </code></pre>
 <p>Ejemplo:</p>
-<pre><code class="language-bash">SET nombre "Orlando"
-GET nombre
+<pre><code class="language-bash">sudo apt install ./discord-0.0.93.deb
 </code></pre>
-<hr>
-<h1 id="4-tipos-de-datos"><a class="header" href="#4-tipos-de-datos">4. Tipos de datos</a></h1>
-<h2 id="strings"><a class="header" href="#strings">Strings</a></h2>
-<pre><code class="language-bash">SET user:1 "Orlando"
-GET user:1
+<p>Si falta alguna dependencia:</p>
+<pre><code class="language-bash">sudo apt --fix-broken install
 </code></pre>
-<p>Con expiración:</p>
-<pre><code class="language-bash">SETEX user:1 60 "Orlando"
+<p>Tambien pueden usar el metodo clasico con <code>dpkg</code>:</p>
+<pre><code class="language-bash">sudo dpkg -i archivo.deb
+sudo apt -f install
 </code></pre>
-<hr>
-<h2 id="lists"><a class="header" href="#lists">Lists</a></h2>
-<pre><code class="language-bash">LPUSH tareas "task1"
-LPUSH tareas "task2"
-LRANGE tareas 0 -1
-</code></pre>
-<hr>
-<h2 id="hashes"><a class="header" href="#hashes">Hashes</a></h2>
-<pre><code class="language-bash">HSET user:1 nombre "Orlando" edad 25
-HGETALL user:1
-</code></pre>
-<hr>
-<h2 id="sets"><a class="header" href="#sets">Sets</a></h2>
-<pre><code class="language-bash">SADD tags "rust"
-SADD tags "redis"
-SMEMBERS tags
-</code></pre>
-<hr>
-<h2 id="sorted-sets"><a class="header" href="#sorted-sets">Sorted Sets</a></h2>
-<pre><code class="language-bash">ZADD ranking 100 "user1"
-ZADD ranking 200 "user2"
-ZRANGE ranking 0 -1 WITHSCORES
-</code></pre>
-<hr>
-<h1 id="5-comandos-esenciales"><a class="header" href="#5-comandos-esenciales">5. Comandos esenciales</a></h1>
-<h2 id="exploración"><a class="header" href="#exploración">Exploración</a></h2>
-<pre><code class="language-bash">KEYS *
-EXISTS key
-TYPE key
-TTL key
-</code></pre>
-<p>Nota: evitar <code>KEYS *</code> en producción.</p>
-<hr>
-<h2 id="alternativa-scan"><a class="header" href="#alternativa-scan">Alternativa: SCAN</a></h2>
-<pre><code class="language-bash">SCAN 0 MATCH projects:* COUNT 10
-</code></pre>
-<hr>
-<h2 id="lectura-y-escritura"><a class="header" href="#lectura-y-escritura">Lectura y escritura</a></h2>
-<pre><code class="language-bash">SET key value
-GET key
-DEL key
-</code></pre>
-<hr>
-<h2 id="expiración-ttl"><a class="header" href="#expiración-ttl">Expiración (TTL)</a></h2>
-<pre><code class="language-bash">EXPIRE key 60
-TTL key
-</code></pre>
-<p>Estados:</p>
+<p><strong>Explicacion:</strong></p>
 <ul>
-<li>
-<blockquote>
-<p>0: segundos restantes</p>
-</blockquote>
-</li>
-<li>-1: sin expiración</li>
-<li>-2: no existe</li>
+<li><code>apt install ./archivo.deb</code> resuelve dependencias automaticamente.</li>
+<li><code>dpkg -i</code> instala el paquete pero NO resuelve dependencias. Por eso se ejecuta <code>apt -f install</code> despues: eso instala las dependencias faltantes.</li>
+<li><code>apt --fix-broken install</code> hace lo mismo: repara instalaciones incompletas.</li>
+</ul>
+<p>Los paquetes <code>.deb</code> normalmente crean automaticamente:</p>
+<ul>
+<li>Acceso en el menu de aplicaciones</li>
+<li>Acceso en Rofi</li>
+<li>Iconos</li>
+<li>Desinstalacion mediante apt</li>
 </ul>
 <hr>
-<h2 id="borrado-masivo"><a class="header" href="#borrado-masivo">Borrado masivo</a></h2>
-<pre><code class="language-bash">FLUSHALL
+<h2 id="3-instalar-appimage"><a class="header" href="#3-instalar-appimage">3. Instalar AppImage</a></h2>
+<p>Los AppImage <strong>no se instalan</strong>. Simplemente son ejecutables portables que corren sin modificar el sistema.</p>
+<h3 id="paso-1-crear-una-carpeta-para-aplicaciones"><a class="header" href="#paso-1-crear-una-carpeta-para-aplicaciones">Paso 1: Crear una carpeta para aplicaciones</a></h3>
+<pre><code class="language-bash">mkdir -p ~/Applications
 </code></pre>
-<hr>
-<h1 id="6-monitoreo"><a class="header" href="#6-monitoreo">6. Monitoreo</a></h1>
-<pre><code class="language-bash">MONITOR
+<h3 id="paso-2-mover-el-archivo"><a class="header" href="#paso-2-mover-el-archivo">Paso 2: Mover el archivo</a></h3>
+<pre><code class="language-bash">mv ~/Descargas/MiPrograma.AppImage ~/Applications/
 </code></pre>
-<p>Muestra todos los comandos en tiempo real.</p>
-<hr>
-<h1 id="7-patrón-cache-aside"><a class="header" href="#7-patrón-cache-aside">7. Patrón Cache-Aside</a></h1>
-<pre><code class="language-mermaid">flowchart TD
-    A[Request] --&gt; B[GET Redis]
-    B --&gt;|Hit| C[Return Data]
-    B --&gt;|Miss| D[Query PostgreSQL]
-    D --&gt; E[SETEX Redis]
-    E --&gt; C
+<h3 id="paso-3-dar-permisos-de-ejecucion"><a class="header" href="#paso-3-dar-permisos-de-ejecucion">Paso 3: Dar permisos de ejecucion</a></h3>
+<pre><code class="language-bash">chmod +x ~/Applications/MiPrograma.AppImage
 </code></pre>
-<p>Flujo:</p>
-<ol>
-<li>Construcción de clave</li>
-<li>Consulta en Redis</li>
-<li>Si no existe, consulta a base de datos</li>
-<li>Guarda en Redis</li>
-<li>Devuelve resultado</li>
-</ol>
-<hr>
-<h1 id="8-ejemplo-de-clave"><a class="header" href="#8-ejemplo-de-clave">8. Ejemplo de clave</a></h1>
-<pre><code class="language-bash">projects:user:1:page:1
+<h3 id="paso-4-probar-que-funciona"><a class="header" href="#paso-4-probar-que-funciona">Paso 4: Probar que funciona</a></h3>
+<pre><code class="language-bash">~/Applications/MiPrograma.AppImage
 </code></pre>
-<p>Buenas prácticas:</p>
+<p><strong>Explicacion:</strong></p>
 <ul>
-<li>Usar nombres jerárquicos</li>
-<li>Evitar claves largas</li>
-<li>Mantener consistencia</li>
+<li><code>chmod +x</code> agrega el permiso de ejecucion. Sin esto, el sistema no puede correr el archivo.</li>
+<li><code>~/Applications</code> es la convencion mas comun para guardanr aplicaciones portables en el home del usuario.</li>
+<li>No hay paso de instalacion. El AppImage es un disco montado virtualmente que contiene todo lo que necesita para funcionar.</li>
 </ul>
 <hr>
-<h1 id="9-invalidación-de-caché"><a class="header" href="#9-invalidación-de-caché">9. Invalidación de caché</a></h1>
-<pre><code class="language-bash">DEL projects:user:1:page:1
+<h2 id="4-crear-un-acceso-al-menu"><a class="header" href="#4-crear-un-acceso-al-menu">4. Crear un acceso al menu</a></h2>
+<p>Esta es la parte importante para que aparezca en Rofi y en el menu de aplicaciones.</p>
+<p>Primero, crear la carpeta si no existe:</p>
+<pre><code class="language-bash">mkdir -p ~/.local/share/applications
 </code></pre>
-<p>Para múltiples claves:</p>
-<pre><code class="language-bash">SCAN 0 MATCH projects:user:1:* 
+<p>Despues crear un archivo <code>.desktop</code>:</p>
+<pre><code class="language-bash">nano ~/.local/share/applications/miprograma.desktop
 </code></pre>
-<hr>
-<h1 id="10-integración-con-rust"><a class="header" href="#10-integración-con-rust">10. Integración con Rust</a></h1>
-<p>Redis no entiende structs, se debe serializar:</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>let json = serde_json::to_string(&amp;data)?;
-redis.set_ex(key, json, 60)?;
-<span class="boring">}</span></code></pre>
-<hr>
-<h1 id="11-persistencia"><a class="header" href="#11-persistencia">11. Persistencia</a></h1>
-<h2 id="rdb"><a class="header" href="#rdb">RDB</a></h2>
+<p>Contenido del archivo:</p>
+<pre><code class="language-ini">[Desktop Entry]
+Version=1.0
+Type=Application
+Name=DBX
+Exec=/home/TU_USUARIO/Applications/DBX_0.5.65_amd64.AppImage
+Icon=/home/TU_USUARIO/.local/share/icons/dbx.png
+Terminal=false
+Categories=Development;
+</code></pre>
+<p>Cambiar <strong>TU_USUARIO</strong> por el nombre de usuario real. Guardar el archivo.</p>
+<p>Luego, dar permisos y actualizar la base de datos:</p>
+<pre><code class="language-bash">chmod +x ~/.local/share/applications/miprograma.desktop
+update-desktop-database ~/.local/share/applications
+</code></pre>
+<p><strong>Explicacion:</strong></p>
 <ul>
-<li>Snapshots periódicos</li>
-<li>Bajo consumo</li>
+<li>Los archivos <code>.desktop</code> siguen el estandar <a href="https://specifications.freedesktop.org/desktop-entry-spec/latest/">freedesktop.org</a>. Son la forma en que los entornos de escritorio descubren aplicaciones.</li>
+<li><code>Name</code> es lo que aparece en el menu y en la busqueda de Rofi.</li>
+<li><code>Exec</code> es la ruta absoluta al ejecutable. Debe ser exacta, incluyendo <code>~/</code> o <code>/home/usuario/</code>.</li>
+<li><code>Icon</code> es la ruta al icono. Puede ser <code>.png</code> o <code>.svg</code>.</li>
+<li><code>Categories</code> define en que seccion aparece el menu (Development, Utility, Graphics, etc.).</li>
+<li><code>Terminal=false</code> evita que se abra una terminal al ejecutar. Cambiar a <code>true</code> si la aplicacion necesita terminal.</li>
+<li><code>update-desktop-database</code> fuerza al sistema a re-leer los archivos <code>.desktop</code> sin necesidad de cerrar sesion.</li>
 </ul>
-<h2 id="aof"><a class="header" href="#aof">AOF</a></h2>
+<p>Ahora la aplicacion aparecera en:</p>
 <ul>
-<li>Log de operaciones</li>
-<li>Mayor seguridad</li>
-</ul>
-<p>Configuración en:</p>
-<pre><code class="language-bash">redis.conf
-</code></pre>
-<hr>
-<h1 id="12-configuración-importante"><a class="header" href="#12-configuración-importante">12. Configuración importante</a></h1>
-<p>Ejemplos:</p>
-<pre><code class="language-bash">maxmemory 256mb
-maxmemory-policy allkeys-lru
-</code></pre>
-<p>Políticas comunes:</p>
-<ul>
-<li>noeviction</li>
-<li>allkeys-lru</li>
-<li>volatile-lru</li>
-</ul>
-<hr>
-<h1 id="13-performance"><a class="header" href="#13-performance">13. Performance</a></h1>
-<p>Buenas prácticas:</p>
-<ul>
-<li>Usar TTL en caché</li>
-<li>Evitar objetos grandes</li>
-<li>Reducir serialización pesada</li>
-<li>Evitar KEYS en producción</li>
-<li>Usar SCAN</li>
+<li>Rofi (<code>rofi -show drun</code>)</li>
+<li>Menu de aplicaciones del escritorio</li>
+<li>KDE Launcher</li>
+<li>GNOME</li>
+<li>XFCE</li>
+<li>Cinnamon</li>
 </ul>
 <hr>
-<h1 id="14-errores-comunes"><a class="header" href="#14-errores-comunes">14. Errores comunes</a></h1>
+<h2 id="5-instalar-programas-desde-archivos-tar"><a class="header" href="#5-instalar-programas-desde-archivos-tar">5. Instalar programas desde archivos TAR</a></h2>
+<p>Hay varios tipos de compresion.</p>
+<h3 id="targz"><a class="header" href="#targz">TAR.GZ</a></h3>
+<pre><code class="language-bash">tar -xzf programa.tar.gz
+</code></pre>
+<h3 id="tarxz"><a class="header" href="#tarxz">TAR.XZ</a></h3>
+<pre><code class="language-bash">tar -xf programa.tar.xz
+</code></pre>
+<p>Entrar a la carpeta extraida:</p>
+<pre><code class="language-bash">cd programa
+</code></pre>
+<p>Normalmente encontraran alguno de estos archivos:</p>
+<pre><code>programa
+run.sh
+start.sh
+AppRun
+install.sh
+</code></pre>
+<p>Dar permisos de ejecucion a todos los archivos:</p>
+<pre><code class="language-bash">chmod +x *
+</code></pre>
+<p>Ejecutar con cualquiera de estas opciones:</p>
+<pre><code class="language-bash">./programa
+</code></pre>
+<p>o</p>
+<pre><code class="language-bash">./AppRun
+</code></pre>
+<p>o</p>
+<pre><code class="language-bash">./start.sh
+</code></pre>
+<p><strong>Explicacion:</strong></p>
 <ul>
-<li>Usar Redis como base principal sin persistencia</li>
-<li>No invalidar caché</li>
-<li>Claves mal diseñadas</li>
-<li>Uso excesivo de memoria</li>
+<li><code>tar -xzf</code> extrae archivos <code>.tar.gz</code>. La <code>z</code> indica que esta comprimido con gzip.</li>
+<li><code>tar -xf</code> extrae archivos <code>.tar.xz</code>. El formato xz se detecta automaticamente.</li>
+<li><code>chmod +x *</code> es necesario porque los archivos extraidos no vienen con permisos de ejecucion por defecto.</li>
+<li>No todos los TAR traen los mismos archivos de inicio. Prueben cual funciona.</li>
 </ul>
 <hr>
-<h1 id="15-comandos-avanzados"><a class="header" href="#15-comandos-avanzados">15. Comandos avanzados</a></h1>
-<pre><code class="language-bash">INCR contador
-DECR contador
-MGET key1 key2
-MSET k1 v1 k2 v2
-APPEND key "texto"
+<h2 id="6-si-el-tar-trae-un-instalador"><a class="header" href="#6-si-el-tar-trae-un-instalador">6. Si el TAR trae un instalador</a></h2>
+<p>Algunos TAR incluyen un script de instalacion:</p>
+<pre><code>install.sh
 </code></pre>
+<p>Ejecutar:</p>
+<pre><code class="language-bash">chmod +x install.sh
+./install.sh
+</code></pre>
+<p>o, si necesita permisos de administrador:</p>
+<pre><code class="language-bash">sudo ./install.sh
+</code></pre>
+<p><strong>Explicacion:</strong></p>
+<ul>
+<li>Los instaladores shell pueden hacer cosas distintas: copiar archivos a <code>/usr/local/bin</code>, crear accesos directos, resolver dependencias.</li>
+<li>Si el instalador pide <code>sudo</code>, es porque va a escribir en carpetas del sistema (como <code>/opt</code> o <code>/usr</code>).</li>
+<li>Siempre revisen el contenido del <code>install.sh</code> antes de ejecutarlo con <code>cat install.sh</code> o abriendolo en un editor.</li>
+</ul>
 <hr>
-<h1 id="16-ejemplo-completo"><a class="header" href="#16-ejemplo-completo">16. Ejemplo completo</a></h1>
-<pre><code class="language-bash">GET projects:user:1:page:1
-# nil
+<h2 id="7-si-el-tar-no-trae-instalador"><a class="header" href="#7-si-el-tar-no-trae-instalador">7. Si el TAR no trae instalador</a></h2>
+<p>Lo recomendable es mover la carpeta completa a una ubicacion fija.</p>
+<p>Ejemplo:</p>
+<pre><code class="language-bash">mv programa ~/Applications/
+</code></pre>
+<p>Y luego crear un archivo <code>.desktop</code> igual que con AppImage (ver seccion 4).</p>
+<p><strong>Explicacion:</strong></p>
+<ul>
+<li>La ventaja de mover la carpeta a <code>~/Applications</code> es que queda centralizada y organizada.</li>
+<li>El <code>.desktop</code> debe apuntar al ejecutable real dentro de la carpeta, por ejemplo: <code>/home/usuario/Applications/programa/bin/programa</code>.</li>
+</ul>
+<hr>
+<h2 id="8-donde-guardar-aplicaciones-portables"><a class="header" href="#8-donde-guardar-aplicaciones-portables">8. Donde guardar aplicaciones portables</a></h2>
+<p>Las ubicaciones recomendadas son:</p>
+<ul>
+<li><code>~/Applications</code> para aplicaciones del usuario actual</li>
+<li><code>/opt</code> para aplicaciones del sistema (requiere sudo)</li>
+</ul>
+<p>Ejemplo de estructura:</p>
+<pre><code>~/Applications
+|
++-- DBX.AppImage
++-- Rider
++-- AndroidStudio
++-- Godot
++-- Blender
+</code></pre>
+<p><strong>Explicacion:</strong></p>
+<ul>
+<li><code>~/Applications</code> es seguro porque no requiere permisos de administrador y queda en el home del usuario.</li>
+<li><code>/opt</code> es la ubicacion estandar del sistema para software de terceros. Funciona bien si varias personas usan la misma maquina.</li>
+<li>Mantener las aplicaciones en una sola carpeta facilita el backup, la limpieza y el control de espacio en disco.</li>
+</ul>
+<hr>
+<h2 id="9-donde-guardar-iconos"><a class="header" href="#9-donde-guardar-iconos">9. Donde guardar iconos</a></h2>
+<p>La ubicacion recomendada es:</p>
+<pre><code>~/.local/share/icons
+</code></pre>
+<p>Ejemplo:</p>
+<pre><code>~/.local/share/icons/dbx.png
+</code></pre>
+<p><strong>Explicacion:</strong></p>
+<ul>
+<li><code>~/.local/share/icons</code> es el estandar XDG para iconos de usuario.</li>
+<li>Los iconos aqui estan disponibles para todos los archivos <code>.desktop</code> del usuario.</li>
+<li>Pueden usar <code>.png</code> o <code>.svg</code>. Los <code>.svg</code> escalan mejor en diferentes resoluciones.</li>
+</ul>
+<hr>
+<h2 id="10-crear-un-acceso-directo-completo"><a class="header" href="#10-crear-un-acceso-directo-completo">10. Crear un acceso directo completo</a></h2>
+<p>Ejemplo de un <code>.desktop</code> con todos los campos utiles:</p>
+<pre><code class="language-ini">[Desktop Entry]
+Version=1.0
+Type=Application
+Name=JetBrains Rider
+Comment=IDE para .NET
+Exec=/home/dev-espada/Applications/Rider/bin/rider.sh
+Icon=/home/dev-espada/.local/share/icons/rider.svg
+Terminal=false
+Categories=Development;IDE;
+StartupNotify=true
+</code></pre>
+<p><strong>Explicacion:</strong></p>
+<ul>
+<li><code>Comment</code> es una descripcion breve que aparece como tooltip o informacion adicional.</li>
+<li><code>StartupNotify=true</code> muestra un indicador de carga mientras la aplicacion arranca. Util para pesadas como IDEs.</li>
+<li><code>Categories</code> puede tener multiples valores separados por punto y coma. Consulten la lista completa en la especificacion freedesktop.</li>
+</ul>
+<hr>
+<h2 id="11-actualizar-el-menu"><a class="header" href="#11-actualizar-el-menu">11. Actualizar el menu</a></h2>
+<p>Despues de crear o modificar un archivo <code>.desktop</code>:</p>
+<pre><code class="language-bash">update-desktop-database ~/.local/share/applications
+</code></pre>
+<p>Reiniciar Rofi:</p>
+<pre><code class="language-bash">rofi -show drun
+</code></pre>
+<p>La aplicacion deberia aparecer en la busqueda.</p>
+<p><strong>Explicacion:</strong></p>
+<ul>
+<li><code>update-desktop-database</code> genera un cache de los archivos <code>.desktop</code>. Sin esto, el sistema no detecta los cambios hasta reiniciar la sesion.</li>
+<li>Si Rofi no muestra la aplicacion, tambien pueden cerrar y volver a abrir Rofi, o ejecutar el comando de actualizacion de cache de su escritorio.</li>
+</ul>
+<hr>
+<h2 id="12-buscar-aplicaciones-instaladas"><a class="header" href="#12-buscar-aplicaciones-instaladas">12. Buscar aplicaciones instaladas</a></h2>
+<p>Para ver que <code>.desktop</code> existen:</p>
+<pre><code class="language-bash">ls ~/.local/share/applications
+</code></pre>
+<p>Para ver las del sistema:</p>
+<pre><code class="language-bash">ls /usr/share/applications
+</code></pre>
+<p><strong>Explicacion:</strong></p>
+<ul>
+<li><code>~/.local/share/applications</code> contiene los accesos directos del usuario actual.</li>
+<li><code>/usr/share/applications</code> contiene los accesos directos del sistema (instalados con apt, snap, flatpak, etc.).</li>
+<li>Si una aplicacion instalada no aparece en el menu, revisen que el archivo <code>.desktop</code> exista en alguna de estas carpetas y que tenga el formato correcto.</li>
+</ul>
+<hr>
+<h2 id="13-desinstalar"><a class="header" href="#13-desinstalar">13. Desinstalar</a></h2>
+<h3 id="paquetes-deb"><a class="header" href="#paquetes-deb">Paquetes .deb</a></h3>
+<pre><code class="language-bash">sudo apt remove nombre_paquete
+</code></pre>
+<p>Para eliminar tambien la configuracion:</p>
+<pre><code class="language-bash">sudo apt purge nombre_paquete
+</code></pre>
+<h3 id="appimage"><a class="header" href="#appimage">AppImage</a></h3>
+<p>Eliminar el ejecutable y el acceso directo:</p>
+<pre><code class="language-bash">rm ~/Applications/Programa.AppImage
+rm ~/.local/share/applications/programa.desktop
+</code></pre>
+<h3 id="tar"><a class="header" href="#tar">TAR</a></h3>
+<p>Eliminar la carpeta y el acceso directo:</p>
+<pre><code class="language-bash">rm -r ~/Applications/programa
+rm ~/.local/share/applications/programa.desktop
+</code></pre>
+<p><strong>Explicacion:</strong></p>
+<ul>
+<li><code>apt remove</code> elimina el paquete pero conserva la configuracion.</li>
+<li><code>apt purge</code> elimina tanto el paquete como la configuracion.</li>
+<li>Para AppImage y TAR, la desinstalacion es manual porque no estan integrados con el gestor de paquetes.</li>
+<li>Siempre eliminen tanto el ejecutable como el archivo <code>.desktop</code> correspondiente.</li>
+</ul>
+<hr>
+<h2 id="14-script-para-instalar-automaticamente-appimage"><a class="header" href="#14-script-para-instalar-automaticamente-appimage">14. Script para instalar automaticamente AppImage</a></h2>
+<p>Guarda este script como <code>install-appimage.sh</code>:</p>
+<pre><code class="language-bash">#!/bin/bash
 
-SETEX projects:user:1:page:1 60 "{json}"
+APP="$1"
 
-GET projects:user:1:page:1
-# hit
+mkdir -p ~/Applications
+mkdir -p ~/.local/share/applications
 
-TTL projects:user:1:page:1
+cp "$APP" ~/Applications/
+chmod +x ~/Applications/$(basename "$APP")
 
-DEL projects:user:1:page:1
+echo "Instalado en:"
+echo "~/Applications/$(basename "$APP")"
+
+echo
+echo "Ahora solo debes crear el archivo .desktop."
 </code></pre>
-<hr>
-<h1 id="17-arquitectura-típica"><a class="header" href="#17-arquitectura-típica">17. Arquitectura típica</a></h1>
-<pre><code class="language-mermaid">flowchart LR
-    A[Client] --&gt; B[Backend Rust]
-    B --&gt; C[Redis Cache]
-    B --&gt; D[PostgreSQL]
-    C --&gt; B
-    D --&gt; B
+<p>Uso:</p>
+<pre><code class="language-bash">chmod +x install-appimage.sh
+./install-appimage.sh MiPrograma.AppImage
 </code></pre>
-<hr>
-<h1 id="18-cuándo-usar-redis"><a class="header" href="#18-cuándo-usar-redis">18. Cuándo usar Redis</a></h1>
-<p>Usar:</p>
+<p><strong>Explicacion:</strong></p>
 <ul>
-<li>Caché</li>
-<li>Sesiones</li>
-<li>Datos temporales</li>
-<li>Sistemas de alta velocidad</li>
-</ul>
-<p>No usar:</p>
-<ul>
-<li>Relaciones complejas</li>
-<li>Datos críticos sin persistencia</li>
+<li>El script copia la AppImage a <code>~/Applications</code> y le da permisos de ejecucion.</li>
+<li><code>$1</code> es el primer argumento que se pasa al script (la ruta al AppImage).</li>
+<li><code>$(basename "$APP")</code> extrae solo el nombre del archivo sin la ruta.</li>
+<li>El script NO crea el archivo <code>.desktop</code> automaticamente. Eso se debe hacer manualmente (ver seccion 4) o usar Gear Lever (ver seccion 15).</li>
 </ul>
 <hr>
-<h1 id="19-conceptos-fundamentales"><a class="header" href="#19-conceptos-fundamentales">19. Conceptos Fundamentales</a></h1>
+<h2 id="15-herramienta-recomendada-gear-lever"><a class="header" href="#15-herramienta-recomendada-gear-lever">15. Herramienta recomendada: Gear Lever</a></h2>
+<p>Si prefieren evitar crear manualmente archivos <code>.desktop</code>, <strong>Gear Lever</strong> automatiza la integracion de AppImage con el sistema. Puede mover la AppImage a una ubicacion adecuada, crear el acceso directo, asociar el icono y facilitar actualizaciones.</p>
+<p>En sistemas Debian/Ubuntu suele instalarse desde Flathub:</p>
+<pre><code class="language-bash">flatpak install flathub it.mijorus.gearlever
+</code></pre>
+<p>Una vez abierto, solo arrastran la AppImage a la ventana y el programa se encargara del resto.</p>
+<p><strong>Explicacion:</strong></p>
 <ul>
-<li><strong>Key-Value Store:</strong> Redis guarda datos como un diccionario. A una <strong>Llave</strong> única le corresponde un <strong>Valor</strong>.</li>
-<li><strong>TTL (Time To Live):</strong> Es el tiempo de vida de un dato. Cuando el contador llega a cero, Redis elimina el dato automáticamente.</li>
-<li><strong>In-Memory:</strong> Los datos viven en la RAM. Si el servidor de Redis se reinicia sin persistencia configurada, los datos desaparecen (por eso solo lo usamos para caché y no como base de datos principal).</li>
+<li>Gear Lever es una herramienta grafica que simplifica todo el proceso de integracion de AppImages.</li>
+<li>Maneja automaticamente la creacion del <code>.desktop</code>, la copia del archivo, los permisos y los iconos.</li>
+<li>Es ideal para usuarios que prefieren no trabajar con la terminal para esta tarea.</li>
+<li>Requiere Flatpak instalado. Si no lo tienen, pueden instalarlo con <code>sudo apt install flatpak</code>.</li>
 </ul>
 <hr>
-<h1 id="20-comandos-esenciales-cli"><a class="header" href="#20-comandos-esenciales-cli">20. Comandos Esenciales (CLI)</a></h1>
-<p>Para ejecutar estos comandos, abre tu terminal y escribe <code>redis-cli</code>. Si estás en Railway, usa la pestaña <strong>CLI</strong> en tu servicio de Redis.</p>
-<h4 id="a-exploración"><a class="header" href="#a-exploración">A. Exploración</a></h4>
+<h2 id="16-resumen-rapido"><a class="header" href="#16-resumen-rapido">16. Resumen rapido</a></h2>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>Comando</th><th>Descripción</th><th>Ejemplo</th></tr>
+<tr><th>Tipo</th><th>Instalar</th><th>Menu</th><th>Rofi</th></tr>
 </thead>
 <tbody>
-<tr><td><code>KEYS *</code></td><td>Lista todas las llaves activas.</td><td><code>KEYS "projects:*"</code></td></tr>
-<tr><td><code>EXISTS [key]</code></td><td>Verifica si una llave existe (1 = sí, 0 = no).</td><td><code>EXISTS projects:user:1</code></td></tr>
-<tr><td><code>TTL [key]</code></td><td>Consulta cuánto tiempo le queda a la llave.</td><td><code>TTL projects:user:1</code></td></tr>
-<tr><td><code>TYPE [key]</code></td><td>Te dice qué tipo de dato es (string, list, hash).</td><td><code>TYPE projects:user:1</code></td></tr>
+<tr><td><code>.deb</code></td><td><code>sudo apt install ./archivo.deb</code></td><td>Si</td><td>Si</td></tr>
+<tr><td><code>.AppImage</code></td><td><code>chmod +x</code> + ejecutar + <code>.desktop</code></td><td>Si</td><td>Si</td></tr>
+<tr><td><code>.tar.gz</code> / <code>.tar.xz</code></td><td>Extraer + ejecutar + <code>.desktop</code></td><td>Si</td><td>Si</td></tr>
 </tbody>
 </table>
 </div>
-<h4 id="b-gestión-de-datos"><a class="header" href="#b-gestión-de-datos">B. Gestión de Datos</a></h4>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Comando</th><th>Descripción</th><th>Ejemplo</th></tr>
-</thead>
-<tbody>
-<tr><td><code>GET [key]</code></td><td>Obtiene el valor (el JSON) de la llave.</td><td><code>GET projects:user:1:page:1</code></td></tr>
-<tr><td><code>SET [key] [val]</code></td><td>Guarda un valor sin tiempo de expiración.</td><td><code>SET nombre "Orlando"</code></td></tr>
-<tr><td><code>SETEX [key] [s] [val]</code></td><td>Guarda un valor con TTL en segundos.</td><td><code>SETEX temp 60 "dato"</code></td></tr>
-<tr><td><code>DEL [key]</code></td><td>Borra una llave manualmente.</td><td><code>DEL projects:user:1</code></td></tr>
-<tr><td><code>FLUSHALL</code></td><td><strong>¡Peligro!</strong> Borra absolutamente todo.</td><td><code>FLUSHALL</code></td></tr>
-</tbody>
-</table>
-</div>
-<h4 id="c-monitoreo-en-tiempo-real"><a class="header" href="#c-monitoreo-en-tiempo-real">C. Monitoreo en Tiempo Real</a></h4>
-<p>Si quieres ver qué está haciendo tu código de Rust en vivo, ejecuta:</p>
-<pre><code class="language-bash">MONITOR
-
-</code></pre>
-<p><em>Cada vez que refresques tu página de proyectos, verás los comandos <code>GET</code> y <code>SET</code> pasar por la pantalla.</em></p>
-<hr>
-<h3 id="3-el-ciclo-de-vida-en-tu-app-workflow"><a class="header" href="#3-el-ciclo-de-vida-en-tu-app-workflow">3. El Ciclo de Vida en tu App (Workflow)</a></h3>
-<p>Tu implementación sigue el patrón <strong>Cache-Aside</strong>. Así es como se mueven los datos:</p>
-<ol>
-<li><strong>Construcción de Key:</strong> Creas un identificador único basado en variables: <code>projects:user:{user_id}:page:{page}</code>.</li>
-<li><strong>Consulta:</strong> <code>GET key</code>. Si Redis responde, saltas directamente al final.</li>
-<li><strong>Fallback:</strong> Si Redis no tiene el dato, haces <code>SELECT</code> en PostgreSQL.</li>
-<li><strong>Hidratación:</strong> Guardas el resultado en Redis con <code>SETEX</code> para que la próxima vez sea rápido.</li>
-<li><strong>Invalidación:</strong> Cuando haces un <code>UPDATE</code> o <code>DELETE</code> de un proyecto, usas <code>DEL</code> o <code>KEYS + DEL</code> para borrar el caché viejo y evitar que el usuario vea datos desactualizados.</li>
-</ol>
-<hr>
-<h3 id="4-tips-para-producción"><a class="header" href="#4-tips-para-producción">4. Tips para Producción</a></h3>
-<ul>
-<li><strong>Evita <code>KEYS *</code> en producción:</strong> Si tienes miles de usuarios, este comando puede bloquear Redis por unos milisegundos. Es mejor usar <code>SCAN</code> si necesitas listar llaves en apps muy grandes.</li>
-<li><strong>El tamaño de la llave importa:</strong> Intenta que tus llaves sean descriptivas pero no excesivamente largas para ahorrar unos bytes de RAM.</li>
-<li><strong>Serialización:</strong> Recuerda que Redis no entiende tus “Structs” de Rust. Siempre debes convertir a JSON (como ya haces con <code>serde_json</code>) antes de guardar.</li>
-</ul>
-<hr>
-<h3 id="5-resumen-de-estados-del-ttl"><a class="header" href="#5-resumen-de-estados-del-ttl">5. Resumen de Estados del TTL</a></h3>
-<p>Cuando consultes el TTL de una llave (<code>TTL llave</code>), recibirás estos códigos:</p>
-<ul>
-<li><strong>Número positivo:</strong> Segundos restantes.</li>
-<li><strong>-1:</strong> La llave existe pero no tiene tiempo de expiración (es eterna).</li>
-<li><strong>-2:</strong> La llave no existe (ya expiró o nunca se creó).</li>
-</ul>
-<h1 id="21-resumen"><a class="header" href="#21-resumen">21. Resumen</a></h1>
-<p>Redis es una herramienta clave para mejorar rendimiento:</p>
-<ul>
-<li>Acceso en memoria</li>
-<li>Soporte de múltiples estructuras</li>
-<li>Integración simple con backend</li>
-<li>Ideal como capa de caché</li>
-</ul>
+<p>Con este flujo tendran todas sus aplicaciones accesibles desde el menu de aplicaciones y desde <code>rofi -show drun</code>.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../docs/03-sqlx.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../docs/29-convencion-commits.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="../docs/06-prisma.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
-                            </a>
 
                         <div style="clear: both"></div>
                     </nav>
@@ -568,13 +561,10 @@ DEL projects:user:1:page:1
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../docs/03-sqlx.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../docs/29-convencion-commits.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="../docs/06-prisma.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
-                    </a>
             </nav>
 
         </div>

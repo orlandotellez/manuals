@@ -37,10 +37,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "dark";
-            window.path_to_searchindex_js = "searchindex-886f9d72.js";
+            window.path_to_searchindex_js = "searchindex-3ef97d73.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-536c3e5e.js"></script>
+        <script src="toc-3e378000.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -249,6 +249,10 @@
 <h2 id="git-y-github"><a class="header" href="#git-y-github">Git y Github</a></h2>
 <ul>
 <li><a href="#convención-de-commits">Conventional commits</a></li>
+</ul>
+<h2 id="linux"><a class="header" href="#linux">Linux</a></h2>
+<ul>
+<li><a href="#manual-practico-instalar-aplicaciones-appimage-tar-y-deb-en-linux">Instalar aplicaciones en Linux</a></li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="axum-manual--manual-paso-a-paso"><a class="header" href="#axum-manual--manual-paso-a-paso">Axum Manual — Manual Paso a Paso</a></h1>
@@ -42204,6 +42208,377 @@ por usuario y rango de fechas.
 
 Closes #45
 </code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="manual-practico-instalar-aplicaciones-appimage-tar-y-deb-en-linux"><a class="header" href="#manual-practico-instalar-aplicaciones-appimage-tar-y-deb-en-linux">Manual practico: Instalar aplicaciones <code>.AppImage</code>, <code>.tar.*</code> y <code>.deb</code> en Linux</a></h1>
+<p>Este manual funciona en la mayoria de distribuciones basadas en Debian (Ubuntu, Linux Mint, Pop!_OS, KDE Neon, etc.).</p>
+<hr>
+<h2 id="indice-2"><a class="header" href="#indice-2">Indice</a></h2>
+<ol>
+<li><a href="#1-tipos-de-paquetes">Tipos de paquetes</a></li>
+<li><a href="#2-instalar-paquetes-deb">Instalar paquetes .deb</a></li>
+<li><a href="#3-instalar-appimage">Instalar AppImage</a></li>
+<li><a href="#4-crear-un-acceso-al-menu">Crear un acceso al menu</a></li>
+<li><a href="#5-instalar-programas-desde-archivos-tar">Instalar programas desde archivos TAR</a></li>
+<li><a href="#6-si-el-tar-trae-un-instalador">Si el TAR trae un instalador</a></li>
+<li><a href="#7-si-el-tar-no-trae-instalador">Si el TAR no trae instalador</a></li>
+<li><a href="#8-donde-guardar-aplicaciones-portables">Donde guardar aplicaciones portables</a></li>
+<li><a href="#9-donde-guardar-iconos">Donde guardar iconos</a></li>
+<li><a href="#10-crear-un-acceso-directo-completo">Crear un acceso directo completo</a></li>
+<li><a href="#11-actualizar-el-menu">Actualizar el menu</a></li>
+<li><a href="#12-buscar-aplicaciones-instaladas">Buscar aplicaciones instaladas</a></li>
+<li><a href="#13-desinstalar">Desinstalar</a></li>
+<li><a href="#14-script-para-instalar-automaticamente-appimage">Script para instalar automaticamente AppImage</a></li>
+<li><a href="#15-herramienta-recomendada-gear-lever">Herramienta recomendada: Gear Lever</a></li>
+<li><a href="#16-resumen-rapido">Resumen rapido</a></li>
+</ol>
+<hr>
+<h2 id="1-tipos-de-paquetes"><a class="header" href="#1-tipos-de-paquetes">1. Tipos de paquetes</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Tipo</th><th>Se instala?</th><th>Necesita apt?</th><th>Aparece en el menu automaticamente?</th></tr>
+</thead>
+<tbody>
+<tr><td><code>.deb</code></td><td>Si</td><td>Si</td><td>Si</td></tr>
+<tr><td><code>.AppImage</code></td><td>No (es portable)</td><td>No</td><td>No</td></tr>
+<tr><td><code>.tar.gz</code> / <code>.tar.xz</code></td><td>Depende</td><td>No</td><td>No</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Explicacion:</strong></p>
+<ul>
+<li>Los <code>.deb</code> son paquetes nativos de Debian/Ubuntu. El sistema los reconoce e integra completamente: crean accesos directos, iconos y se gestionan con <code>apt</code>.</li>
+<li>Los <code>.AppImage</code> son ejecutables portables. No modifiquen el sistema, pero tampoco se integran automaticamente con el menu.</li>
+<li>Los <code>.tar.*</code> son archivos comprimidos que pueden contener cualquier cosa. La integracion depende de lo que traigan dentro.</li>
+</ul>
+<hr>
+<h2 id="2-instalar-paquetes-deb"><a class="header" href="#2-instalar-paquetes-deb">2. Instalar paquetes .deb</a></h2>
+<p>Es el metodo mas sencillo. El sistema se encarga de todo.</p>
+<pre><code class="language-bash">sudo apt install ./archivo.deb
+</code></pre>
+<p>Ejemplo:</p>
+<pre><code class="language-bash">sudo apt install ./discord-0.0.93.deb
+</code></pre>
+<p>Si falta alguna dependencia:</p>
+<pre><code class="language-bash">sudo apt --fix-broken install
+</code></pre>
+<p>Tambien pueden usar el metodo clasico con <code>dpkg</code>:</p>
+<pre><code class="language-bash">sudo dpkg -i archivo.deb
+sudo apt -f install
+</code></pre>
+<p><strong>Explicacion:</strong></p>
+<ul>
+<li><code>apt install ./archivo.deb</code> resuelve dependencias automaticamente.</li>
+<li><code>dpkg -i</code> instala el paquete pero NO resuelve dependencias. Por eso se ejecuta <code>apt -f install</code> despues: eso instala las dependencias faltantes.</li>
+<li><code>apt --fix-broken install</code> hace lo mismo: repara instalaciones incompletas.</li>
+</ul>
+<p>Los paquetes <code>.deb</code> normalmente crean automaticamente:</p>
+<ul>
+<li>Acceso en el menu de aplicaciones</li>
+<li>Acceso en Rofi</li>
+<li>Iconos</li>
+<li>Desinstalacion mediante apt</li>
+</ul>
+<hr>
+<h2 id="3-instalar-appimage"><a class="header" href="#3-instalar-appimage">3. Instalar AppImage</a></h2>
+<p>Los AppImage <strong>no se instalan</strong>. Simplemente son ejecutables portables que corren sin modificar el sistema.</p>
+<h3 id="paso-1-crear-una-carpeta-para-aplicaciones"><a class="header" href="#paso-1-crear-una-carpeta-para-aplicaciones">Paso 1: Crear una carpeta para aplicaciones</a></h3>
+<pre><code class="language-bash">mkdir -p ~/Applications
+</code></pre>
+<h3 id="paso-2-mover-el-archivo"><a class="header" href="#paso-2-mover-el-archivo">Paso 2: Mover el archivo</a></h3>
+<pre><code class="language-bash">mv ~/Descargas/MiPrograma.AppImage ~/Applications/
+</code></pre>
+<h3 id="paso-3-dar-permisos-de-ejecucion"><a class="header" href="#paso-3-dar-permisos-de-ejecucion">Paso 3: Dar permisos de ejecucion</a></h3>
+<pre><code class="language-bash">chmod +x ~/Applications/MiPrograma.AppImage
+</code></pre>
+<h3 id="paso-4-probar-que-funciona"><a class="header" href="#paso-4-probar-que-funciona">Paso 4: Probar que funciona</a></h3>
+<pre><code class="language-bash">~/Applications/MiPrograma.AppImage
+</code></pre>
+<p><strong>Explicacion:</strong></p>
+<ul>
+<li><code>chmod +x</code> agrega el permiso de ejecucion. Sin esto, el sistema no puede correr el archivo.</li>
+<li><code>~/Applications</code> es la convencion mas comun para guardanr aplicaciones portables en el home del usuario.</li>
+<li>No hay paso de instalacion. El AppImage es un disco montado virtualmente que contiene todo lo que necesita para funcionar.</li>
+</ul>
+<hr>
+<h2 id="4-crear-un-acceso-al-menu"><a class="header" href="#4-crear-un-acceso-al-menu">4. Crear un acceso al menu</a></h2>
+<p>Esta es la parte importante para que aparezca en Rofi y en el menu de aplicaciones.</p>
+<p>Primero, crear la carpeta si no existe:</p>
+<pre><code class="language-bash">mkdir -p ~/.local/share/applications
+</code></pre>
+<p>Despues crear un archivo <code>.desktop</code>:</p>
+<pre><code class="language-bash">nano ~/.local/share/applications/miprograma.desktop
+</code></pre>
+<p>Contenido del archivo:</p>
+<pre><code class="language-ini">[Desktop Entry]
+Version=1.0
+Type=Application
+Name=DBX
+Exec=/home/TU_USUARIO/Applications/DBX_0.5.65_amd64.AppImage
+Icon=/home/TU_USUARIO/.local/share/icons/dbx.png
+Terminal=false
+Categories=Development;
+</code></pre>
+<p>Cambiar <strong>TU_USUARIO</strong> por el nombre de usuario real. Guardar el archivo.</p>
+<p>Luego, dar permisos y actualizar la base de datos:</p>
+<pre><code class="language-bash">chmod +x ~/.local/share/applications/miprograma.desktop
+update-desktop-database ~/.local/share/applications
+</code></pre>
+<p><strong>Explicacion:</strong></p>
+<ul>
+<li>Los archivos <code>.desktop</code> siguen el estandar <a href="https://specifications.freedesktop.org/desktop-entry-spec/latest/">freedesktop.org</a>. Son la forma en que los entornos de escritorio descubren aplicaciones.</li>
+<li><code>Name</code> es lo que aparece en el menu y en la busqueda de Rofi.</li>
+<li><code>Exec</code> es la ruta absoluta al ejecutable. Debe ser exacta, incluyendo <code>~/</code> o <code>/home/usuario/</code>.</li>
+<li><code>Icon</code> es la ruta al icono. Puede ser <code>.png</code> o <code>.svg</code>.</li>
+<li><code>Categories</code> define en que seccion aparece el menu (Development, Utility, Graphics, etc.).</li>
+<li><code>Terminal=false</code> evita que se abra una terminal al ejecutar. Cambiar a <code>true</code> si la aplicacion necesita terminal.</li>
+<li><code>update-desktop-database</code> fuerza al sistema a re-leer los archivos <code>.desktop</code> sin necesidad de cerrar sesion.</li>
+</ul>
+<p>Ahora la aplicacion aparecera en:</p>
+<ul>
+<li>Rofi (<code>rofi -show drun</code>)</li>
+<li>Menu de aplicaciones del escritorio</li>
+<li>KDE Launcher</li>
+<li>GNOME</li>
+<li>XFCE</li>
+<li>Cinnamon</li>
+</ul>
+<hr>
+<h2 id="5-instalar-programas-desde-archivos-tar"><a class="header" href="#5-instalar-programas-desde-archivos-tar">5. Instalar programas desde archivos TAR</a></h2>
+<p>Hay varios tipos de compresion.</p>
+<h3 id="targz"><a class="header" href="#targz">TAR.GZ</a></h3>
+<pre><code class="language-bash">tar -xzf programa.tar.gz
+</code></pre>
+<h3 id="tarxz"><a class="header" href="#tarxz">TAR.XZ</a></h3>
+<pre><code class="language-bash">tar -xf programa.tar.xz
+</code></pre>
+<p>Entrar a la carpeta extraida:</p>
+<pre><code class="language-bash">cd programa
+</code></pre>
+<p>Normalmente encontraran alguno de estos archivos:</p>
+<pre><code>programa
+run.sh
+start.sh
+AppRun
+install.sh
+</code></pre>
+<p>Dar permisos de ejecucion a todos los archivos:</p>
+<pre><code class="language-bash">chmod +x *
+</code></pre>
+<p>Ejecutar con cualquiera de estas opciones:</p>
+<pre><code class="language-bash">./programa
+</code></pre>
+<p>o</p>
+<pre><code class="language-bash">./AppRun
+</code></pre>
+<p>o</p>
+<pre><code class="language-bash">./start.sh
+</code></pre>
+<p><strong>Explicacion:</strong></p>
+<ul>
+<li><code>tar -xzf</code> extrae archivos <code>.tar.gz</code>. La <code>z</code> indica que esta comprimido con gzip.</li>
+<li><code>tar -xf</code> extrae archivos <code>.tar.xz</code>. El formato xz se detecta automaticamente.</li>
+<li><code>chmod +x *</code> es necesario porque los archivos extraidos no vienen con permisos de ejecucion por defecto.</li>
+<li>No todos los TAR traen los mismos archivos de inicio. Prueben cual funciona.</li>
+</ul>
+<hr>
+<h2 id="6-si-el-tar-trae-un-instalador"><a class="header" href="#6-si-el-tar-trae-un-instalador">6. Si el TAR trae un instalador</a></h2>
+<p>Algunos TAR incluyen un script de instalacion:</p>
+<pre><code>install.sh
+</code></pre>
+<p>Ejecutar:</p>
+<pre><code class="language-bash">chmod +x install.sh
+./install.sh
+</code></pre>
+<p>o, si necesita permisos de administrador:</p>
+<pre><code class="language-bash">sudo ./install.sh
+</code></pre>
+<p><strong>Explicacion:</strong></p>
+<ul>
+<li>Los instaladores shell pueden hacer cosas distintas: copiar archivos a <code>/usr/local/bin</code>, crear accesos directos, resolver dependencias.</li>
+<li>Si el instalador pide <code>sudo</code>, es porque va a escribir en carpetas del sistema (como <code>/opt</code> o <code>/usr</code>).</li>
+<li>Siempre revisen el contenido del <code>install.sh</code> antes de ejecutarlo con <code>cat install.sh</code> o abriendolo en un editor.</li>
+</ul>
+<hr>
+<h2 id="7-si-el-tar-no-trae-instalador"><a class="header" href="#7-si-el-tar-no-trae-instalador">7. Si el TAR no trae instalador</a></h2>
+<p>Lo recomendable es mover la carpeta completa a una ubicacion fija.</p>
+<p>Ejemplo:</p>
+<pre><code class="language-bash">mv programa ~/Applications/
+</code></pre>
+<p>Y luego crear un archivo <code>.desktop</code> igual que con AppImage (ver seccion 4).</p>
+<p><strong>Explicacion:</strong></p>
+<ul>
+<li>La ventaja de mover la carpeta a <code>~/Applications</code> es que queda centralizada y organizada.</li>
+<li>El <code>.desktop</code> debe apuntar al ejecutable real dentro de la carpeta, por ejemplo: <code>/home/usuario/Applications/programa/bin/programa</code>.</li>
+</ul>
+<hr>
+<h2 id="8-donde-guardar-aplicaciones-portables"><a class="header" href="#8-donde-guardar-aplicaciones-portables">8. Donde guardar aplicaciones portables</a></h2>
+<p>Las ubicaciones recomendadas son:</p>
+<ul>
+<li><code>~/Applications</code> para aplicaciones del usuario actual</li>
+<li><code>/opt</code> para aplicaciones del sistema (requiere sudo)</li>
+</ul>
+<p>Ejemplo de estructura:</p>
+<pre><code>~/Applications
+|
++-- DBX.AppImage
++-- Rider
++-- AndroidStudio
++-- Godot
++-- Blender
+</code></pre>
+<p><strong>Explicacion:</strong></p>
+<ul>
+<li><code>~/Applications</code> es seguro porque no requiere permisos de administrador y queda en el home del usuario.</li>
+<li><code>/opt</code> es la ubicacion estandar del sistema para software de terceros. Funciona bien si varias personas usan la misma maquina.</li>
+<li>Mantener las aplicaciones en una sola carpeta facilita el backup, la limpieza y el control de espacio en disco.</li>
+</ul>
+<hr>
+<h2 id="9-donde-guardar-iconos"><a class="header" href="#9-donde-guardar-iconos">9. Donde guardar iconos</a></h2>
+<p>La ubicacion recomendada es:</p>
+<pre><code>~/.local/share/icons
+</code></pre>
+<p>Ejemplo:</p>
+<pre><code>~/.local/share/icons/dbx.png
+</code></pre>
+<p><strong>Explicacion:</strong></p>
+<ul>
+<li><code>~/.local/share/icons</code> es el estandar XDG para iconos de usuario.</li>
+<li>Los iconos aqui estan disponibles para todos los archivos <code>.desktop</code> del usuario.</li>
+<li>Pueden usar <code>.png</code> o <code>.svg</code>. Los <code>.svg</code> escalan mejor en diferentes resoluciones.</li>
+</ul>
+<hr>
+<h2 id="10-crear-un-acceso-directo-completo"><a class="header" href="#10-crear-un-acceso-directo-completo">10. Crear un acceso directo completo</a></h2>
+<p>Ejemplo de un <code>.desktop</code> con todos los campos utiles:</p>
+<pre><code class="language-ini">[Desktop Entry]
+Version=1.0
+Type=Application
+Name=JetBrains Rider
+Comment=IDE para .NET
+Exec=/home/dev-espada/Applications/Rider/bin/rider.sh
+Icon=/home/dev-espada/.local/share/icons/rider.svg
+Terminal=false
+Categories=Development;IDE;
+StartupNotify=true
+</code></pre>
+<p><strong>Explicacion:</strong></p>
+<ul>
+<li><code>Comment</code> es una descripcion breve que aparece como tooltip o informacion adicional.</li>
+<li><code>StartupNotify=true</code> muestra un indicador de carga mientras la aplicacion arranca. Util para pesadas como IDEs.</li>
+<li><code>Categories</code> puede tener multiples valores separados por punto y coma. Consulten la lista completa en la especificacion freedesktop.</li>
+</ul>
+<hr>
+<h2 id="11-actualizar-el-menu"><a class="header" href="#11-actualizar-el-menu">11. Actualizar el menu</a></h2>
+<p>Despues de crear o modificar un archivo <code>.desktop</code>:</p>
+<pre><code class="language-bash">update-desktop-database ~/.local/share/applications
+</code></pre>
+<p>Reiniciar Rofi:</p>
+<pre><code class="language-bash">rofi -show drun
+</code></pre>
+<p>La aplicacion deberia aparecer en la busqueda.</p>
+<p><strong>Explicacion:</strong></p>
+<ul>
+<li><code>update-desktop-database</code> genera un cache de los archivos <code>.desktop</code>. Sin esto, el sistema no detecta los cambios hasta reiniciar la sesion.</li>
+<li>Si Rofi no muestra la aplicacion, tambien pueden cerrar y volver a abrir Rofi, o ejecutar el comando de actualizacion de cache de su escritorio.</li>
+</ul>
+<hr>
+<h2 id="12-buscar-aplicaciones-instaladas"><a class="header" href="#12-buscar-aplicaciones-instaladas">12. Buscar aplicaciones instaladas</a></h2>
+<p>Para ver que <code>.desktop</code> existen:</p>
+<pre><code class="language-bash">ls ~/.local/share/applications
+</code></pre>
+<p>Para ver las del sistema:</p>
+<pre><code class="language-bash">ls /usr/share/applications
+</code></pre>
+<p><strong>Explicacion:</strong></p>
+<ul>
+<li><code>~/.local/share/applications</code> contiene los accesos directos del usuario actual.</li>
+<li><code>/usr/share/applications</code> contiene los accesos directos del sistema (instalados con apt, snap, flatpak, etc.).</li>
+<li>Si una aplicacion instalada no aparece en el menu, revisen que el archivo <code>.desktop</code> exista en alguna de estas carpetas y que tenga el formato correcto.</li>
+</ul>
+<hr>
+<h2 id="13-desinstalar"><a class="header" href="#13-desinstalar">13. Desinstalar</a></h2>
+<h3 id="paquetes-deb"><a class="header" href="#paquetes-deb">Paquetes .deb</a></h3>
+<pre><code class="language-bash">sudo apt remove nombre_paquete
+</code></pre>
+<p>Para eliminar tambien la configuracion:</p>
+<pre><code class="language-bash">sudo apt purge nombre_paquete
+</code></pre>
+<h3 id="appimage"><a class="header" href="#appimage">AppImage</a></h3>
+<p>Eliminar el ejecutable y el acceso directo:</p>
+<pre><code class="language-bash">rm ~/Applications/Programa.AppImage
+rm ~/.local/share/applications/programa.desktop
+</code></pre>
+<h3 id="tar"><a class="header" href="#tar">TAR</a></h3>
+<p>Eliminar la carpeta y el acceso directo:</p>
+<pre><code class="language-bash">rm -r ~/Applications/programa
+rm ~/.local/share/applications/programa.desktop
+</code></pre>
+<p><strong>Explicacion:</strong></p>
+<ul>
+<li><code>apt remove</code> elimina el paquete pero conserva la configuracion.</li>
+<li><code>apt purge</code> elimina tanto el paquete como la configuracion.</li>
+<li>Para AppImage y TAR, la desinstalacion es manual porque no estan integrados con el gestor de paquetes.</li>
+<li>Siempre eliminen tanto el ejecutable como el archivo <code>.desktop</code> correspondiente.</li>
+</ul>
+<hr>
+<h2 id="14-script-para-instalar-automaticamente-appimage"><a class="header" href="#14-script-para-instalar-automaticamente-appimage">14. Script para instalar automaticamente AppImage</a></h2>
+<p>Guarda este script como <code>install-appimage.sh</code>:</p>
+<pre><code class="language-bash">#!/bin/bash
+
+APP="$1"
+
+mkdir -p ~/Applications
+mkdir -p ~/.local/share/applications
+
+cp "$APP" ~/Applications/
+chmod +x ~/Applications/$(basename "$APP")
+
+echo "Instalado en:"
+echo "~/Applications/$(basename "$APP")"
+
+echo
+echo "Ahora solo debes crear el archivo .desktop."
+</code></pre>
+<p>Uso:</p>
+<pre><code class="language-bash">chmod +x install-appimage.sh
+./install-appimage.sh MiPrograma.AppImage
+</code></pre>
+<p><strong>Explicacion:</strong></p>
+<ul>
+<li>El script copia la AppImage a <code>~/Applications</code> y le da permisos de ejecucion.</li>
+<li><code>$1</code> es el primer argumento que se pasa al script (la ruta al AppImage).</li>
+<li><code>$(basename "$APP")</code> extrae solo el nombre del archivo sin la ruta.</li>
+<li>El script NO crea el archivo <code>.desktop</code> automaticamente. Eso se debe hacer manualmente (ver seccion 4) o usar Gear Lever (ver seccion 15).</li>
+</ul>
+<hr>
+<h2 id="15-herramienta-recomendada-gear-lever"><a class="header" href="#15-herramienta-recomendada-gear-lever">15. Herramienta recomendada: Gear Lever</a></h2>
+<p>Si prefieren evitar crear manualmente archivos <code>.desktop</code>, <strong>Gear Lever</strong> automatiza la integracion de AppImage con el sistema. Puede mover la AppImage a una ubicacion adecuada, crear el acceso directo, asociar el icono y facilitar actualizaciones.</p>
+<p>En sistemas Debian/Ubuntu suele instalarse desde Flathub:</p>
+<pre><code class="language-bash">flatpak install flathub it.mijorus.gearlever
+</code></pre>
+<p>Una vez abierto, solo arrastran la AppImage a la ventana y el programa se encargara del resto.</p>
+<p><strong>Explicacion:</strong></p>
+<ul>
+<li>Gear Lever es una herramienta grafica que simplifica todo el proceso de integracion de AppImages.</li>
+<li>Maneja automaticamente la creacion del <code>.desktop</code>, la copia del archivo, los permisos y los iconos.</li>
+<li>Es ideal para usuarios que prefieren no trabajar con la terminal para esta tarea.</li>
+<li>Requiere Flatpak instalado. Si no lo tienen, pueden instalarlo con <code>sudo apt install flatpak</code>.</li>
+</ul>
+<hr>
+<h2 id="16-resumen-rapido"><a class="header" href="#16-resumen-rapido">16. Resumen rapido</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Tipo</th><th>Instalar</th><th>Menu</th><th>Rofi</th></tr>
+</thead>
+<tbody>
+<tr><td><code>.deb</code></td><td><code>sudo apt install ./archivo.deb</code></td><td>Si</td><td>Si</td></tr>
+<tr><td><code>.AppImage</code></td><td><code>chmod +x</code> + ejecutar + <code>.desktop</code></td><td>Si</td><td>Si</td></tr>
+<tr><td><code>.tar.gz</code> / <code>.tar.xz</code></td><td>Extraer + ejecutar + <code>.desktop</code></td><td>Si</td><td>Si</td></tr>
+</tbody>
+</table>
+</div>
+<p>Con este flujo tendran todas sus aplicaciones accesibles desde el menu de aplicaciones y desde <code>rofi -show drun</code>.</p>
 
                     </main>
 
