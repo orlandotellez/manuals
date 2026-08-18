@@ -37,10 +37,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "dark";
-            window.path_to_searchindex_js = "searchindex-3ef97d73.js";
+            window.path_to_searchindex_js = "searchindex-7e9b0a72.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-3e378000.js"></script>
+        <script src="toc-15d59f60.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -215,6 +215,7 @@
 <li><a href="#redis">Redis</a></li>
 <li><a href="#guía-completa-de-prisma-6">Prisma</a></li>
 <li><a href="#guía-completa-de-entity-framework-core">Entity Framework Core</a></li>
+<li><a href="#manual-de-backups-y-migración-de-bases-de-datos-postgresql">Backups Postgres</a></li>
 </ul>
 <h2 id="aspnetc"><a class="header" href="#aspnetc">ASPNET(C#)</a></h2>
 <ul>
@@ -25513,10 +25514,245 @@ dotnet ef migrations script -s src/Api/Api.csproj -p src/Infrastructure/Infrastr
 dotnet ef database drop --force -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div>
+<h1 id="manual-de-backups-y-migración-de-bases-de-datos-postgresql"><a class="header" href="#manual-de-backups-y-migración-de-bases-de-datos-postgresql">Manual de Backups y Migración de bases de datos PostgreSQL</a></h1>
+<h2 id="índice-15"><a class="header" href="#índice-15">Índice</a></h2>
+<ol>
+<li><a href="#qué-es-pg_dump--pg_restore">¿Qué es pg_dump / pg_restore?</a></li>
+<li><a href="#instalación-de-las-herramientas-cliente">Instalación de las herramientas cliente</a></li>
+<li><a href="#verificar-versión-instalada">Verificar versión instalada</a></li>
+<li><a href="#si-la-versión-no-coincide-con-el-servidor">Si la versión no coincide con el servidor</a></li>
+<li><a href="#variables-de-entorno--cadena-de-conexión">Variables de entorno / cadena de conexión</a></li>
+<li><a href="#backup-completo-en-formato-sql-plano">Backup completo en formato SQL plano</a></li>
+<li><a href="#backup-completo-en-formato-custom-recomendado">Backup completo en formato custom (recomendado)</a></li>
+<li><a href="#restaurar-un-backup">Restaurar un backup</a></li>
+<li><a href="#migrar-de-una-base-a-otra-directamente-dump--restore">Migrar de una base a otra directamente (dump → restore)</a></li>
+<li><a href="#opciones-útiles-de-pg_dump">Opciones útiles de pg_dump</a></li>
+<li><a href="#backup-usando-docker-sin-instalar-nada-localmente">Backup usando Docker (sin instalar nada localmente)</a></li>
+<li><a href="#verificar-que-el-backuprestore-fue-exitoso">Verificar que el backup/restore fue exitoso</a></li>
+<li><a href="#automatizar-backups-con-un-script">Automatizar backups con un script</a></li>
+<li><a href="#errores-comunes">Errores comunes</a></li>
+<li><a href="#buenas-prácticas">Buenas prácticas</a></li>
+</ol>
+<hr>
+<h1 id="1-qué-es-pg_dump--pg_restore"><a class="header" href="#1-qué-es-pg_dump--pg_restore">1. ¿Qué es pg_dump / pg_restore?</a></h1>
+<p><code>pg_dump</code> es la herramienta oficial de PostgreSQL para exportar (hacer backup de) una base de datos completa: esquema (tablas, índices, constraints, secuencias) y datos.</p>
+<p><code>pg_restore</code> es su contraparte para importar un backup generado en formato “custom” o “directory”.</p>
+<p><code>psql</code> también puede usarse para restaurar backups en formato SQL plano.</p>
+<p>Herramientas que vienen incluidas en el paquete <code>postgresql-client</code>:</p>
+<ul>
+<li><code>pg_dump</code> → exportar una base de datos</li>
+<li><code>pg_dumpall</code> → exportar TODAS las bases de datos de un servidor + roles/usuarios</li>
+<li><code>pg_restore</code> → importar un backup en formato custom/directory</li>
+<li><code>psql</code> → cliente de línea de comandos, también sirve para importar backups <code>.sql</code></li>
+</ul>
+<hr>
+<h1 id="2-instalación-de-las-herramientas-cliente"><a class="header" href="#2-instalación-de-las-herramientas-cliente">2. Instalación de las herramientas cliente</a></h1>
+<h2 id="debian--ubuntu"><a class="header" href="#debian--ubuntu">Debian / Ubuntu</a></h2>
+<pre><code class="language-bash">sudo apt update
+sudo apt install -y postgresql-client
+</code></pre>
+<h2 id="instalar-una-versión-específica-ej-18-desde-el-repositorio-oficial-pgdg"><a class="header" href="#instalar-una-versión-específica-ej-18-desde-el-repositorio-oficial-pgdg">Instalar una versión específica (ej. 18) desde el repositorio oficial PGDG</a></h2>
+<p>A veces el repositorio por defecto de tu distro trae una versión antigua. Para instalar la versión exacta que necesitas:</p>
+<pre><code class="language-bash">sudo apt install -y postgresql-common
+sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh
+sudo apt update
+sudo apt install -y postgresql-client-18
+</code></pre>
+<p>Esto deja el binario disponible en:</p>
+<pre><code>/usr/lib/postgresql/18/bin/pg_dump
+/usr/lib/postgresql/18/bin/pg_restore
+</code></pre>
+<h2 id="macos-homebrew"><a class="header" href="#macos-homebrew">macOS (Homebrew)</a></h2>
+<pre><code class="language-bash">brew install postgresql@18
+</code></pre>
+<h2 id="windows-1"><a class="header" href="#windows-1">Windows</a></h2>
+<p>Descarga el instalador desde <a href="https://www.postgresql.org/download/">postgresql.org/download</a> y selecciona solo “Command Line Tools” durante la instalación.</p>
+<hr>
+<h1 id="3-verificar-versión-instalada"><a class="header" href="#3-verificar-versión-instalada">3. Verificar versión instalada</a></h1>
+<pre><code class="language-bash">pg_dump --version
+psql --version
+</code></pre>
+<p>Ejemplo de salida:</p>
+<pre><code>pg_dump (PostgreSQL) 18.4
+</code></pre>
+<hr>
+<h1 id="4-si-la-versión-no-coincide-con-el-servidor"><a class="header" href="#4-si-la-versión-no-coincide-con-el-servidor">4. Si la versión no coincide con el servidor</a></h1>
+<p>PostgreSQL exige que la versión de <code>pg_dump</code> sea <strong>igual o más nueva</strong> que la del servidor de origen. Si ves un error como:</p>
+<pre><code>pg_dump: error: abortando debido a que no coincide la versión del servidor
+pg_dump: detalle: versión del servidor: 18.4 ...; versión de pg_dump: 17.10 ...
+</code></pre>
+<p>Soluciones:</p>
+<p><strong>Opción A — Usar el binario versionado directamente:</strong></p>
+<pre><code class="language-bash">/usr/lib/postgresql/18/bin/pg_dump "postgresql://usuario:password@localhost:5432/mi_base" -f backup.sql
+</code></pre>
+<p><strong>Opción B — Actualizar el cliente por defecto</strong> (ver sección 2, instalación desde PGDG).</p>
+<p><strong>Opción C — Usar Docker</strong> (ver sección 11).</p>
+<hr>
+<h1 id="5-variables-de-entorno--cadena-de-conexión"><a class="header" href="#5-variables-de-entorno--cadena-de-conexión">5. Variables de entorno / cadena de conexión</a></h1>
+<p>Todos los comandos de este manual usan una <strong>cadena de conexión (connection string)</strong> con este formato:</p>
+<pre><code>postgresql://usuario:password@host:puerto/nombre_base
+</code></pre>
+<p>Ejemplo para un Postgres local:</p>
+<pre><code>postgresql://postgres:postgres@localhost:5432/mi_base
+</code></pre>
+<p>También puedes exportarla como variable de entorno para no repetirla en cada comando:</p>
+<pre><code class="language-bash">export DATABASE_URL="postgresql://postgres:postgres@localhost:5432/mi_base"
+pg_dump "$DATABASE_URL" -f backup.sql
+</code></pre>
+<hr>
+<h1 id="6-backup-completo-en-formato-sql-plano"><a class="header" href="#6-backup-completo-en-formato-sql-plano">6. Backup completo en formato SQL plano</a></h1>
+<p>Genera un archivo <code>.sql</code> legible, con sentencias <code>CREATE TABLE</code> e <code>INSERT</code>.</p>
+<pre><code class="language-bash">pg_dump "postgresql://postgres:postgres@localhost:5432/mi_base" -f backup.sql
+</code></pre>
+<p>Ventajas: legible, fácil de inspeccionar o editar a mano.
+Desventajas: más lento y pesado en bases grandes; no permite restaurar tablas individuales fácilmente.</p>
+<hr>
+<h1 id="7-backup-completo-en-formato-custom-recomendado"><a class="header" href="#7-backup-completo-en-formato-custom-recomendado">7. Backup completo en formato custom (recomendado)</a></h1>
+<p>Formato binario comprimido, más rápido y flexible.</p>
+<pre><code class="language-bash">pg_dump -Fc "postgresql://postgres:postgres@localhost:5432/mi_base" -f backup.dump
+</code></pre>
+<p>Ventajas:</p>
+<ul>
+<li>Comprimido automáticamente</li>
+<li>Permite restaurar solo ciertas tablas</li>
+<li>Permite restaurar en paralelo (<code>-j</code>) para mayor velocidad</li>
+</ul>
+<hr>
+<h1 id="8-restaurar-un-backup"><a class="header" href="#8-restaurar-un-backup">8. Restaurar un backup</a></h1>
+<h2 id="si-el-backup-es-sql-plano"><a class="header" href="#si-el-backup-es-sql-plano">Si el backup es <code>.sql</code> (plano)</a></h2>
+<pre><code class="language-bash">psql "postgresql://postgres:postgres@localhost:5432/base_destino" -f backup.sql
+</code></pre>
+<h2 id="si-el-backup-es-dump-formato-custom"><a class="header" href="#si-el-backup-es-dump-formato-custom">Si el backup es <code>.dump</code> (formato custom)</a></h2>
+<pre><code class="language-bash">pg_restore -d "postgresql://postgres:postgres@localhost:5432/base_destino" backup.dump
+</code></pre>
+<h2 id="restaurar-en-paralelo-más-rápido-solo-formato-custom"><a class="header" href="#restaurar-en-paralelo-más-rápido-solo-formato-custom">Restaurar en paralelo (más rápido, solo formato custom)</a></h2>
+<pre><code class="language-bash">pg_restore -d "postgresql://postgres:postgres@localhost:5432/base_destino" -j 4 backup.dump
+</code></pre>
+<p><code>-j 4</code> usa 4 procesos en paralelo. Ajusta el número según los núcleos de tu CPU.</p>
+<p>⚠️ La base de datos destino debe existir previamente (puedes crearla con <code>createdb nombre_base</code> o desde <code>psql</code> con <code>CREATE DATABASE nombre_base;</code>).</p>
+<hr>
+<h1 id="9-migrar-de-una-base-a-otra-directamente-dump--restore"><a class="header" href="#9-migrar-de-una-base-a-otra-directamente-dump--restore">9. Migrar de una base a otra directamente (dump → restore)</a></h1>
+<p>Si tienes acceso simultáneo a ambas bases (origen y destino), puedes hacer todo en un solo paso usando una tubería (<code>pipe</code>), sin generar un archivo intermedio:</p>
+<pre><code class="language-bash">pg_dump "postgresql://postgres:postgres@localhost:5432/base_origen" \
+  | psql "postgresql://postgres:postgres@localhost:5433/base_destino"
+</code></pre>
+<p>Esto sirve, por ejemplo, para clonar una base local a otra base local (en otro puerto, otro contenedor, u otro servidor).</p>
+<hr>
+<h1 id="10-opciones-útiles-de-pg_dump"><a class="header" href="#10-opciones-útiles-de-pg_dump">10. Opciones útiles de pg_dump</a></h1>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Opción</th><th>Qué hace</th></tr>
+</thead>
+<tbody>
+<tr><td><code>-Fc</code></td><td>Formato custom comprimido</td></tr>
+<tr><td><code>-Fd</code></td><td>Formato directory (permite paralelismo en el dump)</td></tr>
+<tr><td><code>--clean --if-exists</code></td><td>Antes de crear cada objeto, lo elimina si ya existe en el destino</td></tr>
+<tr><td><code>--no-owner</code></td><td>No incluye comandos para cambiar el dueño de las tablas</td></tr>
+<tr><td><code>--no-privileges</code></td><td>No incluye permisos (<code>GRANT</code>/<code>REVOKE</code>)</td></tr>
+<tr><td><code>--schema-only</code></td><td>Exporta solo la estructura, sin datos</td></tr>
+<tr><td><code>--data-only</code></td><td>Exporta solo los datos, sin estructura</td></tr>
+<tr><td><code>-t nombre_tabla</code></td><td>Exporta solo una tabla específica</td></tr>
+<tr><td><code>-n nombre_esquema</code></td><td>Exporta solo un esquema específico</td></tr>
+<tr><td><code>-j N</code></td><td>Número de procesos en paralelo (solo con <code>-Fd</code> o en <code>pg_restore</code>)</td></tr>
+</tbody>
+</table>
+</div>
+<p>Ejemplo combinando varias opciones (útil cuando el destino ya tiene datos y el usuario es distinto al de origen):</p>
+<pre><code class="language-bash">pg_dump --clean --if-exists --no-owner --no-privileges \
+  "postgresql://postgres:postgres@localhost:5432/base_origen" \
+  | psql "postgresql://postgres:postgres@localhost:5433/base_destino"
+</code></pre>
+<hr>
+<h1 id="11-backup-usando-docker-sin-instalar-nada-localmente"><a class="header" href="#11-backup-usando-docker-sin-instalar-nada-localmente">11. Backup usando Docker (sin instalar nada localmente)</a></h1>
+<p>Si no quieres instalar el cliente de PostgreSQL en tu máquina, puedes usar la imagen oficial:</p>
+<pre><code class="language-bash">docker run --rm postgres:18 pg_dump \
+  "postgresql://postgres:postgres@host.docker.internal:5432/mi_base" \
+  -f /tmp/backup.sql
+</code></pre>
+<p>Para hacer dump y restore en un solo paso entre dos bases locales:</p>
+<pre><code class="language-bash">docker run --rm postgres:18 sh -c \
+  'pg_dump "postgresql://postgres:postgres@host.docker.internal:5432/base_origen" \
+   | psql "postgresql://postgres:postgres@host.docker.internal:5433/base_destino"'
+</code></pre>
+<p>Notas:</p>
+<ul>
+<li><code>host.docker.internal</code> permite que el contenedor acceda a servicios corriendo en tu máquina anfitriona (funciona en Docker Desktop / macOS / Windows).</li>
+<li>En Linux puedes necesitar <code>--network host</code> en vez de <code>host.docker.internal</code>:</li>
+</ul>
+<pre><code class="language-bash">docker run --rm --network host postgres:18 pg_dump \
+  "postgresql://postgres:postgres@localhost:5432/mi_base" -f /tmp/backup.sql
+</code></pre>
+<hr>
+<h1 id="12-verificar-que-el-backuprestore-fue-exitoso"><a class="header" href="#12-verificar-que-el-backuprestore-fue-exitoso">12. Verificar que el backup/restore fue exitoso</a></h1>
+<h2 id="listar-tablas-de-la-base-destino"><a class="header" href="#listar-tablas-de-la-base-destino">Listar tablas de la base destino</a></h2>
+<pre><code class="language-bash">psql "postgresql://postgres:postgres@localhost:5432/base_destino" -c "\dt"
+</code></pre>
+<h2 id="comparar-cantidad-de-filas-por-tabla-origen-vs-destino"><a class="header" href="#comparar-cantidad-de-filas-por-tabla-origen-vs-destino">Comparar cantidad de filas por tabla (origen vs destino)</a></h2>
+<pre><code class="language-bash">psql "postgresql://postgres:postgres@localhost:5432/base_origen" -c "
+SELECT schemaname, relname, n_live_tup
+FROM pg_stat_user_tables
+ORDER BY relname;
+"
+</code></pre>
+<p>Corre la misma consulta contra la base destino y compara los valores de <code>n_live_tup</code> (filas vivas aproximadas por tabla).</p>
+<h2 id="ver-el-tamaño-de-la-base-de-datos"><a class="header" href="#ver-el-tamaño-de-la-base-de-datos">Ver el tamaño de la base de datos</a></h2>
+<pre><code class="language-bash">psql "postgresql://postgres:postgres@localhost:5432/mi_base" -c "
+SELECT pg_size_pretty(pg_database_size('mi_base'));
+"
+</code></pre>
+<hr>
+<h1 id="13-automatizar-backups-con-un-script"><a class="header" href="#13-automatizar-backups-con-un-script">13. Automatizar backups con un script</a></h1>
+<p>Ejemplo de script <code>backup.sh</code> con fecha en el nombre del archivo:</p>
+<pre><code class="language-bash">#!/bin/bash
+set -e
+
+DB_URL="postgresql://postgres:postgres@localhost:5432/mi_base"
+FECHA=$(date +%Y-%m-%d_%H-%M-%S)
+ARCHIVO="backup_${FECHA}.dump"
+
+echo "Generando backup: $ARCHIVO"
+pg_dump -Fc "$DB_URL" -f "$ARCHIVO"
+
+echo "Backup completado: $ARCHIVO"
+</code></pre>
+<p>Darle permisos de ejecución y correrlo:</p>
+<pre><code class="language-bash">chmod +x backup.sh
+./backup.sh
+</code></pre>
+<p>Para automatizarlo diariamente, agrégalo a <code>cron</code>:</p>
+<pre><code class="language-bash">crontab -e
+</code></pre>
+<p>Y agrega una línea como esta (corre todos los días a las 2:00 AM):</p>
+<pre><code>0 2 * * * /ruta/completa/backup.sh &gt;&gt; /ruta/completa/backup.log 2&gt;&amp;1
+</code></pre>
+<hr>
+<h1 id="14-errores-comunes-1"><a class="header" href="#14-errores-comunes-1">14. Errores comunes</a></h1>
+<p><strong>Error: versión de pg_dump no coincide con el servidor</strong>
+→ Instala/usa la versión de <code>pg_dump</code> igual o mayor a la del servidor (sección 4).</p>
+<p><strong>Error: relation already exists</strong>
+→ La base destino ya tenía tablas creadas. Usa <code>--clean --if-exists</code> o vacía la base destino antes de restaurar.</p>
+<p><strong>Error: permission denied for schema / must be owner of…</strong>
+→ El usuario de destino no tiene los mismos permisos que el de origen. Usa <code>--no-owner --no-privileges</code>.</p>
+<p><strong>Error: could not connect to server</strong>
+→ Revisa host, puerto, credenciales, y que el servidor de destino/origen esté activo y aceptando conexiones (revisa también reglas de firewall si es remoto).</p>
+<p><strong>El backup tarda mucho / archivo muy pesado</strong>
+→ Usa formato custom (<code>-Fc</code>) o directory (<code>-Fd</code>) en vez de SQL plano, y considera <code>-j</code> para paralelizar.</p>
+<hr>
+<h1 id="15-buenas-prácticas"><a class="header" href="#15-buenas-prácticas">15. Buenas prácticas</a></h1>
+<p>✔ Usa siempre formato custom (<code>-Fc</code>) para backups de producción — es más rápido y flexible.
+✔ Verifica la versión de <code>pg_dump</code> antes de cada backup importante.
+✔ Nunca dejes contraseñas de bases de datos escritas en scripts que subas a repositorios públicos — usa variables de entorno o un archivo <code>.env</code> ignorado por git.
+✔ Prueba siempre el backup restaurándolo en una base de prueba antes de confiar en él.
+✔ Automatiza backups periódicos (cron, GitHub Actions, o el sistema de backups del proveedor donde alojes la base).
+✔ Guarda backups en al menos dos ubicaciones distintas (local + nube).
+✔ Rota las contraseñas de las bases de datos si alguna vez se compartieron por chat, correo o en texto plano.
+✔ Al migrar entre bases, compara siempre el número de filas por tabla (sección 12) para confirmar integridad de datos.</p>
+<div style="break-before: page; page-break-before: always;"></div>
 <h1 id="aspnet-core-init---manual-técnico-completo"><a class="header" href="#aspnet-core-init---manual-técnico-completo">ASP.NET Core Init - Manual Técnico Completo</a></h1>
 <p>Manual completo para instalar y desarrollar con <strong>.NET 10</strong> en <strong>Debian 13 (Trixie)</strong>, incluyendo instalación, creación de API con Clean Architecture, Entity Framework Core, autenticación JWT, y comandos de administración.</p>
 <hr>
-<h2 id="índice-15"><a class="header" href="#índice-15">Índice</a></h2>
+<h2 id="índice-16"><a class="header" href="#índice-16">Índice</a></h2>
 <ol>
 <li><a href="#1-instalación-de-net-10-en-debian-13">Instalación de .NET 10 en Debian 13</a></li>
 <li><a href="#2-verificar-instalación">Verificar Instalación</a></li>
@@ -28186,7 +28422,7 @@ echo "  dotnet run"
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="aspnet-auth"><a class="header" href="#aspnet-auth">ASPNET AUTH</a></h1>
 <h2 id="manual-para-realizar-el-modulo-de-autenticación-con-aspnet"><a class="header" href="#manual-para-realizar-el-modulo-de-autenticación-con-aspnet">Manual para realizar el modulo de autenticación con ASPNET</a></h2>
-<h2 id="índice-16"><a class="header" href="#índice-16">Índice</a></h2>
+<h2 id="índice-17"><a class="header" href="#índice-17">Índice</a></h2>
 <ol>
 <li><a href="#1-arquitectura-general">Arquitectura General</a></li>
 <li><a href="#2-prerrequisitos">Prerrequisitos</a></li>
@@ -30869,7 +31105,7 @@ curl -X POST http://localhost:5274/api/v1/auth/logout \
 <p>Este manual te guía en la construcción de un backend completo de plataforma educativa: autenticación (registro, login, JWT, verificación de email, recuperación de contraseña, 2FA), catálogo de cursos (CRUD, categorías, búsqueda, filtros), módulos y lecciones (video, texto, quiz, código), sistema de inscripciones, progreso de lecciones, certificados, reseñas, comentarios, marcadores, pagos con PayPal, suscripciones, analíticas y notificaciones.</p>
 <p>Contiene el <strong>100% del código fuente</strong> del proyecto, explicado línea por línea, para que puedas reproducir cada archivo por tu cuenta.</p>
 <hr>
-<h2 id="índice-17"><a class="header" href="#índice-17">Índice</a></h2>
+<h2 id="índice-18"><a class="header" href="#índice-18">Índice</a></h2>
 <ol>
 <li><a href="#1-arquitectura-del-proyecto">Arquitectura del proyecto</a></li>
 <li><a href="#2-domaincsproj"><code>Domain.csproj</code> — Proyecto de dominio</a></li>
@@ -35676,7 +35912,7 @@ dotnet ef database update -s src/Api/Api.csproj -p src/Infrastructure/Infrastruc
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="primeros-pasos---react-native"><a class="header" href="#primeros-pasos---react-native">Primeros pasos - React Native</a></h1>
 <p>Este manual te guiará paso a paso para entender y desarrollar una aplicación de React Native desde 0. Usamos <strong>Expo</strong> con <strong>expo-router</strong>, que es la forma más moderna y recomendada de crear apps con React Native.</p>
-<h2 id="índice-18"><a class="header" href="#índice-18">Índice</a></h2>
+<h2 id="índice-19"><a class="header" href="#índice-19">Índice</a></h2>
 <ol>
 <li><a href="#1-requisitos-previos-2">Requisitos Previos</a></li>
 <li><a href="#2-instalación-del-proyecto">Instalación del Proyecto</a></li>
@@ -36547,7 +36783,7 @@ pnpm expo start -c
 </ul>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="guía-completa-instalación-y-configuración-de-matrix-synapse-con-docker"><a class="header" href="#guía-completa-instalación-y-configuración-de-matrix-synapse-con-docker">Guía Completa: Instalación y Configuración de Matrix Synapse con Docker</a></h1>
-<h2 id="índice-19"><a class="header" href="#índice-19">Índice</a></h2>
+<h2 id="índice-20"><a class="header" href="#índice-20">Índice</a></h2>
 <ol>
 <li><a href="#requisitos-previos">Requisitos previos</a></li>
 <li><a href="#instalación-de-docker-y-docker-compose">Instalación de Docker y Docker Compose</a></li>
@@ -36906,7 +37142,7 @@ http://example.com:8008/_synapse/admin/v1/whois/@user:example.com
 <h1 id="manual-de-matrix---implementación-custom"><a class="header" href="#manual-de-matrix---implementación-custom">MANUAL DE MATRIX - Implementación Custom</a></h1>
 <p>Este documento explica cómo funciona la integración con Matrix en esta app, sin usar el SDK oficial (matrix-js-sdk). Se usa la <strong>REST API</strong> directamente.</p>
 <hr>
-<h2 id="índice-20"><a class="header" href="#índice-20">Índice</a></h2>
+<h2 id="índice-21"><a class="header" href="#índice-21">Índice</a></h2>
 <ol>
 <li><a href="#arquitectura-general">ARQUITECTURA GENERAL</a></li>
 <li><a href="#tipos-de-datos-types">TIPOS DE DATOS (Types)</a></li>
@@ -38489,7 +38725,7 @@ Pero lo ignora porque sender === currentUserId
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="16-introducción-a-las-redes"><a class="header" href="#16-introducción-a-las-redes">16. Introducción a las Redes</a></h1>
 <hr>
-<h2 id="índice-21"><a class="header" href="#índice-21">Índice</a></h2>
+<h2 id="índice-22"><a class="header" href="#índice-22">Índice</a></h2>
 <ul>
 <li><a href="#qué-es-una-red">¿Qué es una Red?</a></li>
 <li><a href="#ventajas-de-las-redes">Ventajas de las Redes</a></li>
@@ -38821,7 +39057,7 @@ Pero lo ignora porque sender === currentUserId
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="18-modelos-de-red"><a class="header" href="#18-modelos-de-red">18. Modelos de Red</a></h1>
 <hr>
-<h2 id="índice-22"><a class="header" href="#índice-22">Índice</a></h2>
+<h2 id="índice-23"><a class="header" href="#índice-23">Índice</a></h2>
 <ul>
 <li><a href="#qué-es-un-modelo-de-red">¿Qué es un Modelo de Red?</a></li>
 <li><a href="#importancia-de-los-modelos-de-red">Importancia de los Modelos de Red</a></li>
@@ -39179,7 +39415,7 @@ Señales eléctricas / ondas de radio
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="redes---direcciones-ip-y-subredes"><a class="header" href="#redes---direcciones-ip-y-subredes">Redes - Direcciones IP y Subredes</a></h1>
 <hr>
-<h2 id="índice-23"><a class="header" href="#índice-23">Índice</a></h2>
+<h2 id="índice-24"><a class="header" href="#índice-24">Índice</a></h2>
 <ul>
 <li><a href="#qué-es-una-dirección-ip">¿Qué es una Dirección IP?</a>
 <ul>
@@ -39489,7 +39725,7 @@ Señales eléctricas / ondas de radio
 <h2 id="introducción"><a class="header" href="#introducción">Introducción</a></h2>
 <p>Este manual te guiará paso a paso para analizar direcciones IPv4 y determinar la <strong>parte de red</strong>, la <strong>parte de host</strong>, la <strong>máscara de subred</strong>, la <strong>dirección de red</strong>, la <strong>dirección de broadcast</strong> y el <strong>rango de hosts utilizables</strong>. Este es un ejercicio fundamental para entender cómo funcionan las subredes y cómo los routers enrutan paquetes entre diferentes redes.</p>
 <hr>
-<h2 id="índice-24"><a class="header" href="#índice-24">Índice</a></h2>
+<h2 id="índice-25"><a class="header" href="#índice-25">Índice</a></h2>
 <ul>
 <li><a href="#1-conceptos-fundamentales">Conceptos Fundamentales</a></li>
 <li><a href="#2-metodología-paso-a-paso">Metodología Paso a Paso</a></li>
@@ -40308,7 +40544,7 @@ Broadcast: 192.168.10.255 (bits de host = 11111110 → 255)
 </blockquote>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="nat"><a href="#nat" class="header">NAT</a></h1>
-<h2 id="índice-25"><a class="header" href="#índice-25">Índice</a></h2>
+<h2 id="índice-26"><a class="header" href="#índice-26">Índice</a></h2>
 <ul>
 <li><a href="#qué-es-nat-y-cómo-actúa-en-nuestra-red">Qué es NAT y cómo actúa en nuestra red</a>
 <ul>
@@ -40429,7 +40665,7 @@ Broadcast: 192.168.10.255 (bits de host = 11111110 → 255)
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="22-direcciones-mac-y-switches"><a class="header" href="#22-direcciones-mac-y-switches">22. Direcciones MAC y Switches</a></h1>
 <hr>
-<h2 id="índice-26"><a class="header" href="#índice-26">Índice</a></h2>
+<h2 id="índice-27"><a class="header" href="#índice-27">Índice</a></h2>
 <ul>
 <li><a href="#introducción-a-la-capa-de-enlace-de-datos">Introducción a la Capa de Enlace de Datos</a></li>
 <li><a href="#qué-es-una-dirección-mac">¿Qué es una Dirección MAC?</a></li>
@@ -41341,7 +41577,7 @@ show ip arp
 <h1 id="cisco-packet-tracer--manual-de-comandos"><a class="header" href="#cisco-packet-tracer--manual-de-comandos">CISCO PACKET TRACER — Manual de Comandos</a></h1>
 <p><strong>Router · Switch · DHCP · IP Routes · VLANs</strong></p>
 <hr>
-<h2 id="índice-27"><a class="header" href="#índice-27">Índice</a></h2>
+<h2 id="índice-28"><a class="header" href="#índice-28">Índice</a></h2>
 <ol>
 <li><a href="#1-configuración-del-router">Configuración del Router</a></li>
 <li><a href="#2-configuración-del-switch">Configuración del Switch</a></li>
@@ -41721,7 +41957,7 @@ S1#  show interfaces Fa0/1 switchport       ! Detalle de un puerto
 <h1 id="manual-de-docker-en-debian--instalación-desinstalación-y-reinstalación-completa"><a class="header" href="#manual-de-docker-en-debian--instalación-desinstalación-y-reinstalación-completa">Manual de Docker en Debian — Instalación, Desinstalación y Reinstalación Completa</a></h1>
 <p>Docker es una plataforma de contenedores que permite empaquetar, distribuir y ejecutar aplicaciones en entornos aislados. Este manual cubre la instalación completa usando el repositorio oficial, la desinstalación limpia sin residuos, y el procedimiento de reinstalación desde cero.</p>
 <hr>
-<h2 id="índice-28"><a class="header" href="#índice-28">Índice</a></h2>
+<h2 id="índice-29"><a class="header" href="#índice-29">Índice</a></h2>
 <ol>
 <li><a href="#1-requisitos-previos-5">Requisitos Previos</a></li>
 <li><a href="#2-desinstalación-completa-hacer-primero-si-ya-tienes-docker">Desinstalación Completa</a></li>
@@ -42603,22 +42839,6 @@ echo "Ahora solo debes crear el archivo .desktop."
         <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
         <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
         <script>

@@ -34,6 +34,7 @@ Mis manuales de desarrollo
 - [Redis](./docs/04-redis.md)
 - [Prisma](./docs/06-prisma.md)
 - [Entity Framework Core](./docs/23-ef-core.md)
+- [Backups Postgres](./docs/33-manual-backups-postgresql.md)
 
 ## ASPNET(C#)
 - [ASPNET Primeros Pasos](./docs/21-aspnet-init.md)
