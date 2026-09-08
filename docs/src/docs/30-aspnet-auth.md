@@ -1,6 +1,8 @@
-# ASPNET AUTH 
+# Autenticación con ASP.NET Core — Manual paso a paso
 
-Manual para realizar el modulo de autenticación con ASPNET
+Manual para realizar el módulo de autenticación con **ASP.NET Core** sobre una API construida con **Clean Architecture** en **.NET 10**. Vamos a recorrer el módulo completo capa por capa: **Domain** (entidades), **Application** (contratos y casos de uso), **Infrastructure** (repositorios, JWT y BCrypt) y **Api** (endpoints, middlewares y cookies), con los flujos de **Register, Login, Refresh y Logout** explicados paso a paso.
+
+> **Naming**: en todos los ejemplos usamos el nombre de proyecto **Example** (`Example.Api`, `Example.Domain`, `Example.Infrastructure`, `Example.Application`). Vos podés reemplazarlo por el nombre de tu propio proyecto.
 ---
 
 ## Índice
@@ -8,10 +10,10 @@ Manual para realizar el modulo de autenticación con ASPNET
 1. [Arquitectura General](#1-arquitectura-general)
 2. [Prerrequisitos](#2-prerrequisitos)
 3. [Estructura del Proyecto](#3-estructura-del-proyecto)
-4. [Luna.Domain — Capa de Dominio](#4-lunadomain--capa-de-dominio)
-5. [Luna.Application — Capa de Aplicación](#5-lunaapplication--capa-de-aplicación)
-6. [Luna.Infrastructure — Capa de Infraestructura](#6-lunainfrastructure--capa-de-infraestructura)
-7. [Luna.Api — Capa de Presentación (API)](#7-lunaapi--capa-de-presentación-api)
+4. [Example.Domain — Capa de Dominio](#4-exampledomain--capa-de-dominio)
+5. [Example.Application — Capa de Aplicación](#5-exampleapplication--capa-de-aplicación)
+6. [Example.Infrastructure — Capa de Infraestructura](#6-exampleinfrastructure--capa-de-infraestructura)
+7. [Example.Api — Capa de Presentación (API)](#7-exampleapi--capa-de-presentación)
 8. [Flujo Completo: Register](#8-flujo-completo-register)
 9. [Flujo Completo: Login](#9-flujo-completo-login)
 10. [Flujo Completo: Refresh](#10-flujo-completo-refresh)
@@ -28,16 +30,16 @@ El proyecto sigue **Clean Architecture** con 4 capas:
 
 ```
 ┌─────────────────────────────────────────────┐
-│           Luna.Api (Presentación)            │
+│           Example.Api (Presentación)            │
 │   Controllers, Middleware, Helpers, Config   │
 ├─────────────────────────────────────────────┤
-│       Luna.Application (Casos de Uso)        │
+│       Example.Application (Casos de Uso)        │
 │   Interfaces, Servicios de Aplicación, DTOs  │
 ├─────────────────────────────────────────────┤
-│     Luna.Infrastructure (Infraestructura)    │
+│     Example.Infrastructure (Infraestructura)    │
 │   EF Core, Repositorios, JWT, BCrypt, Migs   │
 ├─────────────────────────────────────────────┤
-│         Luna.Domain (Dominio/Núcleo)         │
+│         Example.Domain (Dominio/Núcleo)         │
 │   Entidades, Enums, Excepciones de Negocio   │
 └─────────────────────────────────────────────┘
 ```
@@ -94,7 +96,7 @@ dotnet tool install --global dotnet-ef
 ```
 backend/
 ├── src/
-│   ├── Luna.Api/
+│   ├── Example.Api/
 │   │   ├── Controllers/
 │   │   │   └── AuthController.cs
 │   │   ├── Extensions/
@@ -112,10 +114,10 @@ backend/
 │   │   │   └── launchSettings.json
 │   │   ├── appsettings.json
 │   │   ├── appsettings.Development.json
-│   │   ├── Luna.Api.csproj
-│   │   ├── Luna.Api.http
+│   │   ├── Example.Api.csproj
+│   │   ├── Example.Api.http
 │   │   └── Program.cs
-│   ├── Luna.Application/
+│   ├── Example.Application/
 │   │   ├── Common/
 │   │   │   ├── Interfaces/
 │   │   │   │   ├── IAccountRepository.cs
@@ -135,8 +137,8 @@ backend/
 │   │   ├── Features/
 │   │   │   └── Auth/
 │   │   │       └── AuthService.cs
-│   │   └── Luna.Application.csproj
-│   ├── Luna.Domain/
+│   │   └── Example.Application.csproj
+│   ├── Example.Domain/
 │   │   ├── Entities/
 │   │   │   ├── Account.cs
 │   │   │   ├── Session.cs
@@ -146,8 +148,8 @@ backend/
 │   │   │   └── UserRole.cs
 │   │   ├── Exceptions/
 │   │   │   └── AppException.cs
-│   │   └── Luna.Domain.csproj
-│   └── Luna.Infrastructure/
+│   │   └── Example.Domain.csproj
+│   └── Example.Infrastructure/
 │       ├── Migrations/
 │       │   ├── 20260715031852_init.cs
 │       │   ├── 20260715031852_init.Designer.cs
@@ -167,14 +169,14 @@ backend/
 │       └── Services/
 │           ├── PasswordService.cs
 │           └── TokenService.cs
-│       └── Luna.Infrastructure.csproj
+│       └── Example.Infrastructure.csproj
 ```
 
 ---
 
-## 4. Luna.Domain — Capa de Dominio
+## 4. Example.Domain — Capa de Dominio
 
-### 4.1. `Luna.Domain.csproj`
+### 4.1. `Example.Domain.csproj`
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
@@ -183,7 +185,7 @@ backend/
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <RootNamespace>Luna.Domain</RootNamespace>
+    <RootNamespace>Example.Domain</RootNamespace>
   </PropertyGroup>
 
 </Project>
@@ -197,16 +199,16 @@ backend/
 | `<TargetFramework>net10.0</TargetFramework>` | Apunta a .NET 10.0 |
 | `<ImplicitUsings>enable</ImplicitUsings>` | Incluye automáticamente `using System`, `System.Collections.Generic`, `System.Linq`, `System.Threading.Tasks`, etc. |
 | `<Nullable>enable</Nullable>` | Habilita tipos nullable (`string?`, `Guid?`). Obliga a declarar explícitamente cuando un valor puede ser null. |
-| `<RootNamespace>Luna.Domain</RootNamespace>` | Namespace raíz. Todas las clases en este proyecto usan `Luna.Domain.*` |
+| `<RootNamespace>Example.Domain</RootNamespace>` | Namespace raíz. Todas las clases en este proyecto usan `Example.Domain.*` |
 
 ---
 
 ### 4.2. `Entities/User.cs`
 
 ```csharp
-using Luna.Domain.Enums;
+using Example.Domain.Enums;
 
-namespace Luna.Domain.Entities;
+namespace Example.Domain.Entities;
 
 public class User
 {
@@ -259,7 +261,7 @@ public class User
 ### 4.3. `Entities/Account.cs`
 
 ```csharp
-namespace Luna.Domain.Entities;
+namespace Example.Domain.Entities;
 
 public class Account
 {
@@ -299,7 +301,7 @@ public class Account
 ### 4.4. `Entities/Session.cs`
 
 ```csharp
-namespace Luna.Domain.Entities;
+namespace Example.Domain.Entities;
 
 public class Session
 {
@@ -336,7 +338,7 @@ public class Session
 ### 4.5. `Entities/Verification.cs`
 
 ```csharp
-namespace Luna.Domain.Entities;
+namespace Example.Domain.Entities;
 
 public class Verification
 {
@@ -364,7 +366,7 @@ public class Verification
 ### 4.6. `Enums/UserRole.cs`
 
 ```csharp
-namespace Luna.Domain.Enums;
+namespace Example.Domain.Enums;
 
 public enum UserRole
 {
@@ -391,7 +393,7 @@ El valor por defecto en DB es `0` (`User`). Los valores enteros permiten compara
 ### 4.7. `Exceptions/AppException.cs`
 
 ```csharp
-namespace Luna.Domain.Exceptions;
+namespace Example.Domain.Exceptions;
 
 // Excepción base de la aplicación con soporte para códigos HTTP
 public class AppException : Exception
@@ -462,28 +464,28 @@ Esto evita errores de tipeo en los códigos y hace el código más legible.
 
 ---
 
-## 5. Luna.Application — Capa de Aplicación
+## 5. Example.Application — Capa de Aplicación
 
-### 5.1. `Luna.Application.csproj`
+### 5.1. `Example.Application.csproj`
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\Luna.Domain\Luna.Domain.csproj" />
+    <ProjectReference Include="..\Example.Domain\Example.Domain.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <RootNamespace>Luna.Application</RootNamespace>
+    <RootNamespace>Example.Application</RootNamespace>
   </PropertyGroup>
 
 </Project>
 ```
 
-**Explicación:** Depende solo de `Luna.Domain`. No tiene referencia a Infrastructure ni a Api. Esto es **la regla de oro de Clean Architecture**: la capa de aplicación NO sabe nada de infraestructura. Solo define **contratos** (interfaces) que Infrastructure implementa.
+**Explicación:** Depende solo de `Example.Domain`. No tiene referencia a Infrastructure ni a Api. Esto es **la regla de oro de Clean Architecture**: la capa de aplicación NO sabe nada de infraestructura. Solo define **contratos** (interfaces) que Infrastructure implementa.
 
 ---
 
@@ -496,10 +498,10 @@ Todos los contratos (interfaces) viven acá. Son abstracciones que define la apl
 #### `IUserRepository.cs`
 
 ```csharp
-using Luna.Application.Common.Models;
-using Luna.Domain.Entities;
+using Example.Application.Common.Models;
+using Example.Domain.Entities;
 
-namespace Luna.Application.Common.Interfaces;
+namespace Example.Application.Common.Interfaces;
 
 public interface IUserRepository
 {
@@ -530,9 +532,9 @@ public interface IUserRepository
 #### `IAccountRepository.cs`
 
 ```csharp
-using Luna.Domain.Entities;
+using Example.Domain.Entities;
 
-namespace Luna.Application.Common.Interfaces;
+namespace Example.Application.Common.Interfaces;
 
 public interface IAccountRepository
 {
@@ -558,9 +560,9 @@ Busca la cuenta de tipo "credentials" (email+password) asociada a un email. Hace
 #### `ISessionRepository.cs`
 
 ```csharp
-using Luna.Domain.Entities;
+using Example.Domain.Entities;
 
-namespace Luna.Application.Common.Interfaces;
+namespace Example.Application.Common.Interfaces;
 
 public interface ISessionRepository
 {
@@ -587,9 +589,9 @@ public interface ISessionRepository
 #### `IVerificationRepository.cs`
 
 ```csharp
-using Luna.Domain.Entities;
+using Example.Domain.Entities;
 
-namespace Luna.Application.Common.Interfaces;
+namespace Example.Application.Common.Interfaces;
 
 public interface IVerificationRepository
 {
@@ -613,9 +615,9 @@ public interface IVerificationRepository
 
 ```csharp
 using System.Security.Claims;
-using Luna.Domain.Enums;
+using Example.Domain.Enums;
 
-namespace Luna.Application.Common.Interfaces;
+namespace Example.Application.Common.Interfaces;
 
 public interface ITokenService
 {
@@ -638,7 +640,7 @@ public interface ITokenService
 #### `IPasswordService.cs`
 
 ```csharp
-namespace Luna.Application.Common.Interfaces;
+namespace Example.Application.Common.Interfaces;
 
 public interface IPasswordService
 {
@@ -654,9 +656,9 @@ Contrato mínimo: hashear y verificar. La implementación usa BCrypt.
 #### `IAuthService.cs`
 
 ```csharp
-using Luna.Application.Common.Models;
+using Example.Application.Common.Models;
 
-namespace Luna.Application.Common.Interfaces;
+namespace Example.Application.Common.Interfaces;
 
 public interface IAuthService
 {
@@ -702,7 +704,7 @@ Si el proyecto creciera, se podría crear un `IRepository<T>` genérico para no 
 #### `AuthRequest.cs`
 
 ```csharp
-namespace Luna.Application.Common.Models;
+namespace Example.Application.Common.Models;
 
 public record LoginRequest(string Email, string Password);
 public record RegisterRequest(string Name, string Email, string Password);
@@ -730,7 +732,7 @@ Cada record representa el body de un request HTTP. Los campos nullables (`string
 #### `AuthResult.cs`
 
 ```csharp
-namespace Luna.Application.Common.Models;
+namespace Example.Application.Common.Models;
 
 public record AuthResponse
 {
@@ -782,9 +784,9 @@ var response = new AuthResponse
 #### `UserDto.cs`
 
 ```csharp
-using Luna.Domain.Enums;
+using Example.Domain.Enums;
 
-namespace Luna.Application.Common.Models;
+namespace Example.Application.Common.Models;
 
 public record UserDto
 {
@@ -817,9 +819,9 @@ public record UserDto
 #### `UserRequest.cs`
 
 ```csharp
-using Luna.Domain.Enums;
+using Example.Domain.Enums;
 
-namespace Luna.Application.Common.Models;
+namespace Example.Application.Common.Models;
 
 public record CreateUserRequest(
     string Name,
@@ -857,11 +859,11 @@ public record UserFilter(
 ### 5.5. `Common/Mapping/MappingUser.cs`
 
 ```csharp
-using Luna.Application.Common.Models;
-using Luna.Domain.Entities;
-using Luna.Domain.Exceptions;
+using Example.Application.Common.Models;
+using Example.Domain.Entities;
+using Example.Domain.Exceptions;
 
-namespace Luna.Application.Common.Mapping;
+namespace Example.Application.Common.Mapping;
 
 public static class MappingUser
 {
@@ -916,14 +918,14 @@ Notá que **no se mapean campos sensibles**. Si `User` tuviera `PasswordHash` o 
 
 ```csharp
 using System.Security.Claims;
-using Luna.Application.Common.Interfaces;
-using Luna.Application.Common.Models;
-using Luna.Application.Common.Mapping;
-using Luna.Domain.Exceptions;
-using Luna.Domain.Entities;
-using Luna.Domain.Enums;
+using Example.Application.Common.Interfaces;
+using Example.Application.Common.Models;
+using Example.Application.Common.Mapping;
+using Example.Domain.Exceptions;
+using Example.Domain.Entities;
+using Example.Domain.Enums;
 
-namespace Luna.Application.Features.Auth;
+namespace Example.Application.Features.Auth;
 
 public class AuthService : IAuthService
 {
@@ -1164,15 +1166,15 @@ Simplemente elimina la sesión de la DB. Así el refresh token queda invalidado.
 
 ---
 
-## 6. Luna.Infrastructure — Capa de Infraestructura
+## 6. Example.Infrastructure — Capa de Infraestructura
 
-### 6.1. `Luna.Infrastructure.csproj`
+### 6.1. `Example.Infrastructure.csproj`
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\Luna.Application\Luna.Application.csproj" />
+    <ProjectReference Include="..\Example.Application\Example.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -1186,7 +1188,7 @@ Simplemente elimina la sesión de la DB. Así el refresh token queda invalidado.
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <RootNamespace>Luna.Infrastructure</RootNamespace>
+    <RootNamespace>Example.Infrastructure</RootNamespace>
   </PropertyGroup>
 
 </Project>
@@ -1206,10 +1208,10 @@ Simplemente elimina la sesión de la DB. Así el refresh token queda invalidado.
 ### 6.2. `Persistence/ApplicationDbContext.cs`
 
 ```csharp
-using Luna.Domain.Entities;
+using Example.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Luna.Infrastructure.Persistence;
+namespace Example.Infrastructure.Persistence;
 
 public class ApplicationDbContext : DbContext
 {
@@ -1250,10 +1252,10 @@ public class ApplicationDbContext : DbContext
 ```csharp
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Luna.Domain.Entities;
-using Luna.Domain.Enums;
+using Example.Domain.Entities;
+using Example.Domain.Enums;
 
-namespace Luna.Infrastructure.Persistence.Configurations;
+namespace Example.Infrastructure.Persistence.Configurations;
 
 public class UserConfiguration : IEntityTypeConfiguration<User>
 {
@@ -1431,12 +1433,12 @@ public class VerificationConfiguration : IEntityTypeConfiguration<Verification>
 #### `UserRepository.cs`
 
 ```csharp
-using Luna.Application.Common.Interfaces;
-using Luna.Application.Common.Models;
-using Luna.Domain.Entities;
+using Example.Application.Common.Interfaces;
+using Example.Application.Common.Models;
+using Example.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Luna.Infrastructure.Persistence.Repositories;
+namespace Example.Infrastructure.Persistence.Repositories;
 
 public class UserRepository : IUserRepository
 {
@@ -1656,9 +1658,9 @@ Ambos métodos:
 #### `PasswordService.cs`
 
 ```csharp
-using Luna.Application.Common.Interfaces;
+using Example.Application.Common.Interfaces;
 
-namespace Luna.Infrastructure.Services;
+namespace Example.Infrastructure.Services;
 
 public class PasswordService : IPasswordService
 {
@@ -1684,12 +1686,12 @@ public class PasswordService : IPasswordService
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Luna.Application.Common.Interfaces;
-using Luna.Domain.Enums;
+using Example.Application.Common.Interfaces;
+using Example.Domain.Enums;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Configuration;
 
-namespace Luna.Infrastructure.Services;
+namespace Example.Infrastructure.Services;
 
 public class TokenService : ITokenService
 {
@@ -1707,8 +1709,8 @@ public class TokenService : ITokenService
             ?? throw new InvalidOperationException("JWT Secret is not configured");
         _refreshSecret = configuration["Jwt:RefreshSecret"]
             ?? throw new InvalidOperationException("JWT RefreshSecret is not configured");
-        _issuer = configuration["Jwt:Issuer"] ?? "cursinet-api";
-        _audience = configuration["Jwt:Audience"] ?? "cursinet-app";
+        _issuer = configuration["Jwt:Issuer"] ?? "example-api";
+        _audience = configuration["Jwt:Audience"] ?? "example-app";
         _accessTokenExpiry = TimeSpan.Parse(
             configuration["Jwt:AccessTokenExpiry"] ?? "00:15:00");
         _refreshTokenExpiry = TimeSpan.Parse(
@@ -1781,8 +1783,8 @@ Payload:   {
              "role": "User",                      ← ClaimTypes.Role
              "jti": "a1b2c3d4-...",               ← JwtRegisteredClaimNames.Jti (ID único)
              "exp": 1700000000,                   ← Expiración
-             "iss": "cursinet-api",               ← Issuer
-             "aud": "cursinet-app"                ← Audience
+             "iss": "example-api",               ← Issuer
+             "aud": "example-app"                ← Audience
            }
 Signature: HMACSHA256(base64urlEncode(header) + "." + base64urlEncode(payload), secret)
 ```
@@ -1862,7 +1864,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Luna.Infrastructure.Migrations
+namespace Example.Infrastructure.Migrations
 {
     public partial class init : Migration
     {
@@ -1902,15 +1904,15 @@ namespace Luna.Infrastructure.Migrations
 **Para regenerar migraciones desde cero:**
 
 ```bash
-dotnet ef migrations remove -s src/Luna.Api/Luna.Api.csproj -p src/Luna.Infrastructure/Luna.Infrastructure.csproj
-dotnet ef migrations add init -s src/Luna.Api/Luna.Api.csproj -p src/Luna.Infrastructure/Luna.Infrastructure.csproj
+dotnet ef migrations remove -s src/Example.Api/Example.Api.csproj -p src/Example.Infrastructure/Example.Infrastructure.csproj
+dotnet ef migrations add init -s src/Example.Api/Example.Api.csproj -p src/Example.Infrastructure/Example.Infrastructure.csproj
 ```
 
 ---
 
-## 7. Luna.Api — Capa de Presentación
+## 7. Example.Api — Capa de Presentación
 
-### 7.1. `Luna.Api.csproj`
+### 7.1. `Example.Api.csproj`
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk.Web">
@@ -1919,7 +1921,7 @@ dotnet ef migrations add init -s src/Luna.Api/Luna.Api.csproj -p src/Luna.Infras
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>Luna.Api</RootNamespace>
+    <RootNamespace>Example.Api</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -1933,8 +1935,8 @@ dotnet ef migrations add init -s src/Luna.Api/Luna.Api.csproj -p src/Luna.Infras
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Luna.Infrastructure\Luna.Infrastructure.csproj" />
-    <ProjectReference Include="..\Luna.Application\Luna.Application.csproj" />
+    <ProjectReference Include="..\Example.Infrastructure\Example.Infrastructure.csproj" />
+    <ProjectReference Include="..\Example.Application\Example.Application.csproj" />
   </ItemGroup>
 
 </Project>
@@ -1957,7 +1959,7 @@ dotnet ef migrations add init -s src/Luna.Api/Luna.Api.csproj -p src/Luna.Infras
 
 ```csharp
 using System.Text.Json.Serialization;
-using Luna.Api.Extensions;
+using Example.Api.Extensions;
 using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -2012,9 +2014,9 @@ Esto es mucho más legible para APIs públicas.
 
 ```csharp
 using Microsoft.EntityFrameworkCore;
-using Luna.Infrastructure.Persistence;
+using Example.Infrastructure.Persistence;
 
-namespace Luna.Api.Extensions;
+namespace Example.Api.Extensions;
 
 public static class DatabaseExtensions
 {
@@ -2027,27 +2029,27 @@ public static class DatabaseExtensions
 
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(connectionString,
-                b => b.MigrationsAssembly("Luna.Infrastructure")));
+                b => b.MigrationsAssembly("Example.Infrastructure")));
 
         return services;
     }
 }
 ```
 
-**`MigrationsAssembly("Luna.Infrastructure")`** — Esto le dice a EF Core que las migraciones se encuentran en el assembly `Luna.Infrastructure`. Es necesario porque el startup project es `Luna.Api`, pero las migraciones están en `Luna.Infrastructure`. Sin esto, EF Core buscaría las migraciones en `Luna.Api` y no las encontraría.
+**`MigrationsAssembly("Example.Infrastructure")`** — Esto le dice a EF Core que las migraciones se encuentran en el assembly `Example.Infrastructure`. Es necesario porque el startup project es `Example.Api`, pero las migraciones están en `Example.Infrastructure`. Sin esto, EF Core buscaría las migraciones en `Example.Api` y no las encontraría.
 
 ---
 
 #### `DependencyInjectionExtensions.cs`
 
 ```csharp
-using Luna.Api.Helpers;
-using Luna.Application.Features.Auth;
-using Luna.Application.Common.Interfaces;
-using Luna.Infrastructure.Persistence.Repositories;
-using Luna.Infrastructure.Services;
+using Example.Api.Helpers;
+using Example.Application.Features.Auth;
+using Example.Application.Common.Interfaces;
+using Example.Infrastructure.Persistence.Repositories;
+using Example.Infrastructure.Services;
 
-namespace Luna.Api.Extensions;
+namespace Example.Api.Extensions;
 
 public static class DependencyInjectionExtensions
 {
@@ -2093,7 +2095,7 @@ public static class DependencyInjectionExtensions
 #### `CorsExtensions.cs`
 
 ```csharp
-namespace Luna.Api.Extensions;
+namespace Example.Api.Extensions;
 
 public static class CorsExtesions   // Nota: typo en el nombre de la clase
 {
@@ -2131,7 +2133,7 @@ public static class CorsExtesions   // Nota: typo en el nombre de la clase
 ```csharp
 using Microsoft.AspNetCore.RateLimiting;
 
-namespace Luna.Api.Extensions;
+namespace Example.Api.Extensions;
 
 public static class RateLimitExtensions
 {
@@ -2167,11 +2169,11 @@ public static class RateLimitExtensions
 #### `MiddlewareExtensions.cs`
 
 ```csharp
-using Luna.Api.Middleware;
-using Luna.Infrastructure.Persistence;
+using Example.Api.Middleware;
+using Example.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace Luna.Api.Extensions;
+namespace Example.Api.Extensions;
 
 public static class MiddlewareExtensions
 {
@@ -2236,9 +2238,9 @@ Response ←
 ```csharp
 using System.Net;
 using System.Text.Json;
-using Luna.Domain.Exceptions;
+using Example.Domain.Exceptions;
 
-namespace Luna.Api.Middleware;
+namespace Example.Api.Middleware;
 
 public class ErrorHandlingMiddleware
 {
@@ -2351,10 +2353,10 @@ Nada de stack traces, nada de "NullReferenceException en línea 42". Solo un men
 
 ```csharp
 using System.Security.Claims;
-using Luna.Domain.Enums;
-using Luna.Domain.Exceptions;
+using Example.Domain.Enums;
+using Example.Domain.Exceptions;
 
-namespace Luna.Api.Helpers;
+namespace Example.Api.Helpers;
 
 public static class AuthHelper
 {
@@ -2423,7 +2425,7 @@ if (currentUserId.HasValue)
 #### `CookieHelper.cs`
 
 ```csharp
-namespace Luna.Api.Helpers;
+namespace Example.Api.Helpers;
 
 public class CookieHelper
 {
@@ -2493,12 +2495,12 @@ public class CookieHelper
 ### 7.6. `Controllers/AuthController.cs`
 
 ```csharp
-using Luna.Application.Common.Interfaces;
-using Luna.Application.Common.Models;
-using Luna.Api.Helpers;
+using Example.Application.Common.Interfaces;
+using Example.Application.Common.Models;
+using Example.Api.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Luna.Api.Controllers;
+namespace Example.Api.Controllers;
 
 [ApiController]
 [Route("api/v1/auth")]
@@ -2640,15 +2642,15 @@ Las cookies permiten autenticación automática en requests subsecuentes (el bro
 ```json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Host=localhost;Database=luna_db;Username=user;Password=password"
+    "DefaultConnection": "Host=localhost;Database=example_db;Username=user;Password=password"
   },
   "Jwt": {
     "Secret": "dsasdfasdfasfd",
     "RefreshSecret": "asdfasdfdasfadsf",
     "AccessTokenExpiry": "00:15:00",
     "RefreshTokenExpiry": "7.00:00:00",
-    "Issuer": "cursinet-api",
-    "Audience": "cursinet-app"
+    "Issuer": "example-api",
+    "Audience": "example-app"
   },
   "Logging": {
     "LogLevel": {
@@ -2665,15 +2667,15 @@ Las cookies permiten autenticación automática en requests subsecuentes (el bro
 ```json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Host=localhost;Database=luna_db;Username=user;Password=password"
+    "DefaultConnection": "Host=localhost;Database=example_db;Username=user;Password=password"
   },
   "Jwt": {
     "Secret": "asjdfañlsjfas",
     "RefreshSecret": "slkjdfñlasjfalñs",
     "AccessTokenExpiry": "00:15:00",
     "RefreshTokenExpiry": "7.00:00:00",
-    "Issuer": "luna-api",
-    "Audience": "luna-app"
+    "Issuer": "example-api",
+    "Audience": "example-app"
   },
   "Logging": {
     "LogLevel": {
@@ -2881,32 +2883,32 @@ Cliente                          API Server                      PostgreSQL
 mkdir backend && cd backend
 
 # Crear proyectos
-dotnet new classlib -n Luna.Domain -o src/Luna.Domain
-dotnet new classlib -n Luna.Application -o src/Luna.Application
-dotnet new classlib -n Luna.Infrastructure -o src/Luna.Infrastructure
-dotnet new webapi -n Luna.Api -o src/Luna.Api --no-openapi
+dotnet new classlib -n Example.Domain -o src/Example.Domain
+dotnet new classlib -n Example.Application -o src/Example.Application
+dotnet new classlib -n Example.Infrastructure -o src/Example.Infrastructure
+dotnet new webapi -n Example.Api -o src/Example.Api --no-openapi
 
 # Agregar referencias entre proyectos
-dotnet add src/Luna.Application/Luna.Application.csproj reference src/Luna.Domain/Luna.Domain.csproj
-dotnet add src/Luna.Infrastructure/Luna.Infrastructure.csproj reference src/Luna.Application/Luna.Application.csproj
-dotnet add src/Luna.Api/Luna.Api.csproj reference src/Luna.Application/Luna.Application.csproj
-dotnet add src/Luna.Api/Luna.Api.csproj reference src/Luna.Infrastructure/Luna.Infrastructure.csproj
+dotnet add src/Example.Application/Example.Application.csproj reference src/Example.Domain/Example.Domain.csproj
+dotnet add src/Example.Infrastructure/Example.Infrastructure.csproj reference src/Example.Application/Example.Application.csproj
+dotnet add src/Example.Api/Example.Api.csproj reference src/Example.Application/Example.Application.csproj
+dotnet add src/Example.Api/Example.Api.csproj reference src/Example.Infrastructure/Example.Infrastructure.csproj
 ```
 
 ### 12.2. Agregar paquetes NuGet
 
 ```bash
 # Infrastructure
-dotnet add src/Luna.Infrastructure/Luna.Infrastructure.csproj package BCrypt.Net-Next --version 4.2.0
-dotnet add src/Luna.Infrastructure/Luna.Infrastructure.csproj package Microsoft.EntityFrameworkCore --version 10.0.0
-dotnet add src/Luna.Infrastructure/Luna.Infrastructure.csproj package Npgsql.EntityFrameworkCore.PostgreSQL --version 10.0.0
-dotnet add src/Luna.Infrastructure/Luna.Infrastructure.csproj package System.IdentityModel.Tokens.Jwt --version 8.19.1
+dotnet add src/Example.Infrastructure/Example.Infrastructure.csproj package BCrypt.Net-Next --version 4.2.0
+dotnet add src/Example.Infrastructure/Example.Infrastructure.csproj package Microsoft.EntityFrameworkCore --version 10.0.0
+dotnet add src/Example.Infrastructure/Example.Infrastructure.csproj package Npgsql.EntityFrameworkCore.PostgreSQL --version 10.0.0
+dotnet add src/Example.Infrastructure/Example.Infrastructure.csproj package System.IdentityModel.Tokens.Jwt --version 8.19.1
 
 # Api
-dotnet add src/Luna.Api/Luna.Api.csproj package FluentValidation.AspNetCore --version 11.3.1
-dotnet add src/Luna.Api/Luna.Api.csproj package Microsoft.AspNetCore.Authentication.JwtBearer --version 10.0.0
-dotnet add src/Luna.Api/Luna.Api.csproj package Microsoft.AspNetCore.OpenApi --version 10.0.8
-dotnet add src/Luna.Api/Luna.Api.csproj package Microsoft.EntityFrameworkCore.Design --version 10.0.9
+dotnet add src/Example.Api/Example.Api.csproj package FluentValidation.AspNetCore --version 11.3.1
+dotnet add src/Example.Api/Example.Api.csproj package Microsoft.AspNetCore.Authentication.JwtBearer --version 10.0.0
+dotnet add src/Example.Api/Example.Api.csproj package Microsoft.AspNetCore.OpenApi --version 10.0.8
+dotnet add src/Example.Api/Example.Api.csproj package Microsoft.EntityFrameworkCore.Design --version 10.0.9
 ```
 
 ### 12.3. Crear migraciones
@@ -2917,20 +2919,20 @@ dotnet tool install --global dotnet-ef
 
 # Crear migración inicial
 dotnet ef migrations add init \
-  -s src/Luna.Api/Luna.Api.csproj \
-  -p src/Luna.Infrastructure/Luna.Infrastructure.csproj
+  -s src/Example.Api/Example.Api.csproj \
+  -p src/Example.Infrastructure/Example.Infrastructure.csproj
 
 # Aplicar migraciones a la DB
 dotnet ef database update \
-  -s src/Luna.Api/Luna.Api.csproj \
-  -p src/Luna.Infrastructure/Luna.Infrastructure.csproj
+  -s src/Example.Api/Example.Api.csproj \
+  -p src/Example.Infrastructure/Example.Infrastructure.csproj
 ```
 
 ### 12.4. Crear la base de datos en PostgreSQL
 
 ```sql
 -- Opción 1: Desde psql
-CREATE DATABASE luna_db;
+CREATE DATABASE example_db;
 
 -- Opción 2: Usando dotnet (crea automáticamente al migrar si no existe)
 -- Configurar connection string en appsettings.json
@@ -2940,9 +2942,9 @@ CREATE DATABASE luna_db;
 
 ```bash
 # Desde la carpeta backend/
-dotnet run --project src/Luna.Api/Luna.Api.csproj
+dotnet run --project src/Example.Api/Example.Api.csproj
 
-# O desde src/Luna.Api/
+# O desde src/Example.Api/
 dotnet run
 
 # La API arranca en:
@@ -2970,6 +2972,4 @@ curl -X POST http://localhost:5274/api/v1/auth/login \
 curl -X POST http://localhost:5274/api/v1/auth/logout \
   -H "Cookie: refreshToken=TOKEN_OBTENIDO_EN_LOGIN"
 ```
-
----
 
