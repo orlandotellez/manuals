@@ -37,7 +37,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "dark";
-            window.path_to_searchindex_js = "searchindex-7e9b0a72.js";
+            window.path_to_searchindex_js = "searchindex-9219328e.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-15d59f60.js"></script>
@@ -215,7 +215,7 @@
 <li><a href="#redis">Redis</a></li>
 <li><a href="#guía-completa-de-prisma-6">Prisma</a></li>
 <li><a href="#guía-completa-de-entity-framework-core">Entity Framework Core</a></li>
-<li><a href="#manual-de-backups-y-migración-de-bases-de-datos-postgresql">Backups Postgres</a></li>
+<li><a href="#manual-profesional-de-backups-restauración-y-migración-de-postgresql">Backups Postgres</a></li>
 </ul>
 <h2 id="aspnetc"><a class="header" href="#aspnetc">ASPNET(C#)</a></h2>
 <ul>
@@ -25514,240 +25514,1164 @@ dotnet ef migrations script -s src/Api/Api.csproj -p src/Infrastructure/Infrastr
 dotnet ef database drop --force -s src/Api/Api.csproj -p src/Infrastructure/Infrastructure.csproj
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="manual-de-backups-y-migración-de-bases-de-datos-postgresql"><a class="header" href="#manual-de-backups-y-migración-de-bases-de-datos-postgresql">Manual de Backups y Migración de bases de datos PostgreSQL</a></h1>
-<h2 id="índice-15"><a class="header" href="#índice-15">Índice</a></h2>
+<h1 id="manual-profesional-de-backups-restauración-y-migración-de-postgresql"><a class="header" href="#manual-profesional-de-backups-restauración-y-migración-de-postgresql">Manual profesional de Backups, Restauración y Migración de PostgreSQL</a></h1>
+<p><strong>Base de datos:</strong> <code>pos_system_db</code>
+<strong>Entorno:</strong> Desarrollo y Producción
+<strong>Motor:</strong> PostgreSQL
+<strong>Producción:</strong> Railway</p>
+<hr>
+<h1 id="índice-15"><a class="header" href="#índice-15">Índice</a></h1>
 <ol>
-<li><a href="#qué-es-pg_dump--pg_restore">¿Qué es pg_dump / pg_restore?</a></li>
-<li><a href="#instalación-de-las-herramientas-cliente">Instalación de las herramientas cliente</a></li>
-<li><a href="#verificar-versión-instalada">Verificar versión instalada</a></li>
-<li><a href="#si-la-versión-no-coincide-con-el-servidor">Si la versión no coincide con el servidor</a></li>
-<li><a href="#variables-de-entorno--cadena-de-conexión">Variables de entorno / cadena de conexión</a></li>
-<li><a href="#backup-completo-en-formato-sql-plano">Backup completo en formato SQL plano</a></li>
-<li><a href="#backup-completo-en-formato-custom-recomendado">Backup completo en formato custom (recomendado)</a></li>
-<li><a href="#restaurar-un-backup">Restaurar un backup</a></li>
-<li><a href="#migrar-de-una-base-a-otra-directamente-dump--restore">Migrar de una base a otra directamente (dump → restore)</a></li>
-<li><a href="#opciones-útiles-de-pg_dump">Opciones útiles de pg_dump</a></li>
-<li><a href="#backup-usando-docker-sin-instalar-nada-localmente">Backup usando Docker (sin instalar nada localmente)</a></li>
-<li><a href="#verificar-que-el-backuprestore-fue-exitoso">Verificar que el backup/restore fue exitoso</a></li>
-<li><a href="#automatizar-backups-con-un-script">Automatizar backups con un script</a></li>
-<li><a href="#errores-comunes">Errores comunes</a></li>
-<li><a href="#buenas-prácticas">Buenas prácticas</a></li>
+<li><a href="#1-objetivo-del-manual">Objetivo del manual</a></li>
+<li><a href="#2-qué-son-pg_dump-pg_restore-psql-y-pg_dumpall">¿Qué son pg_dump, pg_restore, psql y pg_dumpall?</a></li>
+<li><a href="#3-conceptos-básicos-de-backups">Conceptos básicos de backups</a></li>
+<li><a href="#4-regla-3-2-1">Regla 3-2-1</a></li>
+<li><a href="#5-tipos-de-backups">Tipos de backups</a></li>
+<li><a href="#6-instalación-de-las-herramientas-cliente">Instalación de las herramientas cliente</a></li>
+<li><a href="#7-verificar-las-versiones-instaladas">Verificar las versiones instaladas</a></li>
+<li><a href="#8-si-la-versión-no-coincide-con-el-servidor">Si la versión no coincide con el servidor</a></li>
+<li><a href="#9-variables-de-entorno-y-cadenas-de-conexión">Variables de entorno y cadenas de conexión</a></li>
+<li><a href="#10-backup-completo-en-formato-sql-plano">Backup completo en formato SQL plano</a></li>
+<li><a href="#11-backup-completo-en-formato-custom">Backup completo en formato Custom</a></li>
+<li><a href="#12-backup-de-desarrollo">Backup de desarrollo</a></li>
+<li><a href="#13-backup-de-producción-en-railway">Backup de producción en Railway</a></li>
+<li><a href="#14-backup-antes-de-migraciones-y-deploys">Backup antes de migraciones y deploys</a></li>
+<li><a href="#15-opciones-útiles-de-pg_dump">Opciones útiles de pg_dump</a></li>
+<li><a href="#16-restaurar-un-backup">Restaurar un backup</a></li>
+<li><a href="#17-migrar-directamente-de-una-base-a-otra">Migrar directamente de una base a otra</a></li>
+<li><a href="#18-backup-usando-docker">Backup usando Docker</a></li>
+<li><a href="#19-verificar-que-un-backup-es-válido">Verificar que un backup es válido</a></li>
+<li><a href="#20-prueba-real-de-restauración">Prueba real de restauración</a></li>
+<li><a href="#21-automatización-de-backups">Automatización de backups</a></li>
+<li><a href="#22-rotación-y-retención">Rotación y retención</a></li>
+<li><a href="#23-estructura-profesional-de-almacenamiento">Estructura profesional de almacenamiento</a></li>
+<li><a href="#24-backups-remotos">Backups remotos</a></li>
+<li><a href="#25-seguridad-de-los-backups">Seguridad de los backups</a></li>
+<li><a href="#26-rpo--recovery-point-objective">RPO — Recovery Point Objective</a></li>
+<li><a href="#27-rto--recovery-time-objective">RTO — Recovery Time Objective</a></li>
+<li><a href="#28-wal-y-point-in-time-recovery">WAL y Point-in-Time Recovery</a></li>
+<li><a href="#29-estrategia-recomendada-para-cajorapos">Estrategia recomendada para CajoraPOS</a></li>
+<li><a href="#30-plan-de-implementación-por-etapas">Plan de implementación por etapas</a></li>
+<li><a href="#31-errores-comunes">Errores comunes</a></li>
+<li><a href="#32-checklist-de-producción">Checklist de producción</a></li>
+<li><a href="#33-regla-final">Regla final</a></li>
 </ol>
 <hr>
-<h1 id="1-qué-es-pg_dump--pg_restore"><a class="header" href="#1-qué-es-pg_dump--pg_restore">1. ¿Qué es pg_dump / pg_restore?</a></h1>
-<p><code>pg_dump</code> es la herramienta oficial de PostgreSQL para exportar (hacer backup de) una base de datos completa: esquema (tablas, índices, constraints, secuencias) y datos.</p>
-<p><code>pg_restore</code> es su contraparte para importar un backup generado en formato “custom” o “directory”.</p>
-<p><code>psql</code> también puede usarse para restaurar backups en formato SQL plano.</p>
-<p>Herramientas que vienen incluidas en el paquete <code>postgresql-client</code>:</p>
+<h1 id="1-objetivo-del-manual"><a class="header" href="#1-objetivo-del-manual">1. Objetivo del manual</a></h1>
+<p>Este manual explica cómo realizar, verificar, almacenar, restaurar y automatizar backups de PostgreSQL.</p>
+<p>También explica cómo migrar una base de datos entre servidores y cómo establecer una estrategia profesional de backups para producción.</p>
+<p>El objetivo no es solamente crear un archivo <code>.dump</code>.</p>
+<p>Un sistema de backups profesional debe permitir:</p>
 <ul>
-<li><code>pg_dump</code> → exportar una base de datos</li>
-<li><code>pg_dumpall</code> → exportar TODAS las bases de datos de un servidor + roles/usuarios</li>
-<li><code>pg_restore</code> → importar un backup en formato custom/directory</li>
-<li><code>psql</code> → cliente de línea de comandos, también sirve para importar backups <code>.sql</code></li>
+<li>Recuperar información eliminada accidentalmente.</li>
+<li>Recuperarse de errores durante un deploy.</li>
+<li>Recuperarse de migraciones fallidas.</li>
+<li>Recuperarse de corrupción de datos.</li>
+<li>Recuperarse de la pérdida de un servidor.</li>
+<li>Minimizar la cantidad de información perdida.</li>
+<li>Recuperar el sistema en un tiempo razonable.</li>
+<li>Mantener diferentes generaciones de backups.</li>
+<li>Tener copias fuera del servidor principal.</li>
+<li>Verificar periódicamente que los backups realmente pueden restaurarse.</li>
 </ul>
 <hr>
-<h1 id="2-instalación-de-las-herramientas-cliente"><a class="header" href="#2-instalación-de-las-herramientas-cliente">2. Instalación de las herramientas cliente</a></h1>
+<h1 id="2-qué-son-pg_dump-pg_restore-psql-y-pg_dumpall"><a class="header" href="#2-qué-son-pg_dump-pg_restore-psql-y-pg_dumpall">2. ¿Qué son pg_dump, pg_restore, psql y pg_dumpall?</a></h1>
+<p>Estas herramientas forman parte de las herramientas cliente de PostgreSQL.</p>
+<h2 id="pg_dump"><a class="header" href="#pg_dump"><code>pg_dump</code></a></h2>
+<p>Realiza un backup lógico de una base de datos.</p>
+<pre><code class="language-text">PostgreSQL
+    │
+    ▼
+ pg_dump
+    │
+    ▼
+ backup.dump
+</code></pre>
+<p>Puede exportar:</p>
+<ul>
+<li>Tablas.</li>
+<li>Datos.</li>
+<li>Índices.</li>
+<li>Constraints.</li>
+<li>Secuencias.</li>
+<li>Funciones.</li>
+<li>Triggers.</li>
+<li>Schemas.</li>
+</ul>
+<hr>
+<h2 id="pg_restore"><a class="header" href="#pg_restore"><code>pg_restore</code></a></h2>
+<p>Restaura backups creados en formatos como:</p>
+<pre><code class="language-text">Custom
+Directory
+Tar
+</code></pre>
+<p>Por ejemplo:</p>
+<pre><code class="language-bash">pg_restore -d mi_base backup.dump
+</code></pre>
+<hr>
+<h2 id="psql"><a class="header" href="#psql"><code>psql</code></a></h2>
+<p>Es el cliente de PostgreSQL.</p>
+<p>También permite restaurar backups en formato SQL plano:</p>
+<pre><code class="language-bash">psql -d mi_base -f backup.sql
+</code></pre>
+<hr>
+<h2 id="pg_dumpall"><a class="header" href="#pg_dumpall"><code>pg_dumpall</code></a></h2>
+<p>Permite realizar un dump a nivel de servidor.</p>
+<p>Puede incluir:</p>
+<ul>
+<li>Varias bases de datos.</li>
+<li>Roles.</li>
+<li>Usuarios.</li>
+<li>Permisos globales.</li>
+</ul>
+<p>Ejemplo:</p>
+<pre><code class="language-bash">pg_dumpall &gt; server_backup.sql
+</code></pre>
+<p>Para un backup normal de <code>pos_system_db</code>, utilizaremos principalmente:</p>
+<pre><code class="language-text">pg_dump
++
+pg_restore
+</code></pre>
+<hr>
+<h1 id="3-conceptos-básicos-de-backups"><a class="header" href="#3-conceptos-básicos-de-backups">3. Conceptos básicos de backups</a></h1>
+<p>Imaginemos que nuestra base de datos es una caja donde se encuentra toda la información del POS:</p>
+<pre><code class="language-text">                 POS SYSTEM
+                     │
+                     ▼
+             ┌───────────────┐
+             │  PostgreSQL   │
+             │ pos_system_db │
+             └───────────────┘
+                     │
+                   BACKUP
+                     │
+                     ▼
+             ┌───────────────┐
+             │ backup.dump   │
+             └───────────────┘
+</code></pre>
+<p>Si la base de datos desaparece, podemos utilizar el backup para reconstruirla.</p>
+<p>Pero tener únicamente:</p>
+<pre><code class="language-text">Base de datos
++
+1 backup
+</code></pre>
+<p>no es suficiente.</p>
+<p>Si ambos están almacenados en el mismo lugar y ese lugar falla, podríamos perder ambos.</p>
+<p>Por eso debemos pensar en:</p>
+<pre><code class="language-text">Base de datos
+      │
+      ├── Backup local
+      │
+      └── Backup remoto
+</code></pre>
+<p>Y además mantener diferentes generaciones:</p>
+<pre><code class="language-text">Backup de hoy
+Backup de ayer
+Backup de hace 2 días
+Backup semanal
+Backup mensual
+</code></pre>
+<hr>
+<h1 id="4-regla-3-2-1"><a class="header" href="#4-regla-3-2-1">4. Regla 3-2-1</a></h1>
+<p>Una estrategia profesional puede utilizar la regla:</p>
+<h2 id="3-2-1"><a class="header" href="#3-2-1">3-2-1</a></h2>
+<h3 id="3-copias"><a class="header" href="#3-copias">3 copias</a></h3>
+<p>Por ejemplo:</p>
+<pre><code class="language-text">1. Base de datos de producción
+2. Backup local
+3. Backup remoto
+</code></pre>
+<h3 id="2-ubicaciones-o-medios"><a class="header" href="#2-ubicaciones-o-medios">2 ubicaciones o medios</a></h3>
+<p>Por ejemplo:</p>
+<pre><code class="language-text">Servidor
++
+Cloud Storage
+</code></pre>
+<h3 id="1-copia-fuera-del-servidor-principal"><a class="header" href="#1-copia-fuera-del-servidor-principal">1 copia fuera del servidor principal</a></h3>
+<p>Esta última copia protege contra problemas como:</p>
+<ul>
+<li>Fallo del servidor.</li>
+<li>Pérdida del disco.</li>
+<li>Robo.</li>
+<li>Corrupción.</li>
+<li>Eliminación accidental.</li>
+<li>Desastre físico.</li>
+</ul>
+<hr>
+<h1 id="5-tipos-de-backups"><a class="header" href="#5-tipos-de-backups">5. Tipos de backups</a></h1>
+<p>Existen diferentes tipos de estrategias.</p>
+<hr>
+<h2 id="51-backup-lógico-completo"><a class="header" href="#51-backup-lógico-completo">5.1 Backup lógico completo</a></h2>
+<p>Se realiza principalmente mediante:</p>
+<pre><code class="language-bash">pg_dump
+</code></pre>
+<p>Es el método que utilizaremos normalmente para CajoraPOS.</p>
+<p>Ejemplo:</p>
+<pre><code class="language-bash">pg_dump -Fc ...
+</code></pre>
+<hr>
+<h2 id="52-backup-físico"><a class="header" href="#52-backup-físico">5.2 Backup físico</a></h2>
+<p>Utiliza herramientas como:</p>
+<pre><code class="language-bash">pg_basebackup
+</code></pre>
+<p>Copia físicamente los archivos necesarios del cluster PostgreSQL.</p>
+<p>Es más apropiado para estrategias avanzadas de recuperación y alta disponibilidad.</p>
+<hr>
+<h2 id="53-backup-incremental"><a class="header" href="#53-backup-incremental">5.3 Backup incremental</a></h2>
+<p>Guarda los cambios realizados desde un backup anterior.</p>
+<p>Conceptualmente:</p>
+<pre><code class="language-text">FULL
+████████████████████
+
+INCREMENTAL
+        ██
+
+INCREMENTAL
+          ███
+
+INCREMENTAL
+             ██
+</code></pre>
+<p>PostgreSQL no proporciona un:</p>
+<pre><code class="language-bash">pg_dump --incremental
+</code></pre>
+<p>Los incrementales requieren mecanismos de backup físico, WAL o herramientas especializadas.</p>
+<hr>
+<h2 id="54-backup-diferencial"><a class="header" href="#54-backup-diferencial">5.4 Backup diferencial</a></h2>
+<p>Guarda los cambios realizados desde el último backup completo.</p>
+<p>Ejemplo:</p>
+<pre><code class="language-text">FULL
+████████████████████
+
+DIFFERENTIAL
+        ██
+
+DIFFERENTIAL
+        █████
+
+DIFFERENTIAL
+        ███████
+</code></pre>
+<p>Normalmente se necesita:</p>
+<pre><code class="language-text">FULL
++
+último diferencial
+</code></pre>
+<p>para recuperar.</p>
+<hr>
+<h2 id="55-backup-mediante-wal"><a class="header" href="#55-backup-mediante-wal">5.5 Backup mediante WAL</a></h2>
+<p>PostgreSQL registra cambios mediante:</p>
+<pre><code class="language-text">WAL
+</code></pre>
+<p>o:</p>
+<pre><code class="language-text">Write-Ahead Log
+</code></pre>
+<p>El WAL permite construir estrategias de recuperación mucho más avanzadas.</p>
+<hr>
+<h2 id="56-point-in-time-recovery--pitr"><a class="header" href="#56-point-in-time-recovery--pitr">5.6 Point-in-Time Recovery — PITR</a></h2>
+<p>Permite recuperar la base de datos hasta un momento determinado.</p>
+<p>Por ejemplo:</p>
+<pre><code class="language-text">10:00 ─────────────
+11:00 ─────────────
+12:00 ─────────────
+13:00 ───── ERROR ─
+14:00
+</code></pre>
+<p>Si ocurrió un error a las:</p>
+<pre><code class="language-text">13:15:32
+</code></pre>
+<p>una estrategia PITR puede permitir recuperar la base hasta aproximadamente:</p>
+<pre><code class="language-text">13:15:31
+</code></pre>
+<p>dependiendo de la configuración y de los WAL disponibles.</p>
+<hr>
+<h1 id="6-instalación-de-las-herramientas-cliente"><a class="header" href="#6-instalación-de-las-herramientas-cliente">6. Instalación de las herramientas cliente</a></h1>
 <h2 id="debian--ubuntu"><a class="header" href="#debian--ubuntu">Debian / Ubuntu</a></h2>
 <pre><code class="language-bash">sudo apt update
 sudo apt install -y postgresql-client
 </code></pre>
-<h2 id="instalar-una-versión-específica-ej-18-desde-el-repositorio-oficial-pgdg"><a class="header" href="#instalar-una-versión-específica-ej-18-desde-el-repositorio-oficial-pgdg">Instalar una versión específica (ej. 18) desde el repositorio oficial PGDG</a></h2>
-<p>A veces el repositorio por defecto de tu distro trae una versión antigua. Para instalar la versión exacta que necesitas:</p>
+<hr>
+<h2 id="instalar-una-versión-específica"><a class="header" href="#instalar-una-versión-específica">Instalar una versión específica</a></h2>
+<p>Si necesitamos PostgreSQL 18:</p>
 <pre><code class="language-bash">sudo apt install -y postgresql-common
 sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh
 sudo apt update
 sudo apt install -y postgresql-client-18
 </code></pre>
-<p>Esto deja el binario disponible en:</p>
-<pre><code>/usr/lib/postgresql/18/bin/pg_dump
+<p>Los binarios pueden encontrarse en:</p>
+<pre><code class="language-text">/usr/lib/postgresql/18/bin/pg_dump
 /usr/lib/postgresql/18/bin/pg_restore
 </code></pre>
-<h2 id="macos-homebrew"><a class="header" href="#macos-homebrew">macOS (Homebrew)</a></h2>
+<hr>
+<h2 id="macos-1"><a class="header" href="#macos-1">macOS</a></h2>
+<p>Con Homebrew:</p>
 <pre><code class="language-bash">brew install postgresql@18
 </code></pre>
-<h2 id="windows-1"><a class="header" href="#windows-1">Windows</a></h2>
-<p>Descarga el instalador desde <a href="https://www.postgresql.org/download/">postgresql.org/download</a> y selecciona solo “Command Line Tools” durante la instalación.</p>
 <hr>
-<h1 id="3-verificar-versión-instalada"><a class="header" href="#3-verificar-versión-instalada">3. Verificar versión instalada</a></h1>
+<h2 id="windows-1"><a class="header" href="#windows-1">Windows</a></h2>
+<p>Instalar PostgreSQL desde:</p>
+<pre><code class="language-text">https://www.postgresql.org/download/
+</code></pre>
+<p>y seleccionar las herramientas de línea de comandos.</p>
+<hr>
+<h1 id="7-verificar-las-versiones-instaladas"><a class="header" href="#7-verificar-las-versiones-instaladas">7. Verificar las versiones instaladas</a></h1>
+<p>Ejecutar:</p>
 <pre><code class="language-bash">pg_dump --version
+pg_restore --version
 psql --version
 </code></pre>
-<p>Ejemplo de salida:</p>
-<pre><code>pg_dump (PostgreSQL) 18.4
+<p>Ejemplo:</p>
+<pre><code class="language-text">pg_dump (PostgreSQL) 18.4
+pg_restore (PostgreSQL) 18.4
+psql (PostgreSQL) 18.4
 </code></pre>
 <hr>
-<h1 id="4-si-la-versión-no-coincide-con-el-servidor"><a class="header" href="#4-si-la-versión-no-coincide-con-el-servidor">4. Si la versión no coincide con el servidor</a></h1>
-<p>PostgreSQL exige que la versión de <code>pg_dump</code> sea <strong>igual o más nueva</strong> que la del servidor de origen. Si ves un error como:</p>
-<pre><code>pg_dump: error: abortando debido a que no coincide la versión del servidor
-pg_dump: detalle: versión del servidor: 18.4 ...; versión de pg_dump: 17.10 ...
+<h1 id="8-si-la-versión-no-coincide-con-el-servidor"><a class="header" href="#8-si-la-versión-no-coincide-con-el-servidor">8. Si la versión no coincide con el servidor</a></h1>
+<p>La versión de <code>pg_dump</code> no debe ser anterior a la versión mayor del servidor que estamos intentando respaldar.</p>
+<p>Por ejemplo:</p>
+<pre><code class="language-text">Servidor: PostgreSQL 18
+Cliente:  PostgreSQL 17
 </code></pre>
-<p>Soluciones:</p>
-<p><strong>Opción A — Usar el binario versionado directamente:</strong></p>
-<pre><code class="language-bash">/usr/lib/postgresql/18/bin/pg_dump "postgresql://usuario:password@localhost:5432/mi_base" -f backup.sql
+<p>Puede producir:</p>
+<pre><code class="language-text">aborting because of server version mismatch
 </code></pre>
-<p><strong>Opción B — Actualizar el cliente por defecto</strong> (ver sección 2, instalación desde PGDG).</p>
-<p><strong>Opción C — Usar Docker</strong> (ver sección 11).</p>
+<p>Una solución es utilizar el cliente correcto:</p>
+<pre><code class="language-bash">/usr/lib/postgresql/18/bin/pg_dump ...
+</code></pre>
+<p>También podemos instalar la versión correspondiente o utilizar Docker.</p>
+<h3 id="regla-práctica"><a class="header" href="#regla-práctica">Regla práctica</a></h3>
+<p>Para hacer un dump:</p>
+<pre><code class="language-text">pg_dump &gt;= versión mayor del servidor
+</code></pre>
+<p>Para evitar problemas de compatibilidad, es recomendable utilizar una versión igual a la del servidor cuando sea posible.</p>
 <hr>
-<h1 id="5-variables-de-entorno--cadena-de-conexión"><a class="header" href="#5-variables-de-entorno--cadena-de-conexión">5. Variables de entorno / cadena de conexión</a></h1>
-<p>Todos los comandos de este manual usan una <strong>cadena de conexión (connection string)</strong> con este formato:</p>
-<pre><code>postgresql://usuario:password@host:puerto/nombre_base
+<h1 id="9-variables-de-entorno-y-cadenas-de-conexión"><a class="header" href="#9-variables-de-entorno-y-cadenas-de-conexión">9. Variables de entorno y cadenas de conexión</a></h1>
+<p>Una cadena de conexión PostgreSQL tiene normalmente esta estructura:</p>
+<pre><code class="language-text">postgresql://usuario:password@host:puerto/base
 </code></pre>
-<p>Ejemplo para un Postgres local:</p>
-<pre><code>postgresql://postgres:postgres@localhost:5432/mi_base
+<p>Ejemplo:</p>
+<pre><code class="language-text">postgresql://postgres:postgres@localhost:5432/mi_base
 </code></pre>
-<p>También puedes exportarla como variable de entorno para no repetirla en cada comando:</p>
+<p>Podemos utilizar una variable:</p>
 <pre><code class="language-bash">export DATABASE_URL="postgresql://postgres:postgres@localhost:5432/mi_base"
-pg_dump "$DATABASE_URL" -f backup.sql
+</code></pre>
+<p>Y después:</p>
+<pre><code class="language-bash">pg_dump "$DATABASE_URL" -Fc -f backup.dump
 </code></pre>
 <hr>
-<h1 id="6-backup-completo-en-formato-sql-plano"><a class="header" href="#6-backup-completo-en-formato-sql-plano">6. Backup completo en formato SQL plano</a></h1>
-<p>Genera un archivo <code>.sql</code> legible, con sentencias <code>CREATE TABLE</code> e <code>INSERT</code>.</p>
-<pre><code class="language-bash">pg_dump "postgresql://postgres:postgres@localhost:5432/mi_base" -f backup.sql
+<h2 id="usar-pgpassword"><a class="header" href="#usar-pgpassword">Usar <code>PGPASSWORD</code></a></h2>
+<p>También podemos separar el password:</p>
+<pre><code class="language-bash">export PGPASSWORD="TU_PASSWORD"
 </code></pre>
-<p>Ventajas: legible, fácil de inspeccionar o editar a mano.
-Desventajas: más lento y pesado en bases grandes; no permite restaurar tablas individuales fácilmente.</p>
+<p>Y utilizar:</p>
+<pre><code class="language-bash">pg_dump \
+  -h localhost \
+  -p 5432 \
+  -U dev-espada \
+  -d pos_system_db \
+  -Fc \
+  -f backup.dump
+</code></pre>
+<p>Para automatizaciones, también puede utilizarse:</p>
+<pre><code class="language-text">~/.pgpass
+</code></pre>
+<p>con permisos:</p>
+<pre><code class="language-bash">chmod 600 ~/.pgpass
+</code></pre>
+<p>Nunca debemos subir credenciales al repositorio.</p>
 <hr>
-<h1 id="7-backup-completo-en-formato-custom-recomendado"><a class="header" href="#7-backup-completo-en-formato-custom-recomendado">7. Backup completo en formato custom (recomendado)</a></h1>
-<p>Formato binario comprimido, más rápido y flexible.</p>
-<pre><code class="language-bash">pg_dump -Fc "postgresql://postgres:postgres@localhost:5432/mi_base" -f backup.dump
+<h1 id="10-backup-completo-en-formato-sql-plano"><a class="header" href="#10-backup-completo-en-formato-sql-plano">10. Backup completo en formato SQL plano</a></h1>
+<p>El formato SQL genera un archivo legible.</p>
+<pre><code class="language-bash">pg_dump \
+  "postgresql://postgres:postgres@localhost:5432/mi_base" \
+  -Fp \
+  -f backup.sql
 </code></pre>
-<p>Ventajas:</p>
+<p>Genera:</p>
+<pre><code class="language-text">backup.sql
+</code></pre>
+<p>Puede contener instrucciones como:</p>
+<pre><code class="language-sql">CREATE TABLE ...
+INSERT INTO ...
+ALTER TABLE ...
+</code></pre>
+<h3 id="ventajas"><a class="header" href="#ventajas">Ventajas</a></h3>
 <ul>
-<li>Comprimido automáticamente</li>
-<li>Permite restaurar solo ciertas tablas</li>
-<li>Permite restaurar en paralelo (<code>-j</code>) para mayor velocidad</li>
+<li>Legible.</li>
+<li>Fácil de inspeccionar.</li>
+<li>Fácil de editar.</li>
+<li>Compatible con <code>psql</code>.</li>
+</ul>
+<h3 id="desventajas"><a class="header" href="#desventajas">Desventajas</a></h3>
+<ul>
+<li>Puede ocupar más espacio.</li>
+<li>Puede ser más lento.</li>
+<li>Tiene menos flexibilidad para restauraciones selectivas.</li>
 </ul>
 <hr>
-<h1 id="8-restaurar-un-backup"><a class="header" href="#8-restaurar-un-backup">8. Restaurar un backup</a></h1>
-<h2 id="si-el-backup-es-sql-plano"><a class="header" href="#si-el-backup-es-sql-plano">Si el backup es <code>.sql</code> (plano)</a></h2>
-<pre><code class="language-bash">psql "postgresql://postgres:postgres@localhost:5432/base_destino" -f backup.sql
+<h1 id="11-backup-completo-en-formato-custom"><a class="header" href="#11-backup-completo-en-formato-custom">11. Backup completo en formato Custom</a></h1>
+<p>Para backups operativos recomendamos:</p>
+<pre><code class="language-bash">-Fc
 </code></pre>
-<h2 id="si-el-backup-es-dump-formato-custom"><a class="header" href="#si-el-backup-es-dump-formato-custom">Si el backup es <code>.dump</code> (formato custom)</a></h2>
-<pre><code class="language-bash">pg_restore -d "postgresql://postgres:postgres@localhost:5432/base_destino" backup.dump
+<p>Ejemplo:</p>
+<pre><code class="language-bash">pg_dump \
+  "postgresql://postgres:postgres@localhost:5432/mi_base" \
+  -Fc \
+  -f backup.dump
 </code></pre>
-<h2 id="restaurar-en-paralelo-más-rápido-solo-formato-custom"><a class="header" href="#restaurar-en-paralelo-más-rápido-solo-formato-custom">Restaurar en paralelo (más rápido, solo formato custom)</a></h2>
-<pre><code class="language-bash">pg_restore -d "postgresql://postgres:postgres@localhost:5432/base_destino" -j 4 backup.dump
+<p>Genera:</p>
+<pre><code class="language-text">backup.dump
 </code></pre>
-<p><code>-j 4</code> usa 4 procesos en paralelo. Ajusta el número según los núcleos de tu CPU.</p>
-<p>⚠️ La base de datos destino debe existir previamente (puedes crearla con <code>createdb nombre_base</code> o desde <code>psql</code> con <code>CREATE DATABASE nombre_base;</code>).</p>
+<h3 id="ventajas-1"><a class="header" href="#ventajas-1">Ventajas</a></h3>
+<ul>
+<li>Comprimido.</li>
+<li>Flexible.</li>
+<li>Permite restauraciones selectivas.</li>
+<li>Se utiliza con <code>pg_restore</code>.</li>
+<li>Permite restauraciones paralelas.</li>
+</ul>
+<p>Para producción, este será nuestro formato principal.</p>
 <hr>
-<h1 id="9-migrar-de-una-base-a-otra-directamente-dump--restore"><a class="header" href="#9-migrar-de-una-base-a-otra-directamente-dump--restore">9. Migrar de una base a otra directamente (dump → restore)</a></h1>
-<p>Si tienes acceso simultáneo a ambas bases (origen y destino), puedes hacer todo en un solo paso usando una tubería (<code>pipe</code>), sin generar un archivo intermedio:</p>
-<pre><code class="language-bash">pg_dump "postgresql://postgres:postgres@localhost:5432/base_origen" \
-  | psql "postgresql://postgres:postgres@localhost:5433/base_destino"
+<h1 id="12-backup-de-desarrollo"><a class="header" href="#12-backup-de-desarrollo">12. Backup de desarrollo</a></h1>
+<p>Crear la carpeta:</p>
+<pre><code class="language-bash">mkdir -p ~/db-backups
 </code></pre>
-<p>Esto sirve, por ejemplo, para clonar una base local a otra base local (en otro puerto, otro contenedor, u otro servidor).</p>
+<p>Configurar el password:</p>
+<pre><code class="language-bash">export PGPASSWORD="TU_PASSWORD_DE_DEV"
+</code></pre>
+<p>Crear el backup:</p>
+<pre><code class="language-bash">pg_dump \
+  -h localhost \
+  -p 5432 \
+  -U dev-espada \
+  -d pos_system_db \
+  -Fc \
+  --file="$HOME/db-backups/pos_system_db_$(date +%Y%m%d_%H%M%S).dump"
+</code></pre>
+<p>Comprobar:</p>
+<pre><code class="language-bash">ls -lh ~/db-backups/
+</code></pre>
+<p>Resultado:</p>
+<pre><code class="language-text">pos_system_db_20260907_191605.dump
+</code></pre>
+<p>El timestamp permite identificar exactamente cuándo se creó el backup.</p>
 <hr>
-<h1 id="10-opciones-útiles-de-pg_dump"><a class="header" href="#10-opciones-útiles-de-pg_dump">10. Opciones útiles de pg_dump</a></h1>
+<h1 id="13-backup-de-producción-en-railway"><a class="header" href="#13-backup-de-producción-en-railway">13. Backup de producción en Railway</a></h1>
+<p>La base de producción se encuentra en Railway.</p>
+<p>Podemos realizar el dump utilizando la cadena de conexión proporcionada por Railway:</p>
+<pre><code class="language-bash">mkdir -p ~/db-backups
+</code></pre>
+<p>Después:</p>
+<pre><code class="language-bash">pg_dump \
+  "postgresql://postgres:PASSWORD@HOST:PORT/railway?sslmode=require" \
+  -Fc \
+  --file="$HOME/db-backups/railway_$(date +%Y%m%d_%H%M%S).dump"
+</code></pre>
+<p>La conexión debe utilizar SSL cuando Railway lo requiera:</p>
+<pre><code class="language-text">sslmode=require
+</code></pre>
+<h3 id="recomendación"><a class="header" href="#recomendación">Recomendación</a></h3>
+<p>No dejar permanentemente la contraseña escrita en el comando ni en scripts versionados.</p>
+<p>Utilizar:</p>
+<pre><code class="language-text">PGPASSWORD
+</code></pre>
+<p>o:</p>
+<pre><code class="language-text">~/.pgpass
+</code></pre>
+<hr>
+<h1 id="14-backup-antes-de-migraciones-y-deploys"><a class="header" href="#14-backup-antes-de-migraciones-y-deploys">14. Backup antes de migraciones y deploys</a></h1>
+<p>Antes de una operación potencialmente peligrosa debemos crear un backup.</p>
+<p>Especialmente antes de:</p>
+<ul>
+<li>Migraciones Prisma.</li>
+<li>Cambios importantes de schema.</li>
+<li>Migraciones destructivas.</li>
+<li>Eliminaciones masivas.</li>
+<li>Cambios de tipos de columnas.</li>
+<li>Actualizaciones importantes de PostgreSQL.</li>
+<li>Deploys que cambien la estructura de la base.</li>
+</ul>
+<p>Ejemplo:</p>
+<pre><code class="language-bash">pg_dump \
+  ... \
+  -Fc \
+  --file="$HOME/db-backups/pre_migration_$(date +%Y%m%d_%H%M%S).dump"
+</code></pre>
+<p>La secuencia recomendada:</p>
+<pre><code class="language-text">BACKUP
+   │
+   ▼
+MIGRATION
+   │
+   ▼
+TEST
+   │
+   ▼
+DEPLOY
+</code></pre>
+<p>No:</p>
+<pre><code class="language-text">MIGRATION
+   │
+   ▼
+"Espero que funcione"
+</code></pre>
+<hr>
+<h1 id="15-opciones-útiles-de-pg_dump"><a class="header" href="#15-opciones-útiles-de-pg_dump">15. Opciones útiles de pg_dump</a></h1>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>Opción</th><th>Qué hace</th></tr>
+<tr><th>Opción</th><th>Función</th></tr>
 </thead>
 <tbody>
-<tr><td><code>-Fc</code></td><td>Formato custom comprimido</td></tr>
-<tr><td><code>-Fd</code></td><td>Formato directory (permite paralelismo en el dump)</td></tr>
-<tr><td><code>--clean --if-exists</code></td><td>Antes de crear cada objeto, lo elimina si ya existe en el destino</td></tr>
-<tr><td><code>--no-owner</code></td><td>No incluye comandos para cambiar el dueño de las tablas</td></tr>
-<tr><td><code>--no-privileges</code></td><td>No incluye permisos (<code>GRANT</code>/<code>REVOKE</code>)</td></tr>
-<tr><td><code>--schema-only</code></td><td>Exporta solo la estructura, sin datos</td></tr>
-<tr><td><code>--data-only</code></td><td>Exporta solo los datos, sin estructura</td></tr>
-<tr><td><code>-t nombre_tabla</code></td><td>Exporta solo una tabla específica</td></tr>
-<tr><td><code>-n nombre_esquema</code></td><td>Exporta solo un esquema específico</td></tr>
-<tr><td><code>-j N</code></td><td>Número de procesos en paralelo (solo con <code>-Fd</code> o en <code>pg_restore</code>)</td></tr>
+<tr><td><code>-Fc</code></td><td>Formato Custom</td></tr>
+<tr><td><code>-Fp</code></td><td>Formato SQL plano</td></tr>
+<tr><td><code>-Fd</code></td><td>Formato Directory</td></tr>
+<tr><td><code>--schema-only</code></td><td>Solo estructura</td></tr>
+<tr><td><code>--data-only</code></td><td>Solo datos</td></tr>
+<tr><td><code>-t tabla</code></td><td>Solo una tabla</td></tr>
+<tr><td><code>-n esquema</code></td><td>Solo un esquema</td></tr>
+<tr><td><code>--no-owner</code></td><td>No restaura propietarios</td></tr>
+<tr><td><code>--no-privileges</code></td><td>No restaura GRANT/REVOKE</td></tr>
+<tr><td><code>--clean</code></td><td>Incluye instrucciones para eliminar objetos existentes</td></tr>
+<tr><td><code>--if-exists</code></td><td>Evita errores si el objeto no existe</td></tr>
 </tbody>
 </table>
 </div>
-<p>Ejemplo combinando varias opciones (útil cuando el destino ya tiene datos y el usuario es distinto al de origen):</p>
-<pre><code class="language-bash">pg_dump --clean --if-exists --no-owner --no-privileges \
-  "postgresql://postgres:postgres@localhost:5432/base_origen" \
-  | psql "postgresql://postgres:postgres@localhost:5433/base_destino"
+<h3 id="solo-estructura"><a class="header" href="#solo-estructura">Solo estructura</a></h3>
+<pre><code class="language-bash">pg_dump ... -Fc --schema-only -f schema.dump
+</code></pre>
+<h3 id="solo-datos"><a class="header" href="#solo-datos">Solo datos</a></h3>
+<pre><code class="language-bash">pg_dump ... -Fc --data-only -f data.dump
+</code></pre>
+<h3 id="una-tabla"><a class="header" href="#una-tabla">Una tabla</a></h3>
+<pre><code class="language-bash">pg_dump ... -Fc -t public.users -f users.dump
 </code></pre>
 <hr>
-<h1 id="11-backup-usando-docker-sin-instalar-nada-localmente"><a class="header" href="#11-backup-usando-docker-sin-instalar-nada-localmente">11. Backup usando Docker (sin instalar nada localmente)</a></h1>
-<p>Si no quieres instalar el cliente de PostgreSQL en tu máquina, puedes usar la imagen oficial:</p>
+<h1 id="16-restaurar-un-backup"><a class="header" href="#16-restaurar-un-backup">16. Restaurar un backup</a></h1>
+<h2 id="161-restaurar-sql-plano"><a class="header" href="#161-restaurar-sql-plano">16.1 Restaurar SQL plano</a></h2>
+<pre><code class="language-bash">psql \
+  "postgresql://postgres:postgres@localhost:5432/base_destino" \
+  -f backup.sql
+</code></pre>
+<hr>
+<h2 id="162-restaurar-custom"><a class="header" href="#162-restaurar-custom">16.2 Restaurar Custom</a></h2>
+<pre><code class="language-bash">pg_restore \
+  -d "postgresql://postgres:postgres@localhost:5432/base_destino" \
+  backup.dump
+</code></pre>
+<p>La base de datos destino normalmente debe existir previamente.</p>
+<hr>
+<h2 id="163-crear-la-base-de-datos"><a class="header" href="#163-crear-la-base-de-datos">16.3 Crear la base de datos</a></h2>
+<pre><code class="language-bash">createdb \
+  -h localhost \
+  -U dev-espada \
+  base_destino
+</code></pre>
+<p>Después:</p>
+<pre><code class="language-bash">pg_restore \
+  -h localhost \
+  -U dev-espada \
+  -d base_destino \
+  backup.dump
+</code></pre>
+<hr>
+<h2 id="164-restauración-reemplazando-objetos-existentes"><a class="header" href="#164-restauración-reemplazando-objetos-existentes">16.4 Restauración reemplazando objetos existentes</a></h2>
+<pre><code class="language-bash">pg_restore \
+  -h localhost \
+  -U dev-espada \
+  -d base_destino \
+  --clean \
+  --if-exists \
+  backup.dump
+</code></pre>
+<h3 id="importante"><a class="header" href="#importante">Importante</a></h3>
+<p><code>--clean</code> elimina objetos existentes antes de recrearlos.</p>
+<p>No utilizarlo sobre una base de producción sin entender exactamente las consecuencias.</p>
+<hr>
+<h2 id="165-restauración-en-paralelo"><a class="header" href="#165-restauración-en-paralelo">16.5 Restauración en paralelo</a></h2>
+<p>Con un backup Custom:</p>
+<pre><code class="language-bash">pg_restore \
+  -h localhost \
+  -U dev-espada \
+  -d base_destino \
+  -j 4 \
+  backup.dump
+</code></pre>
+<p><code>-j 4</code> utiliza cuatro procesos.</p>
+<hr>
+<h1 id="17-migrar-directamente-de-una-base-a-otra"><a class="header" href="#17-migrar-directamente-de-una-base-a-otra">17. Migrar directamente de una base a otra</a></h1>
+<p>Si queremos copiar una base directamente:</p>
+<pre><code class="language-text">BASE ORIGEN
+     │
+  pg_dump
+     │
+     ▼
+   PIPE
+     │
+     ▼
+   psql
+     │
+     ▼
+BASE DESTINO
+</code></pre>
+<p>Ejemplo:</p>
+<pre><code class="language-bash">pg_dump \
+  "postgresql://postgres:postgres@localhost:5432/base_origen" \
+  | psql \
+  "postgresql://postgres:postgres@localhost:5433/base_destino"
+</code></pre>
+<p>Esto evita crear un archivo intermedio.</p>
+<h3 id="cuándo-utilizarlo"><a class="header" href="#cuándo-utilizarlo">¿Cuándo utilizarlo?</a></h3>
+<p>Es útil para:</p>
+<ul>
+<li>Clonar bases.</li>
+<li>Migraciones.</li>
+<li>Copiar desarrollo → staging.</li>
+<li>Copiar staging → producción, cuando corresponda.</li>
+</ul>
+<p>Para backups históricos es mejor generar un archivo y conservarlo.</p>
+<hr>
+<h1 id="18-backup-usando-docker"><a class="header" href="#18-backup-usando-docker">18. Backup usando Docker</a></h1>
+<p>Si no queremos instalar PostgreSQL localmente, podemos utilizar Docker.</p>
+<p>Ejemplo:</p>
 <pre><code class="language-bash">docker run --rm postgres:18 pg_dump \
   "postgresql://postgres:postgres@host.docker.internal:5432/mi_base" \
   -f /tmp/backup.sql
 </code></pre>
-<p>Para hacer dump y restore en un solo paso entre dos bases locales:</p>
-<pre><code class="language-bash">docker run --rm postgres:18 sh -c \
-  'pg_dump "postgresql://postgres:postgres@host.docker.internal:5432/base_origen" \
-   | psql "postgresql://postgres:postgres@host.docker.internal:5433/base_destino"'
-</code></pre>
-<p>Notas:</p>
-<ul>
-<li><code>host.docker.internal</code> permite que el contenedor acceda a servicios corriendo en tu máquina anfitriona (funciona en Docker Desktop / macOS / Windows).</li>
-<li>En Linux puedes necesitar <code>--network host</code> en vez de <code>host.docker.internal</code>:</li>
-</ul>
+<p>En Linux podemos utilizar:</p>
 <pre><code class="language-bash">docker run --rm --network host postgres:18 pg_dump \
-  "postgresql://postgres:postgres@localhost:5432/mi_base" -f /tmp/backup.sql
+  "postgresql://postgres:postgres@localhost:5432/mi_base" \
+  -f /tmp/backup.sql
+</code></pre>
+<p>Docker permite utilizar una versión específica de las herramientas PostgreSQL sin modificar la instalación del sistema.</p>
+<hr>
+<h1 id="19-verificar-que-un-backup-es-válido"><a class="header" href="#19-verificar-que-un-backup-es-válido">19. Verificar que un backup es válido</a></h1>
+<p>Crear el archivo no es suficiente.</p>
+<p>Primero podemos inspeccionarlo:</p>
+<pre><code class="language-bash">pg_restore \
+  --list \
+  ~/db-backups/pos_system_db_20260907_191605.dump
+</code></pre>
+<p>Podremos encontrar objetos como:</p>
+<pre><code class="language-text">TABLE
+TABLE DATA
+INDEX
+SEQUENCE
+CONSTRAINT
+</code></pre>
+<p>También podemos comprobar que el archivo no esté vacío:</p>
+<pre><code class="language-bash">ls -lh backup.dump
 </code></pre>
 <hr>
-<h1 id="12-verificar-que-el-backuprestore-fue-exitoso"><a class="header" href="#12-verificar-que-el-backuprestore-fue-exitoso">12. Verificar que el backup/restore fue exitoso</a></h1>
-<h2 id="listar-tablas-de-la-base-destino"><a class="header" href="#listar-tablas-de-la-base-destino">Listar tablas de la base destino</a></h2>
-<pre><code class="language-bash">psql "postgresql://postgres:postgres@localhost:5432/base_destino" -c "\dt"
+<h1 id="20-prueba-real-de-restauración"><a class="header" href="#20-prueba-real-de-restauración">20. Prueba real de restauración</a></h1>
+<p>La prueba más importante es restaurar el backup.</p>
+<p>Crear una base temporal:</p>
+<pre><code class="language-bash">createdb \
+  -h localhost \
+  -U dev-espada \
+  test_restore
 </code></pre>
-<h2 id="comparar-cantidad-de-filas-por-tabla-origen-vs-destino"><a class="header" href="#comparar-cantidad-de-filas-por-tabla-origen-vs-destino">Comparar cantidad de filas por tabla (origen vs destino)</a></h2>
-<pre><code class="language-bash">psql "postgresql://postgres:postgres@localhost:5432/base_origen" -c "
-SELECT schemaname, relname, n_live_tup
-FROM pg_stat_user_tables
-ORDER BY relname;
-"
+<p>Restaurar:</p>
+<pre><code class="language-bash">pg_restore \
+  -h localhost \
+  -U dev-espada \
+  -d test_restore \
+  backup.dump
 </code></pre>
-<p>Corre la misma consulta contra la base destino y compara los valores de <code>n_live_tup</code> (filas vivas aproximadas por tabla).</p>
-<h2 id="ver-el-tamaño-de-la-base-de-datos"><a class="header" href="#ver-el-tamaño-de-la-base-de-datos">Ver el tamaño de la base de datos</a></h2>
-<pre><code class="language-bash">psql "postgresql://postgres:postgres@localhost:5432/mi_base" -c "
-SELECT pg_size_pretty(pg_database_size('mi_base'));
-"
+<p>Listar tablas:</p>
+<pre><code class="language-bash">psql \
+  -h localhost \
+  -U dev-espada \
+  -d test_restore \
+  -c "\dt"
 </code></pre>
+<p>Comprobar datos:</p>
+<pre><code class="language-bash">psql \
+  -h localhost \
+  -U dev-espada \
+  -d test_restore \
+  -c "SELECT count(*) FROM users;"
+</code></pre>
+<p>Finalmente:</p>
+<pre><code class="language-bash">dropdb \
+  -h localhost \
+  -U dev-espada \
+  test_restore
+</code></pre>
+<h3 id="regla"><a class="header" href="#regla">Regla</a></h3>
+<blockquote>
+<p>Un backup que nunca fue restaurado es un backup no probado.</p>
+</blockquote>
+<p>Se recomienda realizar pruebas de restauración periódicas.</p>
 <hr>
-<h1 id="13-automatizar-backups-con-un-script"><a class="header" href="#13-automatizar-backups-con-un-script">13. Automatizar backups con un script</a></h1>
-<p>Ejemplo de script <code>backup.sh</code> con fecha en el nombre del archivo:</p>
-<pre><code class="language-bash">#!/bin/bash
-set -e
-
-DB_URL="postgresql://postgres:postgres@localhost:5432/mi_base"
-FECHA=$(date +%Y-%m-%d_%H-%M-%S)
-ARCHIVO="backup_${FECHA}.dump"
-
-echo "Generando backup: $ARCHIVO"
-pg_dump -Fc "$DB_URL" -f "$ARCHIVO"
-
-echo "Backup completado: $ARCHIVO"
-</code></pre>
-<p>Darle permisos de ejecución y correrlo:</p>
-<pre><code class="language-bash">chmod +x backup.sh
-./backup.sh
-</code></pre>
-<p>Para automatizarlo diariamente, agrégalo a <code>cron</code>:</p>
+<h1 id="21-automatización-de-backups"><a class="header" href="#21-automatización-de-backups">21. Automatización de backups</a></h1>
+<p>Podemos utilizar <code>cron</code>.</p>
+<p>Editar:</p>
 <pre><code class="language-bash">crontab -e
 </code></pre>
-<p>Y agrega una línea como esta (corre todos los días a las 2:00 AM):</p>
-<pre><code>0 2 * * * /ruta/completa/backup.sh &gt;&gt; /ruta/completa/backup.log 2&gt;&amp;1
+<p>Ejemplo:</p>
+<pre><code class="language-text">0 3 * * * /ruta/completa/backup.sh &gt;&gt; /ruta/completa/backup.log 2&gt;&amp;1
+</code></pre>
+<p>Esto ejecutará el script diariamente a las:</p>
+<pre><code class="language-text">03:00
 </code></pre>
 <hr>
-<h1 id="14-errores-comunes-1"><a class="header" href="#14-errores-comunes-1">14. Errores comunes</a></h1>
-<p><strong>Error: versión de pg_dump no coincide con el servidor</strong>
-→ Instala/usa la versión de <code>pg_dump</code> igual o mayor a la del servidor (sección 4).</p>
-<p><strong>Error: relation already exists</strong>
-→ La base destino ya tenía tablas creadas. Usa <code>--clean --if-exists</code> o vacía la base destino antes de restaurar.</p>
-<p><strong>Error: permission denied for schema / must be owner of…</strong>
-→ El usuario de destino no tiene los mismos permisos que el de origen. Usa <code>--no-owner --no-privileges</code>.</p>
-<p><strong>Error: could not connect to server</strong>
-→ Revisa host, puerto, credenciales, y que el servidor de destino/origen esté activo y aceptando conexiones (revisa también reglas de firewall si es remoto).</p>
-<p><strong>El backup tarda mucho / archivo muy pesado</strong>
-→ Usa formato custom (<code>-Fc</code>) o directory (<code>-Fd</code>) en vez de SQL plano, y considera <code>-j</code> para paralelizar.</p>
+<h2 id="script-básico"><a class="header" href="#script-básico">Script básico</a></h2>
+<p>Crear:</p>
+<pre><code class="language-text">backup.sh
+</code></pre>
+<p>Contenido:</p>
+<pre><code class="language-bash">#!/bin/bash
+
+set -e
+
+BACKUP_DIR="$HOME/db-backups/daily"
+FECHA=$(date +%Y%m%d_%H%M%S)
+ARCHIVO="$BACKUP_DIR/railway_$FECHA.dump"
+
+mkdir -p "$BACKUP_DIR"
+
+echo "Iniciando backup..."
+
+pg_dump \
+  "postgresql://postgres:PASSWORD@HOST:PORT/railway?sslmode=require" \
+  -Fc \
+  -f "$ARCHIVO"
+
+echo "Backup completado:"
+echo "$ARCHIVO"
+</code></pre>
+<p>Dar permisos:</p>
+<pre><code class="language-bash">chmod +x backup.sh
+</code></pre>
+<p>Ejecutar:</p>
+<pre><code class="language-bash">./backup.sh
+</code></pre>
 <hr>
-<h1 id="15-buenas-prácticas"><a class="header" href="#15-buenas-prácticas">15. Buenas prácticas</a></h1>
-<p>✔ Usa siempre formato custom (<code>-Fc</code>) para backups de producción — es más rápido y flexible.
-✔ Verifica la versión de <code>pg_dump</code> antes de cada backup importante.
-✔ Nunca dejes contraseñas de bases de datos escritas en scripts que subas a repositorios públicos — usa variables de entorno o un archivo <code>.env</code> ignorado por git.
-✔ Prueba siempre el backup restaurándolo en una base de prueba antes de confiar en él.
-✔ Automatiza backups periódicos (cron, GitHub Actions, o el sistema de backups del proveedor donde alojes la base).
-✔ Guarda backups en al menos dos ubicaciones distintas (local + nube).
-✔ Rota las contraseñas de las bases de datos si alguna vez se compartieron por chat, correo o en texto plano.
-✔ Al migrar entre bases, compara siempre el número de filas por tabla (sección 12) para confirmar integridad de datos.</p>
+<h1 id="22-rotación-y-retención"><a class="header" href="#22-rotación-y-retención">22. Rotación y retención</a></h1>
+<p>No debemos almacenar backups indefinidamente sin una política.</p>
+<p>Una política inicial puede ser:</p>
+<pre><code class="language-text">Diarios:
+14 días
+
+Semanales:
+8 semanas
+
+Mensuales:
+12 meses
+</code></pre>
+<p>Por ejemplo:</p>
+<pre><code class="language-text">daily/
+weekly/
+monthly/
+</code></pre>
+<p>Para eliminar backups diarios antiguos:</p>
+<pre><code class="language-bash">find ~/db-backups/daily \
+  -name 'railway_*.dump' \
+  -mtime +14 \
+  -delete
+</code></pre>
+<p>La rotación debe diseñarse con cuidado para no eliminar accidentalmente todas las generaciones disponibles.</p>
+<hr>
+<h1 id="23-estructura-profesional-de-almacenamiento"><a class="header" href="#23-estructura-profesional-de-almacenamiento">23. Estructura profesional de almacenamiento</a></h1>
+<p>Una estructura sencilla:</p>
+<pre><code class="language-text">~/db-backups/
+│
+├── daily/
+│   ├── railway_20260907.dump
+│   ├── railway_20260906.dump
+│   └── railway_20260905.dump
+│
+├── weekly/
+│   ├── railway_20260906.dump
+│   └── railway_20260830.dump
+│
+└── monthly/
+    ├── railway_20260901.dump
+    └── railway_20260801.dump
+</code></pre>
+<p>También podemos separar los backups de desarrollo:</p>
+<pre><code class="language-text">~/db-backups/
+├── development/
+└── production/
+</code></pre>
+<hr>
+<h1 id="24-backups-remotos"><a class="header" href="#24-backups-remotos">24. Backups remotos</a></h1>
+<p>Guardar todos los backups solamente en:</p>
+<pre><code class="language-text">~/db-backups/
+</code></pre>
+<p>no es suficiente para producción.</p>
+<p>Si el equipo se pierde, podemos perder:</p>
+<pre><code class="language-text">Base
++
+Backups
+</code></pre>
+<p>Por eso necesitamos una copia remota.</p>
+<p>Conceptualmente:</p>
+<pre><code class="language-text">                 PRODUCCIÓN
+                     │
+                     ▼
+                pg_dump
+                     │
+              ┌──────┴──────┐
+              ▼             ▼
+           LOCAL          REMOTO
+              │             │
+              ▼             ▼
+          14 días        30+ días
+</code></pre>
+<p>Podemos utilizar almacenamiento como:</p>
+<ul>
+<li>S3.</li>
+<li>Backblaze B2.</li>
+<li>Google Cloud Storage.</li>
+<li>Otro proveedor de almacenamiento.</li>
+<li>Otro servidor.</li>
+</ul>
+<p>El almacenamiento remoto debe tener acceso restringido y, cuando sea apropiado, cifrado.</p>
+<hr>
+<h1 id="25-seguridad-de-los-backups"><a class="header" href="#25-seguridad-de-los-backups">25. Seguridad de los backups</a></h1>
+<p>Los backups pueden contener información sensible:</p>
+<pre><code class="language-text">Usuarios
+Clientes
+Emails
+Ventas
+Productos
+Inventario
+Información comercial
+Configuración
+</code></pre>
+<p>Por lo tanto:</p>
+<h3 id="nunca"><a class="header" href="#nunca">Nunca</a></h3>
+<p>Guardar backups en:</p>
+<pre><code class="language-text">GitHub público
+Repositorios públicos
+Discord
+Telegram
+Chats
+</code></pre>
+<h3 id="gitignore"><a class="header" href="#gitignore"><code>.gitignore</code></a></h3>
+<p>Como mínimo:</p>
+<pre><code class="language-gitignore">*.dump
+*.backup
+</code></pre>
+<p>Si utilizamos dumps SQL con datos reales:</p>
+<pre><code class="language-gitignore">*.sql
+</code></pre>
+<p>siempre que el proyecto no necesite archivos SQL legítimos versionados.</p>
+<h3 id="credenciales"><a class="header" href="#credenciales">Credenciales</a></h3>
+<p>Nunca escribir passwords directamente en:</p>
+<pre><code class="language-text">scripts públicos
+repositorios
+Dockerfiles
+código fuente
+</code></pre>
+<p>Utilizar:</p>
+<pre><code class="language-text">variables de entorno
+~/.pgpass
+secret managers
+</code></pre>
+<p>según el entorno.</p>
+<hr>
+<h1 id="26-rpo--recovery-point-objective"><a class="header" href="#26-rpo--recovery-point-objective">26. RPO — Recovery Point Objective</a></h1>
+<p>RPO responde:</p>
+<blockquote>
+<p>¿Cuánta información estamos dispuestos a perder?</p>
+</blockquote>
+<p>Ejemplo:</p>
+<pre><code class="language-text">Backup cada 24 horas
+</code></pre>
+<p>Si ocurre un desastre justo antes del siguiente backup:</p>
+<pre><code class="language-text">Pérdida potencial ≈ 24 horas
+</code></pre>
+<p>Por lo tanto:</p>
+<pre><code class="language-text">RPO ≈ 24 horas
+</code></pre>
+<p>Con backups cada hora:</p>
+<pre><code class="language-text">RPO ≈ 1 hora
+</code></pre>
+<p>Con una estrategia WAL/PITR:</p>
+<pre><code class="language-text">RPO potencialmente mucho menor
+</code></pre>
+<hr>
+<h1 id="27-rto--recovery-time-objective"><a class="header" href="#27-rto--recovery-time-objective">27. RTO — Recovery Time Objective</a></h1>
+<p>RTO responde:</p>
+<blockquote>
+<p>¿Cuánto tiempo podemos tardar en recuperar el sistema?</p>
+</blockquote>
+<p>Ejemplo:</p>
+<pre><code class="language-text">Base perdida
+     ↓
+Crear nueva base
+     ↓
+Restaurar backup
+     ↓
+Configurar aplicación
+     ↓
+Verificar
+     ↓
+Sistema funcionando
+</code></pre>
+<p>Si tardamos 45 minutos:</p>
+<pre><code class="language-text">RTO ≈ 45 minutos
+</code></pre>
+<p>Un sistema profesional debe conocer aproximadamente:</p>
+<pre><code class="language-text">RPO → cuánto podemos perder
+RTO → cuánto podemos tardar en recuperar
+</code></pre>
+<hr>
+<h1 id="28-wal-y-point-in-time-recovery"><a class="header" href="#28-wal-y-point-in-time-recovery">28. WAL y Point-in-Time Recovery</a></h1>
+<p>Para sistemas pequeños, los backups diarios pueden ser suficientes.</p>
+<p>Pero cuando los datos se vuelven críticos, podemos utilizar una estrategia más avanzada.</p>
+<pre><code class="language-text">             BACKUP BASE
+                  │
+                  +
+                 WAL
+                  │
+                  ▼
+                 PITR
+</code></pre>
+<p>Esto permite recuperar la base de datos hasta un momento específico.</p>
+<p>Por ejemplo:</p>
+<pre><code class="language-text">12:00 ───────────────
+13:00 ───────────────
+14:00 ─── ERROR ─────
+15:00 ───────────────
+</code></pre>
+<p>Si el error ocurrió a las 14:32:</p>
+<pre><code class="language-text">PITR
+ ↓
+14:31:59
+</code></pre>
+<p>podría permitir recuperar el estado inmediatamente anterior al incidente.</p>
+<h3 id="importante-1"><a class="header" href="#importante-1">Importante</a></h3>
+<p>PITR no reemplaza los backups base.</p>
+<p>Normalmente necesitamos:</p>
+<pre><code class="language-text">Backup base
++
+WAL archivado
+</code></pre>
+<hr>
+<h1 id="29-estrategia-recomendada-para-cajorapos"><a class="header" href="#29-estrategia-recomendada-para-cajorapos">29. Estrategia recomendada para CajoraPOS</a></h1>
+<p>Para CajoraPOS podemos implementar la estrategia progresivamente.</p>
+<h2 id="nivel-1--actualmente"><a class="header" href="#nivel-1--actualmente">Nivel 1 — Actualmente</a></h2>
+<pre><code class="language-text">PostgreSQL
+    │
+    ▼
+pg_dump -Fc
+    │
+    ▼
+Backup diario
+</code></pre>
+<p>Además:</p>
+<pre><code class="language-text">Backup manual
+antes de migraciones
+</code></pre>
+<hr>
+<h2 id="nivel-2--producción-profesional"><a class="header" href="#nivel-2--producción-profesional">Nivel 2 — Producción profesional</a></h2>
+<pre><code class="language-text">PostgreSQL
+     │
+     ▼
+Backup diario
+     │
+ ┌───┴────┐
+ ▼        ▼
+Local   Remoto
+ │        │
+14 días 30+ días
+</code></pre>
+<p>Además:</p>
+<pre><code class="language-text">Semanal → 8 semanas
+Mensual → 12 meses
+</code></pre>
+<p>Y pruebas periódicas de restauración.</p>
+<hr>
+<h2 id="nivel-3--producción-avanzada"><a class="header" href="#nivel-3--producción-avanzada">Nivel 3 — Producción avanzada</a></h2>
+<p>Cuando la pérdida de horas de información sea demasiado costosa:</p>
+<pre><code class="language-text">Backup base
+     +
+WAL
+     +
+Archivado WAL
+     +
+PITR
+     +
+Backup remoto
+     +
+Monitorización
+     +
+Alertas
+</code></pre>
+<hr>
+<h1 id="30-plan-de-implementación-por-etapas"><a class="header" href="#30-plan-de-implementación-por-etapas">30. Plan de implementación por etapas</a></h1>
+<p>No es necesario implementar todo inmediatamente.</p>
+<h2 id="etapa-1"><a class="header" href="#etapa-1">Etapa 1</a></h2>
+<p>Implementar:</p>
+<pre><code class="language-text">pg_dump -Fc
++
+backup diario
++
+backup antes de migraciones
+</code></pre>
+<hr>
+<h2 id="etapa-2"><a class="header" href="#etapa-2">Etapa 2</a></h2>
+<p>Agregar:</p>
+<pre><code class="language-text">Rotación
++
+backups semanales
++
+backups mensuales
++
+almacenamiento remoto
++
+pruebas de restauración
+</code></pre>
+<hr>
+<h2 id="etapa-3"><a class="header" href="#etapa-3">Etapa 3</a></h2>
+<p>Cuando el sistema crezca:</p>
+<pre><code class="language-text">WAL
++
+PITR
++
+monitorización
++
+alertas
++
+automatización completa
+</code></pre>
+<hr>
+<h1 id="31-errores-comunes"><a class="header" href="#31-errores-comunes">31. Errores comunes</a></h1>
+<h2 id="error-de-versión"><a class="header" href="#error-de-versión">Error de versión</a></h2>
+<pre><code class="language-text">server version: 18
+pg_dump version: 17
+</code></pre>
+<p>Solución:</p>
+<p>Utilizar un <code>pg_dump</code> compatible con la versión del servidor.</p>
+<hr>
+<h2 id="could-not-connect-to-server"><a class="header" href="#could-not-connect-to-server"><code>could not connect to server</code></a></h2>
+<p>Comprobar:</p>
+<pre><code class="language-text">Host
+Puerto
+Usuario
+Password
+Servidor activo
+Firewall
+SSL
+</code></pre>
+<hr>
+<h2 id="relation-already-exists"><a class="header" href="#relation-already-exists"><code>relation already exists</code></a></h2>
+<p>La base destino ya tiene objetos.</p>
+<p>Podemos utilizar:</p>
+<pre><code class="language-bash">--clean --if-exists
+</code></pre>
+<p>cuando sea apropiado.</p>
+<hr>
+<h2 id="problemas-de-propietarios"><a class="header" href="#problemas-de-propietarios">Problemas de propietarios</a></h2>
+<p>Utilizar:</p>
+<pre><code class="language-bash">--no-owner
+</code></pre>
+<p>si estamos migrando entre usuarios diferentes.</p>
+<p>También puede ser necesario:</p>
+<pre><code class="language-bash">--no-privileges
+</code></pre>
+<hr>
+<h2 id="backup-aparentemente-correcto-pero-restauración-fallida"><a class="header" href="#backup-aparentemente-correcto-pero-restauración-fallida">Backup aparentemente correcto pero restauración fallida</a></h2>
+<p>No asumir que el archivo es válido solamente porque existe.</p>
+<p>Ejecutar:</p>
+<pre><code class="language-bash">pg_restore --list backup.dump
+</code></pre>
+<p>y realizar una restauración de prueba.</p>
+<hr>
+<h2 id="backup-creado-en-la-ruta-equivocada"><a class="header" href="#backup-creado-en-la-ruta-equivocada">Backup creado en la ruta equivocada</a></h2>
+<p>Utilizar rutas explícitas:</p>
+<pre><code class="language-bash">"$HOME/db-backups/backup.dump"
+</code></pre>
+<p>en lugar de depender de expansiones ambiguas dentro de argumentos.</p>
+<hr>
+<h1 id="32-checklist-de-producción"><a class="header" href="#32-checklist-de-producción">32. Checklist de producción</a></h1>
+<h2 id="backups"><a class="header" href="#backups">Backups</a></h2>
+<ul>
+<li><input disabled="" type="checkbox"> Backup diario configurado.</li>
+<li><input disabled="" type="checkbox"> Backup antes de migraciones.</li>
+<li><input disabled="" type="checkbox"> Backup antes de operaciones destructivas.</li>
+<li><input disabled="" type="checkbox"> Retención configurada.</li>
+<li><input disabled="" type="checkbox"> Backups semanales.</li>
+<li><input disabled="" type="checkbox"> Backups mensuales.</li>
+<li><input disabled="" type="checkbox"> Copia remota.</li>
+</ul>
+<h2 id="seguridad"><a class="header" href="#seguridad">Seguridad</a></h2>
+<ul>
+<li><input disabled="" type="checkbox"> Backups fuera del repositorio.</li>
+<li><input disabled="" type="checkbox"> <code>.dump</code> incluido en <code>.gitignore</code>.</li>
+<li><input disabled="" type="checkbox"> Passwords fuera del código.</li>
+<li><input disabled="" type="checkbox"> Acceso restringido.</li>
+<li><input disabled="" type="checkbox"> Almacenamiento remoto protegido.</li>
+<li><input disabled="" type="checkbox"> Cifrado cuando corresponda.</li>
+</ul>
+<h2 id="verificación"><a class="header" href="#verificación">Verificación</a></h2>
+<ul>
+<li><input disabled="" type="checkbox"> <code>pg_restore --list</code> funciona.</li>
+<li><input disabled="" type="checkbox"> Se realizó una restauración de prueba.</li>
+<li><input disabled="" type="checkbox"> Se verificaron las tablas.</li>
+<li><input disabled="" type="checkbox"> Se verificaron datos importantes.</li>
+<li><input disabled="" type="checkbox"> Se conoce el procedimiento de recuperación.</li>
+</ul>
+<h2 id="recuperación"><a class="header" href="#recuperación">Recuperación</a></h2>
+<ul>
+<li><input disabled="" type="checkbox"> RPO definido.</li>
+<li><input disabled="" type="checkbox"> RTO definido.</li>
+<li><input disabled="" type="checkbox"> Procedimiento documentado.</li>
+<li><input disabled="" type="checkbox"> Backup remoto disponible.</li>
+<li><input disabled="" type="checkbox"> Se sabe dónde están las credenciales necesarias.</li>
+<li><input disabled="" type="checkbox"> Se ha probado una recuperación real.</li>
+</ul>
+<h2 id="producción-avanzada"><a class="header" href="#producción-avanzada">Producción avanzada</a></h2>
+<ul>
+<li><input disabled="" type="checkbox"> WAL configurado.</li>
+<li><input disabled="" type="checkbox"> Archivado WAL.</li>
+<li><input disabled="" type="checkbox"> PITR.</li>
+<li><input disabled="" type="checkbox"> Monitorización.</li>
+<li><input disabled="" type="checkbox"> Alertas de fallos.</li>
+<li><input disabled="" type="checkbox"> Pruebas periódicas de recuperación.</li>
+</ul>
+<hr>
+<h1 id="33-regla-final"><a class="header" href="#33-regla-final">33. Regla final</a></h1>
+<p>Un backup no consiste simplemente en ejecutar:</p>
+<pre><code class="language-bash">pg_dump
+</code></pre>
+<p>Un sistema profesional es:</p>
+<pre><code class="language-text">                 BASE DE DATOS
+                       │
+                       ▼
+                  BACKUP
+                       │
+          ┌────────────┴────────────┐
+          ▼                         ▼
+       LOCAL                      REMOTO
+          │                         │
+          └────────────┬────────────┘
+                       ▼
+                   RETENCIÓN
+                       │
+                       ▼
+                 VERIFICACIÓN
+                       │
+                       ▼
+              RESTAURACIÓN DE PRUEBA
+                       │
+                       ▼
+                  RECUPERACIÓN
+</code></pre>
+<p>La pregunta no es:</p>
+<blockquote>
+<p><strong>“¿Tengo un backup?”</strong></p>
+</blockquote>
+<p>La pregunta correcta es:</p>
+<blockquote>
+<p><strong>“Si mi base de datos desaparece ahora mismo, ¿puedo recuperarla, cuánto tiempo tardaría y cuánta información perdería?”</strong></p>
+</blockquote>
+<p>Un sistema de backups profesional debe ser capaz de responder esas tres preguntas.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="aspnet-core-init---manual-técnico-completo"><a class="header" href="#aspnet-core-init---manual-técnico-completo">ASP.NET Core Init - Manual Técnico Completo</a></h1>
 <p>Manual completo para instalar y desarrollar con <strong>.NET 10</strong> en <strong>Debian 13 (Trixie)</strong>, incluyendo instalación, creación de API con Clean Architecture, Entity Framework Core, autenticación JWT, y comandos de administración.</p>
