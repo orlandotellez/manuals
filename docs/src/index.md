@@ -3,6 +3,7 @@
 Mis manuales de desarrollo
 
 - [Repositorio Github](https://github.com/orlandotellez/manuals)
+- [Mi Portafolio](https://landodev.vercel.app/)
 
 ---
 
