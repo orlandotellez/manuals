@@ -36,7 +36,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "dark";
-            window.path_to_searchindex_js = "../searchindex-48e3875e.js";
+            window.path_to_searchindex_js = "../searchindex-4ccd5ef4.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-cd1280d9.js"></script>
@@ -179,112 +179,209 @@
 <hr>
 <h2 id="índice"><a class="header" href="#índice">Índice</a></h2>
 <ul>
-<li><a href="#qué-es-un-modelo-de-red">¿Qué es un Modelo de Red?</a></li>
-<li><a href="#importancia-de-los-modelos-de-red">Importancia de los Modelos de Red</a></li>
-<li><a href="#modelo-osi-open-systems-interconnection">Modelo OSI (Open Systems Interconnection)</a></li>
-<li><a href="#modelo-tcpip-transmission-control-protocol--internet-protocol">Modelo TCP/IP (Transmission Control Protocol / Internet Protocol)</a></li>
-<li><a href="#comparación-detallada-osi-vs-tcpip">Comparación Detallada: OSI vs TCP/IP</a></li>
-<li><a href="#capa-de-aplicación-tcpip-en-profundidad">Capa de Aplicación TCP/IP en Profundidad</a></li>
-<li><a href="#capa-de-transporte-en-profundidad">Capa de Transporte en Profundidad</a></li>
-<li><a href="#capa-de-internet-en-profundidad">Capa de Internet en Profundidad</a></li>
-<li><a href="#capa-de-acceso-a-red-en-profundidad">Capa de Acceso a Red en Profundidad</a></li>
-<li><a href="#flujo-completo-de-comunicación-ejemplo">Flujo Completo de Comunicación</a></li>
-<li><a href="#otros-modelos-y-referencias">Otros Modelos y Referencias</a></li>
-<li><a href="#resumen-comparativo">Resumen Comparativo</a></li>
+<li><a href="#1-el-problema-que-resuelven-los-modelos">El problema que resuelven los modelos</a></li>
+<li><a href="#2-qué-es-un-modelo-de-capas">Qué es un modelo de capas</a></li>
+<li><a href="#3-el-modelo-osi-las-7-capas">El modelo OSI: las 7 capas</a></li>
+<li><a href="#4-el-modelo-tcpip-las-4-capas">El modelo TCP/IP: las 4 capas</a></li>
+<li><a href="#5-osi-vs-tcpip-la-comparación-honesta">OSI vs TCP/IP: la comparación honesta</a></li>
+<li><a href="#6-la-capa-de-aplicación">La capa de Aplicación</a></li>
+<li><a href="#7-la-capa-de-transporte-tcp-y-udp">La capa de Transporte: TCP y UDP</a></li>
+<li><a href="#8-la-capa-de-internet">La capa de Internet</a></li>
+<li><a href="#9-la-capa-de-acceso-a-red">La capa de Acceso a Red</a></li>
+<li><a href="#10-la-encapsulación-las-muñecas-rusas">La encapsulación: las muñecas rusas</a></li>
+<li><a href="#11-el-viaje-completo-de-un-paquete">El viaje completo de un paquete</a></li>
+<li><a href="#12-cómo-resolver-problemas-por-capas">Cómo resolver problemas por capas</a></li>
+<li><a href="#13-herramientas-que-ven-las-capas">Herramientas que ven las capas</a></li>
+<li><a href="#14-comprobá-lo-que-aprendiste">Comprobá lo que aprendiste</a></li>
+<li><a href="#15-glosario">Glosario</a></li>
+<li><a href="#16-resumen-en-10-puntos">Resumen en 10 puntos</a></li>
 </ul>
 <hr>
-<h2 id="qué-es-un-modelo-de-red"><a class="header" href="#qué-es-un-modelo-de-red">¿Qué es un Modelo de Red?</a></h2>
-<p>Un <strong>modelo de red</strong> es una representación estructurada y organizada de las funciones necesarias para la comunicación entre dispositivos en una red. Define cómo los datos viajan desde el origen hasta el destino, dividiendo el proceso en <strong>capas</strong> con responsabilidades específicas.</p>
+<h2 id="1-el-problema-que-resuelven-los-modelos"><a class="header" href="#1-el-problema-que-resuelven-los-modelos">1. El problema que resuelven los modelos</a></h2>
+<h3 id="11-la-torre-de-babel-de-las-redes"><a class="header" href="#11-la-torre-de-babel-de-las-redes">1.1. La torre de Babel de las redes</a></h3>
+<p>Imaginá el año 1980. Cada fabricante de computadoras tenía su propia forma de conectar sus equipos: sus propios cables, sus propias señales, su propio “idioma”. La máquina de la empresa A no podía hablar con la de la empresa B, y si lo hacía, era a los gritos y con acento — cuando no se rompía en el intento.</p>
+<p>Conectar computadoras entre sí no es un problema de un solo paso. Es una cadena larguísima de decisiones:</p>
+<ul>
+<li>¿Cómo se representa un 1 y un 0 en el cable?</li>
+<li>¿Cómo sé que ese grupo de bits viene de tu máquina y no de otra?</li>
+<li>¿Cómo hago para que mi mensaje atraviese diez redes distintas y llegue a la máquina correcta?</li>
+<li>¿Cómo me doy cuenta si un dato se perdió en el camino y lo pido de nuevo?</li>
+<li>¿Y si quiero que dos programas distintos usen la red a la vez?</li>
+</ul>
+<p>Si cada fabricante resolvía todo eso a su manera, teníamos la torre de Babel: <strong>nadie se entendía con nadie</strong>.</p>
 <blockquote>
-<p><strong>Nota:</strong> Los modelos de red sirven como guía teórica y práctica para el diseño, la implementación y la resolución de problemas en redes de comunicación.</p>
+<p><strong>Idea central de este manual:</strong> los modelos de red son el <strong>acuerdo de cómo se habla</strong>. Dividen la comunicación en <strong>capas</strong>, y a cada capa le asignan una responsabilidad clara. Cuando todos respetan el mismo acuerdo, cualquier equipo puede hablar con cualquier otro — aunque lo fabriquen empresas distintas y a miles de kilómetros.</p>
 </blockquote>
+<h3 id="12-la-metáfora-que-vas-a-usar-toda-la-vida-las-muñecas-rusas"><a class="header" href="#12-la-metáfora-que-vas-a-usar-toda-la-vida-las-muñecas-rusas">1.2. La metáfora que vas a usar toda la vida: las muñecas rusas</a></h3>
+<p>Guardá esta imagen porque aparece en TODO el manual:</p>
+<blockquote>
+<p><strong>Una comunicación de red es como una muñeca rusa (matrioshka): un sobre dentro de otro sobre, dentro de otro sobre. Cada capa envuelve los datos con su propio sobre y le escribe información útil en la tapa. Quien recibe, abre los sobres en orden inverso.</strong></p>
+</blockquote>
+<p>El dato que querés mandar (un correo, una foto, esta página que estás leyendo) es el contenido de la muñeca más chica. Y alrededor se van armando capas: en cada paso, se envuelve todo lo anterior y se le agregan instrucciones de viaje.</p>
+<p>Al final del manual vas a ver el video completo de cómo se arma y se desarma esa muñeca — y por qué ese proceso se llama <strong>encapsulación</strong>.</p>
+<h3 id="13-qué-vas-a-aprender-acá"><a class="header" href="#13-qué-vas-a-aprender-acá">1.3. Qué vas a aprender acá</a></h3>
+<ul>
+<li>Por qué las redes se piensan en capas.</li>
+<li>El modelo <strong>OSI</strong> (7 capas): el que se usa para <em>entender</em>.</li>
+<li>El modelo <strong>TCP/IP</strong> (4 capas): el que <em>realmente funciona</em> en internet.</li>
+<li>El proceso de <strong>encapsulación</strong>: los sobres dentro de sobres.</li>
+<li>El <strong>viaje completo de un paquete</strong>, capa por capa, desde tu PC hasta un servidor.</li>
+<li>Cómo usar las capas para <strong>encontrar fallas</strong> cuando algo no funciona.</li>
+</ul>
 <hr>
-<h2 id="importancia-de-los-modelos-de-red"><a class="header" href="#importancia-de-los-modelos-de-red">Importancia de los Modelos de Red</a></h2>
+<h2 id="2-qué-es-un-modelo-de-capas"><a class="header" href="#2-qué-es-un-modelo-de-capas">2. Qué es un modelo de capas</a></h2>
+<h3 id="21-la-idea-dividir-para-gobernar"><a class="header" href="#21-la-idea-dividir-para-gobernar">2.1. La idea: dividir para gobernar</a></h3>
+<p>Ningún problema complejo se resuelve de una sola pieza. Pensá en una carta que viaja por el correo: hay muchísimos pasos — escribirla, ponerle el sobre, pegar la estampilla, llevarla a la sucursal, clasificarla, transportarla, repartirla en el destino. Si lo pensás como “un solo proceso gigante”, es imposible de organizar. Si lo dividís en etapas con responsables claros, cualquier empleado nuevo aprende su parte en un día.</p>
+<p>Las redes hacen exactamente eso: <strong>dividen la comunicación en capas</strong>. Cada capa:</p>
+<ul>
+<li>Tiene <strong>una sola responsabilidad</strong> (y esas responsabilidades no se mezclan).</li>
+<li>Le presta un servicio a la capa de arriba (“pasame esto ya listo”).</li>
+<li>Usa los servicios de la capa de abajo (“esto me lo entrega el transporte”).</li>
+<li>Solo se comunica, en el otro extremo, con su <strong>capa gemela</strong> (su <em>par</em> o <em>peer</em>).</li>
+</ul>
+<h3 id="22-las-reglas-del-juego"><a class="header" href="#22-las-reglas-del-juego">2.2. Las reglas del juego</a></h3>
+<p>Imaginate cuatro equipos en una empresa: el que recibe pedidos, el que prepara cajas, el que pega etiquetas y el que las lleva al camión.</p>
+<ul>
+<li>El que recibe pedidos <strong>no necesita saber</strong> qué camión va a llevar la caja. Solo entrega el pedido al siguiente equipo.</li>
+<li>El que prepara cajas <strong>no lee</strong> el pedido: solo lo guarda y lo envuelve.</li>
+<li>Si una caja se daña en el viaje, el que la preparó se entera y la rearma — sin molestar a los otros tres equipos.</li>
+</ul>
+<p>Eso es un modelo de capas: <strong>cada piso del edificio hace su trabajo y le pasa el resultado al piso de al lado</strong>. Si algo falla, se arregla en el piso donde falló, sin tirar el edificio entero.</p>
+<h3 id="23-qué-ganás-con-las-capas"><a class="header" href="#23-qué-ganás-con-las-capas">2.3. Qué ganás con las capas</a></h3>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>Aspecto</th><th>Beneficio</th></tr>
+<tr><th>Lo que ganás</th><th>Qué significa en la práctica</th></tr>
 </thead>
 <tbody>
-<tr><td><strong>Estandarización</strong></td><td>Permite que fabricantes y desarrolladores trabajen con estándares comunes</td></tr>
-<tr><td><strong>Interoperabilidad</strong></td><td>Garantiza que dispositivos de distintos fabricantes se comuniquen correctamente</td></tr>
-<tr><td><strong>Solución de problemas</strong></td><td>Facilita la identificación de fallos al aislar problemas por capa</td></tr>
-<tr><td><strong>Diseño modular</strong></td><td>Cada capa puede evolucionar independientemente sin afectar a las demás</td></tr>
-<tr><td><strong>Comunicación clara</strong></td><td>Proporciona un vocabulario y estructura universal para profesionales de TI</td></tr>
+<tr><td><strong>Estandarización</strong></td><td>Todos los fabricantes siguen las mismas reglas; sus equipos no necesitan “conocerse” para entenderse</td></tr>
+<tr><td><strong>Interoperabilidad</strong></td><td>Un cable de marca A, un switch de marca B y una PC de marca C funcionan juntos sin drama</td></tr>
+<tr><td><strong>Solución de problemas</strong></td><td>Si algo falla, se aísla el piso del edificio donde está el problema en vez de revisar todo</td></tr>
+<tr><td><strong>Evolución independiente</strong></td><td>Se puede cambiar el Wi-Fi (capa 1) sin tocar el HTTP (capa de aplicación): cada piso se renueva aparte</td></tr>
+<tr><td><strong>Vocabulario común</strong></td><td>“Es un problema de capa 3” se entiende igual en Buenos Aires, Tokio o Berlín</td></tr>
 </tbody>
 </table>
 </div>
+<h3 id="24-una-regla-de-oro-antes-de-seguir"><a class="header" href="#24-una-regla-de-oro-antes-de-seguir">2.4. Una regla de oro antes de seguir</a></h3>
+<blockquote>
+<p><strong>Regla de oro:</strong> cada capa agrega <strong>información de control propia</strong> (el “sobre” con instrucciones de viaje) sin modificar el contenido que le pasaron de arriba. Cuando el dato llega al destino, cada capa lee su propio sobre, lo retira y le pasa el interior a la capa de arriba.</p>
+</blockquote>
+<p>Recordala. Es la base de TODO lo que viene: el dato original viaja intacto, y cada capa sabe exactamente cuál sobre es suyo.</p>
 <hr>
-<h2 id="modelo-osi-open-systems-interconnection"><a class="header" href="#modelo-osi-open-systems-interconnection">Modelo OSI (Open Systems Interconnection)</a></h2>
-<p>El modelo OSI fue desarrollado por la <strong>ISO</strong> (International Organization for Standardization) en 1984. Divide la comunicación de red en <strong>7 capas</strong>, cada una con una función específica.</p>
-<h3 id="las-7-capas-del-modelo-osi"><a class="header" href="#las-7-capas-del-modelo-osi">Las 7 Capas del Modelo OSI</a></h3>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Capa</th><th>Nombre</th><th>Función</th><th>Ejemplos de Protocolos/Tecnologías</th></tr>
-</thead>
-<tbody>
-<tr><td><strong>7</strong></td><td><strong>Aplicación</strong></td><td>Interfaz entre la red y las aplicaciones del usuario. Proporciona servicios de red directamente al software.</td><td>HTTP, FTP, SMTP, DNS, SNMP, DHCP</td></tr>
-<tr><td><strong>6</strong></td><td><strong>Presentación</strong></td><td>Traduce, cifra y comprime los datos para que la capa de aplicación pueda interpretarlos.</td><td>SSL/TLS, JPEG, MPEG, GIF, ASCII</td></tr>
-<tr><td><strong>5</strong></td><td><strong>Sesión</strong></td><td>Establece, gestiona y termina las sesiones de comunicación entre dispositivos.</td><td>NetBIOS, RPC, PPTP</td></tr>
-<tr><td><strong>4</strong></td><td><strong>Transporte</strong></td><td>Garantiza la entrega fiable o rápida de los datos entre extremos. Controla el flujo y el control de errores.</td><td>TCP, UDP, SCTP</td></tr>
-<tr><td><strong>3</strong></td><td><strong>Red</strong></td><td>Determina la mejor ruta lógica para los datos desde el origen hasta el destino. Maneja direccionamiento lógico.</td><td>IP, ICMP, IPSec, OSPF, BGP</td></tr>
-<tr><td><strong>2</strong></td><td><strong>Enlace de Datos</strong></td><td>Proporciona transferencia fiable de datos entre dos nodos adyacentes en una red. Controla el acceso al medio físico.</td><td>Ethernet (MAC), PPP, Frame Relay, ARP, Switches</td></tr>
-<tr><td><strong>1</strong></td><td><strong>Física</strong></td><td>Transmite bits sin procesar a través del medio físico. Define especificaciones eléctricas, mecánicas y funcionales.</td><td>Cables (UTP, fibra óptica), hubs, conectores, señales eléctricas</td></tr>
-</tbody>
-</table>
-</div>
-<h3 id="cómo-funciona-el-modelo-osi"><a class="header" href="#cómo-funciona-el-modelo-osi">Cómo Funciona el Modelo OSI</a></h3>
-<ol>
-<li>Los datos se generan en la capa <strong>7</strong> (Aplicación) y descienden capa por capa.</li>
-<li>En cada nivel, se añade un <strong>encabezado</strong> (y en algunos casos un <strong>trailer</strong>) con información de control propia. Este proceso se llama <strong>encapsulación</strong>.</li>
-<li>Los datos llegan a la capa <strong>1</strong> (Física) y se transmiten al dispositivo receptor.</li>
-<li>En el destino, los datos ascienden capa por capa, eliminando los encabezados en cada nivel. Este proceso se llama <strong>desencapsulación</strong>.</li>
-</ol>
-<pre><code>Dispositivo A                                        Dispositivo B
-┌──────────────┐      Encapsulación      Desencapsulación      ┌──────────────┐
-│  Aplicación  │ ──► │ Presentación │ ──► │  Sesión  │ ──► ... │  Aplicación  │
-└──────────────┘      └──────────────────┘                     └──────────────┘
+<h2 id="3-el-modelo-osi-las-7-capas"><a class="header" href="#3-el-modelo-osi-las-7-capas">3. El modelo OSI: las 7 capas</a></h2>
+<h3 id="31-qué-es-el-modelo-osi"><a class="header" href="#31-qué-es-el-modelo-osi">3.1. Qué es el modelo OSI</a></h3>
+<p><strong>OSI</strong> significa <em>Open Systems Interconnection</em> (interconexión de sistemas abiertos). Fue desarrollado por la <strong>ISO</strong> (Organización Internacional de Normalización) y publicado en 1984. Su objetivo era ambicioso: definir el <strong>estándar universal</strong> de la comunicación entre equipos de cualquier fabricante.</p>
+<p>En la práctica, el modelo OSI no se implementó tal cual (llegó tarde y “perfecto, pero teórico”), pero se volvió <strong>la herramienta educativa y de diagnóstico más importante de las redes</strong>. Todavía hoy, decir “problema de capa 2” o “capa 7” es la forma universal de ubicar una falla.</p>
+<h3 id="32-la-pila-de-7-capas"><a class="header" href="#32-la-pila-de-7-capas">3.2. La pila de 7 capas</a></h3>
+<p>De arriba hacia abajo (la que ve el usuario) hacia abajo (el cable):</p>
+<pre><code>                      MODELO OSI
+    ┌─────────────────────────────────┐
+    │ 7. APLICACIÓN    Lo que ves     │   El navegador, el correo, el chat
+    ├─────────────────────────────────┤
+    │ 6. PRESENTACIÓN  La forma       │   Traduce, cifra, comprime los datos
+    ├─────────────────────────────────┤
+    │ 5. SESIÓN        El diálogo     │   Abre y cierra la conversación
+    ├─────────────────────────────────┤
+    │ 4. TRANSPORTE    La garantía     │   TCP/UDP: entrega, orden, errores
+    ├─────────────────────────────────┤
+    │ 3. RED           El camino       │   IP: direcciones y rutas
+    ├─────────────────────────────────┤
+    │ 2. ENLACE        El vecino       │   Ethernet: tramas, MAC
+    ├─────────────────────────────────┤
+    │ 1. FÍSICA        El cable        │   Bits, voltajes, ondas
+    └─────────────────────────────────┘
 </code></pre>
+<p>Podés memorizarlas con esta frase (de arriba hacia abajo):</p>
 <blockquote>
-<p><strong>Dato clave:</strong> En la práctica, muchas implementaciones combinan o simplifican capas. Por eso surgió el modelo TCP/IP.</p>
+<p><strong>A</strong>plicación, <strong>P</strong>resentación, <strong>S</strong>esión, <strong>T</strong>ransporte, <strong>R</strong>ed, <strong>E</strong>nlace, <strong>F</strong>ísica
+= <strong>“A Pesar Solo Tengo Redes Efectivas Funcionando”</strong></p>
+</blockquote>
+<h3 id="33-qué-hace-cada-capa-la-tabla-completa"><a class="header" href="#33-qué-hace-cada-capa-la-tabla-completa">3.3. Qué hace cada capa (la tabla completa)</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Capa</th><th>Nombre</th><th>Función en cristiano</th><th>Qué maneja (PDU)</th><th>Dónde “vive”</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>7</strong></td><td>Aplicación</td><td>La interfaz con los programas que vos usás (navegador, correo, chat)</td><td>Datos</td><td>El programa (Chrome, Outlook…)</td></tr>
+<tr><td><strong>6</strong></td><td>Presentación</td><td>Traduce formatos, cifra y comprime para que la capa 7 entienda</td><td>Datos</td><td>El sistema operativo</td></tr>
+<tr><td><strong>5</strong></td><td>Sesión</td><td>Abre, mantiene y cierra el diálogo entre dos aplicaciones</td><td>Datos</td><td>El sistema operativo</td></tr>
+<tr><td><strong>4</strong></td><td>Transporte</td><td>Garantiza que los datos lleguen completos, en orden y sin errores (o elige no garantizarlo, por velocidad)</td><td><strong>Segmento</strong> (TCP) / <strong>Datagrama</strong> (UDP)</td><td>El sistema operativo de los hosts</td></tr>
+<tr><td><strong>3</strong></td><td>Red</td><td>Asigna direcciones lógicas (IP) y decide la mejor ruta</td><td><strong>Paquete</strong></td><td>El router</td></tr>
+<tr><td><strong>2</strong></td><td>Enlace de Datos</td><td>Entrega datos al dispositivo vecino inmediato, con direcciones físicas (MAC) y detección de errores</td><td><strong>Trama</strong> (frame)</td><td>El switch, la placa de red</td></tr>
+<tr><td><strong>1</strong></td><td>Física</td><td>Transmite los bits crudos por el medio: voltajes, luz, ondas de radio</td><td><strong>Bits</strong></td><td>El cable, la antena, el hub</td></tr>
+</tbody>
+</table>
+</div>
+<p>El dato que transporta cada capa tiene nombre propio: se llama <strong>PDU</strong> (<em>Protocol Data Unit</em> — unidad de datos de protocolo). Fijate en la columna “Qué maneja”: a cada capa le corresponde una “caja” distinta — <strong>bits → tramas → paquetes → segmentos → datos</strong>.</p>
+<blockquote>
+<p><strong>Clave de memoria:</strong> “¿Me pasás el <em>segmento</em>?” decime <strong>T</strong>ransporte. “¿El <em>paquete</em>?” → <strong>R</strong>ed. “¿La <em>trama</em>?” → <strong>E</strong>nlace. Cada piso de la muñeca rusa tiene su propio nombre de caja.</p>
+</blockquote>
+<h3 id="34-cómo-funciona-y-el-diagrama-que-casi-siempre-sale-mal"><a class="header" href="#34-cómo-funciona-y-el-diagrama-que-casi-siempre-sale-mal">3.4. Cómo funciona (y el diagrama que casi siempre sale mal)</a></h3>
+<p>El flujo es simple: los datos <strong>bajan</strong> por la pila en el emisor (cada capa agrega su sobre) y <strong>suben</strong> por la pila en el receptor (cada capa abre su sobre). Esto se llama <strong>encapsulación</strong> (al bajar) y <strong>desencapsulación</strong> (al subir).</p>
+<p>El diagrama correcto — fijate que van en <em>paralelo</em>, capa contra capa, y no en fila como suele dibujarse mal — es este:</p>
+<pre><code> EMISOR                                  RECEPTOR
+┌─────────────┐  7º agrega datos       ┌─────────────┐
+│ 7 Aplicación │ ────────► ──────────► │ 7 Aplicación │
+├─────────────┤                        ├─────────────┤
+│ 6 Presentac. │ ────────► ──────────► │ 6 Presentac. │
+├─────────────┤                        ├─────────────┤
+│ 5 Sesión     │ ────────► ──────────► │ 5 Sesión     │
+├─────────────┤                        ├─────────────┤
+│ 4 Transporte │ ────────► ──────────► │ 4 Transporte │
+├─────────────┤                        ├─────────────┤
+│ 3 Red        │ ────────► ──────────► │ 3 Red        │
+├─────────────┤                        ├─────────────┤
+│ 2 Enlace     │ ────────► ──────────► │ 2 Enlace     │
+├─────────────┤                        ├─────────────┤
+│ 1 Física     │ ──── bits por el ───► │ 1 Física     │
+└─────────────┘       medio físico     └─────────────┘
+      │  cada capa agrega su sobre         │  cada capa abre su sobre
+      └───────── ENCAPSULACIÓN ────────────┘  DESENCAPSULACIÓN
+</code></pre>
+<p>Lo importante: cada capa del emisor le habla “directamente” a su gemela en el receptor — aunque en la práctica los datos solo viajen por el cable físico y las capas intermedias simplemente los empujen hacia abajo o arriba.</p>
+<blockquote>
+<p><strong>Ojo con un error común:</strong> se suele dibujar el flujo como una fila horizontal (Aplicación → Presentación → Sesión → …) — eso está mal. Las capas se apilan en paralelo: <strong>bajan en el emisor y suben en el receptor</strong>.</p>
 </blockquote>
 <hr>
-<h2 id="modelo-tcpip-transmission-control-protocol--internet-protocol"><a class="header" href="#modelo-tcpip-transmission-control-protocol--internet-protocol">Modelo TCP/IP (Transmission Control Protocol / Internet Protocol)</a></h2>
-<p>El modelo TCP/IP fue desarrollado por el <strong>Departamento de Defensa de EE.UU.</strong> (DoD). Es el modelo que realmente se utiliza en Internet. Se compone de <strong>4 capas</strong> que agrupan funcionalmente las 7 del modelo OSI.</p>
-<h3 id="las-4-capas-del-modelo-tcpip"><a class="header" href="#las-4-capas-del-modelo-tcpip">Las 4 Capas del Modelo TCP/IP</a></h3>
+<h2 id="4-el-modelo-tcpip-las-4-capas"><a class="header" href="#4-el-modelo-tcpip-las-4-capas">4. El modelo TCP/IP: las 4 capas</a></h2>
+<h3 id="41-el-modelo-que-sí-funciona"><a class="header" href="#41-el-modelo-que-sí-funciona">4.1. El modelo que sí funciona</a></h3>
+<p>El modelo TCP/IP nació por el lado práctico: lo desarrollaron los que construyeron <strong>ARPANET</strong> (la red del Departamento de Defensa de EE.UU. que dio origen a internet) y después lo estandarizó la <strong>IETF</strong>. Su regla era simple: <em>primero que funcione, después que sea lindo</em>. Los protocolos ya existían (TCP, IP); el modelo se escribió después, para explicarlos.</p>
+<p>Hoy, <strong>todo internet funciona con TCP/IP</strong>. Cuando decís “la red anda mal”, hablando en serio estás hablando de estas 4 capas.</p>
+<h3 id="42-las-4-capas"><a class="header" href="#42-las-4-capas">4.2. Las 4 capas</a></h3>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>Capa</th><th>Nombre</th><th>Función</th><th>Ejemplos de Protocolos/Tecnologías</th></tr>
+<tr><th>Capa</th><th>Nombre</th><th>Función</th><th>Protocolos típicos</th></tr>
 </thead>
 <tbody>
-<tr><td><strong>4</strong></td><td><strong>Aplicación</strong></td><td>Combina las capas 7, 6 y 5 del OSI. Gestiona los servicios de red de alto nivel.</td><td>HTTP, FTP, SMTP, DNS, SSH, SNMP</td></tr>
-<tr><td><strong>3</strong></td><td><strong>Transporte</strong></td><td>Igual que la capa 4 del OSI. Comunicación extremo a extremo.</td><td>TCP, UDP</td></tr>
-<tr><td><strong>2</strong></td><td><strong>Internet</strong></td><td>Equivalente a la capa 3 del OSI. Enrutamiento y direccionamiento lógico.</td><td>IP, ICMP, ARP, IPSec</td></tr>
-<tr><td><strong>1</strong></td><td><strong>Acceso a Red (Link)</strong></td><td>Combina las capas 2 y 1 del OSI. Comunicación directa con el medio físico.</td><td>Ethernet, Wi-Fi, PPP, Frame Relay</td></tr>
+<tr><td><strong>4</strong></td><td><strong>Aplicación</strong></td><td>Junta las capas 7, 6 y 5 del OSI: los servicios que usan los programas</td><td>HTTP, HTTPS, DNS, DHCP, FTP, SSH, SMTP, SNMP</td></tr>
+<tr><td><strong>3</strong></td><td><strong>Transporte</strong></td><td>Igual que la capa 4 del OSI: comunicación extremo a extremo, fiable o rápida</td><td>TCP, UDP</td></tr>
+<tr><td><strong>2</strong></td><td><strong>Internet</strong></td><td>Enrutamiento y direccionamiento lógico (equivale a la capa 3 del OSI)</td><td>IP, ICMP, ARP</td></tr>
+<tr><td><strong>1</strong></td><td><strong>Acceso a Red</strong></td><td>Junta las capas 2 y 1 del OSI: comunicación con el vecino y el medio físico</td><td>Ethernet, Wi-Fi, PPP, Frame Relay</td></tr>
 </tbody>
 </table>
 </div>
-<h3 id="comparación-rápida-con-el-modelo-osi"><a class="header" href="#comparación-rápida-con-el-modelo-osi">Comparación Rápida con el Modelo OSI</a></h3>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th style="text-align: center">Modelo OSI</th><th style="text-align: center">Modelo TCP/IP</th></tr>
-</thead>
-<tbody>
-<tr><td style="text-align: center">Capa 7 - Aplicación</td><td style="text-align: center"><strong>Capa de Aplicación</strong> (4)</td></tr>
-<tr><td style="text-align: center">Capa 6 - Presentación</td><td style="text-align: center"><strong>Capa de Aplicación</strong> (4)</td></tr>
-<tr><td style="text-align: center">Capa 5 - Sesión</td><td style="text-align: center"><strong>Capa de Aplicación</strong> (4)</td></tr>
-<tr><td style="text-align: center">Capa 4 - Transporte</td><td style="text-align: center"><strong>Capa de Transporte</strong> (3)</td></tr>
-<tr><td style="text-align: center">Capa 3 - Red</td><td style="text-align: center"><strong>Capa de Internet</strong> (2)</td></tr>
-<tr><td style="text-align: center">Capa 2 - Enlace de Datos</td><td style="text-align: center"><strong>Capa de Acceso a Red</strong> (1)</td></tr>
-<tr><td style="text-align: center">Capa 1 - Física</td><td style="text-align: center"><strong>Capa de Acceso a Red</strong> (1)</td></tr>
-</tbody>
-</table>
-</div>
+<p>¿Por qué 4 capas y no 7? Porque en la práctica, Presentación y Sesión casi siempre se resuelven dentro de la propia aplicación (el navegador cifra, comprime y maneja sus sesiones él mismo), y la frontera entre Enlace y Física es difusa en tecnologías reales como Ethernet.</p>
+<h3 id="43-el-mapeo-entre-modelos"><a class="header" href="#43-el-mapeo-entre-modelos">4.3. El mapeo entre modelos</a></h3>
+<pre><code>        MODELO OSI                 MODELO TCP/IP
+┌──────────────────────┐    ┌──────────────────────┐
+│ 7 Aplicación         │    │                      │
+│ 6 Presentación       │───►│  4 Aplicación        │
+│ 5 Sesión             │    │                      │
+├──────────────────────┤    ├──────────────────────┤
+│ 4 Transporte         │───►│  3 Transporte        │
+├──────────────────────┤    ├──────────────────────┤
+│ 3 Red                │───►│  2 Internet          │
+├──────────────────────┤    ├──────────────────────┤
+│ 2 Enlace de Datos    │    │                      │
+│ 1 Física             │───►│  1 Acceso a Red      │
+└──────────────────────┘    └──────────────────────┘
+</code></pre>
+<p>Las flechas resumen todo: <strong>las capas 5-6-7 del OSI viven juntas en la capa de Aplicación del TCP/IP, y las capas 1-2 viven juntas en la de Acceso a Red.</strong></p>
 <hr>
-<h2 id="comparación-detallada-osi-vs-tcpip"><a class="header" href="#comparación-detallada-osi-vs-tcpip">Comparación Detallada: OSI vs TCP/IP</a></h2>
+<h2 id="5-osi-vs-tcpip-la-comparación-honesta"><a class="header" href="#5-osi-vs-tcpip-la-comparación-honesta">5. OSI vs TCP/IP: la comparación honesta</a></h2>
+<h3 id="51-cuál-uso-cuál-estudio"><a class="header" href="#51-cuál-uso-cuál-estudio">5.1. ¿Cuál uso, cuál estudio?</a></h3>
 <div class="table-wrapper">
 <table>
 <thead>
@@ -292,242 +389,489 @@
 </thead>
 <tbody>
 <tr><td><strong>Número de capas</strong></td><td>7</td><td>4</td></tr>
-<tr><td><strong>Origen</strong></td><td>Organización (ISO)</td><td>Práctico (DoD / IETF)</td></tr>
-<tr><td><strong>Uso real</strong></td><td>Principalmente teórico y educativo</td><td>Base de Internet y redes reales</td></tr>
-<tr><td><strong>Protocolo de red</strong></td><td>Independiente de protocolo</td><td>Basado en IP</td></tr>
-<tr><td><strong>Servicios definidos</strong></td><td>Cada capa tiene servicios bien definidos</td><td>Más flexible y menos rígido</td></tr>
-<tr><td><strong>Adaptabilidad</strong></td><td>Difícil de adaptar a nuevas tecnologías</td><td>Escalable y adaptable</td></tr>
-<tr><td><strong>Desarrollo</strong></td><td>Se creó primero el modelo, luego los protocolos</td><td>Se desarrollaron los protocolos primero, luego el modelo</td></tr>
+<tr><td><strong>Quién lo creó</strong></td><td>La ISO (organización de estándares)</td><td>Los ingenieros de ARPANET / la IETF</td></tr>
+<tr><td><strong>Orden de creación</strong></td><td>Primero el modelo, después los protocolos</td><td>Primero los protocolos, después el modelo</td></tr>
+<tr><td><strong>Uso real</strong></td><td>Teórico y educativo (no se implementó tal cual)</td><td>La base real de internet</td></tr>
+<tr><td><strong>Protocolo de red</strong></td><td>Independiente de protocolo (es genérico)</td><td>Atado a IP</td></tr>
+<tr><td><strong>Evolución</strong></td><td>Rígido: cambiar una capa requiere renegociarlo todo</td><td>Flexible: las capas evolucionan juntas con internet</td></tr>
+<tr><td><strong>Para qué sirve hoy</strong></td><td>Entender conceptos, ubicar fallas, estudiar</td><td>Trabajar de verdad, configurar, operar</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="52-la-verdad-de-a-pie"><a class="header" href="#52-la-verdad-de-a-pie">5.2. La verdad de a pie</a></h3>
+<blockquote>
+<p><strong>Resumen honesto:</strong> el OSI es para <strong>pensar</strong>; el TCP/IP es para <strong>funcionar</strong>. Cuando un técnico dice “problema de capa 3”, está usando la numeración del OSI aunque la red corra con TCP/IP — el OSI es el idioma común, TCP/IP es la calle.</p>
+</blockquote>
+<p>Por eso el resto de este manual usa la <strong>numeración del OSI</strong> (capa 1, capa 2, capa 3…) pero los <strong>nombres y protocolos del TCP/IP</strong> (la realidad).</p>
+<h3 id="53-el-modelo-híbrido-real"><a class="header" href="#53-el-modelo-híbrido-real">5.3. El modelo híbrido real</a></h3>
+<p>En la práctica, nadie implementa “OSI puro” ni “TCP/IP puro”: se usa un <strong>modelo híbrido</strong>. Casi todos los textos modernos y las herramientas de análisis (como <strong>Wireshark</strong>) hablan de las 5 capas que ves acá:</p>
+<pre><code> 5. Aplicación        HTTP, DNS, SMTP…
+ 4. Transporte        TCP / UDP
+ 3. Red               IP, ICMP
+ 2. Enlace de Datos   Ethernet (tramas, MAC)
+ 1. Física            cable / ondas
+</code></pre>
+<p>No te asustes si ves libros que dibujan 5 capas: es exactamente lo mismo, con los nombres del OSI y la cantidad del TCP/IP.</p>
+<hr>
+<h2 id="6-la-capa-de-aplicación"><a class="header" href="#6-la-capa-de-aplicación">6. La capa de Aplicación</a></h2>
+<h3 id="61-la-ventanilla-del-correo"><a class="header" href="#61-la-ventanilla-del-correo">6.1. La ventanilla del correo</a></h3>
+<p>La capa de Aplicación es la única que ve el usuario. Es la <strong>ventanilla del correo</strong>: el lugar donde entregás tu carta (el programa que usás) y recibís la respuesta.</p>
+<p>No es “la aplicación” en sí (Chrome no es una capa): es el <strong>protocolo</strong> que la aplicación usa para hablar por la red. El navegador no habla “red”: habla <strong>HTTP</strong>. El correo electrónico habla <strong>SMTP</strong> (para enviar) e <strong>IMAP/POP3</strong> (para recibir). El chat habla HTTPS. Cada servicio tiene su protocolo y su <strong>puerto</strong> (el “número de ventanilla” que identifica al servicio en el servidor).</p>
+<h3 id="62-los-protocolos-que-tenés-que-conocer"><a class="header" href="#62-los-protocolos-que-tenés-que-conocer">6.2. Los protocolos que tenés que conocer</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Protocolo</th><th style="text-align: center">Puerto</th><th>Para qué sirve</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>HTTP</strong></td><td style="text-align: center">80</td><td>Páginas web (sin cifrar)</td></tr>
+<tr><td><strong>HTTPS</strong></td><td style="text-align: center">443</td><td>Páginas web cifradas (las de hoy en día)</td></tr>
+<tr><td><strong>DNS</strong></td><td style="text-align: center">53</td><td>Traduce nombres (<code>google.com</code>) a direcciones IP</td></tr>
+<tr><td><strong>DHCP</strong></td><td style="text-align: center">67/68</td><td>Asigna IP automáticamente a los dispositivos</td></tr>
+<tr><td><strong>FTP</strong></td><td style="text-align: center">20/21</td><td>Transferencia de archivos (legado, sin cifrar)</td></tr>
+<tr><td><strong>SSH</strong></td><td style="text-align: center">22</td><td>Acceso remoto seguro a servidores</td></tr>
+<tr><td><strong>Telnet</strong></td><td style="text-align: center">23</td><td>Acceso remoto sin cifrar (hoy, en desuso)</td></tr>
+<tr><td><strong>SMTP</strong></td><td style="text-align: center">25/587</td><td>Envío de correo electrónico</td></tr>
+<tr><td><strong>POP3</strong></td><td style="text-align: center">110</td><td>Recepción de correo (descarga y borra del servidor)</td></tr>
+<tr><td><strong>IMAP</strong></td><td style="text-align: center">143</td><td>Recepción de correo (sincroniza con el servidor)</td></tr>
+<tr><td><strong>SNMP</strong></td><td style="text-align: center">161</td><td>Monitoreo y gestión de dispositivos de red</td></tr>
 </tbody>
 </table>
 </div>
 <blockquote>
-<p><strong>En resumen:</strong> El modelo OSI es ideal para <strong>entender y enseñar</strong> los conceptos de redes. El modelo TCP/IP es el que <strong>realmente se usa</strong> en la práctica.</p>
+<p><strong>Cómo leer la tabla:</strong> cuando tu PC quiere abrir un sitio web, manda un mensaje “al puerto 443” del servidor. El puerto le dice al servidor <em>qué servicio</em> está pidiendo. Es como llamar a una empresa y pedir “pasame con ventanilla 443”: sabés que ahí atienden HTTPS.</p>
 </blockquote>
 <hr>
-<h2 id="capa-de-aplicación-tcpip-en-profundidad"><a class="header" href="#capa-de-aplicación-tcpip-en-profundidad">Capa de Aplicación TCP/IP en Profundidad</a></h2>
-<p>La capa de Aplicación es la más cercana al usuario y engloba múltiples protocolos según el servicio:</p>
-<h3 id="protocolos-principales"><a class="header" href="#protocolos-principales">Protocolos Principales</a></h3>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Protocolo</th><th style="text-align: center">Puerto Predeterminado</th><th>Función</th></tr>
-</thead>
-<tbody>
-<tr><td><strong>HTTP</strong></td><td style="text-align: center">80</td><td>Transferencia de páginas web (sin cifrar)</td></tr>
-<tr><td><strong>HTTPS</strong></td><td style="text-align: center">443</td><td>Transferencia web cifrada con TLS</td></tr>
-<tr><td><strong>FTP</strong></td><td style="text-align: center">20 / 21</td><td>Transferencia de archivos</td></tr>
-<tr><td><strong>SSH</strong></td><td style="text-align: center">22</td><td>Acceso remoto seguro</td></tr>
-<tr><td><strong>Telnet</strong></td><td style="text-align: center">23</td><td>Acceso remoto (sin cifrar)</td></tr>
-<tr><td><strong>SMTP</strong></td><td style="text-align: center">25 / 587</td><td>Envío de correo electrónico</td></tr>
-<tr><td><strong>POP3</strong></td><td style="text-align: center">110</td><td>Recepción de correo (descarga)</td></tr>
-<tr><td><strong>IMAP</strong></td><td style="text-align: center">143</td><td>Recepción de correo (sincronización)</td></tr>
-<tr><td><strong>DNS</strong></td><td style="text-align: center">53</td><td>Resolución de nombres de dominio a IP</td></tr>
-<tr><td><strong>DHCP</strong></td><td style="text-align: center">67 / 68</td><td>Asignación dinámica de direcciones IP</td></tr>
-<tr><td><strong>SNMP</strong></td><td style="text-align: center">161</td><td>Gestión y monitorización de dispositivos</td></tr>
-</tbody>
-</table>
-</div>
-<hr>
-<h2 id="capa-de-transporte-en-profundidad"><a class="header" href="#capa-de-transporte-en-profundidad">Capa de Transporte en Profundidad</a></h2>
-<p>La capa de Transporte permite la comunicación entre procesos en hosts distintos. Ofrece dos modos principales:</p>
-<h3 id="tcp-transmission-control-protocol"><a class="header" href="#tcp-transmission-control-protocol">TCP (Transmission Control Protocol)</a></h3>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Característica</th><th>Descripción</th></tr>
-</thead>
-<tbody>
-<tr><td><strong>Tipo de conexión</strong></td><td>Conectado (establece sesión antes de transmitir)</td></tr>
-<tr><td><strong>Fiabilidad</strong></td><td>Garantiza la entrega y el orden de los paquetes</td></tr>
-<tr><td><strong>Control de flujo</strong></td><td>Evita que el emisor sature al receptor</td></tr>
-<tr><td><strong>Control de errores</strong></td><td>Detecta y retransmite paquetes perdidos</td></tr>
-<tr><td><strong>Uso ideal</strong></td><td>Web, correo electrónico, transferencia de archivos</td></tr>
-</tbody>
-</table>
-</div>
+<h2 id="7-la-capa-de-transporte-tcp-y-udp"><a class="header" href="#7-la-capa-de-transporte-tcp-y-udp">7. La capa de Transporte: TCP y UDP</a></h2>
+<h3 id="71-el-problema-de-la-capa-4"><a class="header" href="#71-el-problema-de-la-capa-4">7.1. El problema de la capa 4</a></h3>
+<p>La capa de Red ya sabe <em>cómo llegar</em> (las rutas). A la capa de Transporte le toca otra pregunta: <strong>¿cómo garantizo que lo que se mandó llegó bien?</strong></p>
+<p>Acá hay dos personalidades opuestas, y ambas son correctas según lo que necesites:</p>
+<ul>
+<li><strong>TCP</strong>: la carta certificada con acuse de recibo y seguimiento.</li>
+<li><strong>UDP</strong>: el correo aéreo sin confirmación, rápido, sin vueltas.</li>
+</ul>
+<h3 id="72-tcp-la-carta-certificada"><a class="header" href="#72-tcp-la-carta-certificada">7.2. TCP: la carta certificada</a></h3>
 <blockquote>
-<p><strong>Analogía:</strong> TCP es como enviar una carta con acuse de recibo y seguimiento postal: sabes que llegó y en orden.</p>
+<p><strong>Analogía:</strong> TCP es mandar una carta <strong>con acuse de recibo y seguimiento postal</strong>: te avisan cuándo salió, te avisan cuándo llegó, y si se pierde, se reenvía. El costo: es más lento y más pesado (cada carta lleva más papeles).</p>
 </blockquote>
-<h3 id="udp-user-datagram-protocol"><a class="header" href="#udp-user-datagram-protocol">UDP (User Datagram Protocol)</a></h3>
+<p>El acuse de recibo tiene nombre: el <strong>three-way handshake</strong> (saludo de tres pasos), la forma en que dos equipos se ponen de acuerdo antes de hablar:</p>
+<pre><code>  Emisor                     Receptor
+    │                            │
+    │  ─── SYN ───────────────►  │   "¿Estás listo para hablar?"
+    │                            │
+    │  ◄─── SYN + ACK ─────────  │   "Estoy listo. ¿Y vos?"
+    │                            │
+    │  ─── ACK ───────────────►  │   "Listo, hablemos."
+    │                            │
+    │  ▼ (empieza la conversación) 
+</code></pre>
+<p>Con la conexión armada, TCP agrega otras dos garantías:</p>
+<ul>
+<li><strong>Numeración de segmentos</strong>: cada segmento lleva un número; el receptor los rearma <strong>en orden</strong> y detecta si falta alguno.</li>
+<li><strong>Control de flujo</strong>: si el receptor está saturado, le dice al emisor “bajá un cambio” (la <em>ventana</em>). Así nadie ahoga a nadie.</li>
+<li><strong>Checksum</strong>: cada segmento lleva una “huella” de verificación; si el dato se corrompió en el camino, se detecta y se retransmite.</li>
+</ul>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>Característica</th><th>Descripción</th></tr>
+<tr><th>Característica TCP</th><th>Qué significa</th></tr>
 </thead>
 <tbody>
-<tr><td><strong>Tipo de conexión</strong></td><td>Sin conexión (no establece sesión)</td></tr>
-<tr><td><strong>Fiabilidad</strong></td><td>No garantiza entrega ni orden</td></tr>
-<tr><td><strong>Control de flujo</strong></td><td>No implementa control de flujo</td></tr>
-<tr><td><strong>Control de errores</strong></td><td>Solo verificación básica con checksum</td></tr>
-<tr><td><strong>Uso ideal</strong></td><td>Streaming de video/audio, VoIP, juegos en línea, DNS</td></tr>
+<tr><td>Conexión</td><td>Conectado: arma una sesión antes de transmitir (handshake)</td></tr>
+<tr><td>Fiabilidad</td><td>Garantiza entrega y orden de los segmentos</td></tr>
+<tr><td>Control de flujo</td><td>El receptor puede frenar al emisor si se satura</td></tr>
+<tr><td>Control de errores</td><td>Detecta pérdidas/corrupciones y retransmite</td></tr>
+<tr><td>Velocidad</td><td>Más lento, por todo el control que lleva</td></tr>
+<tr><td>Se usa en</td><td>Web, correo, transferencia de archivos, bases de datos — todo lo que no puede perderse</td></tr>
 </tbody>
 </table>
 </div>
+<h3 id="73-udp-el-correo-sin-acuse"><a class="header" href="#73-udp-el-correo-sin-acuse">7.3. UDP: el correo sin acuse</a></h3>
 <blockquote>
-<p><strong>Analogía:</strong> UDP es como enviar una carta sin acuse de recibo: es más rápido, pero no sabes si llegó.</p>
+<p><strong>Analogía:</strong> UDP es tirar la carta al buzón <strong>sin acuse de recibo</strong>: sale rápido, no pesa nada… y si se pierde, te enterás (o no). No hay seguimiento, pero tampoco demoras.</p>
 </blockquote>
-<h3 id="comparación-tcp-vs-udp"><a class="header" href="#comparación-tcp-vs-udp">Comparación TCP vs UDP</a></h3>
+<p>Es literalmente el “protocolo de datagramas de usuario” y hace solo lo mínimo: pone un número de puerto y manda. Sin handshake, sin orden garantizado, sin retransmisión. ¿Por qué existe entonces? Por tres razones de oro:</p>
+<ol>
+<li><strong>Velocidad</strong>: sin handshake ni confirmaciones, cada mensaje viaja al ritmo máximo posible.</li>
+<li><strong>En vivo</strong>: en una videollamada, un segundo de audio perdido se puede descartar; retransmitirlo sería un desastre (llegaría tarde igual). Mejor <strong>perder un cuadro que frenar toda la llamada</strong>.</li>
+<li><strong>Mensajes cortos de una sola vez</strong>: pedir una dirección DNS o el estado de un juego no necesita “sesión”.</li>
+</ol>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Característica UDP</th><th>Qué significa</th></tr>
+</thead>
+<tbody>
+<tr><td>Conexión</td><td>Sin conexión: manda y listo</td></tr>
+<tr><td>Fiabilidad</td><td>No garantiza entrega ni orden</td></tr>
+<tr><td>Control de errores</td><td>Solo un checksum básico (si falla, descarta)</td></tr>
+<tr><td>Velocidad</td><td>Más rápido, menos overhead</td></tr>
+<tr><td>Se usa en</td><td>Streaming, VoIP, juegos online, DNS, DHCP</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="74-la-tabla-que-resume-la-pelea"><a class="header" href="#74-la-tabla-que-resume-la-pelea">7.4. La tabla que resume la pelea</a></h3>
 <div class="table-wrapper">
 <table>
 <thead>
 <tr><th>Criterio</th><th>TCP</th><th>UDP</th></tr>
 </thead>
 <tbody>
-<tr><td><strong>Conexión</strong></td><td>Conectado</td><td>Sin conexión</td></tr>
-<tr><td><strong>Fiabilidad</strong></td><td>Alta</td><td>Baja</td></tr>
-<tr><td><strong>Velocidad</strong></td><td>Más lento</td><td>Más rápido</td></tr>
-<tr><td><strong>Overhead</strong></td><td>Mayor (más cabeceras)</td><td>Menor</td></tr>
-<tr><td><strong>Orden de paquetes</strong></td><td>Garantizado</td><td>No garantizado</td></tr>
-<tr><td><strong>Control de flujo</strong></td><td>Sí</td><td>No</td></tr>
-</tbody>
-</table>
-</div>
-<hr>
-<h2 id="capa-de-internet-en-profundidad"><a class="header" href="#capa-de-internet-en-profundidad">Capa de Internet en Profundidad</a></h2>
-<p>La capa de Internet es responsable de <strong>direccionamiento lógico</strong> y <strong>enrutamiento</strong> de los datos a través de redes.</p>
-<h3 id="ip-internet-protocol"><a class="header" href="#ip-internet-protocol">IP (Internet Protocol)</a></h3>
-<p>Existen dos versiones en uso:</p>
-<h4 id="ipv4"><a class="header" href="#ipv4">IPv4</a></h4>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Característica</th><th>Detalle</th></tr>
-</thead>
-<tbody>
-<tr><td><strong>Longitud de dirección</strong></td><td>32 bits</td></tr>
-<tr><td><strong>Formato</strong></td><td>Decimal punteado (ej: <code>192.168.1.1</code>)</td></tr>
-<tr><td><strong>Espacio de direcciones</strong></td><td>~4.300 millones de direcciones</td></tr>
-<tr><td><strong>Encabezado</strong></td><td>20 bytes mínimo (sin opciones)</td></tr>
-</tbody>
-</table>
-</div>
-<h4 id="ipv6"><a class="header" href="#ipv6">IPv6</a></h4>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Característica</th><th>Detalle</th></tr>
-</thead>
-<tbody>
-<tr><td><strong>Longitud de dirección</strong></td><td>128 bits</td></tr>
-<tr><td><strong>Formato</strong></td><td>Hexadecimal separado por dos puntos (ej: <code>2001:0db8::1</code>)</td></tr>
-<tr><td><strong>Espacio de direcciones</strong></td><td>Prácticamente ilimitado (~3.4 × 10³⁸)</td></tr>
-<tr><td><strong>Encabezado</strong></td><td>40 bytes fijos, más eficiente</td></tr>
+<tr><td>Conexión</td><td>Conectado (handshake)</td><td>Sin conexión</td></tr>
+<tr><td>Fiabilidad</td><td>Alta (entrega + orden)</td><td>Baja (mejor esfuerzo)</td></tr>
+<tr><td>Velocidad</td><td>Más lento</td><td>Más rápido</td></tr>
+<tr><td>Overhead (carga extra)</td><td>Mayor (cabecera de 20 bytes)</td><td>Menor (cabecera de 8 bytes)</td></tr>
+<tr><td>Control de flujo</td><td>Sí</td><td>No</td></tr>
+<tr><td>Retransmisión</td><td>Sí</td><td>No</td></tr>
+<tr><td>Idea</td><td>“Que llegue, aunque tarde”</td><td>“Que llegue rápido, aunque pierda algo”</td></tr>
 </tbody>
 </table>
 </div>
 <blockquote>
-<p><strong>Motivo de la migración a IPv6:</strong> El agotamiento del espacio de direcciones IPv4 y la necesidad de más dispositivos conectados.</p>
+<p><strong>Regla práctica:</strong> ¿El dato se puede repetir? <strong>TCP.</strong> ¿El dato se puede perder un poquito sin drama? <strong>UDP.</strong> Descargás un archivo → TCP (un byte faltante corrompe todo). Mirás una transmisión en vivo → UDP (un cuadro perdido no se nota).</p>
 </blockquote>
-<h3 id="otros-protocolos-de-la-capa-de-internet"><a class="header" href="#otros-protocolos-de-la-capa-de-internet">Otros Protocolos de la Capa de Internet</a></h3>
+<hr>
+<h2 id="8-la-capa-de-internet"><a class="header" href="#8-la-capa-de-internet">8. La capa de Internet</a></h2>
+<h3 id="81-la-oficina-de-clasificación-del-correo"><a class="header" href="#81-la-oficina-de-clasificación-del-correo">8.1. La oficina de clasificación del correo</a></h3>
+<p>La capa de Internet (capa 3, Red, en el OSI) es la <strong>oficina de clasificación postal</strong>: recibe tu carta, le escribe la dirección de origen y destino en términos lógicos (las <strong>direcciones IP</strong>) y decide <strong>por qué ruta</strong> la manda. Si hay diez caminos entre tu ciudad y el destino, esta capa elige uno (y si ese camino falla, prueba con otro).</p>
+<p>Lo que maneja se llama <strong>paquete</strong>, y dentro va (con su sobre puesto) el segmento de la capa 4.</p>
+<h3 id="82-ip-el-protocolo-de-los-paquetes"><a class="header" href="#82-ip-el-protocolo-de-los-paquetes">8.2. IP: el protocolo de los paquetes</a></h3>
+<p><strong>IP</strong> (<em>Internet Protocol</em>) es el protocolo estrella de esta capa. Existe en dos versiones:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Característica</th><th>IPv4</th><th>IPv6</th></tr>
+</thead>
+<tbody>
+<tr><td>Longitud de la dirección</td><td>32 bits</td><td>128 bits</td></tr>
+<tr><td>Formato</td><td>Decimal punteado: <code>192.168.1.1</code></td><td>Hexadecimal con dos puntos: <code>2001:0db8::1</code></td></tr>
+<tr><td>Cantidad de direcciones</td><td>~4.300 millones</td><td>Prácticamente ilimitada (3.4 × 10³⁸)</td></tr>
+<tr><td>Cabecera del paquete</td><td>20 bytes mínimo</td><td>40 bytes fijos</td></tr>
+<tr><td>Estado hoy</td><td>Sigue siendo la norma</td><td>En crecimiento, obligatoria en redes nuevas</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>La razón del IPv6:</strong> en el mundo hay más dispositivos que direcciones IPv4. IPv6 no existe “porque sí”: existe porque los 4.300 millones de IPv4 se agotaron. Cada celular, notebook, smart TV y sensor necesita una dirección — y dos IPv6 son más que los granos de arena de todas las playas (exageramos poco).</p>
+</blockquote>
+<p>El paquete IP lleva un dato muy importante en su sobre: el <strong>TTL</strong> (<em>Time To Live</em>). Es un contador que baja en cada salto y evita que un paquete perdido dé vueltas por internet para siempre. Cuando llega a cero, el router lo descarta y avisa.</p>
+<h3 id="83-los-otros-protocolos-de-la-capa-de-red"><a class="header" href="#83-los-otros-protocolos-de-la-capa-de-red">8.3. Los otros protocolos de la capa de Red</a></h3>
 <div class="table-wrapper">
 <table>
 <thead>
 <tr><th>Protocolo</th><th>Función</th></tr>
 </thead>
 <tbody>
-<tr><td><strong>ICMP</strong></td><td>Mensajes de control y diagnóstico (utilizado por <code>ping</code> y <code>traceroute</code>)</td></tr>
-<tr><td><strong>ICMPv6</strong></td><td>Versión para IPv6, incluye Neighbor Discovery</td></tr>
-<tr><td><strong>IGMP</strong></td><td>Gestión de grupos multicast</td></tr>
-<tr><td><strong>IPSec</strong></td><td>Seguridad mediante cifrado y autenticación a nivel de IP</td></tr>
-</tbody>
-</table>
-</div>
-<hr>
-<h2 id="capa-de-acceso-a-red-en-profundidad"><a class="header" href="#capa-de-acceso-a-red-en-profundidad">Capa de Acceso a Red en Profundidad</a></h2>
-<p>La capa de Acceso a Red (también llamada <strong>capa de enlace de datos</strong> y <strong>capa física</strong> combinadas) gestiona la comunicación directa con el medio de transmisión.</p>
-<h3 id="funciones-principales"><a class="header" href="#funciones-principales">Funciones Principales</a></h3>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Función</th><th>Descripción</th></tr>
-</thead>
-<tbody>
-<tr><td><strong>Encuadre (Framing)</strong></td><td>Encapsula los datos en tramas con delimitadores</td></tr>
-<tr><td><strong>Control de acceso al medio</strong></td><td>Determina cuándo un dispositivo puede transmitir (MAC)</td></tr>
-<tr><td><strong>Detección y corrección de errores</strong></td><td>Mecanismos como CRC para verificar la integridad</td></tr>
-<tr><td><strong>Direccionamiento físico</strong></td><td>Uso de direcciones MAC (48 bits) para identificar dispositivos</td></tr>
-</tbody>
-</table>
-</div>
-<h3 id="tecnologías-de-la-capa-de-acceso-a-red"><a class="header" href="#tecnologías-de-la-capa-de-acceso-a-red">Tecnologías de la Capa de Acceso a Red</a></h3>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Tecnología</th><th>Medio</th><th>Uso típico</th></tr>
-</thead>
-<tbody>
-<tr><td><strong>Ethernet (IEEE 802.3)</strong></td><td>Cable (par trenzado, fibra)</td><td>Redes LAN cableadas</td></tr>
-<tr><td><strong>Wi-Fi (IEEE 802.11)</strong></td><td>Ondas de radio</td><td>Redes inalámbricas LAN</td></tr>
-<tr><td><strong>PPP</strong></td><td>Serial</td><td>Conexiones punto a punto (dial-up, VPN)</td></tr>
-<tr><td><strong>Frame Relay</strong></td><td>WAN empresarial</td><td>Conexiones entre sedes</td></tr>
-</tbody>
-</table>
-</div>
-<hr>
-<h2 id="flujo-completo-de-comunicación-ejemplo"><a class="header" href="#flujo-completo-de-comunicación-ejemplo">Flujo Completo de Comunicación (Ejemplo)</a></h2>
-<p>A continuación se muestra qué ocurre cuando un usuario abre una página web:</p>
-<ol>
-<li><strong>Aplicación (HTTP/HTTPS):</strong> El navegador genera una solicitud HTTP al servidor web.</li>
-<li><strong>Transporte (TCP):</strong> TCP segmenta los datos, numera los paquetes y establece la conexión (three-way handshake).</li>
-<li><strong>Internet (IP):</strong> IP encapsula los segmentos en paquetes con direcciones IP de origen y destino.</li>
-<li><strong>Acceso a Red (Ethernet/Wi-Fi):</strong> Los paquetes se encapsulan en tramas con direcciones MAC y se transmiten por el medio físico (cables o ondas).</li>
-</ol>
-<pre><code>Datos de usuario
-    │
-    ▼
-[Aplicación]  HTTP
-    │
-    ▼
-[Transporte]  TCP → Puerto 80 / 443
-    │
-    ▼
-[Internet]    IP  → IP origen + IP destino
-    │
-    ▼
-[Acceso a Red] Ethernet → Dirección MAC origen + Dirección MAC destino
-    │
-    ▼
-Señales eléctricas / ondas de radio
-</code></pre>
-<hr>
-<h2 id="otros-modelos-y-referencias"><a class="header" href="#otros-modelos-y-referencias">Otros Modelos y Referencias</a></h2>
-<h3 id="modelo-híbrido-modelo-de-internet"><a class="header" href="#modelo-híbrido-modelo-de-internet">Modelo Híbrido (Modelo de Internet)</a></h3>
-<p>En la práctica, la mayoría de las implementaciones modernas utilizan un <strong>modelo híbrido</strong> que combina elementos del OSI y del TCP/IP. Las herramientas de análisis de red como <strong>Wireshark</strong> y los sistemas operativos modernos no siguen estrictamente un solo modelo, sino que integran conceptos de ambos.</p>
-<h3 id="modelo-de-red-en-la-nube"><a class="header" href="#modelo-de-red-en-la-nube">Modelo de Red en la Nube</a></h3>
-<p>Con la evolución de la computación en la nube, surgen nuevas capas conceptuales:</p>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Capa</th><th>Nombre</th><th>Ejemplo</th></tr>
-</thead>
-<tbody>
-<tr><td><strong>SaaS</strong></td><td>Software como Servicio</td><td>Google Docs, Office 365</td></tr>
-<tr><td><strong>PaaS</strong></td><td>Plataforma como Servicio</td><td>Heroku, Google App Engine</td></tr>
-<tr><td><strong>IaaS</strong></td><td>Infraestructura como Servicio</td><td>AWS, Azure, Google Cloud</td></tr>
+<tr><td><strong>ICMP</strong></td><td>Mensajes de control y diagnóstico: lo usa el <code>ping</code> y el <code>traceroute</code></td></tr>
+<tr><td><strong>IGMP</strong></td><td>Maneja los grupos <em>multicast</em> (enviar a varios destinos a la vez)</td></tr>
+<tr><td><strong>IPSec</strong></td><td>Seguridad: cifra y autentica a nivel de paquete (base de las VPN)</td></tr>
+<tr><td><strong>ARP</strong></td><td>Traduce direcciones IP a direcciones MAC <em>dentro de una misma red</em> (el “agenda del vecindario”)</td></tr>
 </tbody>
 </table>
 </div>
 <blockquote>
-<p>Esta clasificación (modelo SPI) no reemplaza los modelos OSI o TCP/IP, sino que complementa la perspectiva desde el punto de vista de los <strong>servicios</strong>.</p>
+<p><strong>Ojo con un error común:</strong> ARP aparece listado en esta capa, pero en la práctica trabaja en el borde entre la capa 2 y la 3: resuelve “¿qué dispositivo físico es este IP de mi red?” — solo alcanza a los vecinos, no cruza routers.</p>
 </blockquote>
 <hr>
-<h2 id="resumen-comparativo"><a class="header" href="#resumen-comparativo">Resumen Comparativo</a></h2>
+<h2 id="9-la-capa-de-acceso-a-red"><a class="header" href="#9-la-capa-de-acceso-a-red">9. La capa de Acceso a Red</a></h2>
+<h3 id="91-el-cartero-del-barrio"><a class="header" href="#91-el-cartero-del-barrio">9.1. El cartero del barrio</a></h3>
+<p>Si la capa de Internet es la oficina de clasificación, la capa de Acceso a Red (capas 1 y 2 del OSI juntas) es <strong>el cartero que conoce cada casa del barrio</strong>: entrega el sobre al vecino exacto, casa por casa, y se asegura de que la trama llegue en buen estado.</p>
+<p>Esta capa es la única que <strong>conoce el medio físico</strong> (el cable o las ondas) y trabaja con <strong>direcciones físicas</strong> (MAC), no lógicas. Su unidad de datos se llama <strong>trama</strong> (<em>frame</em>).</p>
+<h3 id="92-las-funciones-del-piso-de-abajo"><a class="header" href="#92-las-funciones-del-piso-de-abajo">9.2. Las funciones del piso de abajo</a></h3>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>Característica</th><th>OSI</th><th>TCP/IP</th></tr>
+<tr><th>Función</th><th>Qué es</th></tr>
 </thead>
 <tbody>
-<tr><td><strong>Capas</strong></td><td>7</td><td>4</td></tr>
-<tr><td><strong>Propósito</strong></td><td>Referencia teórica y educativa</td><td>Implementación práctica</td></tr>
-<tr><td><strong>Protocolo base</strong></td><td>Independiente</td><td>IP</td></tr>
-<tr><td><strong>Sesión/Presentación</strong></td><td>Capas separadas</td><td>Integradas en Aplicación</td></tr>
-<tr><td><strong>Despliegue real</strong></td><td>No se implementó como estándar</td><td>Base de Internet</td></tr>
-<tr><td><strong>Enfoque</strong></td><td>Primero el modelo, luego los protocolos</td><td>Primero los protocolos, luego el modelo</td></tr>
+<tr><td><strong>Encuadre (framing)</strong></td><td>Armá la trama: un inicio, el dato, un fin, y delimitadores para saber dónde empieza y termina cada mensaje</td></tr>
+<tr><td><strong>Control de acceso al medio</strong></td><td>Decide CUÁNDO un dispositivo puede hablar (para que dos no hablen a la vez y se pisen)</td></tr>
+<tr><td><strong>Direccionamiento físico</strong></td><td>Usa las direcciones <strong>MAC</strong> (48 bits) para identificar sin ambigüedad cada placa de red</td></tr>
+<tr><td><strong>Detección de errores</strong></td><td>Un <strong>CRC</strong> (huella matemática) al final de cada trama: si la huella no coincide al llegar, se descarta la trama</td></tr>
 </tbody>
 </table>
 </div>
+<h3 id="93-las-tecnologías-de-esta-capa"><a class="header" href="#93-las-tecnologías-de-esta-capa">9.3. Las tecnologías de esta capa</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Tecnología</th><th>Medio físico</th><th>Uso típico</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Ethernet (IEEE 802.3)</strong></td><td>Cable de par trenzado, fibra óptica</td><td>Toda LAN cableada moderna</td></tr>
+<tr><td><strong>Wi-Fi (IEEE 802.11)</strong></td><td>Ondas de radio</td><td>LAN inalámbrica</td></tr>
+<tr><td><strong>PPP</strong></td><td>Línea serial / punto a punto</td><td>Dial-up histórico, algunas VPN</td></tr>
+<tr><td><strong>Frame Relay</strong></td><td>Redes WAN de operador</td><td>Conexiones entre sedes (legado, en extinción)</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Clave de memoria:</strong> en esta capa las direcciones son <strong>MAC</strong> (físicas, de la placa de red) y las cajas se llaman <strong>tramas</strong>. En la capa de arriba, las direcciones son <strong>IP</strong> (lógicas) y las cajas se llaman <strong>paquetes</strong>. Son dos “universos” distintos, y confundirlos es el error de principiante más común de las redes.</p>
+</blockquote>
+<hr>
+<h2 id="10-la-encapsulación-las-muñecas-rusas"><a class="header" href="#10-la-encapsulación-las-muñecas-rusas">10. La encapsulación: las muñecas rusas</a></h2>
+<h3 id="101-el-concepto-estrella-de-este-manual"><a class="header" href="#101-el-concepto-estrella-de-este-manual">10.1. El concepto estrella de este manual</a></h3>
+<p>Llegó el momento: <strong>la encapsulación</strong>, la muñeca rusa. Es el proceso que arma todo lo que viste, y si te llevás una sola idea de este manual, que sea esta.</p>
+<p>Cuando el navegador manda una página, el dato no viaja “pelado”. Viaja envuelto. Mirá el orden exacto:</p>
+<pre><code>  PASO 1: La aplicación genera los datos
+  ┌─────────────────────────────────────────────┐
+  │  GET /index.html  (el pedido HTTP)          │
+  └─────────────────────────────────────────────┘
+
+  PASO 2: TCP lo envuelve con su sobre (puertos, nº de secuencia)
+  ┌─────────────────────────────────────────────┐
+  │ [TCP: puerto 443] GET /index.html           │
+  └─────────────────────────────────────────────┘
+                       ↑ esto se llama SEGMENTO
+
+  PASO 3: IP lo envuelve con su sobre (IP origen/destino, TTL)
+  ┌─────────────────────────────────────────────┐
+  │ [IP: 190.12.3.4 → 142.250.64.14]            │
+  │ [TCP: puerto 443] GET /index.html           │
+  └─────────────────────────────────────────────┘
+                       ↑ esto se llama PAQUETE
+
+  PASO 4: Ethernet lo envuelve con su sobre (MAC origen/destino, CRC)
+  ┌─────────────────────────────────────────────┐
+  │ [ETH: MACpc → MACrouter]                    │
+  │ [IP: 190.12.3.4 → 142.250.64.14]            │
+  │ [TCP: puerto 443] GET /index.html           │
+  └─────────────────────────────────────────────┘
+                       ↑ esto se llama TRAMA
+                       ↓ y esto viaja como BITS por el cable
+</code></pre>
+<p>¿Ves el patrón? <strong>Cada capa envuelve TODO lo anterior y le agrega su propio sobre por delante.</strong> El contenido original (el <code>GET /index.html</code>) queda intacto en el centro — nadie lo modifica. Así, en el receptor, cada capa lee su sobre (que es el primero que le toca del lado de afuera), lo saca y pasa el resto hacia arriba:</p>
+<pre><code> RECEPTOR:
+ 1º Ethernet abre su sobre   → le quedan [IP][TCP] GET /index.html
+ 2º IP abre su sobre         → le quedan [TCP] GET /index.html
+ 3º TCP abre su sobre        → le quedan GET /index.html
+ 4º La aplicación recibe el dato limpio → el navegador dibuja la página
+</code></pre>
+<blockquote>
+<p><strong>Regla de oro (la repetimos con intención):</strong> cada capa agrega su sobre <strong>sin mirar ni modificar</strong> lo que lleva adentro. Encapsulación al bajar, desencapsulación al subir. El dato original viaja siempre intacto.</p>
+</blockquote>
+<h3 id="102-el-costo-de-los-sobres-el-overhead"><a class="header" href="#102-el-costo-de-los-sobres-el-overhead">10.2. El costo de los sobres: el overhead</a></h3>
+<p>Envolver no es gratis. Cada sobre ocupa bytes. En Ethernet, una trama clásica puede llevar como máximo <strong>1500 bytes de contenido</strong> (el <strong>MTU</strong>): si tu dato mide más, la capa de Red lo <strong>fragmenta</strong> en paquetes más chicos y TCP lo rearma en el destino.</p>
+<p>Un cálculo simple para que veas el costo:</p>
+<ul>
+<li>Datos reales de la aplicación: <strong>1460 bytes</strong></li>
+<li>Sobre TCP (20 bytes) + sobre IP (20 bytes) = <strong>40 bytes extra</strong></li>
+<li>Total que viaja: <strong>1500 bytes</strong></li>
+<li>Eficiencia: 1460 / 1500 ≈ <strong>97%</strong> — los sobres cuestan solo el 3%.</li>
+</ul>
+<p>Por eso los que diseñan redes miran el <em>overhead</em> con lupa: en links de muchísimo tráfico, un 3% por mensaje es muchísimo dinero.</p>
+<blockquote>
+<p><strong>HACELO VOS:</strong> agarrá una hoja, escribí una palabra en el centro. Andá envolviéndola con tres sobres, y en cada uno anotá un dato de viaje: destinatario (IP), ventanilla (puerto), dirección de calle (MAC). Después abrí los sobres de atrás hacia adelante y anotá qué leíste en cada uno — recién ahí “llegó el dato a la aplicación”. Eso, exactamente eso, es la encapsulación.</p>
+</blockquote>
+<hr>
+<h2 id="11-el-viaje-completo-de-un-paquete"><a class="header" href="#11-el-viaje-completo-de-un-paquete">11. El viaje completo de un paquete</a></h2>
+<h3 id="111-la-historia-completa-capa-por-capa"><a class="header" href="#111-la-historia-completa-capa-por-capa">11.1. La historia completa, capa por capa</a></h3>
+<p>Unís todas las piezas. Escribís <code>google.com</code>, tocás Enter, y esto pasa — ahora sí, con nombres de capas y con el detalle de quién hace qué:</p>
+<p><strong>1. Tu PC — capa de Aplicación (5)</strong>
+El navegador arma el pedido HTTP y se lo pasa a la pila. TCP hace el handshake con el servidor, IP le pone las direcciones, Ethernet envuelve todo en la trama. Los bits salen por el cable a la velocidad de tu placa (1 Gbps, por ejemplo).</p>
+<p><strong>2. El switch — solo capa 2</strong>
+El switch recibe la trama, mira <strong>solo la dirección MAC destino</strong> de la tapa del sobre y la reenvía por el puerto correcto. Ni siquiera se entera de que adentro hay un paquete IP. Es como el empleado que reparte cartas por el número de casa: no sabe ni le importa de qué trata la carta.</p>
+<p><strong>3. Tu router — capa 3 (y un poco de 2)</strong>
+El router recibe la trama y abre <strong>su</strong> sobre: el de Ethernet. ¿Por qué? Porque el destino no está en su red: hay que mandar el paquete a otro barrio. El router <strong>descarta el sobre Ethernet viejo</strong> (la trama) y arma un <strong>sobre nuevo</strong> con las MAC de su propio vecino (el router del proveedor). Al paquete IP no lo toca: le cambia de sobre, pero el paquete sigue intacto. Y de camino, aplica la traducción de direcciones (NAT) que permite que miles de casas compartan una sola IP pública.</p>
+<p><strong>4. Los routers de internet — capa 3</strong>
+Cada router del camino (ISP tras ISP) mira la dirección IP destino, consulta su <strong>tabla de enrutamiento</strong> (el mapa de rutas), elige el próximo salto, le cambia el sobre Ethernet y lo manda. El TTL baja una unidad en cada salto: si llegara a 0, el paquete se descarta — así ningún paquete perdido vaga eternamente.</p>
+<p><strong>5. El servidor de Google — capas 5 a 1, en orden inverso</strong>
+El servidor recibe la trama, abre el sobre Ethernet, luego el IP, luego el TCP, y el pedido HTTP original queda a la vista, tal cual lo escribió tu navegador. La aplicación de Google procesa el pedido, y la <strong>respuesta vuelve por el mismo camino con los mismos pasos</strong> — ahora con una muñeca rusa nueva del lado de Google.</p>
+<pre><code> TU PC            SWITCH            TU ROUTER         ROUTER ISP      SERVIDOR GOOGLE
+┌─────────┐      ┌─────────┐      ┌──────────┐      ┌──────────┐      ┌─────────┐
+│ Aplicac.│      │         │      │          │      │          │      │ Aplicac.│
+│ Transp. │      │         │      │          │      │          │      │ Transp. │
+│ Internet│      │         │      │ Internet │      │ Internet │      │ Internet│
+│ Acceso  │─trama─│ Acceso  │─trama─│ Acceso  │─trama─│ Acceso  │─trama─│ Acceso  │
+└─────────┘      └─────────┘      └──────────┘      └──────────┘      └─────────┘
+   ↑ arma la      solo mira         cambia el          cambia el         abre los
+   muñeca rusa    la MAC (c2)       sobre ETH (c2)     sobre ETH (c2)    sobres (c2→5)
+                                     sin tocar el       sin tocar el
+                                     paquete IP (c3)    paquete IP (c3)
+</code></pre>
+<h3 id="112-la-regla-que-ordena-todo-qué-cambia-y-qué-no"><a class="header" href="#112-la-regla-que-ordena-todo-qué-cambia-y-qué-no">11.2. La regla que ordena todo: qué cambia y qué no</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Elemento</th><th style="text-align: center">¿Cambia en el camino?</th><th>Detalle</th></tr>
+</thead>
+<tbody>
+<tr><td>Direcciones <strong>MAC</strong></td><td style="text-align: center"><strong>SÍ, en cada salto</strong></td><td>Cada tramo tiene su propio sobre: la MAC del vecino de HOY, no del destino final</td></tr>
+<tr><td>Direcciones <strong>IP</strong></td><td style="text-align: center"><strong>NO</strong></td><td>La IP de origen y destino es la misma de punta a punta (salvo la traducción NAT del router)</td></tr>
+<tr><td>El <strong>dato</strong> (HTTP)</td><td style="text-align: center"><strong>NO</strong></td><td>Viaja intacto, envuelto por capas, hasta el final</td></tr>
+<tr><td>El <strong>TTL</strong></td><td style="text-align: center">SÍ, baja en cada salto</td><td>Contador anti-paquetes-perdidos</td></tr>
+</tbody>
+</table>
+</div>
+<p>Esta es la clave mental que separa a los que entienden redes de los que memorizan:</p>
+<blockquote>
+<p><strong>La MAC cambia en cada tramo (barrio por barrio); la IP es fija de punta a punta (de dirección a dirección). El cartero cambia, la carta no.</strong></p>
+</blockquote>
+<hr>
+<h2 id="12-cómo-resolver-problemas-por-capas"><a class="header" href="#12-cómo-resolver-problemas-por-capas">12. Cómo resolver problemas por capas</a></h2>
+<h3 id="121-el-método-del-piso-en-llamas"><a class="header" href="#121-el-método-del-piso-en-llamas">12.1. El método del piso en llamas</a></h3>
+<p>Cuando algo falla, lo peor es adivinar. El método profesional es <strong>bajar por la pila desde arriba, o subir desde abajo, comprobando capa por capa</strong> hasta encontrar la primera que falla.</p>
+<blockquote>
+<p><strong>Regla de oro del diagnóstico:</strong> el problema está en la <strong>primera capa que falla</strong> — y ninguna capa de arriba puede funcionar si una de abajo no anda. Si el cable está cortado (capa 1), da igual lo que haga el navegador (capa 5): no va a haber página.</p>
+</blockquote>
+<h3 id="122-el-caso-clásico-no-me-anda-internet"><a class="header" href="#122-el-caso-clásico-no-me-anda-internet">12.2. El caso clásico: “no me anda internet”</a></h3>
+<p>Abrir el navegador y que no cargue nada puede ser un problema de cualquiera de las capas. El checklist profesional, de abajo hacia arriba:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Paso</th><th>Capa</th><th>Comprobación</th><th>Si falla acá…</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td><td><strong>Física (1)</strong></td><td>¿El cable está enchufado? ¿El Wi-Fi está activado? ¿La luz de red en la PC y en el router?</td><td>Arreglá el medio físico: es el 80% de los “no anda nada” reales</td></tr>
+<tr><td>2</td><td><strong>Enlace (2)</strong></td><td>¿La PC tiene IP del DHCP? (<code>ipconfig</code> / <code>ip addr</code>)</td><td>Problema de DHCP o del switch: sin IP no hay paquete que mandar</td></tr>
+<tr><td>3</td><td><strong>Red (3)</strong></td><td>¿Puedo llegar hasta el router? (<code>ping 192.168.1.1</code>)</td><td>Problema de rutas o del router</td></tr>
+<tr><td>4</td><td><strong>Red (3+)</strong></td><td>¿Puedo llegar a internet? (<code>ping 8.8.8.8</code>)</td><td>Problema del ISP o del cable <em>hacia afuera</em></td></tr>
+<tr><td>5</td><td><strong>Aplicación (5)</strong></td><td>¿Puedo resolver nombres? (<code>ping google.com</code>)</td><td>Problema de DNS: hay IP, pero no “agenda”</td></tr>
+<tr><td>6</td><td><strong>Aplicación (5)</strong></td><td>¿Abre la página en el navegador?</td><td>Problema del servidor, del HTTP o del propio navegador</td></tr>
+</tbody>
+</table>
+</div>
+<p>Fijate la lógica: <strong>cada prueba depende de la anterior</strong>. Si <code>ping 8.8.8.8</code> funciona (capa 3 OK) pero <code>ping google.com</code> no (capa 5 DNS), ya sabés que el problema es el DNS y no el cable.</p>
+<h3 id="123-las-preguntas-que-hace-un-profesional"><a class="header" href="#123-las-preguntas-que-hace-un-profesional">12.3. Las preguntas que hace un profesional</a></h3>
+<p>Cuando llega un “no anda”, las primeras preguntas siempre separan capas:</p>
+<ul>
+<li>¿<strong>Un solo sitio</strong> anda mal, o todos? → Uno solo: probablemente capa 5 (ese servidor o ese DNS). Todos: probablemente capa 1-3 (tu conexión).</li>
+<li>¿Anda <strong>por cable</strong> y no por Wi-Fi? → Capa 1 (radio, distancia, interferencia).</li>
+<li>¿Anda en <strong>otra hora</strong>? → Posiblemente saturación (capa 3/4, congestión).</li>
+<li>¿Le pasa a <strong>un solo dispositivo</strong>? → La placa, la configuración IP o el cable de ese equipo (capas 1-2).</li>
+<li>¿Le pasa a <strong>todos</strong>? → El router, el ISP o el servicio (capas 3+).</li>
+</ul>
+<blockquote>
+<p><strong>Ejemplo resuelto:</strong> “No abro un sitio, pero el resto de internet anda.” → Capa 1-3 OK (ping a 8.8.8.8 anda). DNS OK (otros sitios abren). El problema es específico de ESE servidor: lo apuntás con una IP directa para confirmar y listo. Ningún técnico adivina: <strong>descarta capas con pruebas</strong>.</p>
+</blockquote>
+<hr>
+<h2 id="13-herramientas-que-ven-las-capas"><a class="header" href="#13-herramientas-que-ven-las-capas">13. Herramientas que ven las capas</a></h2>
+<h3 id="131-ping-icmp--capa-3"><a class="header" href="#131-ping-icmp--capa-3">13.1. Ping (ICMP — capa 3)</a></h3>
+<p><code>ping</code> manda un mensaje ICMP de ida y vuelta y mide el tiempo. Te dice <strong>si hay camino</strong> hasta el destino:</p>
+<pre><code>$ ping 8.8.8.8
+64 bytes from 8.8.8.8: icmp_seq=1 ttl=116 time=4.32 ms
+</code></pre>
+<ul>
+<li><code>ttl=116</code>: cuántas vidas le quedaban al paquete al llegar (si es cercano a 255, está cerca; si es bajo, dio muchas vueltas).</li>
+<li><code>time=4.32 ms</code>: latencia de ida y vuelta.</li>
+<li>Si no responde: o no hay ruta, o el destino bloquea ICMP (común). Por eso “ping no anda” no siempre significa “red caída”.</li>
+</ul>
+<h3 id="132-traceroute-capa-3--2"><a class="header" href="#132-traceroute-capa-3--2">13.2. Traceroute (capa 3 + 2)</a></h3>
+<p><code>traceroute</code> (o <code>tracert</code> en Windows) le muestra TODOS los saltos entre vos y el destino: el mapa de la ruta. Cada línea es un router intermedio:</p>
+<pre><code>$ traceroute google.com
+ 1  router-casa (192.168.1.1)       1.2 ms
+ 2  isp-01.ar.isp.net (10.5.0.1)    8.1 ms
+ 3  core-3.ar.isp.net (170.0.2.1)   12.4 ms
+ 4  google-gw (142.250.70.1)        18.0 ms
+</code></pre>
+<p>El <code>* * *</code> en un salto significa “ese router no contesta ICMP” — no necesariamente que esté caído. La herramienta de diagnóstico definitiva para saber EN QUÉ capa y en QUÉ tramo se corta la ruta.</p>
+<h3 id="133-wireshark-todas-las-capas-a-la-vista"><a class="header" href="#133-wireshark-todas-las-capas-a-la-vista">13.3. Wireshark (todas las capas a la vista)</a></h3>
+<p><strong>Wireshark</strong> es el microscopio: captura tramas reales y les muestra la muñeca rusa completa — la trama Ethernet, el paquete IP, el segmento TCP y el dato de aplicación, cada uno en su sección. Cuando leas un capture en Wireshark, vas a ver <em>exactamente</em> los sobres que este manual te enseñó a reconocer.</p>
+<h3 id="134-comandos-de-configuración-capas-2-y-3"><a class="header" href="#134-comandos-de-configuración-capas-2-y-3">13.4. Comandos de configuración (capas 2 y 3)</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Comando</th><th>Qué te muestra</th><th>Capas</th></tr>
+</thead>
+<tbody>
+<tr><td><code>ipconfig /all</code> (Windows) / <code>ip addr</code> (Linux)</td><td>Tu IP, tu máscara, tu gateway, tu DNS</td><td>2-3</td></tr>
+<tr><td><code>arp -a</code></td><td>La tabla que traduce IP → MAC de tu red local</td><td>2-3</td></tr>
+<tr><td><code>netstat</code></td><td>Las conexiones TCP activas y sus puertos</td><td>4</td></tr>
+<tr><td><code>route print</code> / <code>ip route</code></td><td>Tu tabla de enrutamiento local</td><td>3</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>HACELO VOS:</strong> abrí una terminal y corré <code>ping 8.8.8.8</code>, después <code>traceroute google.com</code> y mirá con <code>ipconfig</code> tu IP y tu gateway. Cada dato que veas corresponde a una capa de este manual — ahora ya sabés leerlos.</p>
+</blockquote>
+<hr>
+<h2 id="14-comprobá-lo-que-aprendiste"><a class="header" href="#14-comprobá-lo-que-aprendiste">14. Comprobá lo que aprendiste</a></h2>
+<p>Respondé antes de mirar las respuestas, después destapá cada una con el detalle. Si alguna te resulta difícil, volvé a esa sección — no sigas de largo.</p>
+<p><strong>1. ¿Por qué las redes se dividen en capas y no se resuelven de una sola pieza?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Porque la comunicación de extremo a extremo es una cadena de problemas enormes (señales, direcciones, rutas, errores, orden). Dividirla en capas con una responsabilidad cada una permite estandarizar cada pieza por separado, evolucionar una sin romper las otras, y aislar fallas: el problema está donde la primera capa falla.</p>
+</details>
+<p><strong>2. Numerá las 7 capas del OSI de abajo hacia arriba.</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>1 Física → 2 Enlace de Datos → 3 Red → 4 Transporte → 5 Sesión → 6 Presentación → 7 Aplicación. (El TCP/IP las agrupa en 4: Acceso a Red = 1+2, Internet = 3, Transporte = 4, Aplicación = 5+6+7.)</p>
+</details>
+<p><strong>3. ¿Qué nombre recibe el dato que maneja cada capa? (PDU)</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Física: <strong>bits</strong>. Enlace: <strong>trama</strong>. Red: <strong>paquete</strong>. Transporte: <strong>segmento</strong> (TCP) o <strong>datagrama</strong> (UDP). Aplicación: <strong>datos</strong>. La PDU es la “caja” que cada capa produce.</p>
+</details>
+<p><strong>4. ¿Cuándo usarías TCP y cuándo UDP?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>TCP cuando el dato no puede perderse ni desordenarse: descargas, correo, páginas web (handshake + retransmisión + orden). UDP cuando la velocidad manda y la pérdida es tolerable o la retransmisión llegaría tarde: videollamadas, streaming en vivo, juegos, DNS.</p>
+</details>
+<p><strong>5. ¿Qué es la encapsulación y cuántos sobres tiene una trama Ethernet con HTTP adentro?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Es el proceso de envolver los datos con la información de control de cada capa: cada una agrega su sobre (cabecera) sin tocar el contenido. Una trama que lleva HTTP tiene 3 sobres: <strong>Ethernet</strong> (el más externo), <strong>IP</strong> y <strong>TCP</strong>. El dato HTTP está en el centro, intacto.</p>
+</details>
+<p><strong>6. Las direcciones IP ¿cambian o no en cada salto? ¿Y las MAC?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Las <strong>IP no cambian</strong> de punta a punta (salvo NAT): identifican el destino final. Las <strong>MAC sí cambian en cada tramo</strong>: cada nuevo sobre Ethernet se arma con las MAC del vecino inmediato. “El cartero cambia, la carta no.”</p>
+</details>
+<p><strong>7. A alguien “no le abre un sitio, pero el resto de internet anda”. ¿Qué capas descartás con qué pruebas?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Capa 1-3 descartadas si <code>ping 8.8.8.8</code> funciona. DNS descartado si otros sitios abren. El problema es específico del servidor o de su resolución puntual (capa 5): probás la IP directa del sitio para confirmar. Adivinar sin pruebas es el error de principiante.</p>
+</details>
+<hr>
+<h2 id="15-glosario"><a class="header" href="#15-glosario">15. Glosario</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Término</th><th>Qué es</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Capa</strong></td><td>Nivel de la pila con una responsabilidad única; se comunica con su capa gemela en el otro equipo</td></tr>
+<tr><td><strong>Modelo OSI</strong></td><td>Estándar de referencia de 7 capas creado por la ISO en 1984; se usa para entender y diagnosticar</td></tr>
+<tr><td><strong>Modelo TCP/IP</strong></td><td>El modelo de 4 capas que realmente usa internet</td></tr>
+<tr><td><strong>PDU</strong></td><td>Unidad de datos de protocolo: la “caja” que produce cada capa (bits, trama, paquete, segmento, datos)</td></tr>
+<tr><td><strong>Encapsulación</strong></td><td>Proceso de envolver los datos agregando la cabecera de cada capa al bajar por la pila</td></tr>
+<tr><td><strong>Desencapsulación</strong></td><td>Proceso inverso: abrir los sobres capa por capa al subir por la pila del receptor</td></tr>
+<tr><td><strong>Cabecera (header)</strong></td><td>El “sobre” con la información de control que cada capa agrega por delante del dato</td></tr>
+<tr><td><strong>Trama (frame)</strong></td><td>PDU de la capa de Enlace: datos con cabecera + cola (CRC) y direcciones MAC</td></tr>
+<tr><td><strong>Paquete</strong></td><td>PDU de la capa de Red: datos con dirección IP origen/destino y TTL</td></tr>
+<tr><td><strong>Segmento</strong></td><td>PDU de la capa de Transporte TCP: datos con puertos y número de secuencia</td></tr>
+<tr><td><strong>Datagrama</strong></td><td>PDU de la capa de Transporte UDP</td></tr>
+<tr><td><strong>Puerto</strong></td><td>Número que identifica un servicio en un servidor (ej: 443 = HTTPS, 53 = DNS)</td></tr>
+<tr><td><strong>TCP</strong></td><td>Protocolo de transporte confiable: handshake, orden, retransmisión</td></tr>
+<tr><td><strong>UDP</strong></td><td>Protocolo de transporte rápido sin garantías</td></tr>
+<tr><td><strong>Three-way handshake</strong></td><td>El saludo SYN → SYN+ACK → ACK con el que TCP arma una conexión</td></tr>
+<tr><td><strong>IP</strong></td><td>Protocolo de la capa de Red que direcciona y enruta paquetes</td></tr>
+<tr><td><strong>TTL</strong></td><td>Contador de saltos del paquete IP; al llegar a 0 el paquete se descarta</td></tr>
+<tr><td><strong>MTU</strong></td><td>Tamaño máximo de contenido que acepta una trama (1500 bytes en Ethernet clásico)</td></tr>
+<tr><td><strong>ICMP</strong></td><td>Protocolo de control y diagnóstico de la capa de Red (usa <code>ping</code> y <code>traceroute</code>)</td></tr>
+<tr><td><strong>ARP</strong></td><td>Traduce IP a MAC dentro de una misma red</td></tr>
+<tr><td><strong>MAC</strong></td><td>Dirección física única de 48 bits de cada placa de red</td></tr>
+<tr><td><strong>CRC</strong></td><td>Huella matemática al final de la trama que detecta errores de transmisión</td></tr>
+<tr><td><strong>Enrutamiento</strong></td><td>Decisión de qué camino toma cada paquete según la tabla de rutas</td></tr>
+<tr><td><strong>Overhead</strong></td><td>Bytes “extra” que agregan los sobres de las capas sobre los datos reales</td></tr>
+<tr><td><strong>Wireshark</strong></td><td>Herramienta que captura tramas y muestra todas las capas superpuestas</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="16-resumen-en-10-puntos"><a class="header" href="#16-resumen-en-10-puntos">16. Resumen en 10 puntos</a></h2>
+<ol>
+<li><strong>Los modelos de red son el acuerdo de cómo se habla</strong>: dividen la comunicación en capas con responsabilidades únicas.</li>
+<li><strong>Cada capa envuelve los datos con su propio sobre (cabecera)</strong> sin tocar el contenido: eso es la <strong>encapsulación</strong>, y al recibir se invierte (desencapsulación).</li>
+<li><strong>El modelo OSI tiene 7 capas</strong> (Física, Enlace, Red, Transporte, Sesión, Presentación, Aplicación) y sirve para entender y diagnosticar.</li>
+<li><strong>El modelo TCP/IP tiene 4 capas</strong> (Acceso a Red, Internet, Transporte, Aplicación) y es el que funciona de verdad en internet.</li>
+<li><strong>Cada capa produce una PDU distinta</strong>: bits → trama → paquete → segmento/datagrama → datos.</li>
+<li><strong>TCP es la carta certificada</strong> (handshake, orden, retransmisión); <strong>UDP es el correo sin acuse</strong> (rápido, sin garantías). “¿Se puede repetir?” TCP — “¿Se puede perder un poco?” UDP.</li>
+<li><strong>La capa de Red trabaja con IP</strong> (direcciones lógicas, rutas, TTL); la capa de Enlace trabaja con <strong>MAC</strong> (direcciones físicas, tramas, CRC).</li>
+<li><strong>La MAC cambia en cada tramo; la IP es fija de punta a punta.</strong> El cartero cambia, la carta no.</li>
+<li><strong>El diagnóstico es por capas</strong>: subir de abajo hacia arriba probando, y el problema está en la primera capa que falla — nunca adivinar.</li>
+<li><strong>El dato viaja intacto</strong>: desde el <code>GET /index.html</code> hasta la página dibujada en pantalla, solo cambian los sobres que lo envuelven.</li>
+</ol>
 <hr>
 <blockquote>
 <p><strong>Fuente:</strong> Documentación propia basada en estándares ISO, IETF y material educativo de redes.</p>
