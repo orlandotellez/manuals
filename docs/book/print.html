@@ -37,7 +37,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "dark";
-            window.path_to_searchindex_js = "searchindex-a2cc3c22.js";
+            window.path_to_searchindex_js = "searchindex-47478172.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-cd1280d9.js"></script>
@@ -242,7 +242,7 @@
 <li><a href="#10-análisis-de-direcciones-ipv4-ejercicios-guiados">Redes ejercicios</a></li>
 <li><a href="#11-nat-el-traductor-de-la-red">NAT</a></li>
 <li><a href="#22-direcciones-mac-y-switches">MAC</a></li>
-<li><a href="#cisco-packet-tracer--manual-de-comandos">Comandos Packet Tracer</a></li>
+<li><a href="#15-cisco-packet-tracer-laboratorios-guiados">Comandos Packet Tracer</a></li>
 </ul>
 <h2 id="docker"><a class="header" href="#docker">Docker</a></h2>
 <ul>
@@ -80429,318 +80429,489 @@ Switch# show mac address-table
 <p><strong>Fuente:</strong> Documentación propia basada en estándares IEEE 802.3 y 802.1Q, documentación Cisco CCNA y material educativo de redes.</p>
 </blockquote>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="cisco-packet-tracer--manual-de-comandos"><a class="header" href="#cisco-packet-tracer--manual-de-comandos">CISCO PACKET TRACER — Manual de Comandos</a></h1>
-<p><strong>Router · Switch · DHCP · IP Routes · VLANs</strong></p>
+<h1 id="15-cisco-packet-tracer-laboratorios-guiados"><a class="header" href="#15-cisco-packet-tracer-laboratorios-guiados">15. Cisco Packet Tracer: Laboratorios Guiados</a></h1>
+<p><strong>Router · Switch · DHCP · Rutas estáticas · VLANs</strong></p>
 <hr>
 <h2 id="índice-27"><a class="header" href="#índice-27">Índice</a></h2>
+<ul>
+<li><a href="#1-el-simulador-de-vuelo-del-técnico-de-redes">El simulador de vuelo del técnico de redes</a></li>
+<li><a href="#2-laboratorio-0-el-primer-plano">Laboratorio 0: el primer plano</a></li>
+<li><a href="#3-laboratorio-1-el-router-acceso-y-seguridad-básica">Laboratorio 1: el router — acceso y seguridad básica</a></li>
+<li><a href="#4-laboratorio-2-una-red-con-router-ips-y-verificación">Laboratorio 2: una red con router — IPs y verificación</a></li>
+<li><a href="#5-laboratorio-3-el-switch-administración-y-macs">Laboratorio 3: el switch — administración y MACs</a></li>
+<li><a href="#6-laboratorio-4-dhcp-en-el-router">Laboratorio 4: DHCP en el router</a></li>
+<li><a href="#7-laboratorio-5-dos-routers-rutas-estáticas-y-el-ping-que-no-vuelve">Laboratorio 5: dos routers — rutas estáticas y el ping que no vuelve</a></li>
+<li><a href="#8-laboratorio-6-vlans-y-router-on-a-stick">Laboratorio 6: VLANs y router on a stick</a></li>
+<li><a href="#9-laboratorio-7-el-lab-completo">Laboratorio 7: el lab completo</a></li>
+<li><a href="#10-referencia-rápida">Referencia rápida</a></li>
+<li><a href="#11-errores-comunes-y-cómo-diagnosticarlos">Errores comunes y cómo diagnosticarlos</a></li>
+<li><a href="#12-ejercicios-guiados">Ejercicios guiados</a></li>
+<li><a href="#13-comprobá-lo-que-aprendiste">Comprobá lo que aprendiste</a></li>
+<li><a href="#14-glosario">Glosario</a></li>
+<li><a href="#15-resumen-en-10-puntos">Resumen en 10 puntos</a></li>
+</ul>
+<hr>
+<h2 id="1-el-simulador-de-vuelo-del-técnico-de-redes"><a class="header" href="#1-el-simulador-de-vuelo-del-técnico-de-redes">1. El simulador de vuelo del técnico de redes</a></h2>
+<p>Cisco Packet Tracer (PT) es, literalmente, el simulador de vuelo del técnico de redes: un entorno donde armás redes con routers, switches, PCs y servidores <strong>virtuales</strong>, y practicás la configuración sin romper nada real.</p>
+<p>Nadie aprende a volar en un avión de pasajeros. Se aprende en simulador, con errores gratis. Con Packet Tracer pasa lo mismo: cada comando que escribís acá es EXACTAMENTE el mismo que se escribe en un router de verdad, pero si te equivocás no cae ninguna red — cae un routercito virtual que podés borrar y empezar de nuevo.</p>
+<blockquote>
+<p><strong>La idea madre de este manual:</strong> no es una lista de comandos para memorizar — es una secuencia de laboratorios para <strong>hacer</strong>. Cada lab arma UNA pieza: primero el router, después el switch, después DHCP, después rutas, después VLANs. Al final, el Lab 7 une todo en una red completa. Los comandos se aprenden usándolos, no repasándolos.</p>
+</blockquote>
+<h3 id="11-lo-básico-de-packet-tracer"><a class="header" href="#11-lo-básico-de-packet-tracer">1.1. Lo básico de Packet Tracer</a></h3>
+<ul>
+<li><strong>Panel de dispositivos</strong> (abajo a la izquierda): routers, switches, PCs, servidores, cables. Arrastrás al lienzo y conectás.</li>
+<li><strong>Modo Realtime:</strong> la red funciona “en vivo”. Ping, navegar, ver tablas — todo real, pero virtual.</li>
+<li><strong>Modo Simulación:</strong> podés ver cada paquete <strong>viajando</strong> paquete a paquete por los cables, PDU por PDU. Es oro puro para entender qué pasa adentro — lo usamos en el Lab 5.</li>
+<li><strong>CLI:</strong> para configurar un dispositivo, click sobre él → pestaña <strong>CLI</strong>. Ahí escribís los comandos como en un equipo real.</li>
+<li><strong>PCs:</strong> click → pestaña <strong>Desktop</strong> → <strong>IP Configuration</strong> para poner IPs, o <strong>Command Prompt</strong> para <code>ping</code> e <code>ipconfig</code>.</li>
+</ul>
+<p>La progresión de este manual es deliberada. Si te salteás labs, los comandos posteriores no te van a cerrar. Hacelos en orden — y cuando termines el 7, habrás construido una red que podría ser la de una oficina chica de verdad.</p>
+<hr>
+<h2 id="2-laboratorio-0-el-primer-plano"><a class="header" href="#2-laboratorio-0-el-primer-plano">2. Laboratorio 0: el primer plano</a></h2>
+<p><strong>Objetivo:</strong> armar la topología más simple que existe y verificar que las PCs se ven entre sí.</p>
+<h3 id="paso-1--armar-la-red"><a class="header" href="#paso-1--armar-la-red">Paso 1 — Armar la red</a></h3>
 <ol>
-<li><a href="#1-configuración-del-router">Configuración del Router</a></li>
-<li><a href="#2-configuración-del-switch">Configuración del Switch</a></li>
-<li><a href="#3-dhcp-en-el-router">DHCP en el Router</a></li>
-<li><a href="#4-ip-routes--rutas-estáticas">IP Routes — Rutas Estáticas</a></li>
-<li><a href="#5-vlans">VLANs</a></li>
-<li><a href="#6-referencia-rápida">Referencia Rápida</a></li>
+<li>Abrí Packet Tracer.</li>
+<li>Del panel, elegí <strong>End Devices</strong> → arrastrá <strong>2 × PC</strong> al lienzo.</li>
+<li>Elegí <strong>Connections</strong> (cable) → seleccioná el cable <strong>Copper Straight-Through</strong>.</li>
+<li>Hacé click en PC0, elegí <strong>FastEthernet0</strong>, y conectá al FastEthernet0 de PC1.</li>
 </ol>
+<blockquote>
+<p><strong>Dato que aparece en todos los exámenes:</strong> PC a switch/PC se conecta con <strong>cable directo</strong> (straight-through); switch a switch o PC a PC se conecta con <strong>cable cruzado</strong> (crossover). Los equipos modernos detectan solos, pero Packet Tracer replica la regla clásica: si usás el cable equivocado, el link no levanta.</p>
+</blockquote>
+<h3 id="paso-2--poner-ips"><a class="header" href="#paso-2--poner-ips">Paso 2 — Poner IPs</a></h3>
+<ol>
+<li>Click en <strong>PC0</strong> → <strong>Desktop</strong> → <strong>IP Configuration</strong>.</li>
+<li>IP: <code>192.168.1.1</code> — Máscara: <code>255.255.255.0</code> (la máscara se completa sola si escribís la IP y tabulás).</li>
+<li>Repetí en <strong>PC1</strong> con <code>192.168.1.2</code>.</li>
+</ol>
+<p>Los LEDs de las interfaces deben estar en <strong>verde</strong> (link activo). Si están ámbar o apagados, revisá el cable.</p>
+<h3 id="paso-3--verificar"><a class="header" href="#paso-3--verificar">Paso 3 — Verificar</a></h3>
+<p>En el <strong>Command Prompt</strong> de PC0:</p>
+<pre><code>PC0&gt; ping 192.168.1.2
+</code></pre>
+<p>Debés recibir las 4 respuestas <code>Reply from 192.168.1.2...</code>. Si falla, andá repasando: ¿cable bien conectado? ¿misma red? ¿mascaras iguales?</p>
+<p><strong>Lo que acabás de aprender, sin darte cuenta:</strong> el ping es el martillo universal del diagnóstico de redes. Lo vas a usar en TODOS los labs de acá en adelante como prueba final de cada etapa.</p>
 <hr>
-<h2 id="1-configuración-del-router"><a class="header" href="#1-configuración-del-router">1. Configuración del Router</a></h2>
-<h3 id="11-acceso-y-modo-privilegiado"><a class="header" href="#11-acceso-y-modo-privilegiado">1.1 Acceso y modo privilegiado</a></h3>
-<pre><code>Router&gt;  enable                     ! Entra a modo EXEC privilegiado
-Router#  configure terminal         ! Entra a modo configuración global
-Router(config)#                     ! Ya estás en config global
+<h2 id="3-laboratorio-1-el-router--acceso-y-seguridad-básica"><a class="header" href="#3-laboratorio-1-el-router--acceso-y-seguridad-básica">3. Laboratorio 1: el router — acceso y seguridad básica</a></h2>
+<p><strong>Objetivo:</strong> entrar al router, ponerle nombre, protegerlo con contraseñas y guardar la configuración.</p>
+<h3 id="paso-1--armar-la-red-1"><a class="header" href="#paso-1--armar-la-red-1">Paso 1 — Armar la red</a></h3>
+<ol>
+<li>Del panel, elegí <strong>Routers</strong> → arrastrá un <strong>1941</strong>.</li>
+<li>Click sobre el router → pestaña <strong>CLI</strong>. Apretá Enter si hace falta.</li>
+</ol>
+<h3 id="paso-2--los-modos-del-ios"><a class="header" href="#paso-2--los-modos-del-ios">Paso 2 — Los modos del IOS</a></h3>
+<p>Todo el laboratorio depende de entender los modos. Cada modo te deja hacer más cosas; la config se hace en el último:</p>
+<pre><code>Router&gt; enable                     ← modo EXEC privilegiado (comandos de "ver")
+Router# configure terminal         ← modo configuración global (comandos de "cambiar")
+Router(config)#                    ← acá ya se configuran servicios
 </code></pre>
-<h3 id="12-nombre-y-contraseñas"><a class="header" href="#12-nombre-y-contraseñas">1.2 Nombre y contraseñas</a></h3>
-<pre><code>Router(config)#  hostname R1
+<ul>
+<li><code>&gt;</code> = modo EXEC de usuario (solo ver, casi nada).</li>
+<li><code>#</code> después de <code>enable</code> = modo EXEC privilegiado (ver todo, borrar, guardar).</li>
+<li><code>(config)#</code> = modo configuración global (cambiar el sistema).</li>
+</ul>
+<p><strong>La regla de oro:</strong> <code>?</code> es tu mejor amigo. Escribí cualquier comando a medias y <code>?</code> te muestra las opciones. El IOS se autocompleta con <strong>TAB</strong>.</p>
+<h3 id="paso-3--nombre-y-contraseñas"><a class="header" href="#paso-3--nombre-y-contraseñas">Paso 3 — Nombre y contraseñas</a></h3>
+<pre><code>Router&gt;  enable
+Router#  configure terminal
+Router(config)#  hostname R1            ! Cambia el nombre del equipo
 
-! Contraseña cifrada para modo privilegiado
-R1(config)#  enable secret cisco123
+R1(config)#  enable secret cisco123     ! Contraseña CIFRADA para el modo privilegiado
 
-! Consola — acceso físico
-R1(config)#  line console 0
+R1(config)#  line console 0             ! Consola = acceso físico directo al equipo
+R1(config-line)#  password cisco
+R1(config-line)#  login                 ! Exige contraseña para entrar
+R1(config-line)#  exit
+
+R1(config)#  line vty 0 4               ! VTY = acceso remoto (Telnet/SSH), líneas 0 a 4
 R1(config-line)#  password cisco
 R1(config-line)#  login
 R1(config-line)#  exit
 
-! Telnet / SSH — acceso remoto
-R1(config)#  line vty 0 4
-R1(config-line)#  password cisco
-R1(config-line)#  login
-R1(config-line)#  exit
-
-! Cifrar todas las contraseñas en texto plano
-R1(config)#  service password-encryption
-</code></pre>
-<h3 id="13-asignar-ip-a-una-interfaz"><a class="header" href="#13-asignar-ip-a-una-interfaz">1.3 Asignar IP a una interfaz</a></h3>
-<pre><code>R1(config)#  interface gigabitEthernet 0/0
-R1(config-if)#  description LAN - Hacia el Switch
-R1(config-if)#  ip address 192.168.1.1 255.255.255.0
-R1(config-if)#  no shutdown            ! OBLIGATORIO — activa la interfaz
-R1(config-if)#  exit
-
-R1(config)#  interface gigabitEthernet 0/1
-R1(config-if)#  description Enlace a otro router
-R1(config-if)#  ip address 10.0.0.1 255.255.255.0
-R1(config-if)#  no shutdown
-R1(config-if)#  exit
+R1(config)#  service password-encryption   ! Cifra las contraseñas "en claro" que quedaron
 </code></pre>
 <blockquote>
-<p><strong>NOTA:</strong> Las interfaces del router arrancan en estado <code>administratively down</code>. Sin <code>no shutdown</code> no transmiten nada.</p>
+<p><strong>Diferencia fina que preguntan siempre:</strong> <code>enable password</code> guarda la contraseña en texto plano; <code>enable secret</code> la guarda cifrada (usá SIEMPRE secret). <code>service password-encryption</code> cifra las demás (consola, vty) — es criptografía débil, pero al menos no es texto plano. En el mundo real, además, usás SSH y no Telnet — en Packet Tracer el vty con password alcanza para practicar el concepto.</p>
 </blockquote>
-<h3 id="14-comandos-de-verificación"><a class="header" href="#14-comandos-de-verificación">1.4 Comandos de verificación</a></h3>
-<pre><code>R1#  show ip interface brief          ! Resumen de todas las interfaces y estado
-R1#  show interfaces gigabitEthernet 0/0   ! Detalle de una interfaz
-R1#  show running-config              ! Config activa completa (RAM)
-R1#  show startup-config              ! Config guardada (NVRAM)
-R1#  show version                     ! IOS, uptime, modelo
-R1#  show ip route                    ! Tabla de enrutamiento
-</code></pre>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Comando</th><th>Muestra</th></tr>
-</thead>
-<tbody>
-<tr><td><code>show ip interface brief</code></td><td>Estado UP/DOWN de todas las interfaces + IPs</td></tr>
-<tr><td><code>show running-config</code></td><td>Configuración completa activa</td></tr>
-<tr><td><code>show ip route</code></td><td>Tabla de rutas: C=directa, S=estática, R=RIP</td></tr>
-<tr><td><code>show interfaces Gi0/0</code></td><td>Errores, velocidad, duplex, tráfico</td></tr>
-<tr><td><code>show version</code></td><td>Versión IOS, RAM, Flash, tiempo encendido</td></tr>
-</tbody>
-</table>
-</div>
-<h3 id="15-guardar-la-configuración"><a class="header" href="#15-guardar-la-configuración">1.5 Guardar la configuración</a></h3>
+<h3 id="paso-4--guardar-esta-parte-no-se-saltea-nunca"><a class="header" href="#paso-4--guardar-esta-parte-no-se-saltea-nunca">Paso 4 — Guardar (esta parte NO se saltea nunca)</a></h3>
+<p>Todo lo que configuraste vive en la <strong>RAM</strong> (running-config). Si apagás, se pierde. Para que sobreviva:</p>
 <pre><code>R1#  copy running-config startup-config
-Destination filename [startup-config]?   &lt;- presiona Enter
-
-! Forma rápida
-R1#  wr
 </code></pre>
+<p>Respuesta: <code>Destination filename [startup-config]?</code> → <strong>Enter</strong>.</p>
 <blockquote>
-<p><strong>TIP:</strong> <code>running-config</code> vive en RAM (se pierde al apagar). <code>startup-config</code> vive en NVRAM (persiste). Siempre guarda antes de cerrar.</p>
+<p><strong>El detalle de la RAM vs NVRAM:</strong> <code>running-config</code> es la configuración ACTIVA (vive en RAM, se pierde al apagar). <code>startup-config</code> es la configuración GUARDADA (vive en NVRAM, persiste). La secuencia de tu vida profesional: configurar → verificar → guardar. Si no guardás, el router “olvida” todo al cortarse la luz.</p>
 </blockquote>
+<h3 id="paso-5--verificación"><a class="header" href="#paso-5--verificación">Paso 5 — Verificación</a></h3>
+<pre><code>R1#  show running-config         ! La config activa completa
+R1#  show startup-config         ! La config guardada
+R1#  show version                ! Modelo, cantidad de RAM, uptime
+</code></pre>
 <hr>
-<h2 id="2-configuración-del-switch"><a class="header" href="#2-configuración-del-switch">2. Configuración del Switch</a></h2>
-<h3 id="21-acceso-nombre-y-contraseñas"><a class="header" href="#21-acceso-nombre-y-contraseñas">2.1 Acceso, nombre y contraseñas</a></h3>
+<h2 id="4-laboratorio-2-una-red-con-router--ips-y-verificación"><a class="header" href="#4-laboratorio-2-una-red-con-router--ips-y-verificación">4. Laboratorio 2: una red con router — IPs y verificación</a></h2>
+<p><strong>Objetivo:</strong> conectar PCs al router, asignar IPs y activar el paso más olvidado: <code>no shutdown</code>.</p>
+<h3 id="paso-1--armar-la-red-2"><a class="header" href="#paso-1--armar-la-red-2">Paso 1 — Armar la red</a></h3>
+<ul>
+<li><strong>1 router 1941</strong> (R1, el del lab anterior), <strong>1 switch 2960</strong>, <strong>2 PCs</strong>.</li>
+<li>Conectá: PC0 → switch Fa0/1, PC1 → switch Fa0/2, switch Gi0/1 → router <strong>GigabitEthernet 0/0</strong>.</li>
+</ul>
+<blockquote>
+<p><strong>Por qué al router van los cables del switch por Gi0/1 y no por Fa0/1:</strong> los switches 2960 tienen 24 puertos FastEthernet (10/100 Mbps) y 2 GigabitEthernet (arriba). Los enlaces “de columna” (switch → router, switch → switch) usan los gigabit. Es una convención, pero es la que se ve en todas las topologías reales.</p>
+</blockquote>
+<h3 id="paso-2--configurar-el-router"><a class="header" href="#paso-2--configurar-el-router">Paso 2 — Configurar el router</a></h3>
+<pre><code>R1&gt;  enable
+R1#  configure terminal
+R1(config)#  interface gigabitEthernet 0/0
+R1(config-if)#  description LAN - Hacia el Switch   ! Etiqueta para los humanos
+R1(config-if)#  ip address 192.168.1.1 255.255.255.0
+R1(config-if)#  no shutdown                          ! ACTIVA la interfaz
+R1(config-if)#  end
+</code></pre>
+<p><strong>El comando que se olvida en el 90% de los exámenes: <code>no shutdown</code>.</strong> Las interfaces de los routers arrancan en estado <em>administratively down</em>. Sin <code>no shutdown</code>, la interfaz está configurada pero no transmite NADA — es como un grifo con el agua cortada.</p>
+<h3 id="paso-3--configurar-las-pcs"><a class="header" href="#paso-3--configurar-las-pcs">Paso 3 — Configurar las PCs</a></h3>
+<ul>
+<li><strong>PC0:</strong> IP <code>192.168.1.10</code>, Máscara <code>255.255.255.0</code>, Gateway <code>192.168.1.1</code>.</li>
+<li><strong>PC1:</strong> IP <code>192.168.1.11</code>, Máscara <code>255.255.255.0</code>, Gateway <code>192.168.1.1</code>.</li>
+</ul>
+<blockquote>
+<p><strong>¿Por qué el gateway?</strong> El gateway es la puerta de salida hacia OTRAS redes. Cuando la PC quiere llegar a algo que NO está en su red (192.168.1.x), entrega el paquete al gateway — que es el router. Sin gateway, las PCs se ven entre sí pero no salen de la LAN.</p>
+</blockquote>
+<h3 id="paso-4--verificar"><a class="header" href="#paso-4--verificar">Paso 4 — Verificar</a></h3>
+<p>En el router:</p>
+<pre><code>R1#  show ip interface brief
+</code></pre>
+<p>Salida esperada:</p>
+<pre><code>Interface              IP-Address      OK? Method Status                Protocol
+GigabitEthernet0/0     192.168.1.1     YES manual up                    up
+GigabitEthernet0/1     unassigned      YES unset  administratively down down
+</code></pre>
+<p>El estado que buscás: <strong>up/up</strong>. Si dice <em>administratively down</em> → falta <code>no shutdown</code>. Si dice <em>down/down</em> → el cable o el otro lado no están conectados.</p>
+<p>Desde la PC0:</p>
+<pre><code>PC0&gt; ping 192.168.1.11      ← contra la otra PC
+PC0&gt; ping 192.168.1.1       ← contra el gateway
+</code></pre>
+<p>Ambos deben responder. Con eso ya tenés una LAN funcional con salida controlada por el router.</p>
+<hr>
+<h2 id="5-laboratorio-3-el-switch--administración-y-macs"><a class="header" href="#5-laboratorio-3-el-switch--administración-y-macs">5. Laboratorio 3: el switch — administración y MACs</a></h2>
+<p><strong>Objetivo:</strong> darle IP de administración al switch y para el momento de ver cómo aprende las MACs.</p>
+<h3 id="paso-1--lo-que-ya-tenés-armado"><a class="header" href="#paso-1--lo-que-ya-tenés-armado">Paso 1 — Lo que ya tenés armado</a></h3>
+<p>Usá la topología del Lab 2 (R1 + S1 + 2 PCs). El switch funciona sin configuración: es capa 2 pura. Pero para <strong>administrarlo</strong> (entrar por red y no solo por consola) necesita una IP — y para que responda desde una red remota, un gateway por defecto.</p>
+<h3 id="paso-2--configurar-el-switch"><a class="header" href="#paso-2--configurar-el-switch">Paso 2 — Configurar el switch</a></h3>
 <pre><code>Switch&gt;  enable
 Switch#  configure terminal
 Switch(config)#  hostname S1
 
-S1(config)#  enable secret cisco123
-
-S1(config)#  line console 0
-S1(config-line)#  password cisco
-S1(config-line)#  login
-S1(config-line)#  exit
-
-S1(config)#  line vty 0 15
-S1(config-line)#  password cisco
-S1(config-line)#  login
-S1(config-line)#  exit
-
-S1(config)#  service password-encryption
-</code></pre>
-<h3 id="22-ip-de-administración-vlan-1"><a class="header" href="#22-ip-de-administración-vlan-1">2.2 IP de administración (VLAN 1)</a></h3>
-<p>El switch solo necesita IP para administración remota, no para enrutar tráfico.</p>
-<pre><code>S1(config)#  interface vlan 1
+S1(config)#  interface vlan 1              ! La interfaz virtual de administración
 S1(config-if)#  ip address 192.168.1.254 255.255.255.0
 S1(config-if)#  no shutdown
 S1(config-if)#  exit
 
-! Indicar por dónde sale el tráfico fuera de la red
-S1(config)#  ip default-gateway 192.168.1.1
-
+S1(config)#  ip default-gateway 192.168.1.1   ! La puerta hacia otras redes
 S1(config)#  end
 S1#  copy running-config startup-config
 </code></pre>
-<h3 id="23-comandos-de-verificación"><a class="header" href="#23-comandos-de-verificación">2.3 Comandos de verificación</a></h3>
-<pre><code>S1#  show ip interface brief          ! IP admin y estado
-S1#  show mac address-table           ! MACs aprendidas por puerto
-S1#  show interfaces status           ! Estado de todos los puertos
-S1#  show vlan brief                  ! VLANs y puertos asignados
-S1#  show running-config
+<blockquote>
+<p><strong>La idea que confunde a todos:</strong> el switch NO enruta. La IP en <code>interface vlan 1</code> es SOLO para que vos (o un servidor de monitoreo) puedas entrar “por la red” a administrarlo. El tráfico de las PCs pasa por el switch sin tocar esa IP. Es como tener un número de interno de la recepción: no es la central, pero podés llamar a la recepción.</p>
+</blockquote>
+<h3 id="paso-3--ver-el-aprendizaje-de-macs"><a class="header" href="#paso-3--ver-el-aprendizaje-de-macs">Paso 3 — Ver el aprendizaje de MACs</a></h3>
+<p>Ejecutá un ping entre PC0 y PC1 y mirá:</p>
+<pre><code>S1#  show mac address-table
+</code></pre>
+<p>Salida esperada:</p>
+<pre><code>Vlan    Mac Address       Type        Ports
+----    -----------       --------    -----
+   1    0050.7966.6801    DYNAMIC     Fa0/1
+   1    0050.7966.6802    DYNAMIC     Fa0/2
+</code></pre>
+<p>Dos MACs, cada una en su puerto: el switch <strong>aprendió</strong> quién vive en cada puerto, solo viendo las tramas pasar. Ese mecanismo (aprender del origen, reenviar por el destino) es el corazón de la capa 2 que ya estudiaste: acá lo estás viendo en vivo.</p>
+<p>Otros shows de switch que vas a usar siempre:</p>
+<pre><code>S1#  show interfaces status      ! Estado de TODOS los puertos de un vistazo
+S1#  show vlan brief             ! VLANs existentes y qué puertos están en cada una
+S1#  show ip interface brief     ! La IP de administración
 </code></pre>
 <hr>
-<h2 id="3-dhcp-en-el-router"><a class="header" href="#3-dhcp-en-el-router">3. DHCP en el Router</a></h2>
-<p>El router asigna IPs automáticamente a las PCs sin necesitar un servidor externo.</p>
-<h3 id="31-configurar-pool-dhcp"><a class="header" href="#31-configurar-pool-dhcp">3.1 Configurar pool DHCP</a></h3>
-<pre><code>! Excluir IPs fijas del rango asignable (router, switch, servidores)
+<h2 id="6-laboratorio-4-dhcp-en-el-router"><a class="header" href="#6-laboratorio-4-dhcp-en-el-router">6. Laboratorio 4: DHCP en el router</a></h2>
+<p><strong>Objetivo:</strong> que el router reparta IPs solas, sin configurar una a una.</p>
+<h3 id="paso-1--sacarle-la-ip-manual-a-las-pcs"><a class="header" href="#paso-1--sacarle-la-ip-manual-a-las-pcs">Paso 1 — Sacarle la IP manual a las PCs</a></h3>
+<p>Con las PCs del Lab 3, andá a <strong>IP Configuration</strong> de cada PC y cambiá a <strong>DHCP</strong> (el botón de radio). Las PCs pierden su IP y se quedan esperando… que alguien les conteste. Todavía nadie las va a atender: configurá el router.</p>
+<h3 id="paso-2--configurar-el-pool"><a class="header" href="#paso-2--configurar-el-pool">Paso 2 — Configurar el pool</a></h3>
+<pre><code>R1#  configure terminal
+
 R1(config)#  ip dhcp excluded-address 192.168.1.1 192.168.1.20
-
-! Crear el pool
-R1(config)#  ip dhcp pool LAN1
-R1(dhcp-config)#  network 192.168.1.0 255.255.255.0   ! Red completa
-R1(dhcp-config)#  default-router 192.168.1.1           ! Gateway para las PCs
-R1(dhcp-config)#  dns-server 8.8.8.8                   ! DNS
-R1(dhcp-config)#  lease 7                              ! Duración en días
-R1(dhcp-config)#  exit
+</code></pre>
+<p>Ese comando le dice a DHCP: “estas IPs NO las repartas” (son las que ya tienen el router, el switch, y las que más adelante tendrán servidores o impresoras).</p>
+<pre><code>R1(config)#  ip dhcp pool LAN1
+R1(dhcp-config)#  network 192.168.1.0 255.255.255.0   ! La red a repartir
+R1(dhcp-config)#  default-router 192.168.1.1           ! Gateway que recibirán las PCs
+R1(dhcp-config)#  dns-server 8.8.8.8                   ! DNS que les va a decir
+R1(dhcp-config)#  lease 7                              ! Duración del arriendo en días
+R1(dhcp-config)#  end
+</code></pre>
+<h3 id="paso-3--verificar-1"><a class="header" href="#paso-3--verificar-1">Paso 3 — Verificar</a></h3>
+<p>Las PCs ya deberían tener IP automática. En el router mirá quién se llevó qué:</p>
+<pre><code>R1#  show ip dhcp binding
+</code></pre>
+<p>Salida esperada:</p>
+<pre><code>Bindings from all pools not separated by VRF:
+IP address          Client-ID/            Lease expiration        Type
+                    Hardware address/
+                    User name
+192.168.1.21        0050.7966.6801         000017.00000000        Automatic
 </code></pre>
 <blockquote>
-<p><strong>TIP:</strong> Las PCs recibirán IPs desde la .21 en adelante porque excluimos .1 a .20.</p>
+<p><strong>Fijate en el detalle del “cómo se asigna”:</strong> la primera PC se llevó la <code>.21</code>. Las <code>.1</code> a <code>.20</code> quedaron excluidas de la repartición. Y ojo lo que aprendió el router: la tabla <code>binding</code> asocia IP asignada con la <strong>MAC</strong> del cliente — DHCP y MAC trabajan juntos, uno reparte y el otro identifica.</p>
 </blockquote>
-<h3 id="32-ip-helper-address-dhcp-en-servidor-externo"><a class="header" href="#32-ip-helper-address-dhcp-en-servidor-externo">3.2 ip helper-address (DHCP en servidor externo)</a></h3>
-<p>Cuando el servidor DHCP está en una red diferente a las PCs, el router debe reenviar las peticiones:</p>
-<pre><code>! En la interfaz LAN donde están las PCs
-R1(config)#  interface gigabitEthernet 0/0
-R1(config-if)#  ip helper-address 192.168.2.10   ! IP del servidor DHCP
-R1(config-if)#  exit
+<p>Otros shows útiles:</p>
+<pre><code>R1#  show ip dhcp pool          ! Configuración del pool y estadísticas
+R1#  show ip dhcp conflict      ! IPs que dos equipos reclamaron (conflictos)
 </code></pre>
-<blockquote>
-<p><strong>NOTA:</strong> Sin <code>ip helper-address</code>, los broadcasts DHCP de las PCs no cruzan hacia otra red y nunca llegan al servidor.</p>
-</blockquote>
-<h3 id="33-verificar-dhcp"><a class="header" href="#33-verificar-dhcp">3.3 Verificar DHCP</a></h3>
-<pre><code>R1#  show ip dhcp pool          ! Pool configurado y estadísticas
-R1#  show ip dhcp binding       ! Qué IP se asignó a cada MAC
-R1#  show ip dhcp conflict      ! Conflictos detectados
+<h3 id="paso-4-opcional-pero-valioso-dhcp-en-otra-red"><a class="header" href="#paso-4-opcional-pero-valioso-dhcp-en-otra-red">Paso 4 (opcional pero valioso): DHCP en otra red</a></h3>
+<p>¿Y si el servidor DHCP está en OTRA red? Los mensajes DHCP son <strong>broadcasts</strong> — y los broadcasts no cruzan routers. La solución es una línea en la interfaz que está del lado de las PCs:</p>
+<pre><code>R1(config)#  interface gigabitEthernet 0/0
+R1(config-if)#  ip helper-address 192.168.2.10   ! IP del servidor DHCP de la otra red
 </code></pre>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Comando</th><th>Muestra</th></tr>
-</thead>
-<tbody>
-<tr><td><code>show ip dhcp pool</code></td><td>Nombre del pool, red, IPs disponibles</td></tr>
-<tr><td><code>show ip dhcp binding</code></td><td>IP asignada, MAC del cliente, vencimiento</td></tr>
-<tr><td><code>show ip dhcp conflict</code></td><td>IPs que causaron conflicto</td></tr>
-</tbody>
-</table>
-</div>
+<p>Sin esa línea, las PCs de esta LAN jamás le “hablan” al servidor de la red 2.</p>
 <hr>
-<h2 id="4-ip-routes--rutas-estáticas"><a class="header" href="#4-ip-routes--rutas-estáticas">4. IP Routes — Rutas Estáticas</a></h2>
-<p>Las rutas estáticas le dicen al router cómo llegar a redes que no tiene conectadas directamente.</p>
-<h3 id="41-sintaxis"><a class="header" href="#41-sintaxis">4.1 Sintaxis</a></h3>
-<pre><code>! Formato:
-! ip route  [red_destino]  [máscara]  [siguiente_salto]
-
-! Ejemplo: para llegar a 192.168.2.0, el próximo router es 10.0.0.2
-R1(config)#  ip route 192.168.2.0 255.255.255.0 10.0.0.2
-
-! Ruta por defecto (cuando no coincide ninguna otra ruta)
-R1(config)#  ip route 0.0.0.0 0.0.0.0 10.0.0.2
+<h2 id="7-laboratorio-5-dos-routers--rutas-estáticas-y-el-ping-que-no-vuelve"><a class="header" href="#7-laboratorio-5-dos-routers--rutas-estáticas-y-el-ping-que-no-vuelve">7. Laboratorio 5: dos routers — rutas estáticas y el ping que no vuelve</a></h2>
+<p><strong>Objetivo:</strong> conectar dos redes con dos routers y enseñarles a llegar el uno al otro.</p>
+<h3 id="paso-1--armar-la-red-3"><a class="header" href="#paso-1--armar-la-red-3">Paso 1 — Armar la red</a></h3>
+<pre><code>[LAN1 192.168.1.0] -- R1 -- 10.0.0.0/30 -- R2 -- [LAN2 192.168.2.0]
 </code></pre>
-<h3 id="42-ejemplo--2-routers-2-lans"><a class="header" href="#42-ejemplo--2-routers-2-lans">4.2 Ejemplo — 2 routers, 2 LANs</a></h3>
-<pre><code>Topología:
-[LAN1 192.168.1.0] -- R1 -- 10.0.0.0 -- R2 -- [LAN2 192.168.2.0]
+<ul>
+<li><strong>R1</strong> (1941): Gi0/0 → PC0 (<code>192.168.1.1</code>), Gi0/1 → R2 (<code>10.0.0.1</code>).</li>
+<li><strong>R2</strong> (1941): Gi0/0 → PC1 (<code>192.168.2.1</code>), Gi0/1 → R1 (<code>10.0.0.2</code>).</li>
+<li>Cable entre routers: <strong>Crossover</strong> (o uso el cable automático de PT).</li>
+<li>Las conexiones reales de R1-Gi0/0 y R2-Gi0/0 pueden ir con switches, pero para el lab alcanza directo a las PCs.</li>
+</ul>
+<h3 id="paso-2--configurar-los-dos-routers"><a class="header" href="#paso-2--configurar-los-dos-routers">Paso 2 — Configurar los dos routers</a></h3>
+<p>R1:</p>
+<pre><code>R1(config)#  interface gigabitEthernet 0/0
+R1(config-if)#  ip address 192.168.1.1 255.255.255.0
+R1(config-if)#  no shutdown
+R1(config-if)#  exit
+R1(config)#  interface gigabitEthernet 0/1
+R1(config-if)#  ip address 10.0.0.1 255.255.255.0
+R1(config-if)#  no shutdown
+R1(config-if)#  end
 </code></pre>
-<pre><code>! En R1 — necesita saber cómo llegar a LAN2
-R1(config)#  ip route 192.168.2.0 255.255.255.0 10.0.0.2
-
-! En R2 — necesita saber cómo llegar a LAN1
+<p>R2 (el espejo):</p>
+<pre><code>R2(config)#  interface gigabitEthernet 0/0
+R2(config-if)#  ip address 192.168.2.1 255.255.255.0
+R2(config-if)#  no shutdown
+R2(config-if)#  exit
+R2(config)#  interface gigabitEthernet 0/1
+R2(config-if)#  ip address 10.0.0.2 255.255.255.0
+R2(config-if)#  no shutdown
+R2(config-if)#  end
+</code></pre>
+<h3 id="paso-3--el-experimento-que-enseña-más-que-mil-diapositivas"><a class="header" href="#paso-3--el-experimento-que-enseña-más-que-mil-diapositivas">Paso 3 — El experimento que enseña más que mil diapositivas</a></h3>
+<p>Desde PC0:</p>
+<pre><code>PC0&gt; ping 192.168.1.1      ← su gateway: ✓
+PC0&gt; ping 10.0.0.1         ← el otro lado de R1: ✓ (conectado directo)
+PC0&gt; ping 10.0.0.2         ← R2: ✓ (¿por qué? porque es una red directa de R1... esperá, NO es directa de R1. Lo es de R2. R1 la ve porque 10.0.0.0/24 es SU red directa también — ambos routers están en el mismo segmento 10.0.0.0/24)
+PC0&gt; ping 192.168.2.1      ← ¡FALLA! ¿Y por qué si todo lo anterior funcionó? ESTE es el momento de entender.
+</code></pre>
+<blockquote>
+<p><strong>El título del lab se explica solo:</strong> el ping va… y no vuelve. PC0 llega a R1, R1 lo manda a R2 (la red 10.0.0.0 es directa), R2 lo entrega a PC1. PC1 responde a <code>192.168.1.10</code> — y ahí R2 se queda mirando: “¿192.168.1.0? No es una red directa para mí. No tengo idea de dónde está.” <strong>El paquete de respuesta se cae en R2.</strong> Por eso: el ping “va pero no regresa” = problema de ruta de VUELTA.</p>
+</blockquote>
+<h3 id="paso-4--la-solución-rutas-estáticas"><a class="header" href="#paso-4--la-solución-rutas-estáticas">Paso 4 — La solución: rutas estáticas</a></h3>
+<p>Cada router necesita saber cómo llegar a la red del otro:</p>
+<pre><code>R1(config)#  ip route 192.168.2.0 255.255.255.0 10.0.0.2
 R2(config)#  ip route 192.168.1.0 255.255.255.0 10.0.0.1
 </code></pre>
-<blockquote>
-<p><strong>NOTA:</strong> Si falta la ruta en uno de los dos routers, el ping va pero no regresa.</p>
-</blockquote>
-<h3 id="43-verificar-rutas"><a class="header" href="#43-verificar-rutas">4.3 Verificar rutas</a></h3>
-<pre><code>R1#  show ip route
-
-! Salida esperada:
-! C   192.168.1.0/24  is directly connected, GigabitEthernet0/0
-! C   10.0.0.0/24     is directly connected, GigabitEthernet0/1
-! S   192.168.2.0/24  [1/0] via 10.0.0.2
+<p>Sintaxis: <code>ip route [red destino] [máscara] [siguiente salto]</code>. “Para llegar a 192.168.2.0, dale el paquete a 10.0.0.2.”</p>
+<p>Verificá de nuevo:</p>
+<pre><code>PC0&gt; ping 192.168.2.1
 </code></pre>
-<p>Letras en la tabla de rutas:</p>
+<p>Ahora SÍ. Y mirá la tabla de rutas:</p>
+<pre><code>R1#  show ip route
+</code></pre>
+<p>Salida esperada (las letras que importan):</p>
+<pre><code>C    192.168.1.0/24 is directly connected, GigabitEthernet0/0
+C    10.0.0.0/24    is directly connected, GigabitEthernet0/1
+S    192.168.2.0/24 [1/0] via 10.0.0.2
+</code></pre>
 <div class="table-wrapper">
 <table>
 <thead>
 <tr><th>Letra</th><th>Significado</th></tr>
 </thead>
 <tbody>
-<tr><td>C</td><td>Connected — red directamente conectada</td></tr>
-<tr><td>S</td><td>Static — ruta estática configurada manualmente</td></tr>
-<tr><td>R</td><td>RIP</td></tr>
-<tr><td>O</td><td>OSPF</td></tr>
-<tr><td>D</td><td>EIGRP</td></tr>
+<tr><td><strong>C</strong></td><td>Connected — la red está pegada a la interfaz</td></tr>
+<tr><td><strong>S</strong></td><td>Static — la aprendimos del comando <code>ip route</code></td></tr>
+<tr><td>R / O / D</td><td>RIP / OSPF / EIGRP — protocolos de enrutamiento dinámico (viajan solos)</td></tr>
 </tbody>
 </table>
 </div>
-<h3 id="44-eliminar-una-ruta"><a class="header" href="#44-eliminar-una-ruta">4.4 Eliminar una ruta</a></h3>
-<pre><code>R1(config)#  no ip route 192.168.2.0 255.255.255.0 10.0.0.2
+<h3 id="paso-5-modo-simulación-ver-el-paquete-viajar"><a class="header" href="#paso-5-modo-simulación-ver-el-paquete-viajar">Paso 5 (modo Simulación): ver el paquete viajar</a></h3>
+<p>Este es el momento de pegarle al botón <strong>Simulation</strong> de Packet Tracer, lanzar un ping de PC0 a PC1 y hacer click en <strong>Capture/Forward</strong>:</p>
+<ol>
+<li>El paquete sale de PC0 → <strong>switch/R1</strong> → cambia de capa → <strong>R1</strong> lo reenvía con nueva MAC al cable 10.0.0.0 → <strong>R2</strong> → <strong>PC1</strong>.</li>
+<li>La respuesta hace el camino inverso — ahora SÍ, porque R2 ya tiene la ruta estática.</li>
+</ol>
+<p>Lo que estás viendo es el viaje completo: la PC empaca (capa 2 con MAC), el router reescribe (capa 3 con IP que no cambia, MAC que sí), y el destino responde. Este lab ES la foto que vale por mil palabras.</p>
+<h3 id="ruta-por-defecto-default-route"><a class="header" href="#ruta-por-defecto-default-route">Ruta por defecto (default route)</a></h3>
+<p>Cuando un router no tiene ninguna ruta que coincida con el destino, tira el paquete a la basura. La ruta por defecto es el “y si nada coincide, mandalo acá”:</p>
+<pre><code>R1(config)#  ip route 0.0.0.0 0.0.0.0 10.0.0.2
 </code></pre>
+<p><code>0.0.0.0 0.0.0.0</code> significa “cualquier red, cualquier máscara”. Es la que configuran los routers de borde hacia el ISP: todo lo que no conozco, al proveedor.</p>
 <hr>
-<h2 id="5-vlans"><a class="header" href="#5-vlans">5. VLANs</a></h2>
-<p>Las VLANs dividen una red física en segmentos lógicos separados. Dispositivos en VLANs distintas no se comunican sin un router.</p>
-<h3 id="51-crear-vlans-en-el-switch"><a class="header" href="#51-crear-vlans-en-el-switch">5.1 Crear VLANs en el Switch</a></h3>
-<pre><code>S1(config)#  vlan 10
-S1(config-vlan)#  name VENTAS
-S1(config-vlan)#  exit
+<h2 id="8-laboratorio-6-vlans-y-router-on-a-stick"><a class="header" href="#8-laboratorio-6-vlans-y-router-on-a-stick">8. Laboratorio 6: VLANs y router on a stick</a></h2>
+<p><strong>Objetivo:</strong> dividir el switch en redes lógicas separadas y habilitar la comunicación entre ellas con UN solo cable al router.</p>
+<h3 id="paso-1--armar-la-red-4"><a class="header" href="#paso-1--armar-la-red-4">Paso 1 — Armar la red</a></h3>
+<ul>
+<li><strong>1 switch 2960</strong>, <strong>1 router 1941</strong>, <strong>4 PCs</strong>.</li>
+<li>PC0 y PC1 → switch Fa0/1 y Fa0/2 (VLAN 10).</li>
+<li>PC2 y PC3 → switch Fa0/3 y Fa0/4 (VLAN 20).</li>
+<li>Switch Gi0/1 → router Gi0/0.</li>
+</ul>
+<h3 id="paso-2--crear-las-vlans-y-asignar-puertos"><a class="header" href="#paso-2--crear-las-vlans-y-asignar-puertos">Paso 2 — Crear las VLANs y asignar puertos</a></h3>
+<pre><code>Switch(config)#  vlan 10
+Switch(config-vlan)#  name VENTAS
+Switch(config-vlan)#  exit
 
-S1(config)#  vlan 20
-S1(config-vlan)#  name RRHH
-S1(config-vlan)#  exit
+Switch(config)#  vlan 20
+Switch(config-vlan)#  name RRHH
+Switch(config-vlan)#  exit
 
-S1(config)#  vlan 30
-S1(config-vlan)#  name SERVIDORES
-S1(config-vlan)#  exit
-</code></pre>
-<h3 id="52-puertos-access-un-puerto--una-vlan"><a class="header" href="#52-puertos-access-un-puerto--una-vlan">5.2 Puertos Access (un puerto = una VLAN)</a></h3>
-<p>Se usa en puertos de PCs, impresoras y servidores.</p>
-<pre><code>! Puerto único
-S1(config)#  interface fastEthernet 0/1
-S1(config-if)#  switchport mode access
-S1(config-if)#  switchport access vlan 10
-S1(config-if)#  exit
+! Dos puertos para VLAN 10, uno por uno
+Switch(config)#  interface fastEthernet 0/1
+Switch(config-if)#  switchport mode access
+Switch(config-if)#  switchport access vlan 10
+Switch(config-if)#  exit
 
-! Rango de puertos de una sola vez
-S1(config)#  interface range fastEthernet 0/2-5
-S1(config-if-range)#  switchport mode access
-S1(config-if-range)#  switchport access vlan 20
-S1(config-if-range)#  exit
+Switch(config)#  interface fastEthernet 0/2
+Switch(config-if)#  switchport mode access
+Switch(config-if)#  switchport access vlan 10
+Switch(config-if)#  exit
+
+! O un RANGO de una sola vez (mismo resultado, menos tipeo)
+Switch(config)#  interface range fastEthernet 0/3 - 4
+Switch(config-if-range)#  switchport mode access
+Switch(config-if-range)#  switchport access vlan 20
+Switch(config-if-range)#  exit
 </code></pre>
-<h3 id="53-puerto-trunk-switch--router-o-switch--switch"><a class="header" href="#53-puerto-trunk-switch--router-o-switch--switch">5.3 Puerto Trunk (Switch → Router o Switch → Switch)</a></h3>
-<p>Un puerto Trunk lleva tráfico de múltiples VLANs al mismo tiempo.</p>
-<pre><code>S1(config)#  interface gigabitEthernet 0/1
-S1(config-if)#  switchport mode trunk
-S1(config-if)#  switchport trunk allowed vlan 10,20,30
-S1(config-if)#  exit
+<h3 id="paso-3--el-trunk-hacia-el-router"><a class="header" href="#paso-3--el-trunk-hacia-el-router">Paso 3 — El trunk hacia el router</a></h3>
+<p>El enlace switch-router debe llevar tráfico de las DOS VLANs al mismo tiempo. Eso es un <strong>trunk</strong>:</p>
+<pre><code>Switch(config)#  interface gigabitEthernet 0/1
+Switch(config-if)#  switchport mode trunk
+Switch(config-if)#  switchport trunk allowed vlan 10,20
+Switch(config-if)#  end
 </code></pre>
-<h3 id="54-router-on-a-stick-enrutamiento-entre-vlans"><a class="header" href="#54-router-on-a-stick-enrutamiento-entre-vlans">5.4 Router on a Stick (enrutamiento entre VLANs)</a></h3>
-<p>Un solo cable físico entre switch y router, con subinterfaces por cada VLAN.</p>
-<pre><code>! Primero activar la interfaz física sin IP
-R1(config)#  interface gigabitEthernet 0/0
-R1(config-if)#  no shutdown
+<h3 id="paso-4--router-on-a-stick-roas"><a class="header" href="#paso-4--router-on-a-stick-roas">Paso 4 — Router on a stick (ROAS)</a></h3>
+<p>El router tiene UNA interfaz física (Gi0/0) pero creamos <strong>subinterfaces</strong> — una por VLAN, cada una como si fuera una interfaz aparte:</p>
+<pre><code>R1(config)#  interface gigabitEthernet 0/0
+R1(config-if)#  no shutdown          ! La física se activa SIN IP (la tienen las subinterfaces)
 R1(config-if)#  exit
 
-! Subinterfaz VLAN 10
 R1(config)#  interface gigabitEthernet 0/0.10
-R1(config-subif)#  encapsulation dot1Q 10
+R1(config-subif)#  encapsulation dot1Q 10          ! Etiqueta: esta subinterfaz = VLAN 10
 R1(config-subif)#  ip address 192.168.10.1 255.255.255.0
 R1(config-subif)#  exit
 
-! Subinterfaz VLAN 20
 R1(config)#  interface gigabitEthernet 0/0.20
 R1(config-subif)#  encapsulation dot1Q 20
 R1(config-subif)#  ip address 192.168.20.1 255.255.255.0
-R1(config-subif)#  exit
-
-! Subinterfaz VLAN 30
-R1(config)#  interface gigabitEthernet 0/0.30
-R1(config-subif)#  encapsulation dot1Q 30
-R1(config-subif)#  ip address 192.168.30.1 255.255.255.0
-R1(config-subif)#  exit
+R1(config-subif)#  end
 </code></pre>
-<blockquote>
-<p><strong>NOTA:</strong> El puerto del switch hacia el router DEBE estar en modo Trunk. El gateway de cada PC es la IP de su subinterfaz.</p>
-</blockquote>
-<h3 id="55-verificar-vlans"><a class="header" href="#55-verificar-vlans">5.5 Verificar VLANs</a></h3>
-<pre><code>S1#  show vlan brief                        ! VLANs y puertos asignados
-S1#  show interfaces trunk                  ! Puertos trunk activos
-S1#  show interfaces Fa0/1 switchport       ! Detalle de un puerto
-</code></pre>
-<h3 id="56-tabla-resumen--configuración-típica"><a class="header" href="#56-tabla-resumen--configuración-típica">5.6 Tabla resumen — configuración típica</a></h3>
+<h3 id="paso-5--ips-de-las-pcs-y-verificación"><a class="header" href="#paso-5--ips-de-las-pcs-y-verificación">Paso 5 — IPs de las PCs y verificación</a></h3>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>VLAN</th><th>Nombre</th><th>Red</th><th>Gateway</th><th>Puertos Switch</th></tr>
+<tr><th>PC</th><th>IP</th><th>Gateway</th></tr>
 </thead>
 <tbody>
-<tr><td>10</td><td>VENTAS</td><td>192.168.10.0/24</td><td>192.168.10.1</td><td>Fa0/1 – Fa0/5</td></tr>
-<tr><td>20</td><td>RRHH</td><td>192.168.20.0/24</td><td>192.168.20.1</td><td>Fa0/6 – Fa0/10</td></tr>
-<tr><td>30</td><td>SERVIDORES</td><td>192.168.30.0/24</td><td>192.168.30.1</td><td>Fa0/11 – Fa0/15</td></tr>
+<tr><td>PC0</td><td>192.168.10.10</td><td>192.168.10.1</td></tr>
+<tr><td>PC1</td><td>192.168.10.11</td><td>192.168.10.1</td></tr>
+<tr><td>PC2</td><td>192.168.20.10</td><td>192.168.20.1</td></tr>
+<tr><td>PC3</td><td>192.168.20.11</td><td>192.168.20.1</td></tr>
+</tbody>
+</table>
+</div>
+<p>Probá:</p>
+<pre><code>PC0&gt; ping 192.168.10.11     ← misma VLAN: ✓ (pasa por el switch, sin router)
+PC0&gt; ping 192.168.20.10     ← otra VLAN: ✓ (pasa por el router: PC0 → switch trunk → subinterfaz .10 → subinterfaz .20 → switch → PC2)
+</code></pre>
+<blockquote>
+<p><strong>La trampa conceptual:</strong> si el gateway de cada PC no es la IP de SU subinterfaz, el ping entre VLANs falla. El router recibe el paquete etiquetado con VLAN 10 y responde por la subinterfaz que corresponde a esa etiqueta. Cada VLAN es un dominio de broadcast distinto: sin router (o switch multicapa), son mundos separados.</p>
+</blockquote>
+<p>Verificaciones de switch que cierran el lab:</p>
+<pre><code>Switch#  show vlan brief              ! Qué puertos van en cada VLAN
+Switch#  show interfaces trunk        ! El trunk activo y las VLANs permitidas
+Switch#  show interfaces Fa0/1 switchport    ! El detalle de un puerto
+</code></pre>
+<p>Tabla resumen de la topología típica:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>VLAN</th><th>Nombre</th><th>Red</th><th>Gateway</th><th>Puertos switch</th></tr>
+</thead>
+<tbody>
+<tr><td>10</td><td>VENTAS</td><td>192.168.10.0/24</td><td>192.168.10.1</td><td>Fa0/1 – Fa0/2</td></tr>
+<tr><td>20</td><td>RRHH</td><td>192.168.20.0/24</td><td>192.168.20.1</td><td>Fa0/3 – Fa0/4</td></tr>
 <tr><td>1</td><td>Nativa (default)</td><td>—</td><td>—</td><td>Gi0/1 (Trunk)</td></tr>
 </tbody>
 </table>
 </div>
 <hr>
-<h2 id="6-referencia-rápida"><a class="header" href="#6-referencia-rápida">6. Referencia Rápida</a></h2>
+<h2 id="9-laboratorio-7-el-lab-completo"><a class="header" href="#9-laboratorio-7-el-lab-completo">9. Laboratorio 7: el lab completo</a></h2>
+<p><strong>Objetivo:</strong> unir TODOS los conceptos en una sola red de oficina: router + DHCP + switch con VLANs + rutas + PCs.</p>
+<h3 id="paso-1--topología-completa"><a class="header" href="#paso-1--topología-completa">Paso 1 — Topología completa</a></h3>
+<pre><code>                     [R2] 192.168.30.1/24
+                      |      (servidor y salida)
+            10.0.0.0/24 enlace
+                      |
+[R1] 192.168.1.1 ──────┘
+  | Gi0/0 router on a stick hacia S1
+  |
+[S1] 2960
+  ├── VLAN 10 VENTAS: Fa0/1-5  → PC0, PC1 (192.168.10.x, gateway .10.1)
+  ├── VLAN 20 RRHH:    Fa0/6-10 → PC2, PC3 (192.168.20.x, gateway .20.1)
+  └── Gi0/1 trunk hacia R1
+</code></pre>
+<h3 id="paso-2--la-receta-completa-en-orden"><a class="header" href="#paso-2--la-receta-completa-en-orden">Paso 2 — La receta completa (en orden)</a></h3>
+<ol>
+<li><strong>Switch:</strong> crear VLAN 10 y 20, asignar access ports, trunk hacia R1.</li>
+<li><strong>Router R1:</strong> subinterfaces <code>.10</code> y <code>.20</code> con <code>encapsulation dot1Q</code>, IPs <code>192.168.10.1</code> y <code>192.168.20.1</code>.</li>
+<li><strong>Router R1:</strong> pool DHCP por VLAN:</li>
+</ol>
+<pre><code>R1(config)#  ip dhcp excluded-address 192.168.10.1 192.168.10.20
+R1(config)#  ip dhcp pool VENTAS
+R1(dhcp-config)#  network 192.168.10.0 255.255.255.0
+R1(dhcp-config)#  default-router 192.168.10.1
+R1(dhcp-config)#  dns-server 8.8.8.8
+R1(dhcp-config)#  exit
+
+R1(config)#  ip dhcp excluded-address 192.168.20.1 192.168.20.20
+R1(config)#  ip dhcp pool RRHH
+R1(dhcp-config)#  network 192.168.20.0 255.255.255.0
+R1(dhcp-config)#  default-router 192.168.20.1
+R1(dhcp-config)#  dns-server 8.8.8.8
+R1(dhcp-config)#  end
+</code></pre>
+<ol start="4">
+<li><strong>PCs en DHCP</strong> (Desktop → IP Configuration → DHCP): deben recibir IPs de sus VLANs correspondientes.</li>
+<li><strong>Rutas:</strong> los routers se conectan por el enlace 10.0.0.0/24 — si hay más redes, cada lado necesita la ruta del otro:</li>
+</ol>
+<pre><code>R1(config)#  ip route 192.168.30.0 255.255.255.0 10.0.0.2
+R2(config)#  ip route 192.168.10.0 255.255.255.0 10.0.0.1
+R2(config)#  ip route 192.168.20.0 255.255.255.0 10.0.0.1
+</code></pre>
+<ol start="6">
+<li><strong>Guardar TODO</strong>: <code>copy running-config startup-config</code> en router y switch.</li>
+</ol>
+<h3 id="paso-3--verificación-final"><a class="header" href="#paso-3--verificación-final">Paso 3 — Verificación final</a></h3>
+<pre><code>PC0&gt; ipconfig /all          ← ¿IP correcta? ¿Gateway? ¿DNS?
+PC0&gt; ping 192.168.10.1      ← gateway VLAN 10
+PC0&gt; ping 192.168.20.1      ← gateway VLAN 20 (cruza el router)
+PC0&gt; ping 192.168.30.1      ← R2 (salida)
+R1#  show ip dhcp binding   ← ¿quién recibió qué?
+R1#  show ip route          ← todas las rutas en la tabla
+S1#  show vlan brief        ← puertos en sus VLANs
+</code></pre>
+<p>Si todo responde: acabaste de construir una red de oficina pequeña y real — con DHCP automático, segmentación por departamentos y salida hacia otra red. Ese es el vuelo. Las piezas sueltas de los labs anteriores, todas encajadas.</p>
+<hr>
+<h2 id="10-referencia-rápida"><a class="header" href="#10-referencia-rápida">10. Referencia rápida</a></h2>
 <h3 id="router--todos-los-comandos"><a class="header" href="#router--todos-los-comandos">Router — todos los comandos</a></h3>
 <div class="table-wrapper">
 <table>
@@ -80748,22 +80919,26 @@ S1#  show interfaces Fa0/1 switchport       ! Detalle de un puerto
 <tr><th>Comando</th><th>Qué hace</th></tr>
 </thead>
 <tbody>
-<tr><td><code>enable</code></td><td>Entra a modo privilegiado</td></tr>
-<tr><td><code>configure terminal</code></td><td>Abre modo configuración global</td></tr>
-<tr><td><code>hostname NOMBRE</code></td><td>Cambia el nombre del dispositivo</td></tr>
-<tr><td><code>enable secret PASS</code></td><td>Contraseña cifrada para modo privilegiado</td></tr>
+<tr><td><code>enable</code> / <code>configure terminal</code></td><td>Entra a modo privilegiado / configuración global</td></tr>
+<tr><td><code>hostname NOMBRE</code></td><td>Cambia el nombre del equipo</td></tr>
+<tr><td><code>enable secret PASS</code></td><td>Contraseña cifrada para el modo privilegiado</td></tr>
+<tr><td><code>line console 0</code> / <code>line vty 0 4</code></td><td>Acceso físico / remoto</td></tr>
 <tr><td><code>interface Gi0/0</code></td><td>Entra a configurar una interfaz</td></tr>
 <tr><td><code>ip address IP MASK</code></td><td>Asigna IP a la interfaz</td></tr>
-<tr><td><code>no shutdown</code></td><td>Activa la interfaz</td></tr>
-<tr><td><code>ip route RED MASK NEXTHOP</code></td><td>Agrega ruta estática</td></tr>
+<tr><td><code>no shutdown</code></td><td>ACTIVA la interfaz (¡obligatorio!)</td></tr>
+<tr><td><code>description TEXTO</code></td><td>Etiqueta de humanos para la interfaz</td></tr>
+<tr><td><code>ip route RED MASK SIGUIENTE</code></td><td>Ruta estática</td></tr>
+<tr><td><code>ip route 0.0.0.0 0.0.0.0 SALTO</code></td><td>Ruta por defecto</td></tr>
 <tr><td><code>ip dhcp pool NOMBRE</code></td><td>Crea pool DHCP</td></tr>
-<tr><td><code>ip dhcp excluded-address X Y</code></td><td>Excluye IPs del rango DHCP</td></tr>
-<tr><td><code>ip helper-address IP</code></td><td>Reenvía DHCP hacia otro segmento</td></tr>
-<tr><td><code>show ip interface brief</code></td><td>Resumen de interfaces y estado</td></tr>
+<tr><td><code>ip dhcp excluded-address X Y</code></td><td>Excluye IPs del rango a repartir</td></tr>
+<tr><td><code>ip helper-address IP</code></td><td>Reenvía broadcasts DHCP a otra red</td></tr>
+<tr><td><code>interface Gi0/0.10</code></td><td>Subinterfaz (router on a stick)</td></tr>
+<tr><td><code>encapsulation dot1Q ID</code></td><td>Asocia la subinterfaz a una VLAN</td></tr>
+<tr><td><code>show ip interface brief</code></td><td>Interfaces + estado + IPs</td></tr>
 <tr><td><code>show ip route</code></td><td>Tabla de enrutamiento</td></tr>
-<tr><td><code>show running-config</code></td><td>Config activa completa</td></tr>
-<tr><td><code>show ip dhcp binding</code></td><td>IPs asignadas por DHCP</td></tr>
-<tr><td><code>copy running-config startup-config</code></td><td>Guarda la configuración</td></tr>
+<tr><td><code>show ip dhcp binding</code></td><td>IPs asignadas con su MAC</td></tr>
+<tr><td><code>show running-config</code> / <code>startup-config</code></td><td>Config activa (RAM) / guardada (NVRAM)</td></tr>
+<tr><td><code>copy running-config startup-config</code></td><td>Guarda la configuración (¡siempre!)</td></tr>
 </tbody>
 </table>
 </div>
@@ -80774,39 +80949,211 @@ S1#  show interfaces Fa0/1 switchport       ! Detalle de un puerto
 <tr><th>Comando</th><th>Qué hace</th></tr>
 </thead>
 <tbody>
-<tr><td><code>interface vlan 1</code></td><td>Configura IP de administración</td></tr>
-<tr><td><code>ip default-gateway IP</code></td><td>Gateway del switch para admin remoto</td></tr>
-<tr><td><code>vlan ID</code></td><td>Crea una VLAN</td></tr>
-<tr><td><code>name NOMBRE</code></td><td>Asigna nombre a la VLAN</td></tr>
-<tr><td><code>switchport mode access</code></td><td>Puerto para PC/servidor (1 VLAN)</td></tr>
-<tr><td><code>switchport access vlan ID</code></td><td>Asigna puerto a una VLAN</td></tr>
+<tr><td><code>interface vlan 1</code></td><td>IP de administración del switch</td></tr>
+<tr><td><code>ip default-gateway IP</code></td><td>Puerta de administración hacia otras redes</td></tr>
+<tr><td><code>vlan ID</code> + <code>name NOMBRE</code></td><td>Crea y nombra una VLAN</td></tr>
+<tr><td><code>interface range Fa0/3 - 4</code></td><td>Configura varios puertos juntos</td></tr>
+<tr><td><code>switchport mode access</code></td><td>Puerto para PC/servidor (una sola VLAN)</td></tr>
+<tr><td><code>switchport access vlan ID</code></td><td>Asigna el puerto a una VLAN</td></tr>
 <tr><td><code>switchport mode trunk</code></td><td>Puerto multi-VLAN (hacia router/switch)</td></tr>
 <tr><td><code>switchport trunk allowed vlan X,Y</code></td><td>VLANs permitidas en el trunk</td></tr>
-<tr><td><code>show vlan brief</code></td><td>VLANs y puertos asignados</td></tr>
-<tr><td><code>show interfaces trunk</code></td><td>Puertos trunk activos</td></tr>
-<tr><td><code>show mac address-table</code></td><td>Tabla de MACs aprendidas</td></tr>
+<tr><td><code>show vlan brief</code></td><td>VLANs y sus puertos</td></tr>
+<tr><td><code>show interfaces trunk</code></td><td>Trunks activos</td></tr>
+<tr><td><code>show mac address-table</code></td><td>MACs aprendidas por puerto</td></tr>
+<tr><td><code>show interfaces status</code></td><td>Estado de todos los puertos</td></tr>
 </tbody>
 </table>
 </div>
-<h3 id="errores-comunes-y-solución"><a class="header" href="#errores-comunes-y-solución">Errores comunes y solución</a></h3>
+<h3 id="pc-command-prompt-de-packet-tracer"><a class="header" href="#pc-command-prompt-de-packet-tracer">PC (Command Prompt de Packet Tracer)</a></h3>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>Problema</th><th>Causa</th><th>Solución</th></tr>
+<tr><th>Comando</th><th>Qué hace</th></tr>
 </thead>
 <tbody>
-<tr><td>Interfaz <code>down/down</code></td><td>Falta <code>no shutdown</code></td><td>Aplicar <code>no shutdown</code> en la interfaz</td></tr>
-<tr><td>PC no recibe IP</td><td>DHCP mal configurado o sin <code>ip helper</code></td><td>Verificar pool y/o <code>ip helper-address</code></td></tr>
-<tr><td>Ping falla entre LANs</td><td>Falta ruta estática en algún router</td><td>Agregar <code>ip route</code> en ambos routers</td></tr>
-<tr><td>PC no sale de su VLAN</td><td>Puerto mal asignado o gateway incorrecto</td><td>Verificar <code>switchport access vlan</code> y gateway de la PC</td></tr>
-<tr><td>Trunk no funciona</td><td>Puerto en modo access</td><td>Cambiar a <code>switchport mode trunk</code></td></tr>
-<tr><td>Config se pierde al reiniciar</td><td>No se guardó</td><td>Ejecutar <code>copy running-config startup-config</code></td></tr>
+<tr><td><code>ipconfig</code> / <code>ipconfig /all</code></td><td>IPs del equipo / detalle completo (incluye MAC)</td></tr>
+<tr><td><code>ping IP</code></td><td>Prueba de conectividad</td></tr>
+<tr><td><code>arp -a</code></td><td>Tabla ARP (IP ↔ MAC) del equipo</td></tr>
 </tbody>
 </table>
 </div>
 <hr>
+<h2 id="11-errores-comunes-y-cómo-diagnosticarlos"><a class="header" href="#11-errores-comunes-y-cómo-diagnosticarlos">11. Errores comunes y cómo diagnosticarlos</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Problema</th><th>Causa más probable</th><th>Solución</th></tr>
+</thead>
+<tbody>
+<tr><td>Interfaz <code>administratively down</code></td><td>Falta <code>no shutdown</code></td><td>Aplicar <code>no shutdown</code> en la interfaz</td></tr>
+<tr><td>Interfaz <code>down/down</code></td><td>Cable mal conectado o el otro lado apagado</td><td>Revisar cable y equipo físico en PT</td></tr>
+<tr><td>LED ámbar o apagado</td><td>Cable equivocado (directo vs cruzado)</td><td>Usar crossover entre switches/PCs; directo a switch/router</td></tr>
+<tr><td>PC sin IP en DHCP</td><td>Pool mal definido o VLAN no coincide</td><td>Verificar <code>network</code>, <code>excluded-address</code> y que el puerto esté en la VLAN correcta</td></tr>
+<tr><td>Ping “va pero no vuelve”</td><td>Falta ruta estática del lado de la respuesta</td><td><code>ip route</code> en AMBOS routers</td></tr>
+<tr><td>PCs de la misma VLAN no se ven</td><td>Gateway incorrecto o puerto en VLAN equivocada</td><td>Verificar <code>switchport access vlan</code> y gateway</td></tr>
+<tr><td>PCs de VLANs distintas no se ven</td><td>Falta router (o trunk sin subinterfaces)</td><td>Router on a stick con <code>encapsulation dot1Q</code> por VLAN</td></tr>
+<tr><td>Trunk no lleva tráfico</td><td>Puerto en <code>access</code> o VLANs no permitidas</td><td><code>switchport mode trunk</code> + <code>allowed vlan</code></td></tr>
+<tr><td>Todo configurado y al apagar se pierde</td><td>No se guardó</td><td><code>copy running-config startup-config</code></td></tr>
+<tr><td>DHCP no cruza redes</td><td>Faltan <em>broadcasts</em> que el router no reenvía</td><td><code>ip helper-address</code> en la interfaz del lado de las PCs</td></tr>
+</tbody>
+</table>
+</div>
 <blockquote>
-<p><strong>Orden recomendado:</strong> Router (IPs + rutas) → Switch (VLANs + puertos) → Servidor/DHCP → PCs → Verificar con <code>ping</code> e <code>ipconfig</code></p>
+<p><strong>El método de diagnóstico en 3 pasos que nunca falla:</strong> (1) <code>show ip interface brief</code> en los routers — ¿están las interfaces up/up con las IPs correctas? (2) <code>ping</code> al gateway desde la PC — si no responde, es capa 1/2 (cable, VLAN); si responde, el problema está más lejos. (3) <code>show ip route</code> — ¿existe la ruta hacia el destino y la de vuelta? El 90% de los problemas de los labs se resuelven con esos tres comandos.</p>
+</blockquote>
+<hr>
+<h2 id="12-ejercicios-guiados"><a class="header" href="#12-ejercicios-guiados">12. Ejercicios guiados</a></h2>
+<h3 id="ejercicio-1-completá-la-config"><a class="header" href="#ejercicio-1-completá-la-config">Ejercicio 1: completá la config</a></h3>
+<p>Un router tiene esto configurado en Gi0/0:</p>
+<pre><code>R1(config-if)#  ip address 192.168.5.1 255.255.255.0
+</code></pre>
+<p>Falta UN comando para que la interfaz funcione. ¿Cuál es? ¿Por qué?</p>
+<details>
+<summary>Ver respuesta</summary>
+<p><code>no shutdown</code>. Las interfaces del router arrancan en <em>administratively down</em>: la IP está asignada, pero la interfaz no transmite. Sin <code>no shutdown</code>, el estado queda <code>administratively down</code>, el teléfono no suena y ningún ping responde. Es el comando olvidado #1 de la historia de Cisco.</p>
+</details>
+<h3 id="ejercicio-2-el-diagnóstico-del-ping-que-falla"><a class="header" href="#ejercicio-2-el-diagnóstico-del-ping-que-falla">Ejercicio 2: el diagnóstico del ping que falla</a></h3>
+<p>PC0 (192.168.1.10) hace ping a PC1 (192.168.1.11), ambas conectadas a un switch, y falla. Audité: IPs y máscaras correctas, cable directo, LEDs verdes. ¿Qué te falta revisar?</p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Si IPs, máscaras y cables están bien y las dos PCs están en la misma VLAN (o el switch no tiene VLANs, es decir, todo en VLAN 1 por defecto)… el ping entre dos equipos de la misma red ni siquiera necesita el router. Lo siguiente a revisar es el <strong>firewall de la PC</strong> (en Packet Tracer no aplica, pero en la vida real es la causa #1) o el <strong>cable cruzado vs directo</strong> (PC↔PC directo requiere crossover en redes clásicas). Ah, y confirmá que ambas PCs estén en la misma red lógica (subred) — si una está en 192.168.1.0/24 y la otra en 192.168.2.0/24 sin router entre medio, jamás se van a ver.</p>
+</details>
+<h3 id="ejercicio-3-diseño-de-subredes-con-vlans"><a class="header" href="#ejercicio-3-diseño-de-subredes-con-vlans">Ejercicio 3: diseño de subredes con VLANs</a></h3>
+<p>Tenés un switch 2960 (24 puertos) y la siguiente necesidad: 6 PCs de Ventas, 8 PCs de RRHH, 2 impresoras de uso compartido. Diseñá la segmentación con VLANs y decí cuál es el mínimo de puertos que necesita el router para el enrutamiento inter-VLAN.</p>
+<details>
+<summary>Ver respuesta</summary>
+<ul>
+<li><strong>VLAN 10 — VENTAS:</strong> 6 PCs → Fa0/1–Fa0/6.</li>
+<li><strong>VLAN 20 — RRHH:</strong> 8 PCs → Fa0/7–Fa0/14.</li>
+<li><strong>VLAN 30 — IMPRESORAS:</strong> 2 impresoras → Fa0/15–Fa0/16.</li>
+<li><strong>Router:</strong> alcanza con <strong>1 puerto físico</strong> (Gi0/1, trunk) usando router on a stick: una subinterfaz por VLAN (<code>.10</code>, <code>.20</code>, <code>.30</code>) con <code>encapsulation dot1Q</code>. Gateway por VLAN: 192.168.10.1 / 192.168.20.1 / 192.168.30.1.</li>
+<li>Las PCs usan la impresora de su VLAN; si RRHH quiere imprimir, la impresora compartida podría estar en la VLAN 30 y RRHH la alcanza vía el router.</li>
+</ul>
+</details>
+<h3 id="ejercicio-4-la-secuencia-completa"><a class="header" href="#ejercicio-4-la-secuencia-completa">Ejercicio 4: la secuencia completa</a></h3>
+<p>Poné en orden lógico esta configuración: (a) <code>no shutdown</code> en Gi0/0, (b) <code>ip address 192.168.1.1 255.255.255.0</code> en Gi0/0, (c) <code>hostname R1</code>, (d) <code>copy running-config startup-config</code>, (e) <code>enable secret</code>.</p>
+<details>
+<summary>Ver respuesta</summary>
+<ol>
+<li><code>enable</code> / <code>configure terminal</code></li>
+<li><strong>c)</strong> <code>hostname R1</code></li>
+<li><strong>e)</strong> <code>enable secret</code></li>
+<li><strong>b)</strong> <code>interface Gi0/0</code> → <code>ip address 192.168.1.1 255.255.255.0</code></li>
+<li><strong>a)</strong> mismo contexto: <code>no shutdown</code></li>
+<li><strong>d)</strong> <code>end</code> → <code>copy running-config startup-config</code></li>
+</ol>
+<p>El orden conceptual: identidad del equipo → seguridad → IPs → activar interfaces → guardar. Cualquier otro orden “funciona”, pero este es el que no te deja nada colgado.</p>
+</details>
+<h3 id="ejercicio-5-modo-simulación"><a class="header" href="#ejercicio-5-modo-simulación">Ejercicio 5: modo simulación</a></h3>
+<p>En el Lab 5, con el ping que “va pero no vuelve” (sin rutas estáticas aún), ¿qué ves en el modo simulación cuando PC0 pinguea a PC1? ¿Dónde se corta el paquete?</p>
+<details>
+<summary>Ver respuesta</summary>
+<p>El paquete ICMP Echo Request viaja: PC0 → R1 → R2 → PC1 (todo en verde). La respuesta (Echo Reply) sale de PC1 hacia R2… y ahí: <strong>se cae en R2</strong> con una X roja (o queda en “dropped silently”). R2 no tiene ruta hacia 192.168.1.0 (su tabla solo conoce su LAN y el enlace). La respuesta jamás sale de R2. Ese es el momento exacto en que aprendés que el enrutamiento necesita la ruta de IDA <strong>y</strong> la de VUELTA.</p>
+</details>
+<hr>
+<h2 id="13-comprobá-lo-que-aprendiste"><a class="header" href="#13-comprobá-lo-que-aprendiste">13. Comprobá lo que aprendiste</a></h2>
+<p><strong>1. ¿Cuál es la diferencia entre <code>running-config</code> y <code>startup-config</code>?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p><code>running-config</code> es la config activa en RAM (se pierde al apagar); <code>startup-config</code> es la guardada en NVRAM (persiste). Se pasa de una a otra con <code>copy running-config startup-config</code>.</p>
+</details>
+<p><strong>2. ¿Por qué <code>no shutdown</code> es tan importante?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Las interfaces del router arrancan <em>administratively down</em>: aunque tengan IP asignada, no transmiten. <code>no shutdown</code> activa la interfaz. Sin él, todo lo demás (IP, ruta, DHCP) está “configurado” pero muerto.</p>
+</details>
+<p><strong>3. ¿Qué comando muestra el estado de todas las interfaces del router?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p><code>show ip interface brief</code> — y el estado que buscás es <code>up/up</code> (físico + protocolo).</p>
+</details>
+<p><strong>4. ¿Qué significa la letra <code>S</code> en <code>show ip route</code>, y qué hay entre las <code>C</code> y <code>S</code>?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p><code>S</code> = ruta estática (configurada a mano con <code>ip route</code>); <code>C</code> = red conectada directamente (aprendida sola). Las <code>C</code> nunca se borran; las <code>S</code> las escribís vos.</p>
+</details>
+<p><strong>5. ¿Para qué sirve <code>ip helper-address</code>?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Para que los broadcasts de DHCP de una LAN crucen hasta un servidor DHCP que está en OTRA red. Sin esa línea, los broadcasts no atraviesan el router y las PCs jamás reciben IP.</p>
+</details>
+<p><strong>6. ¿Qué es un puerto trunk y en qué se diferencia de un puerto access?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Access = una sola VLAN (PCs, impresoras, servidores). Trunk = lleva tráfico de MÚLTIPLES VLANs etiquetadas (802.1Q), usado hacia routers y entre switches.</p>
+</details>
+<p><strong>7. ¿Cómo se llama la técnica de enrutar entre VLANs con una sola interfaz física del router, y qué comando la define?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p><strong>Router on a stick</strong> (ROAS): subinterfaces <code>Gi0/0.10</code>, <code>Gi0/0.20</code>… con <code>encapsulation dot1Q &lt;ID&gt;</code> y una IP por subinterfaz. El switch debe tener el enlace hacia el router en modo trunk.</p>
+</details>
+<p><strong>8. En el ping entre dos redes, ¿por qué el paquete puede ir pero no volver?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Porque el enrutamiento es asimétrico: cada router necesita su propia ruta. El destino puede recibir el paquete, pero si su router no sabe cómo llegar a la red de origen, la respuesta se descarta. Ruta estática en AMBOS lados (o en todos los que intervienen).</p>
+</details>
+<p><strong>9. ¿Cuál es la secuencia mínima de verificación ante un ping que falla?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>(1) <code>show ip interface brief</code> — ¿interfaces up/up con IPs? (2) ping al gateway — ¿problema local? (3) <code>show ip route</code> — ¿existe la ruta (y la de vuelta)? Después, cableado y VLANs.</p>
+</details>
+<p><strong>10. ¿Por qué el switch necesita IP y gateway si no enruta?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Para ADMINISTRACIÓN remota (SSH/HTTP de gestión), no para el tráfico de datos. La IP en <code>interface vlan 1</code> + <code>ip default-gateway</code> te dejan entrar al switch desde otra red; el tráfico de las PCs lo atraviesa sin tocarla.</p>
+</details>
+<hr>
+<h2 id="14-glosario"><a class="header" href="#14-glosario">14. Glosario</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Término</th><th>Qué es</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Packet Tracer (PT)</strong></td><td>Simulador de redes de Cisco: routers, switches y PCs virtuales</td></tr>
+<tr><td><strong>Modo Realtime</strong></td><td>La red “funciona en vivo”</td></tr>
+<tr><td><strong>Modo Simulación</strong></td><td>Ves los paquetes viajar PDU por PDU</td></tr>
+<tr><td><strong>CLI</strong></td><td>Interfaz de línea de comandos del dispositivo (donde se configura todo)</td></tr>
+<tr><td><strong>Modo EXEC usuario (<code>&gt;</code>)</strong></td><td>Acceso básico, casi solo para ver</td></tr>
+<tr><td><strong>Modo EXEC privilegiado (<code>#</code>)</strong></td><td>Comandos de verificación, borrado y guardado</td></tr>
+<tr><td><strong>Configuración global (<code>(config)#</code>)</strong></td><td>El modo donde se cambia la configuración</td></tr>
+<tr><td><strong>Running-config</strong></td><td>Config activa en RAM (volátil)</td></tr>
+<tr><td><strong>Startup-config</strong></td><td>Config guardada en NVRAM (persistente)</td></tr>
+<tr><td><strong><code>no shutdown</code></strong></td><td>Comando que activa una interfaz</td></tr>
+<tr><td><strong>Gateway por defecto</strong></td><td>La puerta de salida hacia otras redes</td></tr>
+<tr><td><strong>Interface VLAN 1</strong></td><td>IP virtual de administración del switch</td></tr>
+<tr><td><strong><code>ip default-gateway</code></strong></td><td>Gateway del switch para administración</td></tr>
+<tr><td><strong>Pool DHCP</strong></td><td>Rango de IPs que el router reparte automáticamente</td></tr>
+<tr><td><strong><code>ip helper-address</code></strong></td><td>Reenvía broadcasts DHCP a otra red</td></tr>
+<tr><td><strong>Ruta estática</strong></td><td><code>ip route red máscara salto</code> — camino aprendido a mano</td></tr>
+<tr><td><strong>Ruta por defecto</strong></td><td><code>0.0.0.0 0.0.0.0</code> — el “si nada coincide, mandalo acá”</td></tr>
+<tr><td><strong>Tabla de rutas</strong></td><td>Lo que el router sabe sobre cómo llegar a redes</td></tr>
+<tr><td><strong>VLAN</strong></td><td>Segmento lógico de capa 2 dentro de un switch</td></tr>
+<tr><td><strong>Puerto access</strong></td><td>Puerto de una sola VLAN</td></tr>
+<tr><td><strong>Puerto trunk</strong></td><td>Puerto multi-VLAN con etiquetas 802.1Q</td></tr>
+<tr><td><strong>Router on a stick (ROAS)</strong></td><td>Subinterfaces por VLAN en una sola interfaz física</td></tr>
+<tr><td><strong><code>encapsulation dot1Q</code></strong></td><td>La etiqueta que une subinterfaz ↔ VLAN</td></tr>
+<tr><td><strong>PDU</strong></td><td>La unidad de datos que viaja capa por capa (lo que ves en simulación)</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="15-resumen-en-10-puntos"><a class="header" href="#15-resumen-en-10-puntos">15. Resumen en 10 puntos</a></h2>
+<ol>
+<li><strong>Packet Tracer es el simulador de vuelo</strong> del técnico de redes: mismos comandos que un equipo real, cero riesgo de romper algo.</li>
+<li><strong>Los modos son la base:</strong> <code>&gt;</code> para mirar, <code>#</code> para ver de verdad, <code>(config)#</code> para cambiar.</li>
+<li><strong><code>no shutdown</code> es el comando olvidado #1</strong> de Cisco: sin él, la interfaz está muerta aunque tenga IP.</li>
+<li><strong>Guardá siempre:</strong> <code>copy running-config startup-config</code> — la RAM olvida, la NVRAM no.</li>
+<li><strong>El estado que buscás es <code>up/up</code></strong> — fijate en <code>show ip interface brief</code>.</li>
+<li><strong>El gateway es la puerta de salida:</strong> sin él, la PC solo ve su propia red.</li>
+<li><strong>El ping que va pero no vuelve = falta ruta de regreso</strong> — verifica <code>show ip route</code> en los dos routers.</li>
+<li><strong>El switch no enruta:</strong> su IP es de administración; las VLANs necesitan router (ROAS) para comunicarse.</li>
+<li><strong>El default route (<code>0.0.0.0</code>) es el “y si nada, mandalo al proveedor”</strong> — la estrella de los routers de borde.</li>
+<li><strong>El modo Simulación es tu mejor maestro:</strong> cuando veas el paquete cortarse en un router con una X, no lo vas a olvidar más.</li>
+</ol>
+<hr>
+<blockquote>
+<p><strong>Orden recomendado de práctica:</strong> Router (IPs + rutas) → Switch (VLANs + puertos) → Servidor/DHCP → PCs → Verificar con <code>ping</code> e <code>ipconfig</code>. Este manual te dio los 7 labs que llevan a ese orden: hacelos, desarmalos, rompelos a propósito y volvelos a armar.</p>
 </blockquote>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="manual-de-docker-en-debian--instalación-desinstalación-y-reinstalación-completa"><a class="header" href="#manual-de-docker-en-debian--instalación-desinstalación-y-reinstalación-completa">Manual de Docker en Debian — Instalación, Desinstalación y Reinstalación Completa</a></h1>
