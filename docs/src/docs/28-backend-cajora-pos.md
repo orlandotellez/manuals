@@ -25329,6 +25329,7 @@ describe("subscriptions mappers", () => {
 > Ruta: `backend-fastify/src/modules/subscriptions/_tests_/infrastructure/paypal.webhook-verifier.test.ts`  
 >
 
+{% raw %}
 ```typescript
 import { describe, it, beforeEach, afterEach, mock } from "node:test"
 import assert from "node:assert/strict"
@@ -25529,6 +25530,7 @@ describe("isTrustedCertUrl", () => {
   })
 })
 ```
+{% endraw %}
 
 
 
@@ -25539,6 +25541,7 @@ describe("isTrustedCertUrl", () => {
 > Ruta: `backend-fastify/src/modules/subscriptions/_tests_/presentation/webhook.controller.test.ts`  
 >
 
+{% raw %}
 ```typescript
 import { describe, it, beforeEach, afterEach, mock } from "node:test"
 import assert from "node:assert/strict"
@@ -26128,6 +26131,7 @@ describe("webhookController.receive", () => {
   })
 })
 ```
+{% endraw %}
 
 
 
