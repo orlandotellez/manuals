@@ -37,7 +37,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "dark";
-            window.path_to_searchindex_js = "searchindex-86d85ae8.js";
+            window.path_to_searchindex_js = "searchindex-a2cc3c22.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-cd1280d9.js"></script>
@@ -240,7 +240,7 @@
 <li><a href="#18-modelos-de-red">Modelo OSI y TCP/IP</a></li>
 <li><a href="#09-direcciones-ip-y-subredes">Direcciones ip</a></li>
 <li><a href="#10-análisis-de-direcciones-ipv4-ejercicios-guiados">Redes ejercicios</a></li>
-<li><a href="#nat">NAT</a></li>
+<li><a href="#11-nat-el-traductor-de-la-red">NAT</a></li>
 <li><a href="#22-direcciones-mac-y-switches">MAC</a></li>
 <li><a href="#cisco-packet-tracer--manual-de-comandos">Comandos Packet Tracer</a></li>
 </ul>
@@ -78999,125 +78999,542 @@ Red = 192.168.28.32      →  Broadcast = 32 + 16 − 1 = 47 → 192.168.28.47
 <p><strong>Fuente:</strong> Documentación propia basada en estándares de direccionamiento IPv4 y CIDR.</p>
 </blockquote>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="nat"><a href="#nat" class="header">NAT</a></h1>
+<h1 id="11-nat-el-traductor-de-la-red"><a class="header" href="#11-nat-el-traductor-de-la-red">11. NAT: el traductor de la red</a></h1>
+<hr>
 <h2 id="índice-25"><a class="header" href="#índice-25">Índice</a></h2>
 <ul>
-<li><a href="#qué-es-nat-y-cómo-actúa-en-nuestra-red">Qué es NAT y cómo actúa en nuestra red</a>
-<ul>
-<li><a href="#funcionamiento-de-nat">Funcionamiento de NAT</a></li>
-<li><a href="#tipos-de-nat">Tipos de NAT</a></li>
-<li><a href="#seguridad-nat">Seguridad NAT</a></li>
-<li><a href="#ventajas-y-desventajas-de-las-nat">Ventajas y desventajas de las NAT</a></li>
-<li><a href="#impacto-en-el-rendimiento">Impacto en el rendimiento</a></li>
-<li><a href="#carrier-grade-nat-cg-nat">Carrier Grade NAT (CG-NAT)</a></li>
-<li><a href="#comprobación-de-uso-de-cg-nat">Comprobación de uso de CG-NAT</a></li>
-<li><a href="#impacto-de-cg-nat-en-usuarios">Impacto de CG-NAT en usuarios</a></li>
-<li><a href="#nat-en-videojuegos">NAT en videojuegos</a></li>
-<li><a href="#conclusión">Conclusión</a></li>
-</ul>
-</li>
-<li><a href="#dirección-ip-privada-frente-a-dirección-ip-pública-cuál-es-la-mejor-opción-para-su-red-industrial">Dirección IP privada frente a dirección IP pública</a></li>
+<li><a href="#1-el-problema-de-fondo-no-alcanzan-las-direcciones">El problema de fondo: no alcanzan las direcciones</a></li>
+<li><a href="#2-direcciones-públicas-y-privadas-quién-vive-en-qué-vecindario">Direcciones públicas y privadas: quién vive en qué vecindario</a></li>
+<li><a href="#3-qué-es-nat-el-conserje-que-reescribe-los-sobres">Qué es NAT: el conserje que reescribe los sobres</a></li>
+<li><a href="#4-el-problema-del-puerto-por-qué-existe-pat">El problema del puerto: por qué existe PAT</a></li>
+<li><a href="#5-tipos-de-nat">Tipos de NAT</a></li>
+<li><a href="#6-la-tabla-nat-en-acción">La tabla NAT en acción</a></li>
+<li><a href="#7-nat-y-seguridad-lo-que-da-y-lo-que-no-da">NAT y seguridad: lo que da y lo que NO da</a></li>
+<li><a href="#8-ventajas-y-desventajas">Ventajas y desventajas</a></li>
+<li><a href="#9-impacto-en-el-rendimiento">Impacto en el rendimiento</a></li>
+<li><a href="#10-cg-nat-el-nat-en-manos-del-proveedor">CG-NAT: el NAT en manos del proveedor</a></li>
+<li><a href="#11-nat-en-la-vida-real-cinco-escenarios">NAT en la vida real: cinco escenarios</a></li>
+<li><a href="#12-nat-transversal-el-arte-de-hablar-a-través-del-traductor">NAT transversal: el arte de hablar a través del traductor</a></li>
+<li><a href="#13-ejercicios-prácticos">Ejercicios prácticos</a></li>
+<li><a href="#14-comprobá-lo-que-aprendiste-2">Comprobá lo que aprendiste</a></li>
+<li><a href="#15-glosario-2">Glosario</a></li>
+<li><a href="#16-resumen-en-10-puntos-2">Resumen en 10 puntos</a></li>
 </ul>
 <hr>
-<h2 id="1-qué-es-nat-y-cómo-actúa-en-nuestra-red"><a class="header" href="#1-qué-es-nat-y-cómo-actúa-en-nuestra-red">1. Qué es NAT y cómo actúa en nuestra red</a></h2>
-<h3 id="introducción"><a class="header" href="#introducción">Introducción</a></h3>
-<p>Para acceder a Internet, se necesita una dirección IP pública, aunque también podemos usar una dirección IP privada en nuestra propia red privada. Esto se logra a través la traducción de una dirección IP privada a una dirección IP pública, apoyándonos en un traductor de direcciones de IP o Network Address Translator (NAT).</p>
-<h3 id="funcionamiento-de-nat"><a class="header" href="#funcionamiento-de-nat">Funcionamiento de NAT</a></h3>
-<p>Su función es la de permitir que múltiples dispositivos (PC, tablet, laptop, celulares, servidores, etc.) accedan a Internet a través de una misma dirección pública mediante la traducción de un conjunto de direcciones IP, por lo general internas, para que sean comprendidos por otro conjunto de direcciones, por lo general externas (Internet) y viceversa.</p>
-<p>Esto ayuda a que una serie de dispositivos conectados a una red local puedan utilizar la misma dirección IP externa para el uso de Internet.</p>
-<p>Como habíamos mencionado antes, mediante NAT una o más direcciones IP locales se traducen en una o más direcciones IP globales y viceversa para dar acceso a Internet; pero también se realiza la traducción de los números de puerto. Es decir, se enmascara el número de puerto del host con otro número de puerto en el paquete de datos que se enrutará al destino. Luego realiza las entradas correspondientes de dirección IP y del número de puerto en la tabla NAT, que generalmente opera en un enrutador o firewall.</p>
-<p>Para dejarlo más claro, el router de borde está normalmente configurado para NAT, con una interfaz en la red local (interna) y una en la red global (exterior). Cuando un paquete atraviesa fuera de la red local (interna), NAT convierte esa dirección IP local (privada) en una dirección IP global (pública). Cuando un paquete ingresa a la red local, la dirección IP global (pública) se convierte en una dirección IP local (privada).</p>
-<p>Una vez entendido esto, hay que hablar del enmascaramiento: supongamos que en una red existen dos hosts (A y B) conectados y ambos solicitan el mismo destino, en el mismo número de puerto (digamos 1000), en el lado del host, al mismo tiempo. Si NAT solo traduce direcciones IP, cuando los paquetes lleguen a NAT, ambas direcciones IP quedarán enmascaradas por la dirección IP pública de la red y se enviarán al destino. El destino enviará respuestas a la dirección IP pública del enrutador. Por lo tanto, al recibir una respuesta, NAT no tendrá claro qué respuesta pertenece a qué host (porque los números de puerto de origen para A y B son los mismos). Por lo tanto, para evitar este problema, NAT también enmascara el número de puerto de origen y realiza una entrada en la tabla NAT.</p>
-<p>Con esto, vemos que NAT realiza dos funciones básicas: la asignación de una o múltiples direcciones IP públicas para la red local y la simplificación del direccionamiento mediante el enmascaramiento de direcciones IP privadas.</p>
-<h3 id="tipos-de-nat"><a class="header" href="#tipos-de-nat">Tipos de NAT</a></h3>
-<p>Por su configuración, existen tres diferentes tipos de NAT con distintas funciones:</p>
+<h2 id="1-el-problema-de-fondo-no-alcanzan-las-direcciones"><a class="header" href="#1-el-problema-de-fondo-no-alcanzan-las-direcciones">1. El problema de fondo: no alcanzan las direcciones</a></h2>
+<p>Imaginá un edificio de departamentos. Tiene UNA sola dirección postal para todo el mundo: <code>Av. Siempre Viva 742</code>. Adentro viven 200 familias, cada una en su departamento (1A, 2B, 3C…). Cuando llega el correo, el <strong>conserje</strong> lo recibe en la puerta, mira el nombre del destinatario y lo reparte por el pasillo correcto. Cuando un vecino manda una carta, el conserje escribe el remitente de la calle y la saca él mismo, sin que nadie en la vereda sepa de qué departamento salió.</p>
+<p>Ese edificio es tu red. Las familias son tus dispositivos (celulares, PCs, tablets, impresoras, cámaras). El número de calle es la <strong>IP pública</strong>. Los departamentos son las <strong>IP privadas</strong>. Y el conserje es… bueno, exactamente lo que vamos a estudiar: <strong>NAT</strong>.</p>
+<blockquote>
+<p><strong>La idea madre de este manual:</strong> NAT es el mecanismo que permite que TODA una red privada salga a Internet usando UNA sola dirección IP pública, reescribiendo las direcciones (y los puertos) en cada paquete que cruza el borde. Sin NAT, la red IPv4 actual — con sus ~4.300 millones de direcciones teóricas — ya habría colapsado hace décadas.</p>
+</blockquote>
+<p>Ahora viene la parte que casi nadie explica bien: NAT no es solo “traducir direcciones”. Podés comerte meses de carrera creyendo que es un simple buscar-y-reemplazar, y después te encontrás con llamadas VoIP que no entran, juegos que no conectan y cámaras que no se ven. Todo eso es el mismo fantasma: <strong>NAT con un agujero, y cómo lograr que las comunicaciones en tiempo real lo atraviesen</strong>. Al final del manual vas a entender por qué pasa y qué se hace en el mundo real (STUN, TURN, ICE) para resolverlo.</p>
+<hr>
+<h2 id="2-direcciones-públicas-y-privadas-quién-vive-en-qué-vecindario"><a class="header" href="#2-direcciones-públicas-y-privadas-quién-vive-en-qué-vecindario">2. Direcciones públicas y privadas: quién vive en qué vecindario</a></h2>
+<p>Antes de NAT, el repaso mínimo que necesitás tener firme:</p>
+<ul>
+<li><strong>IP pública:</strong> única en el mundo, asignada por el proveedor de Internet (ISP). Es la “dirección postal” visible desde cualquier lugar de Internet.</li>
+<li><strong>IP privada:</strong> usada dentro de la red local, no enrutable en Internet. Cualquier red del planeta puede usar los mismos rangos privados sin pisarse, porque nunca salen a la calle.</li>
+</ul>
+<p>Los rangos privados que define el estándar <strong>RFC 1918</strong>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Rango</th><th>Máscara</th><th>Espacio</th></tr>
+</thead>
+<tbody>
+<tr><td><code>10.0.0.0</code> – <code>10.255.255.255</code></td><td>/8</td><td>Enorme: 16,7 millones de direcciones</td></tr>
+<tr><td><code>172.16.0.0</code> – <code>172.31.255.255</code></td><td>/12</td><td>1.048.576 direcciones</td></tr>
+<tr><td><code>192.168.0.0</code> – <code>192.168.255.255</code></td><td>/16</td><td>65.536 direcciones (el clásico de los routers hogareños)</td></tr>
+</tbody>
+</table>
+</div>
+<p>Además de esos, existen otros dos rangos que importan mucho en el mundo NAT:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Rango</th><th>Qué es</th></tr>
+</thead>
+<tbody>
+<tr><td><code>169.254.0.0/16</code></td><td><strong>APIPA / link-local:</strong> auto-asignada cuando no hay DHCP. Tu equipo se inventa una IP; funciona solo en el segmento local.</td></tr>
+<tr><td><code>100.64.0.0/10</code></td><td><strong>Espacio compartido (RFC 6598):</strong> lo usa el ISP cuando aplica CG-NAT (sección 10). Si tu router tiene una IP WAN de este rango, estás detrás de un NAT del proveedor.</td></tr>
+</tbody>
+</table>
+</div>
+<p>Y la pregunta que cruza todo el manual: ¿IP fija o cambiante? Tanto públicas como privadas pueden ser:</p>
+<ul>
+<li><strong>Estáticas:</strong> siempre la misma. Imprescindible para servicios que RECIBEN conexiones (un servidor, una cámara).</li>
+<li><strong>Dinámicas:</strong> cambian con el tiempo (el típico DHCP del ISP). Baratas, pero complican recibir conexiones entrantes.</li>
+</ul>
+<blockquote>
+<p><strong>Regla para elegir (y la usamos en los escenarios de la sección 11):</strong> si tu dispositivo solo INICIA conexiones hacia afuera (navegar, IoT que reporta, celular), una IP privada dinámica le alcanza. Si tu dispositivo debe RECIBIR conexiones desde Internet sin intermediarios (alojar un servidor, atender llamadas entrantes), ahí necesitás IP pública, port forwarding o un servicio de relevo.</p>
+</blockquote>
+<hr>
+<h2 id="3-qué-es-nat-el-conserje-que-reescribe-los-sobres"><a class="header" href="#3-qué-es-nat-el-conserje-que-reescribe-los-sobres">3. Qué es NAT: el conserje que reescribe los sobres</a></h2>
+<p><strong>NAT</strong> (<em>Network Address Translation</em>, Traducción de Direcciones de Red) es el proceso que traduce un conjunto de direcciones — típicamente las privadas de la red local — a otro conjunto — típicamente una o más públicas — y viceversa. Vive en el punto de borde: el router de tu casa, el firewall de la empresa, el router del proveedor.</p>
+<p>Volviendo al edificio: cuando un departamento manda una carta, el conserje la saca reescribiendo el remitente con la dirección del edificio. Cuando llega la respuesta, la recibe él, mira su libreta (la <strong>tabla NAT</strong>) y la entrega al departamento correcto.</p>
+<p>En la red es igual, pero con tres pasos:</p>
+<pre><code>   PC (192.168.1.20)          Router con NAT           Servidor web en Internet
+        │                          │                          │
+        │  "Quiero google.com"     │                          │
+        │  Origen: 192.168.1.20    │                          │
+        │─────────────────────────&gt;│                          │
+        │                          │  Reescribe el origen:    │
+        │                          │  Origen: 203.0.113.5     │
+        │                          │──────────────────────────&gt;│
+        │                          │                          │
+        │                          │  Respuesta para          │
+        │                          │  "203.0.113.5"           │
+        │                          │&lt;──────────────────────────│
+        │  ¡Anda!                  │                          │
+        │  Destino: 192.168.1.20   │  Busca en la tabla NAT:  │
+        │&lt;─────────────────────────│  "esta conexión era de   │
+        │                          │  192.168.1.20"           │
+</code></pre>
+<p>El router de borde tiene dos caras:</p>
+<ul>
+<li><strong>Interfaz interna</strong> (LAN): cara a las direcciones privadas <code>192.168.x.x</code>.</li>
+<li><strong>Interfaz externa</strong> (WAN): cara a la Internet pública, con la IP asignada por el ISP.</li>
+</ul>
+<p><strong>Cuando un paquete sale</strong> (privada → pública): NAT reescribe la dirección de origen y, si hace falta, el puerto. <strong>Cuando la respuesta entra</strong> (pública → privada): NAT consulta su tabla y reescribe el destino al dispositivo correcto de adentro.</p>
+<blockquote>
+<p><strong>Momento clave para no marearse:</strong> NAT es <em>stateful</em>: recuerda las conexiones en curso. Solo reescribe y entrega paquetes que corresponden a una conexión que alguien de adentro inició. Si un paquete entra sin que exista una entrada en la tabla → se descarta. Ese “por defecto se descarta” es lo que da origen al viejísimo mito de que “NAT es un firewall” (sección 7, ahí lo vemos con honestidad).</p>
+</blockquote>
+<hr>
+<h2 id="4-el-problema-del-puerto-por-qué-existe-pat"><a class="header" href="#4-el-problema-del-puerto-por-qué-existe-pat">4. El problema del puerto: por qué existe PAT</a></h2>
+<p>Ahora la pregunta inevitable: el conserje reparte cartas mirando el <strong>nombre</strong> del destinatario. ¿Y si dos departamentos mandan cartas al mismo tiempo y cuando llegan las respuestas son idénticas salvo el nombre que el conserje borró?</p>
+<p>Pongámoslo técnico. Dos hosts de la red, A y B, abren cada uno una conexión al MISMO servidor, desde el MISMO puerto de origen, al MISMO tiempo:</p>
+<pre><code>A → 192.168.1.10 : 1000  →  servidor : 80
+B → 192.168.1.11 : 1000  →  servidor : 80
+</code></pre>
+<p>Si NAT solo tradujera direcciones IP, ambos paquetes saldrían como:</p>
+<pre><code>203.0.113.5 : 1000  →  servidor : 80     (¿de A o de B?)
+203.0.113.5 : 1000  →  servidor : 80     (¿de A o de B?)
+</code></pre>
+<p>Cuando el servidor responda a <code>203.0.113.5:1000</code>, el conserje mira la libreta y… hay DOS entradas idénticas. Imposible saber a quién entregar. Respuesta de la respuesta se pierde, y las dos conexiones fallan.</p>
+<p>La solución es la que hace funcionar a Internet tal como la conocemos: <strong>PAT</strong> (<em>Port Address Translation</em>, también llamado <em>NAT overload</em>). Además de la dirección IP, NAT reescribe el <strong>puerto de origen</strong> para que cada conexión sea única:</p>
+<pre><code>A → (192.168.1.10 : 1000)  se traduce a  (203.0.113.5 : 40512)
+B → (192.168.1.11 : 1000)  se traduce a  (203.0.113.5 : 40513)
+</code></pre>
+<p>Ahora cada entrada de la tabla es única: el par <code>203.0.113.5:40512</code> identifica exactamente la conexión de A, y <code>203.0.113.5:40513</code> la de B. Las respuestas llegan, el conserje mira el puerto y entrega sin dudar.</p>
+<blockquote>
+<p><strong>La idea para llevarte a casa:</strong> un puerto TCP o UDP tiene 16 bits → 65.535 valores. Con PAT, una sola IP pública puede sostener hasta 65.535 conexiones simultáneas <em>por cada puerto en uso</em> (en la práctica, menos por otros límites del sistema). Por eso un router hogareño con UNA IP pública sirve para una casa entera, y por eso el agotamiento de IPv4 no derrumbó Internet: la combinación IP+puerto multiplica el espacio utilizable.</p>
+</blockquote>
+<hr>
+<h2 id="5-tipos-de-nat"><a class="header" href="#5-tipos-de-nat">5. Tipos de NAT</a></h2>
+<p>Hay tres sabores, y entender sus diferencias te ahorra horas de troubleshooting:</p>
+<h3 id="51-nat-estática-11"><a class="header" href="#51-nat-estática-11">5.1. NAT estática (1:1)</a></h3>
+<p>Una dirección privada se asocia a UNA pública fija, de forma permanente:</p>
+<pre><code>192.168.1.50 (servidor)  ↔  203.0.113.10 (pública fija)
+</code></pre>
+<ul>
+<li><strong>Cuándo se usa:</strong> hosting de servicios (web, mail, cámara) que necesitan ser alcanzables SIEMPRE desde el mismo lugar.</li>
+<li><strong>Costo:</strong> cada equipo expuesto consume una IP pública. Con muchas, sale caro.</li>
+<li><strong>Detalle fino:</strong> como la asociación es fija, las conexiones ENTRANTES funcionan sin reenvíos raros: cualquier paquete a <code>203.0.113.10</code> va directo al servidor interno.</li>
+</ul>
+<h3 id="52-nat-dinámica-pool"><a class="header" href="#52-nat-dinámica-pool">5.2. NAT dinámica (pool)</a></h3>
+<p>Hay un conjunto (pool) de IPs públicas. Un dispositivo interno pide salir, y NAT le presta UNA pública del pool mientras dura la conexión:</p>
+<pre><code>Pool: 203.0.113.20 – 203.0.113.29  (10 públicas)
+192.168.1.10 → 203.0.113.21  (prestada)
+192.168.1.11 → 203.0.113.22  (prestada)
+</code></pre>
+<ul>
+<li><strong>Limitación clave:</strong> si el pool se agota, el siguiente dispositivo… se queda afuera. El paquete se descarta.</li>
+<li><strong>Cuándo se usa:</strong> redes donde la mayoría inicia conexiones salientes y conviene repartir la carga entre varias públicas.</li>
+<li><strong>Costo:</strong> sigue necesitando varias públicas. En la era de la escasez de IPv4, quedó poco usado salvo en grandes empresas.</li>
+</ul>
+<h3 id="53-pat-el-campeón-indiscutido"><a class="header" href="#53-pat-el-campeón-indiscutido">5.3. PAT: el campeón indiscutido</a></h3>
+<p>Todo el mundo lo usa sin saber su nombre. Es el NAT del router de tu casa: <strong>muchísimas direcciones privadas → una única IP pública</strong>, diferenciadas por puerto:</p>
+<pre><code>192.168.1.10:1000 → 203.0.113.5:40512
+192.168.1.11:1000 → 203.0.113.5:40513
+192.168.1.12:5000 → 203.0.113.5:40514
+</code></pre>
+<p>Comportamiento real:</p>
 <ol>
-<li>
-<p><strong>NAT estática</strong> donde se establece una asociación fija y permanente entre una dirección IP privada en la red local y una dirección IP pública específica. Generalmente se usa para hosting de web, no para organizaciones donde hay múltiples dispositivos porque cada dispositivo demandaría una dirección pública, lo que resultaría muy costoso y difícil de gestionar.</p>
-</li>
-<li>
-<p><strong>NAT dinámica</strong> donde se establece un conjunto de direcciones IP públicas disponibles para que un dispositivo de la red local solicite acceso a Internet y esta le asigne temporalmente una dirección IP pública disponible. En caso de que la dirección IP del grupo no esté libre, el paquete se descartará, ya que solo un número fijo de direcciones IP privadas se pueden traducir a direcciones públicas. Entendiendo esto, este tipo de NAT puede ser también muy costoso.</p>
-</li>
-<li>
-<p><strong>NAT PAT (Port Address Translation)</strong> donde se establece una asociación entre los dispositivos de red local y una única IP pública, diferenciando en cada dispositivo un puerto que se le asigna para recibir el tráfico de red correspondiente para cada dispositivo. PAT busca conservar el puerto de origen inicial. En caso de que el puerto de origen inicial ya esté en uso, se asigna el siguiente puerto disponible, en un proceso continuo, hasta que no haya más direcciones IP externas o puertos disponibles.</p>
-<p>Este tipo de NAT se utiliza con mayor frecuencia porque es el más rentable, ya que miles de usuarios pueden conectarse a Internet utilizando solo una dirección IP global (pública) real.</p>
-</li>
+<li>PAT <strong>preserva el puerto de origen</strong> si puede: si el dispositivo usó el puerto 5000 y el 5000 está libre en la pública, lo deja igual.</li>
+<li>Si el puerto ya está en uso por otra conexión, toma el <strong>siguiente disponible</strong> (5001, 5002…).</li>
+<li>Sigue así hasta agotar puertos — evento que en la práctica casi nunca ocurre en entornos hogareños.</li>
 </ol>
-<h3 id="seguridad-nat"><a class="header" href="#seguridad-nat">Seguridad NAT</a></h3>
-<p>Actualmente, muchos ingenieros de redes recurren al uso de NAT para proteger a sus dispositivos en la red de los ataques cibernéticos, ya que actúa como una capa adicional de seguridad entre los dispositivos de una red privada e Internet. Esto es porque el enrutador NAT o firewall NAT pueden ordenar y verificar los datos a medida que se envían a un dispositivo, ocultando direcciones IP internas, dejándolas inaccesibles desde Internet. Esto puede ayudar a evitar ataques como escaneos de puertos, que permiten identificar vulnerabilidades en los dispositivos de la red.</p>
-<p>También NAT permite la integración con firewalls de los routers y de los propios dispositivos de la red, mejorando la implementación de políticas de seguridad.</p>
-<p>Otro aspecto importante de la seguridad es que NAT contribuye a prevenir el agotamiento de la IP privada, ya que el uso de una única dirección IP pública para varios dispositivos en una red también ayuda a garantizar que la asignación de IP públicas sea lo más eficiente posible.</p>
-<p>Cabe mencionar que las direcciones privadas no pueden garantizar una seguridad total. Sin duda, también deberías utilizar cifrado y otras herramientas de seguridad. También se debe mantener los dispositivos en una dirección IP local como una buena medida de seguridad adicional.</p>
-<h3 id="ventajas-y-desventajas-de-las-nat"><a class="header" href="#ventajas-y-desventajas-de-las-nat">Ventajas y desventajas de las NAT</a></h3>
-<p><strong>Entre las ventajas de las NAT tenemos lo siguiente:</strong></p>
-<ul>
-<li>NAT proporciona una capa de seguridad en la red, ya que las redes privadas no anuncian sus direcciones ni su topología interna, de manera que son seguras al tener controlado el acceso externo, aunque no reemplaza a los firewalls.</li>
-<li>Aumenta la flexibilidad de las conexiones a la red pública, además de compatibilidad con Protocolos de Internet Versión 4 (IPv4). Se pueden implementar conjuntos y conjuntos de respaldo/equilibrio de carga para asegurar conexiones de red pública confiables.</li>
-<li>En caso de sobrecarga, los hosts internos pueden compartir una única dirección IPv4 pública para todas las comunicaciones externas. Se requieren muy pocas direcciones externas para admitir varios hosts internos, lo que también implica menos gestión y costos.</li>
-<li>Coherencia con los esquemas de direccionamiento de red interna. Si se quiere cambiar el esquema de direcciones IPv4 públicas en una red sin direcciones IPv4 privadas ni NAT, se deben redireccionar todos los hosts en la red existente. NAT permite conservar las direcciones IPv4 privadas, a la vez que agiliza el cambio a un nuevo esquema de direccionamiento público.</li>
-</ul>
-<p><strong>La otra cara de la moneda, son las desventajas</strong> partiendo de que los hosts en Internet se comunican con el dispositivo con NAT y no con el host real, lo que implica:</p>
-<ul>
-<li>Aumento de retraso o latencia en la comunicación de red, ya que la traducción de cada dirección IPv4 en los encabezados del paquete de datos toma su tiempo.</li>
-<li>Posible deterioro en la funcionalidad de punta a punta. Muchos protocolos y aplicaciones de Internet dependen del direccionamiento, desde el origen hasta el destino. Por ejemplo, algunas aplicaciones de seguridad (firma digital) fallan porque la dirección IPv4 de origen ha cambiado antes de alcanzar su destino.</li>
-<li>Pérdida de trazabilidad IPv4 a la hora de rastrear paquetes en la red. Esto es porque los paquetes pasan por varios cambios de dirección en varios saltos de NAT, dificultando su seguimiento. Esto impacta en la resolución de problemas.</li>
-<li>Mayor complejidad en configuración y mantenimiento, principalmente a la hora de establecer reglas de traducción de direcciones IP y puertos para aplicaciones específicas. Por ejemplo, NAT modifica los valores en los encabezados que interfieren en las verificaciones de integridad realizadas por IPsec y otros protocolos de tunneling.</li>
-<li>Posibles interrupciones en conexiones de Protocolo de Control de Transmisión (Transmission Control Protocol, TCP). Los servicios que requieren una conexión TCP desde una red externa o “protocolos” sin estado pueden interrumpirse. A menos que el router NAT esté configurado para admitir estos protocolos, los paquetes entrantes podrían no llegar a su destino.</li>
-</ul>
-<h3 id="impacto-en-el-rendimiento"><a class="header" href="#impacto-en-el-rendimiento">Impacto en el rendimiento</a></h3>
-<p>NAT ayuda a reducir la carga en la red cuando permite que varios dispositivos compartan una única dirección IP pública. Esto puede ser útil cuando contamos con pocas o una única IP Pública disponible, aportando también una capa de seguridad al impedir la no identificación y el acceso directo a los dispositivos internos de la red.</p>
-<p>Sin embargo, también puede generar limitaciones en el ancho de banda y posibles problemas de conectividad en entornos de red con un gran número de dispositivos y tráfico de red intenso. En entornos con NAT PAT se puede producir una congestión si hay muchas conexiones simultáneas desde múltiples dispositivos, lo que puede añadir una latencia adicional en la comunicación de red afectando negativamente a la experiencia del usuario.</p>
-<h3 id="carrier-grade-nat-cg-nat"><a class="header" href="#carrier-grade-nat-cg-nat">Carrier Grade NAT (CG-NAT)</a></h3>
-<p>Carrier Grade NAT (CG-NAT), también conocido como NAT masivo o a gran escala (Large-Scale NAT o LSN), es una implementación de NAT a gran escala que usan generalmente los proveedores de servicios de Internet (ISP) para gestionar e intentar conservar direcciones IPv4 públicas en sus redes.</p>
-<p>Su función principal es proporcionar conectividad a Internet a múltiples clientes utilizando un único rango de dirección IP pública (p.e 100.64.0.0/10) mediante una gestión centralizada, realizando una traducción de direcciones a gran escala. Esto resulta en una solución temporal para mitigar la escasez de direcciones IPv4 públicas hasta que se complete la implementación total de la actualización de IPv4 en IPv6— teniendo en mente que IPv4 posibilita 4 294 967 296 de direcciones de dispositivos diferentes, lo que es un número menor a la población mundial y, por ende, menor al volumen de dispositivos en total.</p>
-<p>Dentro de las consideraciones a tomar en cuenta, CG-NAT no resuelve el problema del agotamiento de las direcciones IPv4 cuando se necesita una dirección IP pública, como en el alojamiento web. También puede crear un cuello de botella en el rendimiento que limite su escalabilidad.</p>
-<h3 id="comprobación-de-uso-de-cg-nat"><a class="header" href="#comprobación-de-uso-de-cg-nat">Comprobación de uso de CG-NAT</a></h3>
-<p>Para comprobar si se está utilizando CG-NAT en una red es necesario acceder al router proporcionado por el proveedor de servicios de Internet (ISP) y verificar en su configuración si dentro del apartado NAT se encuentran opciones o configuraciones relacionadas con CG-NAT. Esto puede verse en las propias opciones de configuración NAT como en un apartado diferente, referenciado como “Carrier Grade NAT” o “CG-NAT”, donde se podrá verificar su estado y su configuración.</p>
-<p>En sistemas operativos Windows, podemos comprobar si pertenecemos a un CG-NAT ejecutando el comando <code>tracert</code> y apuntando a nuestra IP pública. Si el resultado es de un solo hop (o salto), significa que no pertenecemos a una CG-NAT, si el resultado es de 2 o más hops entonces sí pertenecemos a una CG-NAT.</p>
-<p>En sistemas operativos Linux se puede realizar el mismo procedimiento con el comando <code>traceroute</code>.</p>
-<h3 id="impacto-de-cg-nat-en-usuarios"><a class="header" href="#impacto-de-cg-nat-en-usuarios">Impacto de CG-NAT en usuarios</a></h3>
-<p>CG-NAT puede tener diferentes impactos, dependiendo del tipo de usuario que controle la red.</p>
-<ul>
-<li><strong>En usuarios avanzados</strong>, CG-NAT puede traer complicaciones a la hora de implementar configuraciones de reenvíos de puertos, túneles IPv6, o aplicaciones de acceso remoto complejas.</li>
-<li><strong>En usuarios estándar</strong>, el problema se puede presentar principalmente en la modalidad de trabajo remoto (o teletrabajo), en que pueden verse afectados a la hora de realizar conexiones VPN hacia la empresa, ciertas aplicaciones de videoconferencia y algunas aplicaciones de acceso remoto que dependen de conexiones entrantes desde Internet.</li>
-<li><strong>En usuarios recreacionales</strong>, por ejemplo, en un videojuego, se requiere conexiones directas entre los jugadores, o bien dependen del reenvío de puertos para un rendimiento óptimo. CG-NAT puede causar en estos casos también problemas de latencias, con impacto directo en la experiencia del usuario.</li>
-</ul>
-<h3 id="nat-en-videojuegos"><a class="header" href="#nat-en-videojuegos">NAT en videojuegos</a></h3>
-<p>NAT puede afectar significativamente a la experiencia de juego en línea si el usuario no cuenta con los conocimientos necesarios para configurar correctamente este mecanismo de red. Muchos videojuegos en línea utilizan conexiones peer-to-peer entre jugadores para facilitar la interacción en tiempo real; por lo que si no se configura correctamente NAT, el usuario puede verse afectado, con problemas de conectividad, latencias y una experiencia de juego menos fluida o interrumpida.</p>
-<p>Para estos casos, existen diversas soluciones para mejorar la clasificación NAT y optimizar la experiencia de juego. En PC, se debe configurar el reenvío de puertos en el router, lo cual puede ayudar a abrir puertos específicos que sean utilizados por el videojuego. Esto facilita la conexión directa entre los jugadores, reduciendo los problemas de conectividad y mejorando la clasificación NAT.</p>
-<p>En consolas, el uso del protocolo UPnP (Universal Plug and Play) puede ayudar a abrir y redirigir automáticamente los puertos necesarios para una mejor conectividad.</p>
-<p>En otros casos, actualizar el firmware del router o incluso adquirir un router más moderno y con mayor compatibilidad puede resolver los problemas derivados de NAT y mejorar la experiencia de juego.</p>
-<h3 id="conclusión"><a class="header" href="#conclusión">Conclusión</a></h3>
-<p>En conclusión, NAT desempeña un papel importante en la conectividad actual de las redes informáticas, especialmente en entornos IPv4, donde las direcciones IP públicas son limitadas. Está claro que los estrategas de seguridad deben también tomar en cuenta sus consideraciones y posibles desventajas en cuanto a latencia y trazabilidad. En ese sentido, se requiere la correcta configuración y mantenimiento de protocolos y puerto para lograr que las IP públicas estén disponibles para su uso y entrega de servicios, al mismo tiempo que se ahorra dinero y se agrega una capa adicional de seguridad, que además refuerza las políticas de seguridad integrando firewalls de routers y dispositivos.</p>
+<blockquote>
+<p><strong>Por qué gana PAT:</strong> miles de usuarios, una sola IP pública, costo mínimo y sin gestión. Es EL motivo por el cual millones de routers caseros funcionan con una única dirección del ISP.</p>
+</blockquote>
 <hr>
-<h2 id="2-dirección-ip-privada-frente-a-dirección-ip-pública-cuál-es-la-mejor-opción-para-su-red-industrial"><a class="header" href="#2-dirección-ip-privada-frente-a-dirección-ip-pública-cuál-es-la-mejor-opción-para-su-red-industrial">2. Dirección IP privada frente a dirección IP pública: ¿Cuál es la mejor opción para su red industrial?</a></h2>
-<p>En el mundo del IoT industrial, la conectividad lo es todo. Pero a medida que amplías tu solución, llegas a una encrucijada técnica crucial: ¿deben tus dispositivos usar una dirección IP pública o privada?</p>
-<p>Si bien su primera reacción podría ser buscar «¿cuál es mi IP pública?» para habilitar el acceso remoto, la respuesta no siempre es sencilla. En redes profesionales, la elección entre direcciones IP privadas y públicas no solo determina sus costos mensuales, sino también su nivel de seguridad y eficiencia operativa.</p>
-<h3 id="conceptos-básicos-dirección-ip-privada-frente-a-dirección-ip-pública"><a class="header" href="#conceptos-básicos-dirección-ip-privada-frente-a-dirección-ip-pública">Conceptos básicos: Dirección IP privada frente a dirección IP pública</a></h3>
-<p>En su forma más simple, una dirección IP pública es un identificador único a nivel mundial, accesible desde cualquier lugar de internet. Funciona como una dirección postal digital. Por el contrario, una dirección IP privada se utiliza dentro de redes locales y permanece oculta para la web abierta.</p>
-<h3 id="rangos-de-direcciones-ip-privadas"><a class="header" href="#rangos-de-direcciones-ip-privadas">Rangos de direcciones IP privadas</a></h3>
-<p>La mayoría de las redes internas utilizan direcciones IP privadas según el estándar RFC 1918, como los rangos comunes 192.168.x.x o 10.x.x.x. Sin embargo, los profesionales técnicos también deben conocer el espacio de direcciones compartidas (100.64.0.0/10). Si su IP WAN se encuentra dentro de este rango, está detrás de una NAT de nivel de operador (CGNAT), lo que significa que, en esencia, está detrás de una «doble NAT» administrada por su proveedor de servicios de Internet (ISP).</p>
-<h3 id="ip-estática-frente-a-ip-dinámica"><a class="header" href="#ip-estática-frente-a-ip-dinámica">IP estática frente a IP dinámica</a></h3>
-<p>Tanto las direcciones IP públicas como las privadas pueden ser estáticas (fijas) o dinámicas (cambiantes). Si bien una IP pública estática ofrece acceso directo para el alojamiento, suele ser costosa. La mayoría de las implementaciones de IoT móvil utilizan una IP privada dinámica por su rentabilidad, aunque requiere un intermediario o una VPN para el acceso remoto, ya que la dirección cambia y no es accesible desde internet.</p>
-<h3 id="la-ventaja-de-la-seguridad-reducción-de-la-superficie-de-ataque"><a class="header" href="#la-ventaja-de-la-seguridad-reducción-de-la-superficie-de-ataque">La ventaja de la seguridad: Reducción de la superficie de ataque</a></h3>
-<p>Si bien muchos usuarios buscan una IP pública para simplificar el acceso remoto, a menudo pasan por alto las desventajas. Exponer un dispositivo industrial directamente a internet mediante una IP pública crea una enorme brecha de seguridad que los hackers pueden encontrar fácilmente. Una dirección IP pública es escaneada constantemente por bots y actores maliciosos.</p>
-<p>La filosofía de Teltonika, «Seguro desde el diseño», sugiere que, para la mayoría de las aplicaciones industriales, el dispositivo más seguro es aquel que no se puede ver. Al mantener sus dispositivos en una IP privada, utiliza NAT (Traducción de Direcciones de Red) como un cortafuegos natural, ocultando eficazmente su hardware de internet.</p>
-<p>Sin embargo, la verdadera seguridad no consiste simplemente en «esconderse» tras la IP privada del operador. La defensa más fiable es un cortafuegos robusto y correctamente configurado, como el integrado en RutOS. Mediante reglas de cortafuegos avanzadas y NAT (Traducción de Direcciones de Red), puede ocultar eficazmente su hardware y controlar estrictamente el tráfico, garantizando que la seguridad la gestione su propio hardware en lugar de dejarla a discreción del proveedor de servicios.</p>
-<h3 id="resolviendo-el-dilema-del-acceso-remoto-con-teltonika"><a class="header" href="#resolviendo-el-dilema-del-acceso-remoto-con-teltonika">Resolviendo el dilema del acceso remoto con Teltonika</a></h3>
-<p>El reto es claro: ¿cómo mantener el acceso remoto si el dispositivo está oculto en una IP privada? Aquí es donde el ecosistema de Teltonika ofrece una ventaja significativa sobre el hardware de consumo estándar.</p>
-<h3 id="rms-acceso-sin-ip-pública"><a class="header" href="#rms-acceso-sin-ip-pública">RMS: Acceso sin IP pública</a></h3>
-<p>Nuestro Sistema de Gestión Remota (RMS) está diseñado precisamente para superar la brecha de acceso remoto. RMS crea un túnel seguro y cifrado entre su dispositivo y nuestra plataforma en la nube.</p>
+<h2 id="6-la-tabla-nat-en-acción"><a class="header" href="#6-la-tabla-nat-en-acción">6. La tabla NAT en acción</a></h2>
+<p>La libreta del conserje es la <strong>tabla NAT</strong>. Veamos una sesión completa con 3 dispositivos compartiendo la IP pública <code>203.0.113.5</code>:</p>
+<pre><code>Dispositivo interno   ←→   Público traducción    ←→   Destino externo
+───────────────────        ──────────────────         ────────────────
+192.168.1.20:51000   ←→   203.0.113.5:40512    ←→   8.8.8.8:53     (DNS)
+192.168.1.21:52000   ←→   203.0.113.5:40513    ←→   198.51.100.7:443 (web)
+192.168.1.22:1024    ←→   203.0.113.5:40514    ←→   203.0.113.99:22 (SSH)
+</code></pre>
+<p>Que esa tabla exista y esté completa es lo que permite que las RESPONSES entren. Regla de oro:</p>
+<blockquote>
+<p><strong>NAT solo traduce tráfico que tiene entrada en la tabla.</strong> Entrada = alguien de adentro inició la conversación (o un admin configuró un reenvío de puertos). Sin entrada, el paquete entrante se descarta en silencio.</p>
+</blockquote>
+<p>Los routers modernos lo hacen con <strong>conexiones / flujos</strong> (no entradas por paquete): cuando el primer paquete de una conexión sale, se crea la entrada; la respuesta usa la misma entrada; y cuando la conexión termina (FIN, RST o timeout), la entrada se borra. El estado se refresca con cada paquete que pasa — igual que el aging time de las MACs que ya viste en los switches, pero a nivel de conexión.</p>
+<hr>
+<h2 id="7-nat-y-seguridad-lo-que-da-y-lo-que-no-da"><a class="header" href="#7-nat-y-seguridad-lo-que-da-y-lo-que-no-da">7. NAT y seguridad: lo que da y lo que NO da</a></h2>
+<p>Hay una frase que se repite en foros y cursos, y conviene desarmarla con honestidad: <strong>“NAT es una capa de seguridad”</strong>. Verdad a medias.</p>
+<p><strong>Lo que SÍ es cierto:</strong></p>
 <ul>
-<li><strong>La ventaja:</strong> Puedes acceder a la interfaz web de tu router e incluso a los dispositivos que hay detrás (PLC, CCTV, etc.) a través de RMS Connect, incluso si tu tarjeta SIM solo proporciona una IP dinámica privada.</li>
-<li><strong>El valor:</strong> Eliminas la necesidad de costosos contratos de IP estática pública con operadores móviles, lo que le ahorra a tu empresa miles en gastos operativos.</li>
+<li>Oculta las direcciones internas: nadie desde afuera ve <code>192.168.1.50</code>; solo ve la pública.</li>
+<li>Por defecto descarta tráfico entrante no solicitado: sobreviven menos escaneos de puertos y menos intentos directos contra dispositivos internos.</li>
+<li>Dificulta mapear tu red: un atacante no sabe cuántos equipos hay ni dónde.</li>
 </ul>
-<h3 id="rutos-simplificando-las-redes-complejas"><a class="header" href="#rutos-simplificando-las-redes-complejas">RutOS: Simplificando las redes complejas</a></h3>
-<p>Gestionar rangos de direcciones IP privadas y enrutamiento personalizado puede resultar complicado. RutOS, el sistema operativo basado en OpenWrt que utilizan todos los routers Teltonika, simplifica este proceso mediante una interfaz web intuitiva.</p>
-<p>Tanto si necesita configurar el direccionamiento IP privado automático (APIPA) como si necesita establecer una VPN segura (OpenVPN, WireGuard, ZeroTier, entre otras), RutOS ofrece la flexibilidad de un sistema de nivel empresarial con la facilidad de uso necesaria para una implementación rápida.</p>
-<p>A medida que el mundo avanza hacia IPv6, la necesidad de NAT disminuye debido a la gran cantidad de direcciones disponibles. RutOS está totalmente preparado para IPv6, lo que garantiza que, incluso cuando cada dispositivo tenga una dirección global única, nuestro firewall siga ofreciendo el mismo alto nivel de protección.</p>
-<h3 id="fiabilidad-industrial-con-la-serie-rut"><a class="header" href="#fiabilidad-industrial-con-la-serie-rut">Fiabilidad industrial con la serie RUT</a></h3>
-<p>Los routers de Teltonika están diseñados para gestionar las complejidades de la administración de IP. Con funciones como Auto APN, nuestros routers seleccionan automáticamente la configuración correcta para que te conectes a Internet al instante.</p>
-<p>Si su aplicación requiere estrictamente una conexión pública, funciones como IP Passthrough permiten que el enrutador envíe su IP pública móvil directamente a su servidor interno, manteniendo al mismo tiempo un enlace de administración con RMS.</p>
+<p><strong>Lo que NO es cierto:</strong></p>
+<ul>
+<li>NAT <strong>no es un firewall</strong>. Un firewall toma decisiones por política (quién, qué protocolo, qué aplicación, a qué hora) y registra/audita. NAT solo traduce direcciones. Es como decir que la puerta del edificio “protege” porque nadie ve los departamentos — pero si un vecino abre la puerta a un extraño (vulnerabilidad, puerto abierto por reenvío, malware que inicia conexión), el conserje no lo va a frenar.</li>
+<li>La ocultación no resiste ataques que usen conexiones salientes (la enorme mayoría del malware funciona así).</li>
+<li>El mito se derrumba con IPv6: con IPv6 las direcciones globales abundan, NAT puede no existir, y aún así un buen firewall sigue siendo imprescindible.</li>
+</ul>
+<blockquote>
+<p><strong>La conclusión madura:</strong> NAT reduce la superficie de exposición, sí — tómala como un beneficio gratis, pero la seguridad real son dos cosas: (1) un firewall correctamente configurado en el borde, y (2) los dispositivos parcheados y endurecidos. Ocultar no es proteger.</p>
+</blockquote>
+<hr>
+<h2 id="8-ventajas-y-desventajas"><a class="header" href="#8-ventajas-y-desventajas">8. Ventajas y desventajas</a></h2>
+<h3 id="lo-bueno"><a class="header" href="#lo-bueno">Lo bueno</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Ventaja</th><th>Por qué</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Ahorro de direcciones</strong></td><td>Miles de dispositivos internos con una sola IP pública (PAT)</td></tr>
+<tr><td><strong>Seguridad pasiva</strong></td><td>Oculta la topología interna y descarta lo no solicitado</td></tr>
+<tr><td><strong>Menos costos</strong></td><td>Pocas (o una) públicas = menos contratos, menos gestión</td></tr>
+<tr><td><strong>Flexibilidad</strong></td><td>Podés cambiar de proveedor o de esquema público sin retocar la red interna: los equipos siguen en privado</td></tr>
+<tr><td><strong>Balanceo sencillo</strong></td><td>Varias públicas en pool: si una cae, otra toma el tráfico</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="lo-malo"><a class="header" href="#lo-malo">Lo malo</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Desventaja</th><th>Por qué</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Rompe la conectividad de punta a punta</strong></td><td>El modelo original de Internet asumía que cualquiera podía iniciar una conexión hacia cualquiera. NAT lo elimina: nadie “empuja” hacia adentro</td></tr>
+<tr><td><strong>Latencia extra</strong></td><td>Cada paquete se inspecciona, se consulta la tabla, se reescribe. Hojas de ruta añadidas en cada cruce</td></tr>
+<tr><td><strong>Problemas con protocolos que no toleran el cambio de dirección</strong></td><td>Firmas digitales, IPsec (verifica integridad de los encabezados que NAT modifica), FTP pasivo, SIP…</td></tr>
+<tr><td><strong>Pérdida de trazabilidad</strong></td><td>Entre dos CG-NAT, un paquete cambió de dirección dos o tres veces: rastrear la origen real es un dolor</td></tr>
+<tr><td><strong>Complejidad de configuración</strong></td><td>Reglas de reenvío por aplicación, puertos estáticos, ALG que rompe más de lo que arregla</td></tr>
+<tr><td><strong>Conexiones entrantes sufren</strong></td><td>Servicios que deben RECIBIR conexiones requieren reenvío de puertos, DMZ o VPN — y aun así fallan en ciertos escenarios (juegos P2P, VoIP)</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="9-impacto-en-el-rendimiento"><a class="header" href="#9-impacto-en-el-rendimiento">9. Impacto en el rendimiento</a></h2>
+<p>Dos caras, otra vez:</p>
+<ul>
+<li><strong>Reduce carga de direcciones:</strong> una sola pública sostiene toda la LAN; la asignación de IPs se vuelve trivial. Eso además permite “equilibrio”: con pocas públicas bien administradas se sirve a mucha gente.</li>
+<li><strong>Pero suma latencia y puede saturar:</strong> en redes con mucho tráfico simultáneo (una oficina con PAT, un ISP con CG-NAT), la traducción constante es CPU y memoria del router. Si las tablas se llenan o el equipo es chico, aparece congestión: paquetes descartados, retransmisiones y una experiencia que se siente “pesada” — especialmente en aplicaciones de tiempo real (videollamadas, juegos), que no toleran bien el jitter.</li>
+</ul>
+<p>La regla práctica: en un hogar, un router decente con PAT aguanta de sobra. En una empresa o ISP, NAT se diseña: hardware pensado para <em>throughput</em> de millones de flujos, o se migra a IPv6 para sacárselo de encima.</p>
+<hr>
+<h2 id="10-cg-nat-el-nat-en-manos-del-proveedor"><a class="header" href="#10-cg-nat-el-nat-en-manos-del-proveedor">10. CG-NAT: el NAT en manos del proveedor</a></h2>
+<p><strong>CG-NAT</strong> (<em>Carrier-Grade NAT</em>), también llamado NAT masivo / <em>Large-Scale NAT</em> (LSN), es NAT aplicado al revés de como lo viste hasta acá: <strong>el ISP lo corre en sus propios equipos</strong>, compartiendo UNA dirección pública entre MUCHOS clientes.</p>
+<p>¿Por qué? Porque los ISP ya no tienen suficientes IPv4 públicas para darle una a cada cliente. Su solución temporal mientras IPv6 se masifica: meter a todos los clientes detrás de un NAT gigante, usando el rango <strong><code>100.64.0.0/10</code></strong> (el espacio compartido del RFC 6598) para identificarlos internamente.</p>
+<pre><code>     Tu casa                      ISP (CG-NAT)
+┌──────────────────┐      ┌──────────────────────────────┐
+│ Router del cliente│      │  Tu router es "100.64.x.x"   │
+│  LAN: 192.168.1.x │─────&gt;│  CG-NAT lo traduce a         │
+│  WAN: 100.64.0.17 │      │  la pública real: 203.0.113.7 │──&gt; Internet
+└──────────────────┘      └──────────────────────────────┘
+       NAT casero                      NAT del ISP
+</code></pre>
+<p>Fijate qué pasó: hay <strong>dos NAT encadenados</strong> (doble NAT). Tu tráfico sale así: <code>192.168.1.20</code> → NAT casero → <code>100.64.0.17</code> → CG-NAT → <code>203.0.113.7</code> → Internet.</p>
+<h3 id="cómo-saber-si-estás-detrás-de-un-cg-nat"><a class="header" href="#cómo-saber-si-estás-detrás-de-un-cg-nat">Cómo saber si estás detrás de un CG-NAT</a></h3>
+<p><strong>Método 1 (directo):</strong> entrá al panel de tu router y mirá la IP de la interfaz WAN. Si arranca con <code>100.64.x.x</code> (o <code>100.64.0.0/10</code> en general) → CG-NAT, sin lugar a dudas.</p>
+<p><strong>Método 2 (con comandos):</strong> desde tu PC, hacé una traza hacia tu IP pública:</p>
+<ul>
+<li>Windows: <code>tracert &lt;tu_IP_pública&gt;</code></li>
+<li>Linux/macOS: <code>traceroute &lt;tu_IP_pública&gt;</code></li>
+</ul>
+<pre><code>1 salto   → la pública está en TU router → no hay CG-NAT
+2+ saltos → hay un equipo del ISP en el medio → CG-NAT confirmado
+</code></pre>
+<h3 id="qué-significa-para-vos"><a class="header" href="#qué-significa-para-vos">Qué significa para vos</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Tipo de usuario</th><th>Impacto</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Estándar</strong> (navegar, redes sociales, streaming)</td><td>Ninguno. Ni te enterás.</td></tr>
+<tr><td><strong>Avanzado</strong> (port forwarding, VPN entrante, servidores caseros, túneles)</td><td>Todo se complica: el reenvío de puertos de tu router apunta a una IP que NO controlás. Es la causa #1 de “configuré el reenvío y no funciona”.</td></tr>
+<tr><td><strong>Empresa / teletrabajo</strong></td><td>Las VPN entrantes y algunas videollamadas se ven afectadas; el acceso remoto necesita tecnologías de relevo (TURN, sección 12) o un túnel saliente (WireGuard/ZeroTier) en vez de conexión entrante.</td></tr>
+<tr><td><strong>Gamer</strong></td><td>El P2P y el NAT de consolas saltan por los aires: el tipo de NAT empeora, aparecen los “strict” y los partidos que no conectan.</td></tr>
+<tr><td><strong>IoT industrial / telemetría</strong></td><td>Si los sensores solo reportan hacia afuera: cero problema. Si la empresa necesita llegar a ellos desde afuera: problema serio.</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Conclusión del CG-NAT:</strong> no es un bug, es un parche de ingeniería para estirar la vida útil de IPv4. Y explica muchísimos dolores del mundo real: “abrí los puertos y no entran”, “el juego no conecta”, “la cámara no se ve”. Antes de pelear con configuraciones, chequeá si sos víctima del doble NAT.</p>
+</blockquote>
+<hr>
+<h2 id="11-nat-en-la-vida-real-cinco-escenarios"><a class="header" href="#11-nat-en-la-vida-real-cinco-escenarios">11. NAT en la vida real: cinco escenarios</a></h2>
+<p>Teoría suficiente. Estos cinco casos cubren el 95% de lo que te vas a encontrar, y cada uno usa NAT distinto.</p>
+<h3 id="escenario-1--la-casa-todos-navegando-pat"><a class="header" href="#escenario-1--la-casa-todos-navegando-pat">Escenario 1 — La casa: todos navegando (PAT)</a></h3>
+<p>4 personas, 9 dispositivos, 1 IP pública del ISP, router de fibra. Todo el tráfico sale por PAT en <code>203.0.113.5</code>. Un celular en TikTok, una notebook en Zoom, una TV en Netflix y una consola descargando — simultáneamente.</p>
+<ul>
+<li><strong>NAT usado:</strong> PAT. Cada salida, una entrada única (IP+puerto) en la tabla.</li>
+<li><strong>Tip:</strong> si alguna aplicación se queja de NAT “moderate/strict”, resolverlo suele ser: UPnP activado, o reenvío manual para esa consola (escenario 3).</li>
+</ul>
+<h3 id="escenario-2--la-oficina-servidor-interno--acceso-remoto"><a class="header" href="#escenario-2--la-oficina-servidor-interno--acceso-remoto">Escenario 2 — La oficina: servidor interno + acceso remoto</a></h3>
+<p>Una pyme tiene un servidor de archivos <code>192.168.0.10</code> al que los empleados entran por VPN, y una impresora. Nadie necesita que Internet “entre” salvo el servidor de correo.</p>
+<ul>
+<li><strong>NAT usado:</strong> PAT para todo el tráfico saliente + <strong>NAT estática o reenvío de puertos</strong> para el correo (<code>192.168.0.10:25</code> ↔ pública fija <code>203.0.113.10:25</code>).</li>
+<li><strong>VPN:</strong> los empleados no entran “hacia” el servidor: el servidor o el firewall inician un túnel saliente (WireGuard/OpenVPN de cliente) hacia el host del proveedor de VPN. NAT no se entera: la conexión la inició el lado interno, así que la tabla NAT la sostiene sin problemas. <strong>Esta inversión (conexión saliente en vez de entrante) es LA solución universal para el acceso remoto con NAT.</strong></li>
+</ul>
+<h3 id="escenario-3--el-gamer-p2p-y-los-tres-tipos-de-nat-de-consolas"><a class="header" href="#escenario-3--el-gamer-p2p-y-los-tres-tipos-de-nat-de-consolas">Escenario 3 — El gamer: P2P y los tres tipos de NAT de consolas</a></h3>
+<p>Los juegos modernos no usan servidor central: conectan jugadores <strong>entre sí (P2P)</strong>. Para eso, un jugador tiene que recibir una conexión de otro — justo lo que NAT bloquea por defecto. Las consolas clasifican tu situación en tres niveles:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Tipo</th><th>Qué significa</th><th>Experiencia</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Open</strong> (abierto)</td><td>Nadie te bloquea: recibís conexiones directas</td><td>Hosteas partidas, todo conecta</td></tr>
+<tr><td><strong>Moderate</strong> (moderado)</td><td>Tenés NAT pero con UPnP o puertos abiertos</td><td>Conectás con Open y algunos Moderate; jamás sos host</td></tr>
+<tr><td><strong>Strict</strong> (estricto)</td><td>NAT cerrado / doble NAT</td><td>Solamente conectás con Open; buena parte de las partidas falla</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Soluciones, en orden:</strong> (1) activar <strong>UPnP</strong> en el router: la consola pide sola los puertos que necesita y NAT los abre automáticamente; (2) <strong>reenvío manual</strong> de los puertos del juego (suele ser un rango de UDP) hacia la IP fija de la consola (dale IP estática por DHCP reservation); (3) si sos víctima de CG-NAT, el reenvío NO va a servir: la última carta es un túnel con tecnología P2P amistosa (ZeroTier, Hamachi) que negocia atraviesos UDP por vos — o pedir IP pública al ISP.</p>
+<h3 id="escenario-4--la-cámara-y-el-servidor-casero-recibir-conexiones"><a class="header" href="#escenario-4--la-cámara-y-el-servidor-casero-recibir-conexiones">Escenario 4 — La cámara y el servidor casero: recibir conexiones</a></h3>
+<p>Una cámara IP y un NAS que querés ver desde afuera.</p>
+<ul>
+<li><strong>Opción clásica:</strong> reenvío de puertos en el router: <code>WAN : 8080 → 192.168.1.80 : 80</code>. Ojo: exponer un admin web a Internet es pedir una invitación. Mejor cerrar en firewall y usar VPN.</li>
+<li><strong>Opción moderna (recomendada hoy):</strong> la cámara/NAS inicia una conexión saliente hacia la nube del fabricante (o a tu propio servidor WireGuard). Vos entrás por la nube/el túnel. Cero puertos abiertos, cero CG-NAT que te joda. Es el mismo principio de inversión del escenario 2.</li>
+</ul>
+<h3 id="escenario-5--iot-industrial--telemetría-solo-reportar"><a class="header" href="#escenario-5--iot-industrial--telemetría-solo-reportar">Escenario 5 — IoT industrial / telemetría: solo reportar</a></h3>
+<p>Sensores, medidores, PLCs que mandan datos al servidor del fabricante cada 30 segundos.</p>
+<ul>
+<li><strong>NAT usado:</strong> PAT, y ni siquiera lo pensás: el equipo inicia la conexión y ya.</li>
+<li><strong>La ley del IoT:</strong> mientras el dispositivo SOLO hable hacia afuera, NAT (incluido CG-NAT) es invisible e irrelevante. El dolor aparece solo si la empresa necesita EMPUJAR configuraciones hacia el dispositivo (túneles salientes al rescate otra vez: los fabricantes serios usan colas/relevo en la nube para “llegar” a dispositivos detrás de cualquier NAT).</li>
+</ul>
+<blockquote>
+<p><strong>El patrón que atraviesa los cinco escenarios:</strong> NAT no es problema cuando la comunicación sale; es problema cuando tiene que ENTRAR. Cada escenario tiene su palanca: puertos abiertos (1 y 3), NAT estática (2), UPnP (3), nube/túnel saliente (2, 4, 5). Y cuando ni eso alcanza… llega la sección que sigue.</p>
+</blockquote>
+<hr>
+<h2 id="12-nat-transversal-el-arte-de-hablar-a-través-del-traductor"><a class="header" href="#12-nat-transversal-el-arte-de-hablar-a-través-del-traductor">12. NAT transversal: el arte de hablar a través del traductor</a></h2>
+<p>Acá está el plato fuerte, y lo que realmente distingue este manual: <strong>por qué las comunicaciones en tiempo real (VoIP, videollamadas, juegos) se quiebran contra NAT, y cómo se resuelve en el mundo real.</strong></p>
+<h3 id="121-el-problema-las-conexiones-entrantes-no-existen"><a class="header" href="#121-el-problema-las-conexiones-entrantes-no-existen">12.1. El problema: las conexiones entrantes no existen</a></h3>
+<p>Una llamada VoIP entrante es una conexión INICIADA DESDE AFUERA: un teléfono IP o softphone recibe un <strong>INVITE</strong> (una invitación SIP) de un servidor de telefonía. Pero el softphone vive detrás de NAT, sin entrada en la tabla. El INVITE llega al router, no hay entrada, y se descarta en silencio. El teléfono jamás suena.</p>
+<p>Y hay un segundo problema, peor: la voz (RTP) no viaja por el mismo canal que la señalización (SIP). La llamada abre DOS flujos:</p>
+<ul>
+<li><strong>SIP</strong> (señalización): arma, negocia y cuelga la llamada. TCP o UDP, comúnmente puerto 5060.</li>
+<li><strong>RTP</strong> (la voz/video): stream continuo de paquetes UDP, unidireccional o bidireccional. <strong>Los puertos RTP se negocian en el momento de cada llamada</strong> y cambian en cada una — con rangos amplios (típicamente miles de puertos UDP pares, p. ej. 16384–32767 en muchas plataformas).</li>
+</ul>
+<p>Traducido al edificio: no solo es que el conserje descarte cartas no pedidas — encima, los vecinos negocian entre llamada y llamada qué puerta van a usar para la voz. Adivinar por qué puerta va a intentar entrar el audio de una llamada de terceros es un juego de 1 entre 16.000.</p>
+<blockquote>
+<p><strong>Por qué “tiempo real” es la palabra clave:</strong> en una llamada, el audio no puede esperar. Si un paquete de voz se retrasa o se pierde, no hay retransmisión útil: ya pasó el instante que transportaba. Por eso VoIP/video/juegos son los primero en romperse con NAT: no admiten el reintento que sí admiten una web o un correo.</p>
+</blockquote>
+<h3 id="122-el-primer-intento-comportamientos-de-nat-y-la-regla-del-puerto-simétrico"><a class="header" href="#122-el-primer-intento-comportamientos-de-nat-y-la-regla-del-puerto-simétrico">12.2. El primer intento: comportamientos de NAT y la “regla del puerto simétrico”</a></h3>
+<p>No todos los NAT se comportan igual, y de eso depende TODO. La clasificación clásica (de los años del protocolo STUN original):</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Comportamiento</th><th>Qué hace con los paquetes SALIENTES</th><th>Qué hace con los ENTRANTES</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Full-Cone</strong></td><td>Mapea <code>interno:puerto</code> → <code>público:puerto</code> <strong>una vez</strong></td><td>Acepta desde CUALQUIER origen hacia ese mapeo</td></tr>
+<tr><td><strong>Address-Restricted Cone</strong></td><td>Idem</td><td>Solo acepta desde la dirección que YA recibió paquetes</td></tr>
+<tr><td><strong>Port-Restricted Cone</strong></td><td>Idem</td><td>Solo desde dirección <strong>y puerto</strong> que ya hablaron</td></tr>
+<tr><td><strong>Symmetric</strong></td><td>Crea un mapeo NUEVO por cada destino distinto</td><td>Prácticamente bloquea todo lo que no fue exactamente respondido al mismo mapeo</td></tr>
+</tbody>
+</table>
+</div>
+<p>Hoy se describe más preciso con dos ejes: <strong>mapping</strong> (cómo crea el mapeo: <em>endpoint-independent</em>, <em>address-dependent</em> o <em>address-and-port-dependent</em>) y <strong>filtering</strong> (qué deja entrar). Pero la intuición es la misma:</p>
+<blockquote>
+<p><strong>Full-cone es un conserje distraído:</strong> una vez que el departamento 2B “abre” la puerta del edificio, cualquiera de afuera puede llamar a esa puerta y el conserje se la pasa. <strong>Symmetric es un conserje paranoico:</strong> cada vecino que quiere hablar con un destino distinto tiene que abrir una puerta nueva, y las respuestas solo entran por la puerta exacta que se abrió para ese remitente.</p>
+</blockquote>
+<p>Esta diferencia explica los “tipos NAT” de los juegos: <strong>Open</strong> suele corresponder a full-cone (o puertos reenviados), <strong>Strict</strong> a symmetric (o doble NAT). Y explica por qué una técnica que “funciona para mi amigo” no te funciona a vos: no son el mismo tipo de conserje.</p>
+<h3 id="123-el-truco-que-funciona-a-medias-hablar-por-donde-te-hablan-symmetric-rtp"><a class="header" href="#123-el-truco-que-funciona-a-medias-hablar-por-donde-te-hablan-symmetric-rtp">12.3. El truco que funciona a medias: “hablar por donde te hablan” (symmetric RTP)</a></h3>
+<p>La mayoría de los endpoints VoIP hacen algo elegantísimo y barato: <strong>recibir RTP por el MISMO puerto por el que lo enviaron</strong> (<em>RTP symmetric</em>). ¿Por qué ayuda? Porque si vos ya le mandaste audio a alguien, tu NAT creó la entrada para las respuestas. Mientras el flujo sea bidireccional y los dos extremos usen el mismo par de puertos, el audio cruza NAT sin configuración.</p>
+<p>¿Cuándo se rompe? Cuando el flujo NO es completamente bidireccional, o cuando hay un NAT symmetric de por medio que crea un mapeo distinto por cada destino (y el stream entrante no coincide con el mapeo de salida). Ahí el truco del puerto simétrico se queda corto, y hay que pasar a las armas grandes.</p>
+<h3 id="124-stun-cómo-me-ve-el-mundo"><a class="header" href="#124-stun-cómo-me-ve-el-mundo">12.4. STUN: “¿cómo me ve el mundo?”</a></h3>
+<p><strong>STUN</strong> (<em>Session Traversal Utilities for NAT</em>) es un servidor en Internet que te dice tu dirección “vista desde afuera”:</p>
+<pre><code>Tu softphone:  "Hola, soy 192.168.1.50:50002. ¿Quién soy para el mundo?"
+Servidor STUN: "Todos te ven como 203.0.113.5:40512. Contale eso a tus interlocutores."
+</code></pre>
+<p>El softphone toma esa IP+puerto público, la mete en los mensajes SIP/RTP y le dice a la otra punta: “mandame el audio a <code>203.0.113.5:40512</code>, que es mi puerta” — y como esa puerta se abrió cuando el propio softphone habló con el servidor STUN, las respuestas entran.</p>
+<p><strong>La letra chica:</strong> STUN funciona con NAT full-cone y restricted y con port-restricted, pero <strong>NO con symmetric</strong>: el mapeo que STUN descubre es contra el servidor STUN, y un NAT symmetric crearía otro mapeo distinto contra el destinatario real. La respuesta del servidor STUN “sirve” pero el audio no llega.</p>
+<h3 id="125-turn-el-relevo-cuando-no-queda-otra"><a class="header" href="#125-turn-el-relevo-cuando-no-queda-otra">12.5. TURN: el relevo cuando no queda otra</a></h3>
+<p><strong>TURN</strong> (<em>Traversal Using Relays around NAT</em>) es el plan B (o C): si no hay forma de abrir un agujero directo entre los dos extremos — típicamente por NAT symmetric o por firewalls estrictos — el tráfico <strong>se relega por un servidor intermedio</strong>:</p>
+<pre><code>Softphone A ──&gt; Tu NAT ──&gt; Servidor TURN ──&gt; NAT del otro ──&gt; Softphone B
+              (casa)      (en Internet)      (oficina)
+</code></pre>
+<p>A y B hablan con el TURN (conexiones salientes, que NAT deja pasar), y el TURN junta los dos hilos: el audio va casa → TURN → oficina. Todo el cruce de NAT se elimina porque <strong>nadie intenta entrar por la puerta de nadie</strong>: las dos puntas solo SALEN.</p>
+<p><strong>El costo:</strong> el relevo paga ancho de banda y latencia — cada llamada consume el doble de tráfico y pasa por una pierna intermedia. Por eso TURN es el último recurso: funciona siempre, pero cuesta. Las conferencias multitudinarias (WebRTC masivo) son TURN a lo grande.</p>
+<h3 id="126-ice-la-negociación-que-lo-intenta-todo"><a class="header" href="#126-ice-la-negociación-que-lo-intenta-todo">12.6. ICE: la negociación que lo intenta TODO</a></h3>
+<p>Lo mejor de todo: nadie elige a ciegas. <strong>ICE</strong> (<em>Interactive Connectivity Establishment</em>) reúne STUN + TURN + conectividad directa en un solo proceso de negociación automática:</p>
+<ol>
+<li>Cada extremo junta <strong>todas sus direcciones candidatas</strong>: la privada, la pública descubierta con STUN, y (si hay) el relevo del TURN.</li>
+<li>Los dos intercambian listas (via SIP/WebRTC).</li>
+<li><strong>Prueban en orden</strong> de menor costo: directo primero, STUN/pinhole después, TURN al final.</li>
+<li>La primera que funcione, gana. El resto se descarta.</li>
+</ol>
+<p>Es el standard moderno: tu celular con videollamada, tu navegador con WebRTC, los softphones corporativos, TODOS usan ICE (con STUN y TURN adentro) sin que sepás nada.</p>
+<h3 id="127-sip-alg-el-plugin-que-rompe-más-de-lo-que-arregla"><a class="header" href="#127-sip-alg-el-plugin-que-rompe-más-de-lo-que-arregla">12.7. SIP ALG: el plugin que rompe más de lo que arregla</a></h3>
+<p>Muchos routers hogareños traen “SIP ALG” (Application Layer Gateway) activado: un agente que “ayuda” reescribiendo los mensajes SIP para el NAT automáticamente.</p>
+<p>Suena perfecto. En la práctica, los ALG caseros reescriben mal (o a medias) los encabezados SIP/SDP, rompen el RTP simétrico, trituran el SIP cifrado (que no se puede reescribir — y el router lo descarta o lo corrompe), y generan los síntomas más raros: llamadas que suenan pero no tienen audio, o audio en un solo sentido.</p>
+<p><strong>La recomendación de la industria (y de este manual):</strong> si tu VoIP sufre y tu router tiene SIP ALG — <strong>desactivado generalmente arregla los problemas, no los causa</strong>. La solución correcta son STUN/ICE de los endpoints, no un interceptor mágico. (Los ALG empresariales de verdad — los SBC, que siguen — son otra historia: están hechos por especialistas y son parte de la solución.)</p>
+<blockquote>
+<p><strong>Regla de oro del VoIP:</strong> señalización (SIP) y voz (RTP) son canales distintos que se negocian en cada llamada. Si un solo elemento de la cadena no traduce bien esa negociación, la llamada se rompe. Por eso la respuesta moderna es: que los PROPIA endpoints negocien (ICE/STUN), NO que un router del medio “ayude” (ALG).</p>
+</blockquote>
+<h3 id="128-sbc-el-orquestador-del-proveedor"><a class="header" href="#128-sbc-el-orquestador-del-proveedor">12.8. SBC: el orquestador del proveedor</a></h3>
+<p>En el lado del servicio de telefonía, el equivalente serio del ALG es el <strong>SBC</strong> (<em>Session Border Controller</em>): un equipo de borde que controla TODO el tráfico SIP/RTP hacia la red del proveedor. Funciones: autenticación de troncales, traducción de numeración, control de ancho de banda por llamada, topología escondida y — clave para el tema — <strong>actúa como TURN gigante</strong>: los endpooints detrás de NAT hablan con el SBC (saliente), y el SBC los conecta con el resto de la red telefónica. Por eso las llamadas VoIP “de empresa” funcionan: el SBC orquesta el cruce de NAT de toda la telefonía de la operadora.</p>
+<h3 id="129-el-caso-completo-una-llamada-voip-real"><a class="header" href="#129-el-caso-completo-una-llamada-voip-real">12.9. El caso completo: una llamada VoIP real</a></h3>
+<p>Armemos todos los fierros. Un empleado en su casa (detrás del router de fibra, que además es CG-NAT del ISP) llama al número fijo de la oficina:</p>
+<ol>
+<li>El softphone arranca y hace <strong>registro SIP</strong> contra el SBC del proveedor (el registro se renueva cada pocos minutos — cada renovación refresca la entrada NAT, matando dos pájaros: “estoy vivo” y “manteneme el agujero abierto”).</li>
+<li>Al marcar, <strong>ICE</strong> junta candidatos: la IP privada, la pública que le dijo el STUN, y el relevo del TURN.</li>
+<li>El <strong>INVITE</strong> va por el canal saliente al SBC — entra en la tabla NAT como cualquier web — y el SBC ya sabe cómo encontrar al softphone: por el que el propio softphone usó para registrarse.</li>
+<li>El SBC conecta con la central de la oficina y establece la llamada.</li>
+<li>El audio <strong>RTP</strong> prueba: directo primero (con suerte, y con el truco del puerto simétrico alcanza); si el camino directo falla (CG-NAT + symmetric), <strong>ICE elige TURN</strong> y el audio viaja casa → TURN → oficina.</li>
+<li>Al colgar, se liberan los puertos y las entradas NAT expiran.</li>
+</ol>
+<p>Ninguna de esas piezas es opcional si el empleado está detrás de NAT doble. Por eso el acceso remoto, la telefonía y los juegos modernos — las tres cosas más sensibles al tiempo real — terminan TODAS en el mismo set de herramientas: <strong>STUN para mirarse, TURN para relevar, ICE para negociar</strong> — y reconocimiento humilde de que NAT, el salvador de IPv4, es también su única maldición.</p>
+<hr>
+<h2 id="13-ejercicios-prácticos"><a class="header" href="#13-ejercicios-prácticos">13. Ejercicios prácticos</a></h2>
+<h3 id="ejercicio-1-leé-una-tabla-nat"><a class="header" href="#ejercicio-1-leé-una-tabla-nat">Ejercicio 1: leé una tabla NAT</a></h3>
+<p>Esta es una tabla real de un router casero:</p>
+<pre><code>Protocolo  Local externo             Externo local
+TCP        192.168.1.20:51000   -&gt;   203.0.113.5:40512
+UDP        192.168.1.21:53000   -&gt;   203.0.113.5:40513
+UDP        192.168.1.30:1024    -&gt;   203.0.113.5:40514
+</code></pre>
+<ol>
+<li>¿Qué tipo de NAT muestra la tabla?</li>
+<li>Si llega un paquete para <code>203.0.113.5:40512</code>, ¿a qué equipo interno va?</li>
+<li>¿Y si llega uno para <code>203.0.113.5:8000</code> (sin entrada)? ¿Qué pasa?</li>
+</ol>
+<details>
+<summary>Ver respuestas</summary>
+<ol>
+<li><strong>PAT</strong> (NAT overload): tres dispositivos internos distintos comparten la misma IP pública <code>203.0.113.5</code>, diferenciados por puerto.</li>
+<li>Va a <code>192.168.1.20</code> (puerto 51000). Esa es la conexión que la PC-20 inició hacia afuera.</li>
+<li><strong>Se descarta.</strong> No hay entrada en la tabla → paquete no solicitado → a la basura. Esto, y no otra cosa, es lo que “protege” NAT por defecto.</li>
+</ol>
+</details>
+<h3 id="ejercicio-2-clasificá-el-comportamiento"><a class="header" href="#ejercicio-2-clasificá-el-comportamiento">Ejercicio 2: clasificá el comportamiento</a></h3>
+<p>Un NAT mapea <code>192.168.1.10:5000</code> → <code>203.0.113.5:5000</code> y acepta tráfico entrante a ese mapeo SOLO desde <code>8.8.8.8</code> (porque el equipo interno ya le mandó paquetes a <code>8.8.8.8</code>). ¿Qué tipo de NAT es: full-cone, address-restricted, port-restricted o symmetric?</p>
+<details>
+<summary>Ver respuesta</summary>
+<p><strong>Address-restricted cone</strong>: acepta desde CUALQUIER puerto de una dirección ya “conocida” (que recibió tráfico saliente del interno), pero NO desde direcciones que nunca hablaron. Si además filtrara por puerto exacto (<code>8.8.8.8:53</code> y nada más), sería port-restricted.</p>
+</details>
+<h3 id="ejercicio-3-stun-o-turn"><a class="header" href="#ejercicio-3-stun-o-turn">Ejercicio 3: ¿STUN o TURN?</a></h3>
+<p>Dos softphones detrás de NAT symmetric (ambos extremos). Los endpoints usan ICE. ¿Qué candidato terminará funcionando para el audio?</p>
+<details>
+<summary>Ver respuesta</summary>
+<p><strong>TURN (relevo).</strong> Con NAT symmetric, los mapeos se crean por destino: el candidato STUN descubierto contra el servidor STUN no sirve para llegar al otro endpoint (el mapeo es distinto). Los candidatos directos tampoco. ICE probará en orden y terminará eligiendo el relevo — a costa de latencia y ancho de banda, pero con la llamada funcionando.</p>
+</details>
+<h3 id="ejercicio-4-diagnóstico-de-voip"><a class="header" href="#ejercicio-4-diagnóstico-de-voip">Ejercicio 4: diagnóstico de VoIP</a></h3>
+<p>“Llamo desde el softphone de mi casa y la llamada suena, pero no hay audio, ni en un sentido ni en el otro. Mi router tiene SIP ALG activado.” ¿Cuál es el siguiente paso lógico y por qué?</p>
+<details>
+<summary>Ver respuesta</summary>
+<p><strong>Desactivar SIP ALG</strong> (y configurar STUN/ICE en el softphone si hace falta). El síntoma “suena pero no hay audio” es el clásico de ALG que reescribe los mensajes SIP/SDP (o el RTP que no se negocia). Con ALG <strong>apagado</strong>, los endpoints negocian la voz por los puertos correctos y — con STUN/ICE — cruzan NAT limpio. Desactivar ALG es la primera prueba de todo técnico VoIP; en la mayoría de los casos arregla, no rompe.</p>
+</details>
+<h3 id="ejercicio-5-detectar-cg-nat"><a class="header" href="#ejercicio-5-detectar-cg-nat">Ejercicio 5: detectar CG-NAT</a></h3>
+<p>Conectás tu router y la IP WAN muestra <code>100.73.12.9</code>. ¿Qué significa, y qué les decís a tus amigos gamers cuando se quejan de NAT Strict?</p>
+<details>
+<summary>Ver respuesta</summary>
+<p><strong>Estás detrás de un CG-NAT del ISP</strong> (<code>100.64.0.0/10</code> = espacio de RFC 6598). El reenvío de puertos de tu router NO va a servir: apunta a una IP (<code>100.73.12.9</code>) que no controlás y que el ISP traduce de nuevo hacia su pública. A los gamers: NAT Strict permanente aunque abran puertos; las soluciones reales son pedir IP pública al ISP (a veces paga/costo), usar VPN/P2P con cifrado (ZeroTier, etc.) o servicios de relevo.</p>
+</details>
+<hr>
+<h2 id="14-comprobá-lo-que-aprendiste-2"><a class="header" href="#14-comprobá-lo-que-aprendiste-2">14. Comprobá lo que aprendiste</a></h2>
+<p><strong>1. ¿Cuál es la función real de NAT en una red IPv4?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Estirar el espacio de direcciones IPv4: permitir que MUCHOS dispositivos privados (RFC 1918) compartan UNA o pocas IPs públicas, traduciendo dirección y puerto en los paquetes que cruzan el borde (PAT).</p>
+</details>
+<p><strong>2. ¿Por qué no alcanza con traducir solo la IP?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Porque dos hosts internos pueden usar el mismo puerto de origen hacia el mismo destino; sin traducir puertos, las respuestas serían indistinguibles (dos entradas idénticas en la tabla).</p>
+</details>
+<p><strong>3. Diferencia entre NAT estática, NAT dinámica y PAT.</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Estática: 1:1 fija (para servicios que reciben conexiones). Dinámica: una pública prestada de un pool mientras dura la conexión (si se agota, descarta). PAT: todos contra una sola pública por puertos distintos (el estándar de hogares y oficinas).</p>
+</details>
+<p><strong>4. ¿NAT es un firewall?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>No. Oculta direcciones y descarta lo no solicitado, pero no filtra por política ni audita. Es una capa pasiva de reducción de exposición; la seguridad real está en firewalls, parches y configuración.</p>
+</details>
+<p><strong>5. ¿Qué es CG-NAT y cómo se detecta?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Un NAT masivo del ISP (doble NAT) para compartir públicas entre varios clientes, usando <code>100.64.0.0/10</code>. Se detecta mirando la IP WAN del router (100.64.x.x) o con <code>tracert</code>/<code>traceroute</code> a tu IP pública: 2+ saltos = CG-NAT.</p>
+</details>
+<p><strong>6. ¿Por qué las llamadas VoIP se rompen con NAT?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Porque las llamadas entrantes son conexiones iniciadas desde AFUERA (no hay entrada NAT), y porque la voz (RTP) usa puertos UDP negociados en cada llamada por un canal distinto del de señalización (SIP). El tiempo real no admite retransmisiones: si el audio no cruza, la llamada se pierde o queda muda.</p>
+</details>
+<p><strong>7. STUN, TURN e ICE: ¿cuál es cada uno?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>STUN: un servidor que te dice tu dirección pública vista de afuera (descubrimiento). TURN: un servidor que releva el tráfico entre los dos extremos (funciona siempre, cuesta latencia/banda). ICE: la negociación que reúne STUN + TURN + conexión directa y prueba en orden de costo.</p>
+</details>
+<p><strong>8. ¿Cuándo conviene desactivar SIP ALG?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Cuando hay problemas de VoIP (llamadas sin audio, un solo sentido, registro que falla). El ALG casero reescribe mal SIP/SDP y rompe RTP simétrico y SIP cifrado. La solución correcta son STUN/ICE en los endpoints; los SBC (enterprise) son otra liga.</p>
+</details>
+<hr>
+<h2 id="15-glosario-2"><a class="header" href="#15-glosario-2">15. Glosario</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Término</th><th>Qué es</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>NAT</strong></td><td>Traducción de direcciones de red: privadas ↔ públicas en el borde</td></tr>
+<tr><td><strong>PAT</strong></td><td>NAT con traducción de puertos: muchas internas → una pública</td></tr>
+<tr><td><strong>NAT estática</strong></td><td>Traducción 1:1 fija para servicios que reciben conexiones</td></tr>
+<tr><td><strong>NAT dinámica</strong></td><td>Traducción con pool de públicas asignadas temporalmente</td></tr>
+<tr><td><strong>Tabla NAT</strong></td><td>Registro de conexiones en curso: interno ↔ público ↔ destino</td></tr>
+<tr><td><strong>RFC 1918</strong></td><td>Estándar de rangos privados (10/8, 172.16/12, 192.168/16)</td></tr>
+<tr><td><strong>RFC 6598</strong></td><td>Espacio compartido 100.64.0.0/10, usado por CG-NAT</td></tr>
+<tr><td><strong>CG-NAT</strong></td><td>NAT masivo del ISP (doble NAT) para compartir IPs públicas</td></tr>
+<tr><td><strong>Doble NAT</strong></td><td>Dos traducciones encadenadas (fastidio: reenvío de puertos muerto)</td></tr>
+<tr><td><strong>Port forwarding</strong></td><td>Reenvío manual de un puerto público a un equipo interno</td></tr>
+<tr><td><strong>UPnP</strong></td><td>Protocolo que deja que un dispositivo pida solo su reenvío de puertos</td></tr>
+<tr><td><strong>Full-Cone / Restricted / Symmetric</strong></td><td>Comportamientos de NAT que definen qué entrante aceptan</td></tr>
+<tr><td><strong>STUN</strong></td><td>Servidor que te dice tu IP pública “vista desde afuera”</td></tr>
+<tr><td><strong>TURN</strong></td><td>Servidor que releva (relay) el tráfico cuando el directo falla</td></tr>
+<tr><td><strong>ICE</strong></td><td>Negociación que prueba STUN + TURN + directo en orden de costo</td></tr>
+<tr><td><strong>SIP</strong></td><td>Protocolo de señalización de VoIP (invita, negocia, cuelga)</td></tr>
+<tr><td><strong>RTP</strong></td><td>Protocolo que transporta la voz/video (UDP, puertos negociados por llamada)</td></tr>
+<tr><td><strong>SDP</strong></td><td>El cuerpo del mensaje SIP que describe los puertos/códecs de esa llamada</td></tr>
+<tr><td><strong>RTP simétrico</strong></td><td>Recibir audio por el mismo puerto por el que se envía (truco anti-NAT)</td></tr>
+<tr><td><strong>SIP ALG</strong></td><td>Interceptor de routers caseros que “ayuda” con SIP (suele romperlo)</td></tr>
+<tr><td><strong>SBC</strong></td><td>Controlador de borde de sesión: el ALG serio del proveedor/empresa</td></tr>
+<tr><td><strong>NAT traversal</strong></td><td>El conjunto de técnicas para cruzar NAT (STUN/TURN/ICE)</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="16-resumen-en-10-puntos-2"><a class="header" href="#16-resumen-en-10-puntos-2">16. Resumen en 10 puntos</a></h2>
+<ol>
+<li><strong>NAT nació por necesidad:</strong> ~4.300 millones de IPv4 no alcanzan; NAT hace que millones de redes compartan pocas públicas.</li>
+<li><strong>El conserje del edificio:</strong> UNA IP pública (dirección del edificio), muchas privadas (departamentos), una tabla (la libreta).</li>
+<li><strong>PAT es el rey:</strong> IP + puerto = unicidad; sin traducir puertos, las respuestas serían indistinguibles.</li>
+<li><strong>NAT es stateful:</strong> solo traduce lo que tiene entrada en la tabla; lo no solicitado se descarta.</li>
+<li><strong>NAT no es firewall:</strong> oculta y descarta, pero no filtra ni audita. La seguridad de verdad vive en el firewall, los parches y la configuración.</li>
+<li><strong>CG-NAT = doble NAT:</strong> el ISP traduce a sus clientes con 100.64.0.0/10; detectalo en la IP WAN o con una traza de 2+ saltos — y entendé por qué tu reenvío de puertos “no funciona”.</li>
+<li><strong>NAT mata las conexiones entrantes:</strong> todo drama (juegos, cámaras, servidores, VoIP) es ese mismo problema con distinta ropa.</li>
+<li><strong>La regla del tiempo real:</strong> si tu comunicación no admite retransmisión (voz, video, juegos), NAT es tu enemigo número uno.</li>
+<li><strong>La tríada mágica:</strong> STUN para mirarte, TURN para relevar, ICE para negociar — así se cruzan los NAT sin tocarlos.</li>
+<li><strong>En VoIP, desconfiá del ALG:</strong> SIP y RTP son canales distintos que se negocian por llamada; los endpoints con STUN/ICE lo resuelven mejor que cualquier interceptor casero.</li>
+</ol>
+<hr>
+<blockquote>
+<p><strong>Fuente:</strong> Documentación propia basada en RFC 1918, RFC 6598, RFC 5389 (STUN), RFC 5766 (TURN), RFC 8445 (ICE), RFC 3261 (SIP) y RFC 3550 (RTP), con experiencias de troubleshooting reales.</p>
+</blockquote>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="22-direcciones-mac-y-switches"><a class="header" href="#22-direcciones-mac-y-switches">22. Direcciones MAC y Switches</a></h1>
 <hr>
