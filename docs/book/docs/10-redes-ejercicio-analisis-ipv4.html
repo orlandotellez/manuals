@@ -36,7 +36,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "dark";
-            window.path_to_searchindex_js = "../searchindex-4f628c84.js";
+            window.path_to_searchindex_js = "../searchindex-926819cc.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-cd1280d9.js"></script>
@@ -175,140 +175,149 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="redes---ejercicio-análisis-de-direcciones-ipv4"><a class="header" href="#redes---ejercicio-análisis-de-direcciones-ipv4">Redes - Ejercicio: Análisis de Direcciones IPv4</a></h1>
-<h2 id="introducción"><a class="header" href="#introducción">Introducción</a></h2>
-<p>Este manual te guiará paso a paso para analizar direcciones IPv4 y determinar la <strong>parte de red</strong>, la <strong>parte de host</strong>, la <strong>máscara de subred</strong>, la <strong>dirección de red</strong>, la <strong>dirección de broadcast</strong> y el <strong>rango de hosts utilizables</strong>. Este es un ejercicio fundamental para entender cómo funcionan las subredes y cómo los routers enrutan paquetes entre diferentes redes.</p>
+                        <h1 id="10-análisis-de-direcciones-ipv4-ejercicios-guiados"><a class="header" href="#10-análisis-de-direcciones-ipv4-ejercicios-guiados">10. Análisis de Direcciones IPv4 (Ejercicios Guiados)</a></h1>
 <hr>
 <h2 id="índice"><a class="header" href="#índice">Índice</a></h2>
 <ul>
-<li><a href="#1-conceptos-fundamentales">Conceptos Fundamentales</a></li>
-<li><a href="#2-metodología-paso-a-paso">Metodología Paso a Paso</a></li>
-<li><a href="#3-resolución-del-ejercicio">Resolución del Ejercicio</a></li>
-<li><a href="#4-tabla-completa-resuelta">Tabla Completa Resuelta</a></li>
-<li><a href="#5-tips-y-trucos">Tips y Trucos</a></li>
-<li><a href="#6-ejercicios-adicionales-para-practicar">Ejercicios Adicionales para Practicar</a></li>
-<li><a href="#7-resumen-de-fórmulas">Resumen de Fórmulas</a></li>
-<li><a href="#conclusión">Conclusión</a></li>
+<li><a href="#1-qué-necesitás-tener-fresco">Qué necesitás tener fresco</a></li>
+<li><a href="#2-la-caja-de-herramientas-binario-rápido">La caja de herramientas: binario rápido</a></li>
+<li><a href="#3-el-método-en-6-pasos">El método en 6 pasos</a></li>
+<li><a href="#4-el-atajo-de-los-profesionales-la-regla-del-bloque">El atajo de los profesionales: la regla del bloque</a></li>
+<li><a href="#5-la-tabla-de-ejercicios">La tabla de ejercicios</a></li>
+<li><a href="#6-soluciones-paso-a-paso">Soluciones paso a paso</a></li>
+<li><a href="#7-tabla-consolidada">Tabla consolidada</a></li>
+<li><a href="#8-errores-comunes">Errores comunes</a></li>
+<li><a href="#9-ejercicios-para-practicar-solo">Ejercicios para practicar solo</a></li>
+<li><a href="#10-resumen-de-fórmulas">Resumen de fórmulas</a></li>
+<li><a href="#11-comprobá-lo-que-aprendiste">Comprobá lo que aprendiste</a></li>
+<li><a href="#12-glosario">Glosario</a></li>
+<li><a href="#13-resumen-en-10-puntos">Resumen en 10 puntos</a></li>
 </ul>
 <hr>
-<h2 id="1-conceptos-fundamentales"><a class="header" href="#1-conceptos-fundamentales">1. Conceptos Fundamentales</a></h2>
-<h3 id="11-qué-es-el-prefijo-cidr"><a class="header" href="#11-qué-es-el-prefijo-cidr">1.1 ¿Qué es el Prefijo CIDR?</a></h3>
-<p>El prefijo CIDR (Classless Inter-Domain Routing) es una notación que indica cuántos bits de la dirección IP corresponden a la parte de red. Se expresa como <code>/XX</code> donde <strong>XX</strong> es un número del 0 al 32.</p>
+<h2 id="1-qué-necesitás-tener-fresco"><a class="header" href="#1-qué-necesitás-tener-fresco">1. Qué necesitás tener fresco</a></h2>
+<p>Este manual es pura práctica: vas a tomar direcciones IPv4 y sacarles la <strong>red</strong>, el <strong>broadcast</strong> y el <strong>rango de hosts</strong> — el análisis que un profesional hace mil veces en su vida. La buena noticia: todo se reduce a UNA idea.</p>
 <blockquote>
-<p><strong>Cuantos más bits de red, menos hosts pueden existir en la subred, y viceversa.</strong></p>
+<p><strong>La idea madre:</strong> una dirección IP tiene dos partes. La <strong>red</strong> (el barrio) y el <strong>host</strong> (la casa). La <strong>máscara</strong> marca dónde termina una y empieza la otra. Cuando los bits de host quedan todos en <code>0</code> → es la <strong>dirección de red</strong>. Cuando quedan todos en <code>1</code> → es el <strong>broadcast</strong>. Lo del medio: <strong>hosts utilizables</strong>.</p>
 </blockquote>
-<p><strong>Ejemplos:</strong></p>
+<p>Tres datos que van a aparecer en cada ejercicio:</p>
 <ul>
-<li><code>/24</code> → 24 bits de red, 8 bits de host → 2⁸ − 2 = <strong>254 hosts</strong></li>
-<li><code>/26</code> → 26 bits de red, 6 bits de host → 2⁶ − 2 = <strong>62 hosts</strong></li>
-<li><code>/28</code> → 28 bits de red, 4 bits de host → 2⁴ − 2 = <strong>14 hosts</strong></li>
+<li>El <strong>prefijo</strong> <code>/n</code> te dice cuántos bits son de red. <code>/24</code> = 24 bits de red, 8 de host.</li>
+<li><strong>Cuántos más bits de red, menos hosts</strong> puede haber, y al revés.</li>
+<li>Los hosts utilizables siempre son <code>2^bits de host − 2</code> (se descuentan red y broadcast).</li>
 </ul>
-<hr>
-<h3 id="12-la-notación-n-n-h-h"><a class="header" href="#12-la-notación-n-n-h-h">1.2 La Notación N, n, H, h</a></h3>
-<p>Para representar visualmente la división entre red y host, usamos una notación especial:</p>
+<h2 id="2-la-caja-de-herramientas-binario-rápido"><a class="header" href="#2-la-caja-de-herramientas-binario-rápido">2. La caja de herramientas: binario rápido</a></h2>
+<p>El análisis de subredes se hace EN BINARIO, no en decimal. La única herramienta que necesitás es la tabla de potencias de un octeto:</p>
+<pre><code> 128   64   32   16    8    4    2    1   ← valor de cada posición
+</code></pre>
+<p>Para convertir un número, sumá los valores de las posiciones con <code>1</code>:</p>
+<pre><code>  1    0    1    1    0    0    0    0   = 128 + 32 + 16 = 176
+</code></pre>
+<p>Y ojo con dos valores que aparecen en TODOS los ejercicios:</p>
+<pre><code>00000000 = 0       10000000 = 128       11000000 = 192
+11100000 = 224      11110000 = 240       11111000 = 248
+11111100 = 252      11111111 = 255
+</code></pre>
+<p>Esa lista es la máscara del cuarto octeto para /25, /26, /27, /28, /29, /30 y /24. Si la memorizás, la mitad del trabajo ya está.</p>
+<h2 id="3-el-método-en-6-pasos"><a class="header" href="#3-el-método-en-6-pasos">3. El método en 6 pasos</a></h2>
+<p>El orden exacto para resolver cualquier ejercicio, siempre igual:</p>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>Símbolo</th><th>Significado</th><th>Descripción</th></tr>
+<tr><th>Paso</th><th>Qué hacés</th><th>Resultado</th></tr>
 </thead>
 <tbody>
-<tr><td><code>N</code></td><td>8 bits de red</td><td>Octeto <strong>completo</strong> en la porción de red</td></tr>
-<tr><td><code>n</code></td><td>bit individual de red</td><td>Un solo bit en la porción de red</td></tr>
-<tr><td><code>H</code></td><td>8 bits de host</td><td>Octeto <strong>completo</strong> en la porción de host</td></tr>
-<tr><td><code>h</code></td><td>bit individual de host</td><td>Un solo bit en la porción de host</td></tr>
+<tr><td>1</td><td>Leé el prefijo <code>/n</code></td><td>Bits de red (n) y bits de host (h = 32 − n)</td></tr>
+<tr><td>2</td><td>Escribí la <strong>notación</strong> N/n/H/h</td><td>La “radiografía” de la dirección</td></tr>
+<tr><td>3</td><td>Poné <code>n</code> unos consecutivos y pasalo a decimal</td><td>Máscara de subred</td></tr>
+<tr><td>4</td><td>Poné todos los bits de host en <code>0</code></td><td>Dirección de red</td></tr>
+<tr><td>5</td><td>Poné todos los bits de host en <code>1</code></td><td>Dirección de broadcast</td></tr>
+<tr><td>6</td><td>Sumá 1 a la red y restá 1 al broadcast</td><td>Rango de hosts (y cant. = 2^h − 2)</td></tr>
 </tbody>
 </table>
 </div>
-<blockquote>
-<p>Los puntos (<code>.</code>) separan octetos reales. Dentro de un octeto que mezcla red y host, se escriben los bits <code>n</code> y <code>h</code> juntos sin punto intermedio.</p>
-</blockquote>
-<p><strong>Ejemplo visual para /24:</strong></p>
-<pre><code>N.N.N.H    → equivalente a:  NNN.H
-</code></pre>
-<p>Los primeros 3 octetos (24 bits) son red, y el último octeto es host.</p>
-<p><strong>Ejemplo visual para /26:</strong></p>
-<pre><code>N.N.N.nnhhhhhh
-</code></pre>
-<ul>
-<li>24 bits de red completos (3 octetos)</li>
-<li>2 bits adicionales de red en el cuarto octeto (<code>nn</code>)</li>
-<li>Los 6 bits restantes del cuarto octeto son de host (<code>hhhhhh</code>)</li>
-</ul>
-<p><strong>Ejemplo visual para /23:</strong></p>
-<pre><code>N.N.nnnnnnnh.H
-</code></pre>
-<ul>
-<li>16 bits de red completos (2 octetos)</li>
-<li>7 bits adicionales de red + 1 bit de host en el tercer octeto (<code>nnnnnnnh</code>)</li>
-<li>1 octeto completo de host (<code>H</code>)</li>
-</ul>
-<h3 id="13-cómo-calcular-la-máscara-de-subred"><a class="header" href="#13-cómo-calcular-la-máscara-de-subred">1.3 Cómo Calcular la Máscara de Subred</a></h3>
-<p>La máscara de subred se calcula tomando los primeros <strong>X</strong> bits del prefijo y poniéndolos en <code>1</code>:</p>
-<p><strong>Para /24:</strong></p>
-<pre><code>11111111.11111111.11111111.00000000 = 255.255.255.0
-</code></pre>
-<p><strong>Para /20:</strong></p>
-<pre><code>11111111.11111111.11110000.00000000 = 255.255.240.0
-</code></pre>
-<p><strong>Para /27:</strong></p>
-<pre><code>11111111.11111111.11111111.11100000 = 255.255.255.224
-</code></pre>
-<h4 id="tabla-de-referencia-rápida"><a class="header" href="#tabla-de-referencia-rápida">Tabla de referencia rápida:</a></h4>
+<h3 id="la-notación-nnhh"><a class="header" href="#la-notación-nnhh">La notación N/n/H/h</a></h3>
+<p>Se usa para “ver” la división de un vistazo:</p>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>CIDR</th><th style="text-align: center">Bits de red</th><th style="text-align: center">Bits de host</th><th style="text-align: center">Hosts utilizables</th><th>Máscara Decimal</th><th>Binario del Cuarto Octeto</th></tr>
+<tr><th>Símbolo</th><th>Significado</th></tr>
 </thead>
 <tbody>
-<tr><td>/24</td><td style="text-align: center">24</td><td style="text-align: center">8</td><td style="text-align: center">254</td><td>255.255.255.0</td><td><code>00000000</code></td></tr>
-<tr><td>/25</td><td style="text-align: center">25</td><td style="text-align: center">7</td><td style="text-align: center">126</td><td>255.255.255.128</td><td><code>10000000</code></td></tr>
-<tr><td>/26</td><td style="text-align: center">26</td><td style="text-align: center">6</td><td style="text-align: center">62</td><td>255.255.255.192</td><td><code>11000000</code></td></tr>
-<tr><td>/27</td><td style="text-align: center">27</td><td style="text-align: center">5</td><td style="text-align: center">30</td><td>255.255.255.224</td><td><code>11100000</code></td></tr>
-<tr><td>/28</td><td style="text-align: center">28</td><td style="text-align: center">4</td><td style="text-align: center">14</td><td>255.255.255.240</td><td><code>11110000</code></td></tr>
-<tr><td>/29</td><td style="text-align: center">29</td><td style="text-align: center">3</td><td style="text-align: center">6</td><td>255.255.255.248</td><td><code>11111000</code></td></tr>
-<tr><td>/30</td><td style="text-align: center">30</td><td style="text-align: center">2</td><td style="text-align: center">2</td><td>255.255.255.252</td><td><code>11111100</code></td></tr>
+<tr><td><code>N</code></td><td>Un octeto COMPLETO de red (8 bits)</td></tr>
+<tr><td><code>n</code></td><td>Un bit individual de red</td></tr>
+<tr><td><code>H</code></td><td>Un octeto COMPLETO de host (8 bits)</td></tr>
+<tr><td><code>h</code></td><td>Un bit individual de host</td></tr>
 </tbody>
 </table>
 </div>
-<hr>
-<h3 id="14-cómo-calcular-la-dirección-de-red"><a class="header" href="#14-cómo-calcular-la-dirección-de-red">1.4 Cómo Calcular la Dirección de Red</a></h3>
-<p>La dirección de red se obtiene aplicando una operación <strong>AND</strong> bit a bit entre la dirección IP y la máscara de subred. En la práctica, todos los bits de la porción de host se ponen a <code>0</code>.</p>
-<p><strong>Ejemplo con 192.168.10.10/24:</strong></p>
-<pre><code>IP:       192.168.10.10
-Máscara:  255.255.255.0
--------------------------
-Red:      192.168.10.0
+<p>Los puntos separan octetos reales; dentro de un octeto que mezcla red y host, los <code>n</code> y <code>h</code> se escriben juntos, sin punto.</p>
+<pre><code>/24  →  N.N.N.H         (los 3 primeros octetos son red, el último es host)
+/26  →  N.N.N.nnhhhhhh  (2 bits de red + 6 de host en el 4º octeto)
+/23  →  N.N.nnnnnnnh.H  (7 bits de red + 1 de host en el 3er octeto, y el 4º completo de host)
 </code></pre>
-<h3 id="15-cómo-calcular-la-dirección-de-broadcast"><a class="header" href="#15-cómo-calcular-la-dirección-de-broadcast">1.5 Cómo Calcular la Dirección de Broadcast</a></h3>
-<p>La dirección de broadcast se obtiene poniendo <strong>todos los bits de host en <code>1</code></strong>. Es la última dirección de cada subred.</p>
-<p><strong>Ejemplo con 192.168.10.10/24:</strong></p>
-<pre><code>Red:      192.168.10.0   (bits de host = 00000000)
-Broadcast: 192.168.10.255 (bits de host = 11111110 → 255)
+<h3 id="ejemplo-guiado-completo-20916520214027"><a class="header" href="#ejemplo-guiado-completo-20916520214027">Ejemplo guiado, completo: 209.165.202.140/27</a></h3>
+<p><strong>Paso 1 — Prefijo.</strong> <code>/27</code> → 27 bits de red, h = 32 − 27 = <strong>5 bits de host</strong>.</p>
+<p><strong>Paso 2 — Notación.</strong> 27 = 3 octetos completos (24) + 3 bits en el cuarto octeto. El cuarto octeto queda de 3 bits de red + 5 de host:</p>
+<pre><code>N.N.N.nnnhhhhh
 </code></pre>
-<h3 id="16-rango-de-hosts-utilizables"><a class="header" href="#16-rango-de-hosts-utilizables">1.6 Rango de Hosts Utilizables</a></h3>
-<p>El rango de hosts utilizables va desde la <strong>primera IP después de la red</strong> hasta la <strong>última IP antes del broadcast</strong>:</p>
-<pre><code>Rango = Red + 1  hasta  Broadcast − 1
+<p><strong>Paso 3 — Máscara.</strong> 27 unos:</p>
+<pre><code>11111111.11111111.11111111.11100000  =  255.255.255.224
+</code></pre>
+<p><strong>Paso 4 — Dirección de red.</strong> Poné los 5 bits de host en <code>0</code>. El cuarto octeto de la IP (140) en binario es <code>10001100</code>. Conservando los 3 bits de red (<code>100</code>), los 5 restantes en 0:</p>
+<pre><code>10000000 = 128   →   red = 209.165.202.128
+</code></pre>
+<p><strong>Paso 5 — Broadcast.</strong> Mismos 3 bits de red, pero ahora los 5 bits de host en <code>1</code>:</p>
+<pre><code>10011111 = 159   →   broadcast = 209.165.202.159
+</code></pre>
+<p><strong>Paso 6 — Rango.</strong> De red + 1 a broadcast − 1:</p>
+<pre><code>Primer host:    209.165.202.129
+Último host:    209.165.202.158
+Cantidad: 2⁵ − 2 = 30 hosts
 </code></pre>
 <blockquote>
-<p><strong>¿Por qué se restan 2?</strong> La dirección de red identifica a la subred y la de broadcast envía a todos los hosts. Ningún dispositivo puede usarlas.</p>
+<p><strong>Verificación rápida:</strong> 140 cae entre 129 y 158 → la IP original vive en esta subred. Si la IP no cayera en el rango, hay un error en la cuenta.</p>
 </blockquote>
-<hr>
-<h2 id="2-metodología-paso-a-paso"><a class="header" href="#2-metodología-paso-a-paso">2. Metodología Paso a Paso</a></h2>
-<h3 id="paso-1-identificar-el-prefijo"><a class="header" href="#paso-1-identificar-el-prefijo">Paso 1: Identificar el Prefijo</a></h3>
-<p>Del ejercicio, identificamos el prefijo CIDR de cada dirección.</p>
-<h3 id="paso-2-determinar-la-notación-nnhh"><a class="header" href="#paso-2-determinar-la-notación-nnhh">Paso 2: Determinar la Notación N/n/H/h</a></h3>
-<p>Contamos cuántos bits son de red (primeros X bits del prefijo) y cuántos son de host (los restantes hasta 32).</p>
-<h3 id="paso-3-calcular-la-máscara-de-subred"><a class="header" href="#paso-3-calcular-la-máscara-de-subred">Paso 3: Calcular la Máscara de Subred</a></h3>
-<p>Convertimos el prefijo a notación decimal con puntos.</p>
-<h3 id="paso-4-calcular-la-dirección-de-red"><a class="header" href="#paso-4-calcular-la-dirección-de-red">Paso 4: Calcular la Dirección de Red</a></h3>
-<p>Aplicamos la máscara a la dirección IP (todos los bits de host = 0).</p>
-<h3 id="paso-5-calcular-la-dirección-de-broadcast"><a class="header" href="#paso-5-calcular-la-dirección-de-broadcast">Paso 5: Calcular la Dirección de Broadcast</a></h3>
-<p>Ponemos todos los bits de host en 1.</p>
-<h3 id="paso-6-determinar-el-rango-de-hosts-utilizables"><a class="header" href="#paso-6-determinar-el-rango-de-hosts-utilizables">Paso 6: Determinar el Rango de Hosts Utilizables</a></h3>
-<p>Desde <code>Red + 1</code> hasta <code>Broadcast − 1</code>.</p>
-<hr>
-<h2 id="3-resolución-del-ejercicio"><a class="header" href="#3-resolución-del-ejercicio">3. Resolución del Ejercicio</a></h2>
-<h3 id="ejercicio-analiza-la-siguiente-tabla"><a class="header" href="#ejercicio-analiza-la-siguiente-tabla">Ejercicio: Analiza la siguiente tabla</a></h3>
+<h2 id="4-el-atajo-de-los-profesionales-la-regla-del-bloque"><a class="header" href="#4-el-atajo-de-los-profesionales-la-regla-del-bloque">4. El atajo de los profesionales: la regla del bloque</a></h2>
+<p>Para no convertir a binario en cada ejercicio, existe el atajo que usa todo el mundo:</p>
+<blockquote>
+<p><strong>Tamaño del bloque = 2^(bits de host)</strong> — el número total de direcciones de la subred. Y en el octeto donde cae el límite, las subredes saltan de a ese valor.</p>
+</blockquote>
+<p>Pero hay una segunda versión, más rápida todavía, que funciona cuando el límite está en el cuarto octeto:</p>
+<blockquote>
+<p><strong>Bloque = 256 − valor del cuarto octeto de la máscara.</strong></p>
+</blockquote>
+<p>Para <code>/28</code> (máscara <code>…240</code>): 256 − 240 = <strong>16</strong>. Para <code>/26</code> (<code>…192</code>): 256 − 192 = <strong>64</strong>. Las dos fórmulas dan lo mismo — elegí la que prefieras.</p>
+<p><strong>Cómo se usa:</strong> dividís el octeto relevante de la IP por el bloque, truncás, y multiplicás de nuevo:</p>
+<pre><code>192.168.28.45/28   →  bloque 16
+45 ÷ 16 = 2 (truncado)   →   2 × 16 = 32
+Red = 192.168.28.32      →  Broadcast = 32 + 16 − 1 = 47 → 192.168.28.47
+</code></pre>
+<p><strong>La tabla completa de bloques</strong> (memorizá la que uses seguido):</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">Prefijo</th><th style="text-align: center">Bits de host</th><th style="text-align: center">Hosts utilizables</th><th style="text-align: center">Total de direcciones (bloque)</th><th>Dónde salta</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">/24</td><td style="text-align: center">8</td><td style="text-align: center">254</td><td style="text-align: center">256</td><td>4º octeto entero</td></tr>
+<tr><td style="text-align: center">/25</td><td style="text-align: center">7</td><td style="text-align: center">126</td><td style="text-align: center">128</td><td>4º octeto, de a 128</td></tr>
+<tr><td style="text-align: center">/26</td><td style="text-align: center">6</td><td style="text-align: center">62</td><td style="text-align: center">64</td><td>4º octeto, de a 64</td></tr>
+<tr><td style="text-align: center">/27</td><td style="text-align: center">5</td><td style="text-align: center">30</td><td style="text-align: center">32</td><td>4º octeto, de a 32</td></tr>
+<tr><td style="text-align: center">/28</td><td style="text-align: center">4</td><td style="text-align: center">14</td><td style="text-align: center">16</td><td>4º octeto, de a 16</td></tr>
+<tr><td style="text-align: center">/29</td><td style="text-align: center">3</td><td style="text-align: center">6</td><td style="text-align: center">8</td><td>4º octeto, de a 8</td></tr>
+<tr><td style="text-align: center">/30</td><td style="text-align: center">2</td><td style="text-align: center">2</td><td style="text-align: center">4</td><td>4º octeto, de a 4</td></tr>
+<tr><td style="text-align: center">/23</td><td style="text-align: center">9</td><td style="text-align: center">510</td><td style="text-align: center">512</td><td>3er octeto, de a 2</td></tr>
+<tr><td style="text-align: center">/22</td><td style="text-align: center">10</td><td style="text-align: center">1.022</td><td style="text-align: center">1.024</td><td>3er octeto, de a 4</td></tr>
+<tr><td style="text-align: center">/21</td><td style="text-align: center">11</td><td style="text-align: center">2.046</td><td style="text-align: center">2.048</td><td>3er octeto, de a 8</td></tr>
+<tr><td style="text-align: center">/20</td><td style="text-align: center">12</td><td style="text-align: center">4.094</td><td style="text-align: center">4.096</td><td>3er octeto, de a 16</td></tr>
+<tr><td style="text-align: center">/19</td><td style="text-align: center">13</td><td style="text-align: center">8.190</td><td style="text-align: center">8.192</td><td>3er octeto, de a 32</td></tr>
+<tr><td style="text-align: center">/18</td><td style="text-align: center">14</td><td style="text-align: center">16.382</td><td style="text-align: center">16.384</td><td>3er octeto, de a 64</td></tr>
+</tbody>
+</table>
+</div>
+<p>Fijate el patrón: <strong>cada bit de host que perdés, duplicás el bloque</strong>. Y en los prefijos altos (de /24 para abajo), el “dónde salta” te dice en qué octeto trabajás con la división.</p>
+<h2 id="5-la-tabla-de-ejercicios"><a class="header" href="#5-la-tabla-de-ejercicios">5. La tabla de ejercicios</a></h2>
+<p>Analizá las 9 direcciones de esta tabla. Cada una te pide los mismos 6 datos:</p>
 <div class="table-wrapper">
 <table>
 <thead>
@@ -327,445 +336,100 @@ Broadcast: 192.168.10.255 (bits de host = 11111110 → 255)
 </tbody>
 </table>
 </div>
-<hr>
-<h3 id="solución-1-192168101024"><a class="header" href="#solución-1-192168101024">Solución 1: 192.168.10.10/24</a></h3>
-<p><strong>Paso 1: Prefijo /24 = 24 bits de red</strong></p>
-<p><strong>Paso 2: Notación</strong></p>
-<ul>
-<li>24 bits ÷ 8 bits por octeto = 3 octetos completos de red</li>
-<li>Notación: <code>N.N.N.H</code></li>
-</ul>
-<p><strong>Paso 3: Máscara de subred</strong></p>
-<ul>
-<li>24 bits en 1 = <code>11111111.11111111.11111111.00000000</code></li>
-<li>Decimal: <code>255.255.255.0</code></li>
-</ul>
-<p><strong>Paso 4: Dirección de red</strong></p>
-<ul>
-<li>IP: <code>192.168.10.10</code></li>
-<li>Aplicando máscara: <code>192.168.10.0</code></li>
-</ul>
-<p><strong>Paso 5: Dirección de broadcast</strong></p>
-<ul>
-<li>Bits de host: 8 → todos en <code>1</code> = <code>11111111</code> = 255</li>
-<li>Broadcast: <code>192.168.10.255</code></li>
-</ul>
-<p><strong>Paso 6: Rango de hosts utilizables</strong></p>
-<ul>
-<li>Primer host: <code>192.168.10.1</code></li>
-<li>Último host: <code>192.168.10.254</code></li>
-<li>Total de hosts: 2⁸ − 2 = <strong>254</strong></li>
-</ul>
-<p><strong>Respuesta:</strong></p>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Campo</th><th>Valor</th></tr>
-</thead>
-<tbody>
-<tr><td>Notación</td><td>N.N.N.H</td></tr>
-<tr><td>Máscara</td><td>255.255.255.0</td></tr>
-<tr><td>Red</td><td>192.168.10.0</td></tr>
-<tr><td>Broadcast</td><td>192.168.10.255</td></tr>
-<tr><td>Hosts utilizables</td><td>254</td></tr>
-<tr><td>Rango de hosts</td><td>192.168.10.1 – 192.168.10.254</td></tr>
-</tbody>
-</table>
-</div>
-<hr>
-<h3 id="solución-2-10101991723"><a class="header" href="#solución-2-10101991723">Solución 2: 10.101.99.17/23</a></h3>
-<p><strong>Paso 1: Prefijo /23 = 23 bits de red</strong></p>
-<p><strong>Paso 2: Notación</strong></p>
-<ul>
-<li>23 bits = 2 octetos completos (16 bits) + 7 bits del tercer octeto</li>
-<li>Tercer octeto: 7 bits de red + 1 bit de host → <code>nnnnnnnh</code></li>
-<li>Notación: <code>N.N.nnnnnnnh.H</code></li>
-</ul>
-<p><strong>Paso 3: Máscara de subred</strong></p>
-<ul>
-<li>23 bits en 1 = <code>11111111.11111111.11111110.00000000</code></li>
-<li>Decimal: <code>255.255.254.0</code></li>
-</ul>
-<p><strong>Paso 4: Dirección de red</strong></p>
-<ul>
-<li>IP: <code>10.101.99.17</code></li>
-<li>Tercer octeto en binario: <code>01100011</code> (99)</li>
-<li>Conservando los 7 bits de red: <code>0110001_</code> → <code>01100010</code> = 98</li>
-<li>Cuarto octeto: todos los bits de host → <code>00000000</code> = 0</li>
-<li>Dirección de red: <code>10.101.98.0</code></li>
-</ul>
-<p><strong>Paso 5: Dirección de broadcast</strong></p>
-<ul>
-<li>Bits de host: 9 (1 bit en 3er octeto + 8 en 4to)</li>
-<li>Tercer octeto: <code>01100011</code> → <code>0110001_</code> → <code>01100011</code> = 99</li>
-<li>Cuarto octeto: todos en <code>1</code> = <code>11111111</code> = 255</li>
-<li>Broadcast: <code>10.101.99.255</code></li>
-</ul>
-<p><strong>Paso 6: Rango de hosts utilizables</strong></p>
-<ul>
-<li>Primer host: <code>10.101.98.1</code></li>
-<li>Último host: <code>10.101.99.254</code></li>
-<li>Total de hosts: 2⁹ − 2 = <strong>510</strong></li>
-</ul>
-<p><strong>Respuesta:</strong></p>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Campo</th><th>Valor</th></tr>
-</thead>
-<tbody>
-<tr><td>Notación</td><td>N.N.nnnnnnnh.H</td></tr>
-<tr><td>Máscara</td><td>255.255.254.0</td></tr>
-<tr><td>Red</td><td>10.101.98.0</td></tr>
-<tr><td>Broadcast</td><td>10.101.99.255</td></tr>
-<tr><td>Hosts utilizables</td><td>510</td></tr>
-<tr><td>Rango de hosts</td><td>10.101.98.1 – 10.101.99.254</td></tr>
-</tbody>
-</table>
-</div>
-<hr>
-<h3 id="solución-3-20916520022727"><a class="header" href="#solución-3-20916520022727">Solución 3: 209.165.200.227/27</a></h3>
-<p><strong>Paso 1: Prefijo /27 = 27 bits de red</strong></p>
-<p><strong>Paso 2: Notación</strong></p>
-<ul>
-<li>27 bits = 3 octetos completos (24 bits) + 3 bits del cuarto octeto</li>
-<li>Cuarto octeto: 3 bits de red + 5 bits de host → <code>nnnhhhhh</code></li>
-<li>Notación: <code>N.N.N.nnnhhhhh</code></li>
-</ul>
-<p><strong>Paso 3: Máscara de subred</strong></p>
-<ul>
-<li>27 bits en 1 = <code>11111111.11111111.11111111.11100000</code></li>
-<li>Decimal: <code>255.255.255.224</code></li>
-</ul>
-<p><strong>Paso 4: Dirección de red</strong></p>
-<ul>
-<li>IP: <code>209.165.200.227</code></li>
-<li>Cuarto octeto en binario: <code>11100011</code> (227)</li>
-<li>Conservando los 3 bits de red: <code>111_____</code> → <code>11100000</code> = 224</li>
-<li>Dirección de red: <code>209.165.200.224</code></li>
-</ul>
-<p><strong>Paso 5: Dirección de broadcast</strong></p>
-<ul>
-<li>Cuarto octeto: <code>111_____</code> → <code>11111111</code> = 255</li>
-<li>Broadcast: <code>209.165.200.255</code></li>
-</ul>
-<p><strong>Paso 6: Rango de hosts utilizables</strong></p>
-<ul>
-<li>Primer host: <code>209.165.200.225</code></li>
-<li>Último host: <code>209.165.200.254</code></li>
-<li>Total de hosts: 2⁵ − 2 = <strong>30</strong></li>
-</ul>
-<p><strong>Respuesta:</strong></p>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Campo</th><th>Valor</th></tr>
-</thead>
-<tbody>
-<tr><td>Notación</td><td>N.N.N.nnnhhhhh</td></tr>
-<tr><td>Máscara</td><td>255.255.255.224</td></tr>
-<tr><td>Red</td><td>209.165.200.224</td></tr>
-<tr><td>Broadcast</td><td>209.165.200.255</td></tr>
-<tr><td>Hosts utilizables</td><td>30</td></tr>
-<tr><td>Rango de hosts</td><td>209.165.200.225 – 209.165.200.254</td></tr>
-</tbody>
-</table>
-</div>
-<hr>
-<h3 id="solución-4-172314525224"><a class="header" href="#solución-4-172314525224">Solución 4: 172.31.45.252/24</a></h3>
-<p><strong>Paso 1: Prefijo /24 = 24 bits de red</strong></p>
-<p><strong>Paso 2: Notación</strong></p>
-<ul>
-<li>24 bits = 3 octetos completos de red</li>
-<li>Notación: <code>N.N.N.H</code></li>
-</ul>
-<p><strong>Paso 3: Máscara de subred</strong></p>
-<ul>
-<li><code>255.255.255.0</code></li>
-</ul>
-<p><strong>Paso 4: Dirección de red</strong></p>
-<ul>
-<li>IP: <code>172.31.45.252</code></li>
-<li>Aplicando máscara: <code>172.31.45.0</code></li>
-</ul>
-<p><strong>Paso 5: Dirección de broadcast</strong></p>
-<ul>
-<li>Cuarto octeto: todos en <code>1</code> = 255</li>
-<li>Broadcast: <code>172.31.45.255</code></li>
-</ul>
-<p><strong>Paso 6: Rango de hosts utilizables</strong></p>
-<ul>
-<li>Primer host: <code>172.31.45.1</code></li>
-<li>Último host: <code>172.31.45.254</code></li>
-<li>Total de hosts: 2⁸ − 2 = <strong>254</strong></li>
-</ul>
-<p><strong>Respuesta:</strong></p>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Campo</th><th>Valor</th></tr>
-</thead>
-<tbody>
-<tr><td>Notación</td><td>N.N.N.H</td></tr>
-<tr><td>Máscara</td><td>255.255.255.0</td></tr>
-<tr><td>Red</td><td>172.31.45.0</td></tr>
-<tr><td>Broadcast</td><td>172.31.45.255</td></tr>
-<tr><td>Hosts utilizables</td><td>254</td></tr>
-<tr><td>Rango de hosts</td><td>172.31.45.1 – 172.31.45.254</td></tr>
-</tbody>
-</table>
-</div>
-<hr>
-<h3 id="solución-5-101820026"><a class="header" href="#solución-5-101820026">Solución 5: 10.1.8.200/26</a></h3>
-<p><strong>Paso 1: Prefijo /26 = 26 bits de red</strong></p>
-<p><strong>Paso 2: Notación</strong></p>
-<ul>
-<li>26 bits = 3 octetos completos (24 bits) + 2 bits del cuarto octeto</li>
-<li>Cuarto octeto: 2 bits de red + 6 bits de host → <code>nnhhhhhh</code></li>
-<li>Notación: <code>N.N.N.nnhhhhhh</code></li>
-</ul>
-<p><strong>Paso 3: Máscara de subred</strong></p>
-<ul>
-<li>26 bits en 1 = <code>11111111.11111111.11111111.11000000</code></li>
-<li>Decimal: <code>255.255.255.192</code></li>
-</ul>
-<p><strong>Paso 4: Dirección de red</strong></p>
-<ul>
-<li>IP: <code>10.1.8.200</code></li>
-<li>Cuarto octeto en binario: <code>11001000</code> (200)</li>
-<li>Conservando los 2 bits de red: <code>11______</code> → <code>11000000</code> = 192</li>
-<li>Dirección de red: <code>10.1.8.192</code></li>
-</ul>
-<p><strong>Paso 5: Dirección de broadcast</strong></p>
-<ul>
-<li>Cuarto octeto: <code>11______</code> → <code>11111111</code> = 255</li>
-<li>Broadcast: <code>10.1.8.255</code></li>
-</ul>
-<p><strong>Paso 6: Rango de hosts utilizables</strong></p>
-<ul>
-<li>Primer host: <code>10.1.8.193</code></li>
-<li>Último host: <code>10.1.8.254</code></li>
-<li>Total de hosts: 2⁶ − 2 = <strong>62</strong></li>
-</ul>
-<p><strong>Respuesta:</strong></p>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Campo</th><th>Valor</th></tr>
-</thead>
-<tbody>
-<tr><td>Notación</td><td>N.N.N.nnhhhhhh</td></tr>
-<tr><td>Máscara</td><td>255.255.255.192</td></tr>
-<tr><td>Red</td><td>10.1.8.192</td></tr>
-<tr><td>Broadcast</td><td>10.1.8.255</td></tr>
-<tr><td>Hosts utilizables</td><td>62</td></tr>
-<tr><td>Rango de hosts</td><td>10.1.8.193 – 10.1.8.254</td></tr>
-</tbody>
-</table>
-</div>
-<hr>
-<h3 id="solución-6-172161177720"><a class="header" href="#solución-6-172161177720">Solución 6: 172.16.117.77/20</a></h3>
-<p><strong>Paso 1: Prefijo /20 = 20 bits de red</strong></p>
-<p><strong>Paso 2: Notación</strong></p>
-<ul>
-<li>20 bits = 2 octetos completos (16 bits) + 4 bits del tercer octeto</li>
-<li>Tercer octeto: 4 bits de red + 4 bits de host → <code>nnnnhhhh</code></li>
-<li>Cuarto octeto: completo de host → <code>H</code></li>
-<li>Notación: <code>N.N.nnnnhhhh.H</code></li>
-</ul>
-<p><strong>Paso 3: Máscara de subred</strong></p>
-<ul>
-<li>20 bits en 1 = <code>11111111.11111111.11110000.00000000</code></li>
-<li>Decimal: <code>255.255.240.0</code></li>
-</ul>
-<p><strong>Paso 4: Dirección de red</strong></p>
-<ul>
-<li>IP: <code>172.16.117.77</code></li>
-<li>Tercer octeto en binario: <code>01110101</code> (117)</li>
-<li>Conservando los 4 bits de red: <code>0111____</code> → <code>01110000</code> = 112</li>
-<li>Cuarto octeto: todos los bits de host → <code>00000000</code> = 0</li>
-<li>Dirección de red: <code>172.16.112.0</code></li>
-</ul>
+<p><strong>Hacelo vos primero con 1, 4 y 5</strong> (todos caen en el cuarto octeto: son los más fáciles). Después mirá las soluciones y recién ahí encará los que cruzan el tercer octeto.</p>
+<h2 id="6-soluciones-paso-a-paso"><a class="header" href="#6-soluciones-paso-a-paso">6. Soluciones paso a paso</a></h2>
 <blockquote>
-<p><strong>Verificación rápida:</strong> El tamaño de bloque para /20 en el tercer octeto es 2⁴ = 16. Los múltiplos de 16 más cercanos: …96, 112, 128… → 112 es el que contiene al 117. ✅</p>
+<p><strong>Regla de oro de la verificación:</strong> en cada respuesta, la IP original TIENE que estar entre el primer y el último host. Si no está, hay un error.</p>
 </blockquote>
-<p><strong>Paso 5: Dirección de broadcast</strong></p>
-<ul>
-<li>Tercer octeto: <code>0111____</code> → <code>01111111</code> = 127</li>
-<li>Cuarto octeto: todos en <code>1</code> = 255</li>
-<li>Broadcast: <code>172.16.127.255</code></li>
-</ul>
-<p><strong>Paso 6: Rango de hosts utilizables</strong></p>
-<ul>
-<li>Primer host: <code>172.16.112.1</code></li>
-<li>Último host: <code>172.16.127.254</code></li>
-<li>Total de hosts: 2¹² − 2 = <strong>4094</strong></li>
-</ul>
-<p><strong>Respuesta:</strong></p>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Campo</th><th>Valor</th></tr>
-</thead>
-<tbody>
-<tr><td>Notación</td><td>N.N.nnnnhhhh.H</td></tr>
-<tr><td>Máscara</td><td>255.255.240.0</td></tr>
-<tr><td>Red</td><td>172.16.112.0</td></tr>
-<tr><td>Broadcast</td><td>172.16.127.255</td></tr>
-<tr><td>Hosts utilizables</td><td>4094</td></tr>
-<tr><td>Rango de hosts</td><td>172.16.112.1 – 172.16.127.254</td></tr>
-</tbody>
-</table>
-</div>
-<hr>
+<h3 id="solución-1-192168101024"><a class="header" href="#solución-1-192168101024">Solución 1: 192.168.10.10/24</a></h3>
+<p><strong>Paso 1:</strong> <code>/24</code> → 24 bits de red, 8 de host.
+<strong>Paso 2:</strong> 24 = 3 octetos completos → <strong>N.N.N.H</strong>.
+<strong>Paso 3:</strong> 24 unos = <code>255.255.255.0</code>.
+<strong>Paso 4:</strong> bits de host en 0 → <strong>red <code>192.168.10.0</code></strong>.
+<strong>Paso 5:</strong> los 8 bits de host en 1 → <code>11111111</code> = <strong>255</strong> → broadcast <code>192.168.10.255</code>.
+<strong>Paso 6:</strong> primer host <code>.1</code>, último <code>.254</code>, cantidad 2⁸ − 2 = <strong>254</strong>.</p>
+<pre><code>Red: 192.168.10.0   Broadcast: 192.168.10.255   Hosts: 192.168.10.1 – 192.168.10.254 (254)
+</code></pre>
+<h3 id="solución-2-10101991723"><a class="header" href="#solución-2-10101991723">Solución 2: 10.101.99.17/23</a></h3>
+<p><strong>Paso 1:</strong> <code>/23</code> → 23 bits de red, 9 de host.
+<strong>Paso 2:</strong> 23 = 2 octetos completos (16) + 7 bits en el tercero → tercer octeto con 7 bits de red + 1 de host → <strong>N.N.nnnnnnnh.H</strong>.
+<strong>Paso 3:</strong> 23 unos = <code>11111111.11111111.11111110.00000000</code> = <strong>255.255.254.0</strong>.
+<strong>Paso 4:</strong> el tercer octeto de la IP es 99 = <code>01100011</code>. Conservá los 7 bits de red (<code>0110001</code>), el último bit en 0: <code>01100010</code> = 98. Cuarto octeto en 0 → <strong>red <code>10.101.98.0</code></strong>.
+<strong>Paso 5:</strong> mismo cálculo pero el bit de host del tercer octeto en 1: <code>01100011</code> = 99; cuarto octeto todo en 1 = 255 → <strong>broadcast <code>10.101.99.255</code></strong>.
+<strong>Paso 6:</strong> 2⁹ − 2 = <strong>510</strong> → primer host <code>10.101.98.1</code>, último <code>10.101.99.254</code>.</p>
+<pre><code>Red: 10.101.98.0   Broadcast: 10.101.99.255   Hosts: 10.101.98.1 – 10.101.99.254 (510)
+</code></pre>
+<p><strong>Atajo:</strong> bloque = 512 (2⁹) → 3er octeto salta de a 2 → 99 ÷ 2 = 49 (truncado) → 49 × 2 = 98 ✓.</p>
+<h3 id="solución-3-20916520022727"><a class="header" href="#solución-3-20916520022727">Solución 3: 209.165.200.227/27</a></h3>
+<p><strong>Paso 1:</strong> <code>/27</code> → 27 bits de red, 5 de host.
+<strong>Paso 2:</strong> 27 = 24 + 3 → cuarto octeto con 3 bits de red + 5 de host → <strong>N.N.N.nnnhhhhh</strong>.
+<strong>Paso 3:</strong> 27 unos = <code>11111111.11111111.11111111.11100000</code> = <strong>255.255.255.224</strong>.
+<strong>Paso 4:</strong> cuarto octeto 227 = <code>11100011</code>; 3 bits de red (<code>111</code>), los 5 de host en 0 → <code>11100000</code> = 224 → <strong>red <code>209.165.200.224</code></strong>.
+<strong>Paso 5:</strong> los 5 de host en 1 → <code>11111111</code> = 255 → <strong>broadcast <code>209.165.200.255</code></strong>.
+<strong>Paso 6:</strong> 2⁵ − 2 = <strong>30</strong> → <code>209.165.200.225</code> a <code>209.165.200.254</code>.</p>
+<pre><code>Red: 209.165.200.224   Broadcast: 209.165.200.255   Hosts: 209.165.200.225 – 209.165.200.254 (30)
+</code></pre>
+<h3 id="solución-4-172314525224"><a class="header" href="#solución-4-172314525224">Solución 4: 172.31.45.252/24</a></h3>
+<p><strong>Paso 1:</strong> <code>/24</code> → 24 bits de red, 8 de host.
+<strong>Paso 2:</strong> <strong>N.N.N.H</strong>.
+<strong>Paso 3:</strong> <code>255.255.255.0</code>.
+<strong>Paso 4:</strong> → <strong>red <code>172.31.45.0</code></strong>.
+<strong>Paso 5:</strong> → <strong>broadcast <code>172.31.45.255</code></strong>.
+<strong>Paso 6:</strong> 2⁸ − 2 = <strong>254</strong> → <code>.45.1</code> a <code>.45.254</code>.</p>
+<pre><code>Red: 172.31.45.0   Broadcast: 172.31.45.255   Hosts: 172.31.45.1 – 172.31.45.254 (254)
+</code></pre>
+<h3 id="solución-5-101820026"><a class="header" href="#solución-5-101820026">Solución 5: 10.1.8.200/26</a></h3>
+<p><strong>Paso 1:</strong> <code>/26</code> → 26 bits de red, 6 de host.
+<strong>Paso 2:</strong> 26 = 24 + 2 → <strong>N.N.N.nnhhhhhh</strong>.
+<strong>Paso 3:</strong> <code>11111111.11111111.11111111.11000000</code> = <strong>255.255.255.192</strong>.
+<strong>Paso 4:</strong> cuarto octeto 200 = <code>11001000</code>; 2 bits de red (<code>11</code>), host en 0 → <code>11000000</code> = 192 → <strong>red <code>10.1.8.192</code></strong>.
+<strong>Paso 5:</strong> host en 1 → <code>11111111</code> = 255 → <strong>broadcast <code>10.1.8.255</code></strong>.
+<strong>Paso 6:</strong> 2⁶ − 2 = <strong>62</strong> → <code>10.1.8.193</code> a <code>10.1.8.254</code>.</p>
+<pre><code>Red: 10.1.8.192   Broadcast: 10.1.8.255   Hosts: 10.1.8.193 – 10.1.8.254 (62)
+</code></pre>
+<h3 id="solución-6-172161177720"><a class="header" href="#solución-6-172161177720">Solución 6: 172.16.117.77/20</a></h3>
+<p><strong>Paso 1:</strong> <code>/20</code> → 20 bits de red, 12 de host.
+<strong>Paso 2:</strong> 20 = 16 + 4 → tercer octeto con 4 bits de red + 4 de host, cuarto completo de host → <strong>N.N.nnnnhhhh.H</strong>.
+<strong>Paso 3:</strong> <code>11111111.11111111.11110000.00000000</code> = <strong>255.255.240.0</strong>.
+<strong>Paso 4:</strong> tercer octeto 117 = <code>01110101</code>; 4 bits de red (<code>0111</code>), host en 0 → <code>01110000</code> = 112; cuarto octeto en 0 → <strong>red <code>172.16.112.0</code></strong>.
+<strong>Paso 5:</strong> tercero con host en 1 → <code>01111111</code> = 127; cuarto todo en 1 → <strong>broadcast <code>172.16.127.255</code></strong>.
+<strong>Paso 6:</strong> 2¹² − 2 = <strong>4094</strong> → <code>172.16.112.1</code> a <code>172.16.127.254</code>.</p>
+<pre><code>Red: 172.16.112.0   Broadcast: 172.16.127.255   Hosts: 172.16.112.1 – 172.16.127.254 (4094)
+</code></pre>
+<p><strong>Verificación con el atajo:</strong> bloque = 2¹² = 4096; en el 3er octeto salta de a 16 → 117 ÷ 16 = 7 → 112 ✓.</p>
 <h3 id="solución-7-101110125"><a class="header" href="#solución-7-101110125">Solución 7: 10.1.1.101/25</a></h3>
-<p><strong>Paso 1: Prefijo /25 = 25 bits de red</strong></p>
-<p><strong>Paso 2: Notación</strong></p>
-<ul>
-<li>25 bits = 3 octetos completos (24 bits) + 1 bit del cuarto octeto</li>
-<li>Cuarto octeto: 1 bit de red + 7 bits de host → <code>nhhhhhhh</code></li>
-<li>Notación: <code>N.N.N.nhhhhhhh</code></li>
-</ul>
-<p><strong>Paso 3: Máscara de subred</strong></p>
-<ul>
-<li>25 bits en 1 = <code>11111111.11111111.11111111.10000000</code></li>
-<li>Decimal: <code>255.255.255.128</code></li>
-</ul>
-<p><strong>Paso 4: Dirección de red</strong></p>
-<ul>
-<li>IP: <code>10.1.1.101</code></li>
-<li>Cuarto octeto en binario: <code>01100101</code> (101)</li>
-<li>Conservando el 1 bit de red: <code>0_______</code> → <code>00000000</code> = 0</li>
-<li>Dirección de red: <code>10.1.1.0</code></li>
-</ul>
-<p><strong>Paso 5: Dirección de broadcast</strong></p>
-<ul>
-<li>Cuarto octeto: <code>0_______</code> → <code>01111111</code> = 127</li>
-<li>Broadcast: <code>10.1.1.127</code></li>
-</ul>
-<p><strong>Paso 6: Rango de hosts utilizables</strong></p>
-<ul>
-<li>Primer host: <code>10.1.1.1</code></li>
-<li>Último host: <code>10.1.1.126</code></li>
-<li>Total de hosts: 2⁷ − 2 = <strong>126</strong></li>
-</ul>
-<p><strong>Respuesta:</strong></p>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Campo</th><th>Valor</th></tr>
-</thead>
-<tbody>
-<tr><td>Notación</td><td>N.N.N.nhhhhhhh</td></tr>
-<tr><td>Máscara</td><td>255.255.255.128</td></tr>
-<tr><td>Red</td><td>10.1.1.0</td></tr>
-<tr><td>Broadcast</td><td>10.1.1.127</td></tr>
-<tr><td>Hosts utilizables</td><td>126</td></tr>
-<tr><td>Rango de hosts</td><td>10.1.1.1 – 10.1.1.126</td></tr>
-</tbody>
-</table>
-</div>
-<hr>
+<p><strong>Paso 1:</strong> <code>/25</code> → 25 bits de red, 7 de host.
+<strong>Paso 2:</strong> 25 = 24 + 1 → <strong>N.N.N.nhhhhhhh</strong>.
+<strong>Paso 3:</strong> <code>...10000000</code> = <strong>255.255.255.128</strong>.
+<strong>Paso 4:</strong> cuarto octeto 101 = <code>01100101</code>; 1 bit de red (<code>0</code>), host en 0 → <code>00000000</code> = 0 → <strong>red <code>10.1.1.0</code></strong>.
+<strong>Paso 5:</strong> host en 1 → <code>01111111</code> = 127 → <strong>broadcast <code>10.1.1.127</code></strong>.
+<strong>Paso 6:</strong> 2⁷ − 2 = <strong>126</strong> → <code>10.1.1.1</code> a <code>10.1.1.126</code>.</p>
+<pre><code>Red: 10.1.1.0   Broadcast: 10.1.1.127   Hosts: 10.1.1.1 – 10.1.1.126 (126)
+</code></pre>
 <h3 id="solución-8-20916520214027"><a class="header" href="#solución-8-20916520214027">Solución 8: 209.165.202.140/27</a></h3>
-<p><strong>Paso 1: Prefijo /27 = 27 bits de red</strong></p>
-<p><strong>Paso 2: Notación</strong></p>
-<ul>
-<li>27 bits = 3 octetos completos (24 bits) + 3 bits del cuarto octeto</li>
-<li>Cuarto octeto: 3 bits de red + 5 bits de host → <code>nnnhhhhh</code></li>
-<li>Notación: <code>N.N.N.nnnhhhhh</code></li>
-</ul>
-<p><strong>Paso 3: Máscara de subred</strong></p>
-<ul>
-<li><code>255.255.255.224</code></li>
-</ul>
-<p><strong>Paso 4: Dirección de red</strong></p>
-<ul>
-<li>IP: <code>209.165.202.140</code></li>
-<li>Cuarto octeto en binario: <code>10001100</code> (140)</li>
-<li>Conservando los 3 bits de red: <code>100_____</code> → <code>10000000</code> = 128</li>
-<li>Dirección de red: <code>209.165.202.128</code></li>
-</ul>
-<p><strong>Paso 5: Dirección de broadcast</strong></p>
-<ul>
-<li>Cuarto octeto: <code>100_____</code> → <code>10011111</code> = 159</li>
-<li>Broadcast: <code>209.165.202.159</code></li>
-</ul>
-<p><strong>Paso 6: Rango de hosts utilizables</strong></p>
-<ul>
-<li>Primer host: <code>209.165.202.129</code></li>
-<li>Último host: <code>209.165.202.158</code></li>
-<li>Total de hosts: 2⁵ − 2 = <strong>30</strong></li>
-</ul>
-<p><strong>Respuesta:</strong></p>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Campo</th><th>Valor</th></tr>
-</thead>
-<tbody>
-<tr><td>Notación</td><td>N.N.N.nnnhhhhh</td></tr>
-<tr><td>Máscara</td><td>255.255.255.224</td></tr>
-<tr><td>Red</td><td>209.165.202.128</td></tr>
-<tr><td>Broadcast</td><td>209.165.202.159</td></tr>
-<tr><td>Hosts utilizables</td><td>30</td></tr>
-<tr><td>Rango de hosts</td><td>209.165.202.129 – 209.165.202.158</td></tr>
-</tbody>
-</table>
-</div>
-<hr>
+<p><strong>Paso 1:</strong> <code>/27</code> → 27 bits de red, 5 de host.
+<strong>Paso 2:</strong> <strong>N.N.N.nnnhhhhh</strong>.
+<strong>Paso 3:</strong> <strong>255.255.255.224</strong>.
+<strong>Paso 4:</strong> cuarto octeto 140 = <code>10001100</code>; 3 bits de red (<code>100</code>), host en 0 → <code>10000000</code> = 128 → <strong>red <code>209.165.202.128</code></strong>.
+<strong>Paso 5:</strong> host en 1 → <code>10011111</code> = 159 → <strong>broadcast <code>209.165.202.159</code></strong>.
+<strong>Paso 6:</strong> 2⁵ − 2 = <strong>30</strong> → <code>209.165.202.129</code> a <code>209.165.202.158</code>.</p>
+<pre><code>Red: 209.165.202.128   Broadcast: 209.165.202.159   Hosts: 209.165.202.129 – 209.165.202.158 (30)
+</code></pre>
 <h3 id="solución-9-192168284528"><a class="header" href="#solución-9-192168284528">Solución 9: 192.168.28.45/28</a></h3>
-<p><strong>Paso 1: Prefijo /28 = 28 bits de red</strong></p>
-<p><strong>Paso 2: Notación</strong></p>
-<ul>
-<li>28 bits = 3 octetos completos (24 bits) + 4 bits del cuarto octeto</li>
-<li>Cuarto octeto: 4 bits de red + 4 bits de host → <code>nnnnhhhh</code></li>
-<li>Notación: <code>N.N.N.nnnnhhhh</code></li>
-</ul>
-<p><strong>Paso 3: Máscara de subred</strong></p>
-<ul>
-<li>28 bits en 1 = <code>11111111.11111111.11111111.11110000</code></li>
-<li>Decimal: <code>255.255.255.240</code></li>
-</ul>
-<p><strong>Paso 4: Dirección de red</strong></p>
-<ul>
-<li>IP: <code>192.168.28.45</code></li>
-<li>Cuarto octeto en binario: <code>00101101</code> (45)</li>
-<li>Conservando los 4 bits de red: <code>0010____</code> → <code>00100000</code> = 32</li>
-<li>Dirección de red: <code>192.168.28.32</code></li>
-</ul>
-<p><strong>Paso 5: Dirección de broadcast</strong></p>
-<ul>
-<li>Cuarto octeto: <code>0010____</code> → <code>00101111</code> = 47</li>
-<li>Broadcast: <code>192.168.28.47</code></li>
-</ul>
-<p><strong>Paso 6: Rango de hosts utilizables</strong></p>
-<ul>
-<li>Primer host: <code>192.168.28.33</code></li>
-<li>Último host: <code>192.168.28.46</code></li>
-<li>Total de hosts: 2⁴ − 2 = <strong>14</strong></li>
-</ul>
-<p><strong>Respuesta:</strong></p>
+<p><strong>Paso 1:</strong> <code>/28</code> → 28 bits de red, 4 de host.
+<strong>Paso 2:</strong> 28 = 24 + 4 → <strong>N.N.N.nnnnhhhh</strong>.
+<strong>Paso 3:</strong> <code>...11110000</code> = <strong>255.255.255.240</strong>.
+<strong>Paso 4:</strong> cuarto octeto 45 = <code>00101101</code>; 4 bits de red (<code>0010</code>), host en 0 → <code>00100000</code> = 32 → <strong>red <code>192.168.28.32</code></strong>.
+<strong>Paso 5:</strong> host en 1 → <code>00101111</code> = 47 → <strong>broadcast <code>192.168.28.47</code></strong>.
+<strong>Paso 6:</strong> 2⁴ − 2 = <strong>14</strong> → <code>192.168.28.33</code> a <code>192.168.28.46</code>.</p>
+<pre><code>Red: 192.168.28.32   Broadcast: 192.168.28.47   Hosts: 192.168.28.33 – 192.168.28.46 (14)
+</code></pre>
+<p><strong>Verificación con el atajo:</strong> bloque = 16 → 45 ÷ 16 = 2 → 32 ✓; broadcast = 32 + 16 − 1 = 47 ✓.</p>
+<h2 id="7-tabla-consolidada"><a class="header" href="#7-tabla-consolidada">7. Tabla consolidada</a></h2>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>Campo</th><th>Valor</th></tr>
-</thead>
-<tbody>
-<tr><td>Notación</td><td>N.N.N.nnnnhhhh</td></tr>
-<tr><td>Máscara</td><td>255.255.255.240</td></tr>
-<tr><td>Red</td><td>192.168.28.32</td></tr>
-<tr><td>Broadcast</td><td>192.168.28.47</td></tr>
-<tr><td>Hosts utilizables</td><td>14</td></tr>
-<tr><td>Rango de hosts</td><td>192.168.28.33 – 192.168.28.46</td></tr>
-</tbody>
-</table>
-</div>
-<hr>
-<h2 id="4-tabla-completa-resuelta"><a class="header" href="#4-tabla-completa-resuelta">4. Tabla Completa Resuelta</a></h2>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Dirección IP/Prefijo</th><th>Notación</th><th>Máscara de Subred</th><th>Dirección de Red</th><th>Broadcast</th><th style="text-align: center">Hosts Utilizables</th><th>Rango de Hosts</th></tr>
+<tr><th>Dirección IP/Prefijo</th><th>Notación</th><th>Máscara</th><th>Red</th><th>Broadcast</th><th style="text-align: center">Hosts</th><th>Rango de Hosts</th></tr>
 </thead>
 <tbody>
 <tr><td>192.168.10.10/24</td><td>N.N.N.H</td><td>255.255.255.0</td><td>192.168.10.0</td><td>192.168.10.255</td><td style="text-align: center">254</td><td>192.168.10.1 – 192.168.10.254</td></tr>
@@ -780,183 +444,99 @@ Broadcast: 192.168.10.255 (bits de host = 11111110 → 255)
 </tbody>
 </table>
 </div>
-<hr>
-<h2 id="5-tips-y-trucos"><a class="header" href="#5-tips-y-trucos">5. Tips y Trucos</a></h2>
-<h3 id="51-cálculo-mental-rápido"><a class="header" href="#51-cálculo-mental-rápido">5.1 Cálculo Mental Rápido</a></h3>
-<p><strong>Para determinar la dirección de red:</strong></p>
-<ol>
-<li>Calcula el <strong>tamaño de bloque</strong>: 2^(32 − prefijo)</li>
-<li>Divide el octeto relevante de la IP por el tamaño de bloque (ignorando decimales)</li>
-<li>Multiplica el resultado por el tamaño de bloque</li>
-</ol>
-<blockquote>
-<p><strong>Atajo:</strong> El tamaño de bloque te dice cuántas direcciones hay por subred, y también cuál es el incremento entre cada red consecutiva.</p>
-</blockquote>
-<p><strong>Ejemplo con /28 (tamaño de bloque = 16):</strong></p>
-<ul>
-<li>IP: <code>192.168.28.45</code></li>
-<li>45 ÷ 16 = 2 (ignorando decimales)</li>
-<li>2 × 16 = <strong>32</strong></li>
-<li>Dirección de red: <code>192.168.28.32</code> ✅</li>
-<li>Broadcast: 32 + 16 − 1 = <strong>47</strong> → <code>192.168.28.47</code> ✅</li>
-</ul>
-<p><strong>Ejemplo con /20 (tamaño de bloque en el 3er octeto = 16):</strong></p>
-<ul>
-<li>IP: <code>172.16.117.77</code></li>
-<li>117 ÷ 16 = 7 (ignorando decimales)</li>
-<li>7 × 16 = <strong>112</strong></li>
-<li>Dirección de red: <code>172.16.112.0</code> ✅</li>
-<li>Broadcast: 112 + 16 − 1 = <strong>127</strong> → <code>172.16.127.255</code> ✅</li>
-</ul>
-<p><strong>Tabla de tamaños de bloque por prefijo:</strong></p>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th style="text-align: center">Prefijo</th><th style="text-align: center">Bits de host</th><th style="text-align: center">Hosts utilizables</th><th style="text-align: center">Tamaño de bloque</th></tr>
-</thead>
-<tbody>
-<tr><td style="text-align: center">/24</td><td style="text-align: center">8</td><td style="text-align: center">254</td><td style="text-align: center">1</td></tr>
-<tr><td style="text-align: center">/25</td><td style="text-align: center">7</td><td style="text-align: center">126</td><td style="text-align: center">1</td></tr>
-<tr><td style="text-align: center">/26</td><td style="text-align: center">6</td><td style="text-align: center">62</td><td style="text-align: center">2</td></tr>
-<tr><td style="text-align: center">/27</td><td style="text-align: center">5</td><td style="text-align: center">30</td><td style="text-align: center">4</td></tr>
-<tr><td style="text-align: center">/28</td><td style="text-align: center">4</td><td style="text-align: center">14</td><td style="text-align: center">16</td></tr>
-<tr><td style="text-align: center">/29</td><td style="text-align: center">3</td><td style="text-align: center">6</td><td style="text-align: center">32</td></tr>
-<tr><td style="text-align: center">/30</td><td style="text-align: center">2</td><td style="text-align: center">2</td><td style="text-align: center">64</td></tr>
-<tr><td style="text-align: center">/23</td><td style="text-align: center">9</td><td style="text-align: center">510</td><td style="text-align: center">1 (en 3er octeto, saltos de 2)</td></tr>
-<tr><td style="text-align: center">/22</td><td style="text-align: center">10</td><td style="text-align: center">1022</td><td style="text-align: center">4 (en 3er octeto, saltos de 4)</td></tr>
-<tr><td style="text-align: center">/21</td><td style="text-align: center">11</td><td style="text-align: center">2046</td><td style="text-align: center">8 (en 3er octeto, saltos de 8)</td></tr>
-<tr><td style="text-align: center">/20</td><td style="text-align: center">12</td><td style="text-align: center">4094</td><td style="text-align: center">16 (en 3er octeto, saltos de 16)</td></tr>
-<tr><td style="text-align: center">/19</td><td style="text-align: center">13</td><td style="text-align: center">8190</td><td style="text-align: center">32 (en 3er octeto, saltos de 32)</td></tr>
-</tbody>
-</table>
-</div>
-<hr>
-<h3 id="52-errores-comunes"><a class="header" href="#52-errores-comunes">5.2 Errores Comunes</a></h3>
+<h2 id="8-errores-comunes"><a class="header" href="#8-errores-comunes">8. Errores comunes</a></h2>
 <ol>
 <li>
-<p><strong>Confundir la dirección de red con la de broadcast</strong>: La dirección de red tiene todos los bits de host en <code>0</code>. La dirección de broadcast tiene todos los bits de host en <code>1</code>. Son direcciones reservadas; ningún dispositivo puede usarlas.</p>
+<p><strong>Confundir red con broadcast.</strong> Red = bits de host en <code>0</code>. Broadcast = bits de host en <code>1</code>. Son las DOS direcciones reservadas de cada subred.</p>
 </li>
 <li>
-<p><strong>Olvidar que el primer y último host no se usan</strong>: En cada subred, la primera dirección es la de red y la última es broadcast. Los hosts usan las direcciones intermedias.</p>
+<p><strong>Olvidar el −2.</strong> La primera dirección es la red y la última el broadcast: los hosts utilizables son <code>2^h − 2</code>, no <code>2^h</code>.</p>
 </li>
 <li>
-<p><strong>No convertir correctamente a binario</strong>: Siempre es útil convertir a binario para visualizar mejor la división entre red y host. Un error común es equivocarse en la conversión decimal ↔ binario.</p>
+<p><strong>Equivocarse en la conversión binaria.</strong> El error más común de todos: <code>11111110</code> NO es 255 — es <strong>254</strong>. <code>255</code> es <code>11111111</code>, ocho unos. Un “uno de más o de menos” en la máscara cambia toda la subred.</p>
 </li>
 <li>
-<p><strong>Contar mal los bits del prefijo</strong>: Asegúrate de que la cantidad de <code>1</code> en la máscara coincida exactamente con el prefijo. Por ejemplo, <code>/26</code> tiene 26 unos: <code>11111111.11111111.11111111.11000000</code>.</p>
+<p><strong>Contar mal los bits del prefijo.</strong> <code>/26</code> tiene 26 unos: <code>11111111.11111111.11111111.11000000</code>. Contá los <code>1</code> de la máscara y tienen que coincidir con el prefijo SIEMPRE.</p>
 </li>
 <li>
-<p><strong>Confundir el tamaño de bloque</strong>: El tamaño de bloque (2^(32−prefijo)) nos da el número total de direcciones en la subred, no la cantidad de hosts. Para obtener hosts utilizables: tamaño de bloque − 2.</p>
+<p><strong>Confundir bloque con hosts.</strong> El bloque (2^h) es el total de direcciones de la subred — incluye red y broadcast. Los hosts utilizables son bloque − 2.</p>
+</li>
+<li>
+<p><strong>Escribir mal la notación.</strong> En <code>/22</code>, el tercer octeto tiene 6 bits de red y 2 de host (<code>nnnnnnhh</code>), NO “8 de red” (<code>nnnnnnnn</code>). Contá los bits: 16 + 6 = 22. Si tu notación no suma el prefijo, está mal.</p>
 </li>
 </ol>
-<hr>
-<h2 id="6-ejercicios-adicionales-para-practicar"><a class="header" href="#6-ejercicios-adicionales-para-practicar">6. Ejercicios Adicionales para Practicar</a></h2>
-<h3 id="ejercicio-1"><a class="header" href="#ejercicio-1">Ejercicio 1</a></h3>
-<p>Dada la IP <code>192.168.50.100/22</code>:</p>
-<ul>
-<li>Determina la notación N/n/H/h</li>
-<li>Calcula la máscara de subred</li>
-<li>Calcula la dirección de red</li>
-<li>Calcula la dirección de broadcast</li>
-<li>Indica el rango de hosts utilizables</li>
-</ul>
+<h2 id="9-ejercicios-para-practicar-solo"><a class="header" href="#9-ejercicios-para-practicar-solo">9. Ejercicios para practicar solo</a></h2>
+<h3 id="ejercicio-1-1921685010022"><a class="header" href="#ejercicio-1-1921685010022">Ejercicio 1: 192.168.50.100/22</a></h3>
+<p>Calculá notación, máscara, red, broadcast y rango.</p>
 <details>
-<summary>💡 Verificar respuesta</summary>
+<summary>Ver respuesta</summary>
 <div class="table-wrapper">
 <table>
 <thead>
 <tr><th>Campo</th><th>Valor</th></tr>
 </thead>
 <tbody>
-<tr><td>Notación</td><td>N.N.nnnnnnnn.HH</td></tr>
+<tr><td>Notación</td><td>N.N.nnnnnnhh.H</td></tr>
 <tr><td>Máscara</td><td>255.255.252.0</td></tr>
 <tr><td>Red</td><td>192.168.48.0</td></tr>
 <tr><td>Broadcast</td><td>192.168.51.255</td></tr>
-<tr><td>Hosts utilizables</td><td>1022</td></tr>
+<tr><td>Hosts utilizables</td><td>1.022</td></tr>
 <tr><td>Rango de hosts</td><td>192.168.48.1 – 192.168.51.254</td></tr>
 </tbody>
 </table>
 </div>
-<p><strong>Explicación:</strong> /22 = 22 bits de red = 2 octetos completos + 6 bits en el tercer octeto. Tamaño de bloque = 2^(32−22) = 1024 direcciones. 48 ÷ 4 = 12 exacto → la red es .48.0. El siguiente bloque empieza en .52.0, así que el broadcast es .51.255.</p>
+<p><strong>Explicación:</strong> /22 = 16 + 6 → tercer octeto con 6 bits de red + 2 de host. Bloque = 2¹⁰ = 1024 → en el 3er octeto salta de a 4. 50 ÷ 4 = 12 → 48. El siguiente bloque arranca en 52 → broadcast .51.255.</p>
 </details>
-<hr>
-<h3 id="ejercicio-2"><a class="header" href="#ejercicio-2">Ejercicio 2</a></h3>
-<p>Dada la IP <code>10.200.150.75/21</code>:</p>
-<ul>
-<li>Determina la notación N/n/H/h</li>
-<li>Calcula la máscara de subred</li>
-<li>Calcula la dirección de red</li>
-<li>Calcula la dirección de broadcast</li>
-<li>Indica el rango de hosts utilizables</li>
-</ul>
+<h3 id="ejercicio-2-102001507521"><a class="header" href="#ejercicio-2-102001507521">Ejercicio 2: 10.200.150.75/21</a></h3>
 <details>
-<summary>💡 Verificar respuesta</summary>
+<summary>Ver respuesta</summary>
 <div class="table-wrapper">
 <table>
 <thead>
 <tr><th>Campo</th><th>Valor</th></tr>
 </thead>
 <tbody>
-<tr><td>Notación</td><td>N.N.nnnnnnnn.n.H</td></tr>
+<tr><td>Notación</td><td>N.N.nnnnnhhh.H</td></tr>
 <tr><td>Máscara</td><td>255.255.248.0</td></tr>
 <tr><td>Red</td><td>10.200.144.0</td></tr>
 <tr><td>Broadcast</td><td>10.200.151.255</td></tr>
-<tr><td>Hosts utilizables</td><td>2046</td></tr>
+<tr><td>Hosts utilizables</td><td>2.046</td></tr>
 <tr><td>Rango de hosts</td><td>10.200.144.1 – 10.200.151.254</td></tr>
 </tbody>
 </table>
 </div>
-<p><strong>Explicación:</strong> /21 = 21 bits de red = 2 octetos completos + 5 bits en el tercer octeto. Tamaño de bloque = 2^(32−21) = 2048 direcciones. 150 ÷ 8 = 18 (truncado) → 18 × 8 = 144. Red = .144.0, broadcast = .151.255.</p>
+<p><strong>Explicación:</strong> /21 = 16 + 5 → tercer octeto con 5 bits de red + 3 de host. Bloque = 2¹¹ = 2048 → salta de a 8 en el 3er octeto. 150 ÷ 8 = 18 (truncado) → 144. El siguiente bloque arranca en 152 → broadcast .151.255.</p>
 </details>
-<hr>
-<h3 id="ejercicio-3"><a class="header" href="#ejercicio-3">Ejercicio 3</a></h3>
-<p>Dada la IP <code>172.16.200.200/19</code>:</p>
-<ul>
-<li>Determina la notación N/n/H/h</li>
-<li>Calcula la máscara de subred</li>
-<li>Calcula la dirección de red</li>
-<li>Calcula la dirección de broadcast</li>
-<li>Indica el rango de hosts utilizables</li>
-</ul>
+<h3 id="ejercicio-3-1721620020019"><a class="header" href="#ejercicio-3-1721620020019">Ejercicio 3: 172.16.200.200/19</a></h3>
 <details>
-<summary>💡 Verificar respuesta</summary>
+<summary>Ver respuesta</summary>
 <div class="table-wrapper">
 <table>
 <thead>
 <tr><th>Campo</th><th>Valor</th></tr>
 </thead>
 <tbody>
-<tr><td>Notación</td><td>N.N.nnnnnnnn.nnn.H</td></tr>
+<tr><td>Notación</td><td>N.N.nnnhhhhh.H</td></tr>
 <tr><td>Máscara</td><td>255.255.224.0</td></tr>
 <tr><td>Red</td><td>172.16.192.0</td></tr>
 <tr><td>Broadcast</td><td>172.16.223.255</td></tr>
-<tr><td>Hosts utilizables</td><td>8190</td></tr>
+<tr><td>Hosts utilizables</td><td>8.190</td></tr>
 <tr><td>Rango de hosts</td><td>172.16.192.1 – 172.16.223.254</td></tr>
 </tbody>
 </table>
 </div>
-<p><strong>Explicación:</strong> /19 = 19 bits de red = 2 octetos completos + 3 bits en el tercer octeto. Tamaño de bloque = 2^(32−19) = 8192 direcciones. 200 ÷ 32 = 6 (truncado) → 6 × 32 = 192. Red = .192.0, broadcast = .223.255.</p>
+<p><strong>Explicación:</strong> /19 = 16 + 3 → tercer octeto con 3 bits de red + 5 de host. Bloque = 2¹³ = 8192 → salta de a 32. 200 ÷ 32 = 6 → 192. Broadcast: 192 + 32 − 1 = 223.</p>
 </details>
-<hr>
-<h3 id="ejercicio-4"><a class="header" href="#ejercicio-4">Ejercicio 4</a></h3>
-<p>Dada la IP <code>10.10.10.10/29</code>:</p>
-<ul>
-<li>Determina la notación N/n/H/h</li>
-<li>Calcula la máscara de subred</li>
-<li>Calcula la dirección de red</li>
-<li>Calcula la dirección de broadcast</li>
-<li>Indica el rango de hosts utilizables</li>
-<li>¿Cuántos hosts se pueden asignar en esta subred?</li>
-</ul>
+<h3 id="ejercicio-4-1010101029"><a class="header" href="#ejercicio-4-1010101029">Ejercicio 4: 10.10.10.10/29</a></h3>
 <details>
-<summary>💡 Verificar respuesta</summary>
+<summary>Ver respuesta</summary>
 <div class="table-wrapper">
 <table>
 <thead>
 <tr><th>Campo</th><th>Valor</th></tr>
 </thead>
 <tbody>
-<tr><td>Notación</td><td>N.N.N.nnnnnnnh</td></tr>
+<tr><td>Notación</td><td>N.N.N.nnnnnhhh</td></tr>
 <tr><td>Máscara</td><td>255.255.255.248</td></tr>
 <tr><td>Red</td><td>10.10.10.8</td></tr>
 <tr><td>Broadcast</td><td>10.10.10.15</td></tr>
@@ -965,33 +545,134 @@ Broadcast: 192.168.10.255 (bits de host = 11111110 → 255)
 </tbody>
 </table>
 </div>
-<p><strong>Explicación:</strong> /29 = 29 bits de red, 3 bits de host. Tamaño de bloque = 2^3 = 8. 10 ÷ 8 = 1 (truncado) → 1 × 8 = 8. Red = .8, broadcast = .15 (8 + 7). Solo caben 6 hosts (8 − 2).</p>
+<p><strong>Explicación:</strong> /29 = 24 + 5 → cuarto octeto con 5 bits de red + 3 de host. Bloque = 2³ = 8. 10 ÷ 8 = 1 → 8. Broadcast = 8 + 7 = 15. Solo 6 hosts.</p>
 </details>
-<hr>
-<h2 id="7-resumen-de-fórmulas"><a class="header" href="#7-resumen-de-fórmulas">7. Resumen de Fórmulas</a></h2>
+<h3 id="ejercicio-5-2030113730"><a class="header" href="#ejercicio-5-2030113730">Ejercicio 5: 203.0.113.7/30</a></h3>
+<p>Un clásico del mundo real: el enlace entre dos routers.</p>
+<details>
+<summary>Ver respuesta</summary>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Campo</th><th>Valor</th></tr>
+</thead>
+<tbody>
+<tr><td>Notación</td><td>N.N.N.nnhhhhhh… NO — revisá: /30 = 24 + 6 → N.N.N.nnnnnnhh</td></tr>
+<tr><td>Máscara</td><td>255.255.255.252</td></tr>
+<tr><td>Red</td><td>203.0.113.4</td></tr>
+<tr><td>Broadcast</td><td>203.0.113.7</td></tr>
+<tr><td>Hosts utilizables</td><td>2</td></tr>
+<tr><td>Rango de hosts</td><td>203.0.113.5 – 203.0.113.6</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Trampa pedagógica:</strong> ¿viste qué fácil es escribir mal una notación por no contar bits? /30 = 24 bits + 6 bits en el cuarto octeto → 6 n + 2 h. Los dos hosts (<code>.5</code> y <code>.6</code>) son el router de cada lado.</p>
+</details>
+<h3 id="ejercicio-6-198511001025"><a class="header" href="#ejercicio-6-198511001025">Ejercicio 6: 198.51.100.10/25</a></h3>
+<details>
+<summary>Ver respuesta</summary>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Campo</th><th>Valor</th></tr>
+</thead>
+<tbody>
+<tr><td>Notación</td><td>N.N.N.nhhhhhhh</td></tr>
+<tr><td>Máscara</td><td>255.255.255.128</td></tr>
+<tr><td>Red</td><td>198.51.100.0</td></tr>
+<tr><td>Broadcast</td><td>198.51.100.127</td></tr>
+<tr><td>Hosts utilizables</td><td>126</td></tr>
+<tr><td>Rango de hosts</td><td>198.51.100.1 – 198.51.100.126</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Explicación:</strong> /25 = 24 + 1 → un bit de red en el cuarto octeto. Bloque = 2⁷ = 128. 10 ÷ 128 = 0 → red .0. La subred “hermana” de esta es la .128/.255.</p>
+</details>
+<h2 id="10-resumen-de-fórmulas"><a class="header" href="#10-resumen-de-fórmulas">10. Resumen de fórmulas</a></h2>
 <div class="table-wrapper">
 <table>
 <thead>
 <tr><th>Concepto</th><th>Fórmula</th></tr>
 </thead>
 <tbody>
-<tr><td>Bits de host</td><td>32 − Prefijo</td></tr>
-<tr><td>Total de direcciones</td><td>2^(32 − Prefijo)</td></tr>
-<tr><td>Hosts utilizables</td><td>2^(32 − Prefijo) − 2</td></tr>
-<tr><td>Tamaño de bloque</td><td>2^(32 − Prefijo)</td></tr>
-<tr><td>Dirección de broadcast</td><td>Red + Tamaño de bloque − 1</td></tr>
-<tr><td>Primer host utilizable</td><td>Red + 1</td></tr>
-<tr><td>Último host utilizable</td><td>Broadcast − 1</td></tr>
+<tr><td>Bits de host</td><td>32 − prefijo</td></tr>
+<tr><td>Total de direcciones (bloque)</td><td>2^(32 − prefijo)</td></tr>
+<tr><td>Hosts utilizables</td><td>2^(32 − prefijo) − 2</td></tr>
+<tr><td>Salto entre subredes</td><td>256 − valor del octeto de la máscara</td></tr>
+<tr><td>Dirección de red</td><td>IP con todos los bits de host en <code>0</code></td></tr>
+<tr><td>Broadcast</td><td>Red + bloque − 1</td></tr>
+<tr><td>Primer host</td><td>Red + 1</td></tr>
+<tr><td>Último host</td><td>Broadcast − 1</td></tr>
 </tbody>
 </table>
 </div>
-<hr>
-<h2 id="conclusión"><a class="header" href="#conclusión">Conclusión</a></h2>
-<p>El análisis de direcciones IPv4 es una habilidad fundamental en redes. La clave está en entender cómo el prefijo CIDR determina la división entre red y host, y cómo la máscara de subred se aplica para obtener la dirección de red, el broadcast y el rango de hosts utilizables.</p>
-<p><strong>Recordatorio:</strong> Siempre se pierden 2 direcciones por subred — la de red (identifica la subred) y la de broadcast (envía a todos). Solo los hosts intermedios son asignables a dispositivos.</p>
-<blockquote>
-<p><strong>Tip:</strong> Practica convirtiendo números decimales a binario y viceversa hasta que lo hagas de forma natural. Es la base de todo análisis de subredes.</p>
-</blockquote>
+<h2 id="11-comprobá-lo-que-aprendiste"><a class="header" href="#11-comprobá-lo-que-aprendiste">11. Comprobá lo que aprendiste</a></h2>
+<p>Respondé antes de destapar — son las preguntas que separan al que memorizó del que entiende.</p>
+<p><strong>1. ¿Cuántos bits de host tiene una /22 y cuántos hosts utilizables?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>32 − 22 = <strong>10 bits de host</strong> → 2¹⁰ − 2 = <strong>1.022 hosts</strong>.</p>
+</details>
+<p><strong>2. ¿Cuál es la notación correcta de una /19?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>19 = 16 + 3 → tercer octeto con 3 bits de red + 5 de host → <strong>N.N.nnnhhhhh.H</strong>. (La notación tiene que sumar el prefijo: 16 + 3 = 19.)</p>
+</details>
+<p><strong>3. ¿Por qué está mal <code>255.255.255.254</code> como máscara?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Porque los unos de la máscara son <strong>consecutivos</strong> y van primero. <code>254</code> en binario es <code>11111110</code> — termina en 0 dentro de la parte de unos, cosa imposible. Las máscaras válidas del cuarto octeto son 0, 128, 192, 224, 240, 248, 252, 254 (para /31) y 255. <code>...254</code> = /31, que es un caso especial punto a punto.</p>
+</details>
+<p><strong>4. Con <code>10.0.0.77/27</code>, ¿en qué subred cae la IP?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Bloque 32 → 77 ÷ 32 = 2 → red <code>10.0.0.64</code>, broadcast <code>.95</code>, hosts <code>.65</code> a <code>.94</code> (30 hosts). La IP 77 está en el rango → ✓.</p>
+</details>
+<p><strong>5. Dos hosts con IP <code>192.168.1.5/28</code> y <code>192.168.1.20/28</code>. ¿Están en la misma subred?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>NO. Bloque 16: la <code>.5</code> cae en la subred <code>192.168.1.0</code> (hosts .1-.14) y la <code>.20</code> en la <code>192.168.1.16</code> (hosts .17-.30). Para comunicarse necesitan un router — son redes distintas, aunque compartan los primeros tres octetos. Este es el clásico “tengo IP pero no ping” por mala elección de máscara.</p>
+</details>
+<p><strong>6. ¿Qué le cambia a una subred agregarle UN bit de red (pasar de /27 a /28)?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Se <strong>duplica</strong> la cantidad de subredes (de 1 a 2) y se <strong>reduce a la mitad</strong> el tamaño de cada una (de 32 a 16 direcciones, de 30 a 14 hosts). Siempre: cada bit prestado = doble de subredes, mitad de hosts.</p>
+</details>
+<h2 id="12-glosario"><a class="header" href="#12-glosario">12. Glosario</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Término</th><th>Qué es</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Prefijo /n</strong></td><td>Cantidad de bits de red de la dirección (CIDR)</td></tr>
+<tr><td><strong>Notación N/n/H/h</strong></td><td>Radiografía de la dirección: octetos completos (N/H) y bits sueltos (n/h)</td></tr>
+<tr><td><strong>Bits de red</strong></td><td>Los que “pertenecen” a la red — marcados por la máscara con 1</td></tr>
+<tr><td><strong>Bits de host</strong></td><td>Los que identifican al dispositivo — marcados por la máscara con 0</td></tr>
+<tr><td><strong>Máscara de subred</strong></td><td>32 bits con unos consecutivos que definen el límite red/host</td></tr>
+<tr><td><strong>Dirección de red</strong></td><td>Primera de la subred: bits de host en 0</td></tr>
+<tr><td><strong>Broadcast</strong></td><td>Última de la subred: bits de host en 1; llega a todos</td></tr>
+<tr><td><strong>Hosts utilizables</strong></td><td>2^h − 2: todo lo que está entre la red y el broadcast</td></tr>
+<tr><td><strong>Bloque</strong></td><td>2^(32 − prefijo): el total de direcciones de la subred</td></tr>
+<tr><td><strong>Salto</strong></td><td>256 − máscara: el paso entre subredes consecutivas</td></tr>
+<tr><td><strong>Octeto interesante</strong></td><td>El octeto donde el límite cae en el medio (la máscara no es 0 ni 255 ahí)</td></tr>
+<tr><td><strong>CIDR</strong></td><td>La notación <code>/n</code> que reemplazó a las clases fijas</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="13-resumen-en-10-puntos"><a class="header" href="#13-resumen-en-10-puntos">13. Resumen en 10 puntos</a></h2>
+<ol>
+<li><strong>Todo ejercicio se resuelve igual</strong>: prefijo → notación → máscara → red → broadcast → rango.</li>
+<li><strong>La notación tiene que sumar el prefijo</strong>: si <code>/22</code> no te da <code>N.N.nnnnnnhh.H</code>, está mal.</li>
+<li><strong>La máscara son unos consecutivos</strong> empezando por la izquierda; contá los unos y debe dar el prefijo.</li>
+<li><strong>Red = bits de host en 0. Broadcast = bits de host en 1.</strong> Esa es toda la matemática.</li>
+<li><strong>Hosts utilizables = 2^h − 2</strong>, siempre — red y broadcast se descartan.</li>
+<li><strong>El atajo del bloque</strong> (2^h, o 256 − máscara) te da la red con una división y media, sin binario.</li>
+<li><strong>Verificá SIEMPRE</strong>: la IP original tiene que caer entre el primer y el último host.</li>
+<li><strong>Cada bit prestado duplica subredes y reduce a la mitad hosts.</strong></li>
+<li><strong><code>255</code> es <code>11111111</code></strong> — <code>11111110</code> es 254, y no existe como octeto de máscara normal.</li>
+<li><strong>El más común error del mundo real</strong>: dos equipos con IPs de subredes distintas creen que se ven — y no se ven sin un router.</li>
+</ol>
 <hr>
 <blockquote>
 <p><strong>Fuente:</strong> Documentación propia basada en estándares de direccionamiento IPv4 y CIDR.</p>
