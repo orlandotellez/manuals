@@ -18,15 +18,15 @@ Mis manuales de desarrollo
 ## Tauri 
 - [Crear apk con Tauri](./docs/26-tauri-apk-release.md)
 
-## Fastify(NodeJs/TypeScript)
+## Fastify
 - [Backend Fastify Primeros Pasos](./docs/19-fastify-init.md)
 - [Backend Fastify POS SYSTEM](./docs/28-fastify-pos-system.md)
 - [Backend Farmacia](./docs/17-fastify-backend.md)
 
-## Express(NodeJs/Typescript)
+## Express
 - [Backend Express Primeros Pasos](./docs/24-express-primeros-pasos.md)
 
-## NextJs(Typescript)
+## NextJs
 - [NextJs](./docs/20-nextjs-init.md)
 
 ## Base de datos
@@ -37,7 +37,7 @@ Mis manuales de desarrollo
 - [Entity Framework Core](./docs/23-ef-core.md)
 - [Backups Postgres](./docs/33-manual-backups-postgresql.md)
 
-## ASPNET(C#)
+## ASPNET CORE(C#)
 - [ASPNET Primeros Pasos](./docs/21-aspnet-init.md)
 - [ASPNET Modulo de Autenticación](./docs/30-aspnet-auth.md)
 - [ASPNET Cursinet](./docs/25-aspnet-cursinet.md)
