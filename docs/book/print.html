@@ -37,7 +37,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "dark";
-            window.path_to_searchindex_js = "searchindex-810a00bc.js";
+            window.path_to_searchindex_js = "searchindex-48e3875e.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-cd1280d9.js"></script>
@@ -34810,6 +34810,7 @@ describe("subscriptions mappers", () =&gt; {
 <blockquote>
 <p><strong>paypal.webhook-verifier.test.ts — tests de verificación de firma/webhook (cryptografía)</strong><br>Ruta: <code>backend-fastify/src/modules/subscriptions/_tests_/infrastructure/paypal.webhook-verifier.test.ts</code></p>
 </blockquote>
+<p>{% raw %}</p>
 <pre><code class="language-typescript">import { describe, it, beforeEach, afterEach, mock } from "node:test"
 import assert from "node:assert/strict"
 import { env } from "@/config/env"
@@ -35009,10 +35010,12 @@ describe("isTrustedCertUrl", () =&gt; {
   })
 })
 </code></pre>
+<p>{% endraw %}</p>
 <h4 id="2455-webhookcontrollertestts"><a class="header" href="#2455-webhookcontrollertestts">24.5.5 <code>webhook.controller.test.ts</code></a></h4>
 <blockquote>
 <p><strong>webhook.controller.test.ts — tests del controller de webhooks</strong><br>Ruta: <code>backend-fastify/src/modules/subscriptions/_tests_/presentation/webhook.controller.test.ts</code></p>
 </blockquote>
+<p>{% raw %}</p>
 <pre><code class="language-typescript">import { describe, it, beforeEach, afterEach, mock } from "node:test"
 import assert from "node:assert/strict"
 import { env } from "@/config/env"
@@ -35601,6 +35604,7 @@ describe("webhookController.receive", () =&gt; {
   })
 })
 </code></pre>
+<p>{% endraw %}</p>
 <h2 id="25-módulo-super-admin--operación-global-del-sistema"><a class="header" href="#25-módulo-super-admin--operación-global-del-sistema">25. Módulo super-admin — operación global del sistema</a></h2>
 <p>El módulo <code>super-admin</code> es el <strong>panel de control de la plataforma</strong> (no de una tienda). Lo usa el operador del sistema para ver métricas globales, listar todas las tiendas con sus usuarios, auditar eventos de suscripción y ajustar estados. <strong>Solo usuarios con rol <code>super_admin</code></strong> (sin tienda asignada).</p>
 <h3 id="endpoints-prefijo-super-admin"><a class="header" href="#endpoints-prefijo-super-admin">Endpoints (prefijo <code>/super-admin</code>)</a></h3>
@@ -76125,332 +76129,1067 @@ Pero lo ignora porque sender === currentUserId
 <hr>
 <h2 id="índice-21"><a class="header" href="#índice-21">Índice</a></h2>
 <ul>
-<li><a href="#qué-es-una-red">¿Qué es una Red?</a></li>
-<li><a href="#ventajas-de-las-redes">Ventajas de las Redes</a></li>
-<li><a href="#preguntas-clave-antes-de-crear-una-red">Preguntas Clave Antes de Crear una Red</a></li>
-<li><a href="#administración-de-red">Administración de Red</a></li>
-<li><a href="#tipos-de-tecnología-de-red">Tipos de Tecnología de Red</a></li>
-<li><a href="#modelos-de-conexión">Modelos de Conexión</a></li>
-<li><a href="#topologías-de-red">Topologías de Red</a></li>
-<li><a href="#qué-topología-es-mejor">¿Qué Topología es Mejor?</a></li>
-<li><a href="#mapeo-de-la-topología">Mapeo de la Topología</a></li>
-<li><a href="#importancia-de-la-topología-de-red">Importancia de la Topología de Red</a></li>
-<li><a href="#componentes-de-la-capa-física">Componentes de la Capa Física</a></li>
-<li><a href="#componentes-de-red-para-redes-locales">Componentes de Red para Redes Locales</a></li>
+<li><a href="#cómo-usar-este-manual">Cómo usar este manual</a></li>
+<li><a href="#1-qué-es-una-red">¿Qué es una red?</a></li>
+<li><a href="#2-los-tres-ingredientes-de-toda-red">Los tres ingredientes de toda red</a></li>
+<li><a href="#3-qué-le-ofrece-una-red-ventajas-y-costos">¿Qué le ofrece una red? Ventajas y costos</a></li>
+<li><a href="#4-las-preguntas-clave-antes-de-crear-una-red">Las preguntas clave antes de crear una red</a></li>
+<li><a href="#5-administración-de-red-la-red-no-se-cuida-sola">Administración de red: la red no se cuida sola</a></li>
+<li><a href="#6-tipos-de-redes-según-su-aleance">Tipos de redes según su alcance</a></li>
+<li><a href="#7-las-vpn-un-túnel-privado-dentro-de-una-red-pública">Las VPN: un túnel privado dentro de una red pública</a></li>
+<li><a href="#8-modelos-de-conexión-iguales-o-jerárquicos">Modelos de conexión: ¿iguales o jerárquicos?</a></li>
+<li><a href="#9-topologías-de-red-la-forma-de-la-red">Topologías de red: la forma de la red</a></li>
+<li><a href="#10-qué-topología-es-mejor">¿Qué topología es mejor?</a></li>
+<li><a href="#11-mapeo-de-la-topología-dibuja-tu-red">Mapeo de la topología: dibuja tu red</a></li>
+<li><a href="#12-componentes-de-red-en-profundidad">Componentes de red en profundidad</a></li>
+<li><a href="#13-qué-pasa-cuando-abro-google-el-viaje-completo">¿Qué pasa cuando abro Google? El viaje completo</a></li>
+<li><a href="#14-comprobá-lo-que-aprendiste">Comprobá lo que aprendiste</a></li>
+<li><a href="#15-glosario">Glosario</a></li>
+<li><a href="#16-resumen-en-10-puntos">Resumen en 10 puntos</a></li>
+<li><a href="#próximo-paso">Próximo paso</a></li>
 </ul>
 <hr>
-<h2 id="qué-es-una-red"><a class="header" href="#qué-es-una-red">¿Qué es una Red?</a></h2>
-<p>Una <strong>red</strong> es una conexión entre al menos dos dispositivos informáticos. Esta conexión puede tener diferentes estructuras (cableado o inalámbrico) y cubrir diferentes rangos.</p>
-<p>El objetivo es permitir el <strong>intercambio de datos, comunicación y uso compartido</strong> de recursos como:</p>
+<h2 id="cómo-usar-este-manual"><a class="header" href="#cómo-usar-este-manual">Cómo usar este manual</a></h2>
+<p>Este manual es el <strong>punto de partida</strong> para entender cómo funcionan las redes. Al terminarlo vas a tener un mapa mental completo de qué es una red, con qué piezas se construye y por qué existen cada una de esas piezas.</p>
+<p><strong>Cómo está pensado:</strong></p>
 <ul>
-<li>Espacio de almacenamiento</li>
-<li>Programas o aplicaciones</li>
-<li>Datos</li>
+<li><strong>No necesitás nada previo.</strong> Si nunca tocaste una red, este es tu lugar. Si ya sabés algo, te sirve para ordenar y confirmar conceptos.</li>
+<li><strong>Cada concepto importante tiene tres partes</strong>: qué es, una <strong>analogía</strong> con la vida cotidiana, y un <strong>ejemplo concreto</strong>. Ese patrón se repite a lo largo de todo el curso.</li>
+<li><strong>Los términos en negrita</strong> aparecen explicados en el <a href="#15-glosario">Glosario</a> al final del manual.</li>
+<li>Buscá los recuadros <strong>HACELO VOS</strong>: son actividades prácticas de 5 minutos que te anclan la teoría en la realidad. Se puede aprender sin hacerlas, pero se aprende el doble haciéndolas.</li>
+<li>Al final hay una sección de <strong>preguntas de autoevaluación</strong> con respuestas ocultas (podés intentar responder antes de mirarlas).</li>
 </ul>
-<p>Se accede a estos recursos a través de un sistema operativo compatible con la red. Detrás de cada interacción digital hay una red: desde leer este documento, editar un documento con colegas, hasta conectar tu teléfono a dispositivos Bluetooth.</p>
+<p>Una última cosa antes de arrancar: si algún concepto no te queda claro a la primera, <strong>es normal</strong>. Las redes se entienden en capas, igual que se construyen: primero la idea general, después el detalle. Acá vamos a hacer exactamente eso.</p>
 <hr>
-<h2 id="ventajas-de-las-redes"><a class="header" href="#ventajas-de-las-redes">Ventajas de las Redes</a></h2>
+<h2 id="1-qué-es-una-red"><a class="header" href="#1-qué-es-una-red">1. ¿Qué es una red?</a></h2>
+<h3 id="11-la-definición-simple"><a class="header" href="#11-la-definición-simple">1.1. La definición simple</a></h3>
+<p>Una <strong>red</strong> es un conjunto de <strong>dos o más dispositivos informáticos conectados entre sí</strong> con el objetivo de compartir información y recursos.</p>
+<p>Eso es todo. Cuando tu celular le manda una foto a tu notebook por Bluetooth, <strong>es una red</strong>. Cuando el termostato de tu casa habla con la app del celular, <strong>es una red</strong>. Cuando tu computadora abre esta página, está usando la red más grande que existe: <strong>internet</strong>.</p>
+<p>Detrás de cada interacción digital hay una red:</p>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>Ventaja</th><th>Descripción</th></tr>
+<tr><th>Situación cotidiana</th><th>¿Dónde está la red?</th></tr>
 </thead>
 <tbody>
-<tr><td><strong>Acceso compartido a los datos</strong></td><td>Todos los usuarios autorizados trabajan con la misma información actualizada</td></tr>
-<tr><td><strong>Uso compartido de dispositivos y software</strong></td><td>No es necesario duplicar impresoras, almacenamiento ni programas</td></tr>
-<tr><td><strong>Mayor rendimiento</strong></td><td>La potencia informática y el almacenamiento se utilizan de forma flexible y ampliada</td></tr>
-<tr><td><strong>Gestión centralizada</strong></td><td>Los programas, datos y configuraciones se controlan desde una única ubicación</td></tr>
-<tr><td><strong>Derechos de acceso claros</strong></td><td>Cada usuario recibe exactamente los permisos que necesita</td></tr>
-<tr><td><strong>Mayor seguridad de los datos</strong></td><td>Las normas de protección, copia de seguridad y seguridad se implementan de forma centralizada</td></tr>
-<tr><td><strong>Fácil expandibilidad</strong></td><td>Se pueden integrar fácilmente nuevos dispositivos o usuarios en la red</td></tr>
+<tr><td>Leer este documento</td><td>Posiblemente ya estás conectado a una red local o a internet</td></tr>
+<tr><td>Enviar un mensaje de WhatsApp</td><td>Tu celular → la red de tu operador → internet → el celular de la otra persona</td></tr>
+<tr><td>Imprimir un documento desde el celular</td><td>La impresora y el celular están en tu red doméstica</td></tr>
+<tr><td>Ver una serie en streaming</td><td>Tu Smart TV pide datos a un servidor que está a miles de kilómetros</td></tr>
+<tr><td>Jugar una partida online</td><td>Tu consola se conecta con los servidores del juego y con otros jugadores</td></tr>
 </tbody>
 </table>
 </div>
-<hr>
-<h2 id="preguntas-clave-antes-de-crear-una-red"><a class="header" href="#preguntas-clave-antes-de-crear-una-red">Preguntas Clave Antes de Crear una Red</a></h2>
-<p>Antes de profundizar en la tecnología de redes, debes responder:</p>
+<h3 id="12-la-analogía-del-sistema-postal"><a class="header" href="#12-la-analogía-del-sistema-postal">1.2. La analogía del sistema postal</a></h3>
+<p>Para entender las redes, la mejor analogía que existe es el <strong>sistema postal mundial</strong>. Pensalo un segundo:</p>
+<ul>
+<li>Vos le escribís una carta a alguien que vive en otra ciudad.</li>
+<li>Ponés la carta en un <strong>sobre</strong> con la <strong>dirección</strong> del destinatario y la tuya (<strong>remitente</strong>).</li>
+<li>El cartero local la lleva a la <strong>sucursal de correo</strong> de tu barrio.</li>
+<li>Esa sucursal la despacha a una <strong>central de distribución</strong> más grande, que la manda a la ciudad del destinatario.</li>
+<li>Allá, otro cartero la deja en la puerta de tu amigo.</li>
+</ul>
+<p>Ahora traduzcamos:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Sistema postal</th><th>Red de computadoras</th></tr>
+</thead>
+<tbody>
+<tr><td>La carta</td><td>Un <strong>paquete de datos</strong></td></tr>
+<tr><td>El sobre con direcciones</td><td>El <strong>encabezado</strong> del paquete (dice quién lo manda y a quién va dirigido)</td></tr>
+<tr><td>El cartero de barrio</td><td>La <strong>red local</strong> (tu casa, tu oficina)</td></tr>
+<tr><td>La central de distribución</td><td>El <strong>router</strong> de tu casa y los routers de los proveedores</td></tr>
+<tr><td>Las rutas entre ciudades</td><td>La <strong>infraestructura de internet</strong> (cables, fibra óptica, torres)</td></tr>
+<tr><td>El sistema que decide cómo llega la carta</td><td>Los <strong>protocolos de enrutamiento</strong></td></tr>
+</tbody>
+</table>
+</div>
+<p>La analogía no es perfecta (las cartas no viajan partidas en pedazos, los datos sí), pero captura la idea central: <strong>una red es un sistema para transportar información de un punto a otro, con reglas claras de direccionamiento y entrega.</strong></p>
+<h3 id="13-qué-se-comparte-en-una-red"><a class="header" href="#13-qué-se-comparte-en-una-red">1.3. ¿Qué se comparte en una red?</a></h3>
+<p>El objetivo de una red es compartir <strong>recursos</strong>. Los principales son:</p>
 <ol>
-<li>¿Qué requisitos tengo para la red?</li>
-<li>¿Lo necesito localmente o con mayor alcance?</li>
-<li>¿A cuántos participantes me dirijo y qué utilización de la capacidad implica esto?</li>
-<li>¿La red debe ser privada, pública o ambas?</li>
-<li>¿Qué tan alta debe ser la seguridad de la red?</li>
-<li>¿Qué hardware necesito?</li>
-<li>¿Puedo configurar la red yo mismo o necesito un experto?</li>
+<li><strong>Datos</strong>: archivos, documentos, fotos, bases de datos.</li>
+<li><strong>Aplicaciones y programas</strong>: software instalado en un servidor al que acceden muchos usuarios.</li>
+<li><strong>Hardware</strong>: impresoras, unidades de almacenamiento, escáneres.</li>
+<li><strong>Conexión a internet</strong>: un solo enlace al proveedor, compartido por todos los dispositivos.</li>
+<li><strong>Potencia de cálculo</strong>: en redes más avanzadas, el procesamiento se reparte entre varias máquinas.</li>
 </ol>
+<h3 id="14-una-red-doméstica-típica-mirada-desde-afuera"><a class="header" href="#14-una-red-doméstica-típica-mirada-desde-afuera">1.4. Una red doméstica típica, mirada desde afuera</a></h3>
+<p>Este es el ejemplo más común de red que existe: la de una casa. Memoralo, porque lo vamos a usar durante todo el manual.</p>
+<pre><code>   [Celular]      [Notebook]      [Smart TV]
+       |               |               |
+       |   (Wi-Fi)     |   (Wi-Fi)     |   (cable Ethernet)
+       +---------------+---+-----------+
+                           |
+                     [Router]  ← el "centro" de la red
+                         |
+                     [Módem]   ← habla con el proveedor de internet (ISP)
+                         |
+                   ============= Internet =============
+</code></pre>
+<p>Los dispositivos (celular, notebook, TV) se llaman <strong>dispositivos finales</strong> o <strong>hosts</strong>. El <strong>router</strong> es el dispositivo intermedio que los conecta entre sí y con internet. En el punto 12 vamos a estudiar cada pieza en detalle.</p>
 <blockquote>
-<p><strong>Nota:</strong> Una infraestructura de red estable constituye la base para sistemas de TI confiables en las empresas. Debe diseñarse para adaptarse fácilmente a futuras expansiones.</p>
+<p><strong>Dato importante para principiantes:</strong> la red de tu casa y <em>internet</em> no son lo mismo. Tu red de casa es la parte que está <strong>dentro</strong> de tus cuatro paredes. Internet es la red gigante que está <strong>afuera</strong>, y tu router es el puente entre ambas.</p>
+</blockquote>
+<h3 id="15-internet-la-red-de-redes"><a class="header" href="#15-internet-la-red-de-redes">1.5. Internet: la red de redes</a></h3>
+<p>Cuando hablamos de internet no hablamos de una sola red, sino de <strong>millones de redes interconectadas entre sí</strong> — redes de hogares, empresas, universidades, gobiernos y proveedores — que acordaron hablar el mismo idioma.</p>
+<p>Ese “idioma común” son los <strong>protocolos</strong>: reglas escritas que definen cómo se formatean, se envían, se reciben y se confirman los datos. El más famoso es el conjunto <strong>TCP/IP</strong>, que vamos a estudiar a fondo a lo largo de este curso.</p>
+<blockquote>
+<p><strong>Idea central de este manual:</strong> una red existe para compartir. Toda la tecnología que vas a ver de acá en adelante (cables, routers, direcciones IP, switches) existe para cumplir ese único propósito de la manera más rápida, confiable y segura posible.</p>
 </blockquote>
 <hr>
-<h2 id="administración-de-red"><a class="header" href="#administración-de-red">Administración de Red</a></h2>
-<p>La administración de red es <strong>esencial para la seguridad y el funcionamiento ininterrumpido</strong>. Incluye tareas como:</p>
+<h2 id="2-los-tres-ingredientes-de-toda-red"><a class="header" href="#2-los-tres-ingredientes-de-toda-red">2. Los tres ingredientes de toda red</a></h2>
+<p>Toda red, por más compleja que sea, se puede reducir a <strong>tres ingredientes</strong>:</p>
+<h3 id="21-los-nodos-los-participantes"><a class="header" href="#21-los-nodos-los-participantes">2.1. Los nodos (los participantes)</a></h3>
+<p>Un <strong>nodo</strong> es cualquier dispositivo capaz de enviar o recibir datos en la red. Hay dos grandes grupos:</p>
 <ul>
-<li><strong>Monitoreo</strong> continuo del estado de la red</li>
-<li><strong>Actualizaciones</strong> de software y firmware</li>
-<li><strong>Gestión de usuarios</strong> y permisos</li>
-<li><strong>Mantenimiento</strong> preventivo</li>
+<li><strong>Dispositivos finales</strong> (también llamados <em>hosts</em>): son los que las personas usan. Computadoras, celulares, impresoras, servidores, Smart TVs, tablets.</li>
+<li><strong>Dispositivos intermedios</strong>: son los que hacen que los datos lleguen de un lado a otro. Routers, switches, puntos de acceso inalámbrico, módems.</li>
 </ul>
-<p>Las modernas herramientas de gestión de redes facilitan la monitorización y el control de estructuras de TI complejas.</p>
-<hr>
-<h2 id="tipos-de-tecnología-de-red"><a class="header" href="#tipos-de-tecnología-de-red">Tipos de Tecnología de Red</a></h2>
-<p>Las redes varían enormemente en escala: una conexión en un hogar privado de dos personas es completamente diferente de una red que conecta a miles de empleados en distintos países.</p>
-<h3 id="redes-de-área-local-lan"><a class="header" href="#redes-de-área-local-lan">Redes de Área Local (LAN)</a></h3>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Tipo</th><th>Ventaja</th><th>Uso</th></tr>
-</thead>
-<tbody>
-<tr><td><strong>PAN</strong> (Personal Area Network)</td><td>Configuración muy rápida; energéticamente eficiente</td><td>Relojes inteligentes, rastreadores de actividad, auriculares inalámbricos, conexiones para smartphones</td></tr>
-<tr><td><strong>LAN/WLAN</strong> (Local/Wireless LAN)</td><td>Transferencia rápida de datos dentro de un edificio; fácil conexión en red de empleados</td><td>Redes de oficinas, redes domésticas, pequeñas empresas</td></tr>
-</tbody>
-</table>
-</div>
 <blockquote>
-<p><strong>Nota:</strong> Al configurar LAN y WLAN, es importante utilizar los enrutadores y conmutadores adecuados.</p>
+<p><strong>Analogía:</strong> en el sistema postal, los dispositivos finales son las personas que escriben cartas; los intermedios son las sucursales de correo por donde las cartas pasan.</p>
 </blockquote>
-<h3 id="redes-de-área-extendida"><a class="header" href="#redes-de-área-extendida">Redes de Área Extendida</a></h3>
+<h3 id="22-los-enlaces-los-caminos"><a class="header" href="#22-los-enlaces-los-caminos">2.2. Los enlaces (los caminos)</a></h3>
+<p>Un <strong>enlace</strong> es el medio físico o inalámbrico por el que viajan los datos. Los más comunes:</p>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>Tipo</th><th>Ventaja</th><th>Uso</th></tr>
+<tr><th>Enlace</th><th>¿Cómo viajan los datos?</th><th>Uso típico</th></tr>
 </thead>
 <tbody>
-<tr><td><strong>CAN</strong> (Campus Area Network)</td><td>Red segura para múltiples edificios en un campus</td><td>Universidades, instituciones de investigación, campus corporativos</td></tr>
-<tr><td><strong>MAN</strong> (Metropolitan Area Network)</td><td>Redes a nivel de ciudad, de largo alcance</td><td>Wi-Fi urbano, sistemas de gestión del tráfico, autoridades municipales</td></tr>
-<tr><td><strong>WAN</strong> (Wide Area Network)</td><td>Redes mundiales y almacenamiento centralizado de datos</td><td>Grandes empresas, sucursales internacionales, acceso a la nube</td></tr>
-<tr><td><strong>GAN</strong> (Global Area Network)</td><td>Acceso a recursos globales y alcance universal</td><td>Internet (World Wide Web), redes de comunicación globales</td></tr>
+<tr><td><strong>Cable de par trenzado</strong> (UTP)</td><td>Pulsos eléctricos</td><td>Redes de oficina y hogar (el cable Ethernet clásico)</td></tr>
+<tr><td><strong>Fibra óptica</strong></td><td>Pulsos de luz</td><td>Conexiones de alta velocidad y largas distancias (la columna vertebral de internet)</td></tr>
+<tr><td><strong>Wi-Fi</strong></td><td>Ondas de radio</td><td>Dispositivos móviles en casas y oficinas</td></tr>
+<tr><td><strong>Bluetooth</strong></td><td>Ondas de radio de corto alcance</td><td>Auriculares, relojes, parlantes, teclados</td></tr>
+<tr><td><strong>Red celular (4G/5G)</strong></td><td>Ondas de radio</td><td>Celulares y equipos móviles</td></tr>
+<tr><td><strong>Coaxial</strong></td><td>Pulsos eléctricos</td><td>Cable TV e internet por cable</td></tr>
 </tbody>
 </table>
 </div>
-<h3 id="redes-privadas-virtuales-vpn"><a class="header" href="#redes-privadas-virtuales-vpn">Redes Privadas Virtuales (VPN)</a></h3>
-<p>Las VPN ocultan tanto la dirección IP como la ubicación. Pueden asignarse a uno de los tipos de red mencionados y, por tanto, pueden verse como un <strong>tipo de complemento</strong>.</p>
 <blockquote>
-<p><strong>Nota:</strong> Las redes LAN y WAN suelen estar conectadas. Existen tecnologías y protocolos que se utilizan en ambas, por lo que no siempre es posible una separación clara.</p>
+<p><strong>Analogía:</strong> si la red es el sistema postal, los enlaces son las rutas que usan los carteros: algunas son calles del barrio (Bluetooth), otras son rutas nacionales (fibra óptica) y otras son autopistas internacionales (la red de fibra submarina que conecta continentes).</p>
+</blockquote>
+<h3 id="23-los-protocolos-el-idioma-común"><a class="header" href="#23-los-protocolos-el-idioma-común">2.3. Los protocolos (el idioma común)</a></h3>
+<p>Un <strong>protocolo</strong> es un conjunto de reglas que define <strong>cómo</strong> se comunican los dispositivos. Sin protocolos, dos dispositivos de distintos fabricantes no podrían entenderse, como dos personas que hablan idiomas distintos.</p>
+<p>Algunos protocolos que ya usás sin saberlo:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Protocolo</th><th>¿Qué hace?</th><th>¿Cuándo lo usás?</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>IP</strong></td><td>Direcciona los paquetes (el “sobre” con direcciones)</td><td>Siempre que navegás</td></tr>
+<tr><td><strong>TCP</strong></td><td>Garantiza que los datos lleguen completos y en orden</td><td>Descargar un archivo, ver una web</td></tr>
+<tr><td><strong>UDP</strong></td><td>Envía datos rápido sin garantizar la entrega</td><td>Llamadas de voz, video en vivo</td></tr>
+<tr><td><strong>HTTP/HTTPS</strong></td><td>Transporta las páginas web</td><td>Cuando abrís un sitio</td></tr>
+<tr><td><strong>DNS</strong></td><td>Traduce nombres (google.com) a direcciones (142.250.….)</td><td>Cada vez que escribís una dirección web</td></tr>
+</tbody>
+</table>
+</div>
+<p>No hace falta memorizarlos ahora. Lo importante acá es la idea: <strong>una red es nodos + enlaces + protocolos.</strong></p>
+<blockquote>
+<p><strong>Pregunta para pensar (no hace falta responderla en voz alta):</strong> ¿Qué pasa si dos dispositivos hablan el mismo protocolo pero están conectados con un cable dañado? Exacto: los datos viajan pero no “salen” del cable. Ningún protocolo arregla un enlace roto. Siempre se necesita el trio completo.</p>
 </blockquote>
 <hr>
-<h2 id="modelos-de-conexión"><a class="header" href="#modelos-de-conexión">Modelos de Conexión</a></h2>
-<h3 id="red-peer-to-peer-p2p"><a class="header" href="#red-peer-to-peer-p2p">Red Peer-to-Peer (P2P)</a></h3>
-<p>Aquí hay ordenadores con <strong>iguales derechos</strong>, cada uno de los cuales puede ser a la vez servidor y cliente. No existe una jerarquía central.</p>
-<h3 id="red-cliente-servidor"><a class="header" href="#red-cliente-servidor">Red Cliente-Servidor</a></h3>
-<p>Una computadora de servicio adicional (a menudo un servidor de red) forma el <strong>centro de control</strong> desde el cual todos los dispositivos conectados recuperan los datos. Ideal para empresas de todos los tamaños.</p>
-<hr>
-<h2 id="topologías-de-red"><a class="header" href="#topologías-de-red">Topologías de Red</a></h2>
-<p>La <strong>topología de red</strong> es cómo se organizan los elementos de una red de comunicaciones. La estructura topológica se puede representar de forma <strong>física</strong> o <strong>lógica</strong>:</p>
-<ul>
-<li><strong>Topología lógica:</strong> Los dispositivos de comunicación se modelan como nodos y las conexiones entre dispositivos se modelan como enlaces o líneas entre nodos.</li>
-<li><strong>Topología física:</strong> Describe la verdadera apariencia o diseño de la red. Las distancias entre nodos, interconexiones físicas, velocidades de transmisión o tipos de señales pueden diferir.</li>
-</ul>
-<h3 id="tipos-de-topologías"><a class="header" href="#tipos-de-topologías">Tipos de Topologías</a></h3>
-<h4 id="topología-en-estrella"><a class="header" href="#topología-en-estrella">Topología en Estrella</a></h4>
-<p><img src="img/redes/topologia-estrella.webp" alt="Topología en Estrella"></p>
-<p>La red está organizada de modo que los nodos estén conectados a un <strong>dispositivo central (HUB)</strong>, que actúa como servidor. El HUB gestiona la transmisión de datos a través de la red. Cualquier dato enviado viaja a través del dispositivo central antes de llegar a su destino.</p>
-<p><strong>Ventajas:</strong></p>
-<ul>
-<li>✅ Gestión conveniente desde una ubicación central</li>
-<li>✅ Si un nodo falla, la red aún funciona</li>
-<li>✅ Los dispositivos se pueden agregar o quitar sin interrumpir la red</li>
-<li>✅ Más fácil de identificar y aislar los problemas de rendimiento</li>
-</ul>
-<p><strong>Desventajas:</strong></p>
-<ul>
-<li>❌ Si el dispositivo central falla, toda la red dejará de funcionar</li>
-<li>❌ El rendimiento y el ancho de banda están limitados por el nodo central</li>
-<li>❌ Puede ser costoso de operar</li>
-</ul>
-<hr>
-<h4 id="topología-en-bus"><a class="header" href="#topología-en-bus">Topología en Bus</a></h4>
-<p><img src="img/redes/topologia-bus.webp" alt="Topología en Bus"></p>
-<p>También llamada topología de <strong>red troncal, bus o línea</strong>. Guía los dispositivos a lo largo de un <strong>single cable</strong> que se extiende desde un extremo de la red hasta el otro. Los datos fluirán a lo largo del cable a medida que viajan a su destino.</p>
-<p><strong>Ventajas:</strong></p>
-<ul>
-<li>✅ Económico para redes más pequeñas</li>
-<li>✅ Diseño simple; todos los dispositivos conectados a través de un cable</li>
-<li>✅ Se pueden agregar más nodos alargando la línea</li>
-</ul>
-<p><strong>Desventajas:</strong></p>
-<ul>
-<li>❌ La red es vulnerable a fallas de cables</li>
-<li>❌ Cada nodo agregado disminuye la velocidad de transmisión</li>
-<li>❌ Los datos solo se pueden enviar en una dirección a la vez</li>
-</ul>
-<hr>
-<h4 id="topología-en-anillo"><a class="header" href="#topología-en-anillo">Topología en Anillo</a></h4>
-<p><img src="img/redes/topologia-anillo.webp" alt="Topología en Anillo"></p>
-<p>Los nodos se configuran en un <strong>patrón circular</strong>. Los datos viajan a través de cada dispositivo a medida que atraviesan el anillo. En redes grandes, pueden necesitarse repetidores para evitar la pérdida de paquetes.</p>
-<p>Las topologías de anillo pueden configurarse como:</p>
-<ul>
-<li><strong>Anillo simple (half-dúplex):</strong> Tráfico en una sola dirección</li>
-<li><strong>Anillo doble (full-dúplex):</strong> Tráfico en ambas direcciones simultáneamente</li>
-</ul>
-<p><strong>Ventajas:</strong></p>
-<ul>
-<li>✅ Costo efectivo</li>
-<li>✅ Barato de instalar</li>
-<li>✅ Problemas de rendimiento fáciles de identificar</li>
-</ul>
-<p><strong>Desventajas:</strong></p>
-<ul>
-<li>❌ Si un nodo cae, puede afectar varios nodos con él</li>
-<li>❌ Todos los dispositivos comparten ancho de banda, limitando el rendimiento</li>
-<li>❌ Agregar o eliminar nodos significa tiempo de inactividad para toda la red</li>
-</ul>
-<hr>
-<h4 id="topología-en-árbol"><a class="header" href="#topología-en-árbol">Topología en Árbol</a></h4>
-<p><img src="img/redes/topologia-arbol.webp" alt="Topología en Árbol"></p>
-<p>Un <strong>nodo central conecta los hubs secundarios</strong>. Estos hubs tienen una relación de <strong>padres-hijos</strong> con los dispositivos. El eje central es como el tronco del árbol, y las ramas son los concentradores secundarios o nodos de control.</p>
-<p><strong>Ventajas:</strong></p>
-<ul>
-<li>✅ Extremadamente flexible y escalable</li>
-<li>✅ Facilidad para identificar errores (cada branch puede diagnosticarse individualmente)</li>
-</ul>
-<p><strong>Desventajas:</strong></p>
-<ul>
-<li>❌ Si falla un hub central, los nodos se desconectarán (aunque las ramas pueden funcionar independientemente)</li>
-<li>❌ La estructura puede ser difícil de gestionar de forma eficaz</li>
-<li>❌ Utiliza mucho más cableado que otros métodos</li>
-</ul>
-<hr>
-<h4 id="topología-de-malla-mesh"><a class="header" href="#topología-de-malla-mesh">Topología de Malla (Mesh)</a></h4>
-<p><img src="img/redes/topologia-malla.webp" alt="Topología de Malla"></p>
-<p>Los nodos están <strong>interconectados</strong>.</p>
-<ul>
-<li><strong>Full-mesh:</strong> Conecta todos los dispositivos directamente entre sí</li>
-<li><strong>Partial-mesh:</strong> La mayoría de los dispositivos se conectan directamente, proporcionando múltiples rutas para la entrega de datos</li>
-</ul>
-<p>Los datos se envían por la distancia más corta disponible.</p>
-<p><strong>Ventajas:</strong></p>
-<ul>
-<li>✅ Confiable y estable</li>
-<li>✅ Ningún fallo de un solo nodo desconecta la red</li>
-</ul>
-<p><strong>Desventajas:</strong></p>
-<ul>
-<li>❌ Grado complejo de interconectividad entre nodos</li>
-<li>❌ Mano de obra intensiva para instalar</li>
-<li>❌ Utiliza mucho cableado para conectar todos los dispositivos</li>
-</ul>
-<hr>
-<h4 id="topología-híbrida"><a class="header" href="#topología-híbrida">Topología Híbrida</a></h4>
-<p><img src="img/redes/topologia-hibrida.webp" alt="Topología Híbrida"></p>
-<p>Utiliza <strong>varias estructuras de topología</strong>. Es más común en organizaciones grandes donde cada departamento puede tener un tipo de topología diferente (estrella o línea), conectándose a un hub central.</p>
-<p><strong>Ventajas:</strong></p>
-<ul>
-<li>✅ Flexibilidad</li>
-<li>✅ Puede personalizarse según las necesidades del cliente</li>
-</ul>
-<p><strong>Desventajas:</strong></p>
-<ul>
-<li>❌ La complejidad aumenta</li>
-<li>❌ Se requiere experiencia en múltiples topologías</li>
-<li>❌ Puede ser más difícil determinar los problemas de rendimiento</li>
-</ul>
-<hr>
-<h2 id="qué-topología-es-mejor"><a class="header" href="#qué-topología-es-mejor">¿Qué Topología es Mejor?</a></h2>
-<p>No existe una respuesta correcta o incorrecta. La elección dependerá de:</p>
-<ul>
-<li><strong>Nivel de comodidad</strong> y cantidad de redundancia necesaria</li>
-<li><strong>Presupuesto:</strong> Cuantos más cables y más compleja la topología, más costosa</li>
-<li><strong>Necesidades comerciales</strong> que cambian y evolucionan</li>
-</ul>
-<p>muchas organizaciones eligen topologías en estrella porque es fácil realizar cambios sin interrupciones significativas.</p>
-<hr>
-<h2 id="mapeo-de-la-topología"><a class="header" href="#mapeo-de-la-topología">Mapeo de la Topología</a></h2>
-<p>La gestión eficaz de la topología requiere un <strong>mapeo visual</strong>. Se necesita un mapa de red preciso que incluya:</p>
-<ul>
-<li>Dispositivos</li>
-<li>Interconexiones</li>
-<li>Posibles cuellos de botella</li>
-</ul>
-<p>A medida que las redes se vuelven más complejas, los mapas de topología se convierten en la columna vertebral de la continuidad empresarial. Existen herramientas de descubrimiento y mapeo que pueden generar automáticamente topologías de capa 2 y 3.</p>
-<hr>
-<h2 id="importancia-de-la-topología-de-red"><a class="header" href="#importancia-de-la-topología-de-red">Importancia de la Topología de Red</a></h2>
-<p>La topología desempeña un papel crucial en la <strong>funcionalidad y eficiencia</strong> de la red.</p>
-<h3 id="impacto-en-el-rendimiento"><a class="header" href="#impacto-en-el-rendimiento">Impacto en el Rendimiento</a></h3>
-<p>La elección de topología afecta significativamente las velocidades de transferencia, el ancho de banda y la latencia:</p>
-<ul>
-<li><strong>Estrella:</strong> Transmisión más rápida para redes con pocos nodos</li>
-<li><strong>Malla:</strong> Mejor rendimiento para redes grandes y complejas</li>
-</ul>
-<h3 id="fiabilidad-y-tolerancia-a-fallos"><a class="header" href="#fiabilidad-y-tolerancia-a-fallos">Fiabilidad y Tolerancia a Fallos</a></h3>
+<h2 id="3-qué-le-ofrece-una-red-ventajas-y-costos"><a class="header" href="#3-qué-le-ofrece-una-red-ventajas-y-costos">3. ¿Qué le ofrece una red? Ventajas y costos</a></h2>
+<p>La mayoría de los manuales lista las ventajas de las redes y se queda ahí. Eso está bien, pero incompleto: una red también trae responsabilidades. Mirá las dos caras de la moneda.</p>
+<h3 id="31-las-ventajas"><a class="header" href="#31-las-ventajas">3.1. Las ventajas</a></h3>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>Topología</th><th>Redundancia</th></tr>
+<tr><th>Ventaja</th><th>¿Qué significa en la práctica?</th><th>Ejemplo real</th></tr>
 </thead>
 <tbody>
-<tr><td>Malla</td><td>Alta (múltiples rutas de datos)</td></tr>
-<tr><td>Bus/Estrella</td><td>Vulnerable a puntos únicos de fallo</td></tr>
+<tr><td><strong>Acceso compartido a los datos</strong></td><td>Todos los que tienen permiso trabajan con la misma información, actualizada en el momento</td><td>Un equipo de 10 personas edita el mismo documento sin mandarse copias por correo</td></tr>
+<tr><td><strong>Uso compartido de hardware</strong></td><td>No hace falta comprar una impresora por persona; una sola alcanza para todos</td><td>Una impresora de red usada por toda una oficina</td></tr>
+<tr><td><strong>Comunicación</strong></td><td>Mensajería, correo, videollamadas entre miembros de la red</td><td>Un empleado llama a otro a través de la red de la empresa</td></tr>
+<tr><td><strong>Gestión centralizada</strong></td><td>Los programas, los datos y las configuraciones se controlan desde un solo lugar</td><td>El administrador actualiza un antivirus una vez y se actualiza en todas las máquinas</td></tr>
+<tr><td><strong>Permisos claros</strong></td><td>Cada usuario recibe exactamente los accesos que necesita, ni más ni menos</td><td>El área de finanzas no ve los archivos de recursos humanos</td></tr>
+<tr><td><strong>Seguridad de datos centralizada</strong></td><td>Los respaldos (backups) y las políticas de protección se aplican de forma uniforme</td><td>Todos los archivos importantes se respaldan automáticamente cada noche</td></tr>
+<tr><td><strong>Escalabilidad</strong></td><td>Agregar usuarios o dispositivos nuevos es simple y ordenado</td><td>Incorporar un empleado nuevo: se conecta y ya está en la red</td></tr>
+<tr><td><strong>Acceso a internet compartido</strong></td><td>Un único enlace al proveedor sirve a todos los dispositivos</td><td>El router de tu casa comparte la conexión con todos tus equipos</td></tr>
 </tbody>
 </table>
 </div>
-<h3 id="escalabilidad"><a class="header" href="#escalabilidad">Escalabilidad</a></h3>
-<ul>
-<li><strong>Estrella y Árbol:</strong> Adición más sencilla de nuevos nodos</li>
-<li><strong>Malla y Estrella:</strong> Más adecuadas para grandes volúmenes de tráfico</li>
-</ul>
-<h3 id="consideraciones-de-coste"><a class="header" href="#consideraciones-de-coste">Consideraciones de Coste</a></h3>
-<ul>
-<li><strong>Bus:</strong> Costes iniciales más bajos</li>
-<li><strong>Malla:</strong> Requiere más cableado y equipo</li>
-</ul>
-<p>Debe considerarse el <strong>TCO</strong> (Total Cost of Ownership): inversión inicial, gastos operativos y costes del tiempo de inactividad.</p>
-<h3 id="implicaciones-de-seguridad"><a class="header" href="#implicaciones-de-seguridad">Implicaciones de Seguridad</a></h3>
-<ul>
-<li><strong>Centralizadas (estrella):</strong> Aplicación más sencilla de protocolos de seguridad y control de acceso</li>
-<li><strong>Descentralizadas (mesh):</strong> Beneficios de seguridad inherentes gracias a la diversidad de rutas</li>
-</ul>
-<p>Los firewalls se utilizan a menudo para proteger contra amenazas externas. Una topología segura ayuda a cumplir normativas como <strong>RGPD</strong> e <strong>HIPAA</strong>.</p>
-<h3 id="facilidad-de-gestión"><a class="header" href="#facilidad-de-gestión">Facilidad de Gestión</a></h3>
-<ul>
-<li><strong>Estrella:</strong> Problemas suelen aislarse en nodos específicos o en el hub central</li>
-<li><strong>Anillo:</strong> Puede requerir más esfuerzo para localizar y resolver problemas</li>
-</ul>
-<hr>
-<h2 id="componentes-de-la-capa-física"><a class="header" href="#componentes-de-la-capa-física">Componentes de la Capa Física</a></h2>
-<h3 id="elementos-clave"><a class="header" href="#elementos-clave">Elementos Clave</a></h3>
+<h3 id="32-lo-que-hay-que-pagar-por-ellas-los-costos"><a class="header" href="#32-lo-que-hay-que-pagar-por-ellas-los-costos">3.2. Lo que hay que pagar por ellas (los costos)</a></h3>
+<p>Sería una mala enseñanza decir que las redes solo traen beneficios. Una red mal planificada puede generar más problemas de los que resuelve:</p>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>Componente</th><th>Descripción</th></tr>
+<tr><th>Costo o riesgo</th><th>¿Por qué existe?</th></tr>
 </thead>
 <tbody>
-<tr><td><strong>Nodos</strong></td><td>Dispositivos como computadoras, servidores, impresoras, enrutadores y conmutadores</td></tr>
-<tr><td><strong>Enlaces</strong></td><td>Conexiones físicas o inalámbricas entre nodos</td></tr>
-<tr><td><strong>NIC</strong> (Tarjeta de Interfaz de Red)</td><td>Hardware que permite conectar un dispositivo a la red</td></tr>
-<tr><td><strong>Conmutadores (Switches)</strong></td><td>Conectan múltiples nodos en una LAN y facilitan el reenvío de datos</td></tr>
-<tr><td><strong>Enrutadores (Routers)</strong></td><td>Conectan múltiples redes y permiten el enrutamiento entre ellas</td></tr>
-<tr><td><strong>Cables y medios de transmisión</strong></td><td>Medio físico para transportar señales (cables de par trenzado, fibra óptica)</td></tr>
-<tr><td><strong>Protocolos</strong></td><td>Reglas y convenciones que rigen la transmisión de datos</td></tr>
+<tr><td><strong>Costo económico</strong></td><td>Cables, switches, routers, licencias, mantenimiento. La red no es gratis.</td></tr>
+<tr><td><strong>Seguridad</strong></td><td>Una red conecta dispositivos… y también los expone. Un atacante que entra a la red puede llegar a todo lo que está conectado.</td></tr>
+<tr><td><strong>Dependencia</strong></td><td>Si la red se cae, todo lo que depende de ella se detiene (impresión, correo, archivos, internet).</td></tr>
+<tr><td><strong>Complejidad</strong></td><td>Más dispositivos = más cosas que configurar, monitorear y actualizar.</td></tr>
+<tr><td><strong>Formación</strong></td><td>Alguien tiene que saber administrarla, o hay que pagar a un especialista.</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Conclusión honesta:</strong> una red se justifica cuando los beneficios (compartir, centralizar, comunicar) superan los costos. En una casa con dos personas y un celular, la “red” es casi automática. En una empresa de 50 personas, la red es una decisión seria de planificación — para eso sirven las preguntas del próximo punto.</p>
+</blockquote>
+<hr>
+<h2 id="4-las-preguntas-clave-antes-de-crear-una-red"><a class="header" href="#4-las-preguntas-clave-antes-de-crear-una-red">4. Las preguntas clave antes de crear una red</a></h2>
+<p>Antes de comprar un solo cable, conviene responder estas siete preguntas. Cada una tiene un porqué técnico detrás.</p>
+<h3 id="41-qué-requisitos-tengo-para-la-red"><a class="header" href="#41-qué-requisitos-tengo-para-la-red">4.1. ¿Qué requisitos tengo para la red?</a></h3>
+<p><strong>Qué quiero lograr</strong>: ¿compartir internet nomás? ¿archivos? ¿impresoras? ¿videollamadas? ¿juegos en red? ¿servidores?</p>
+<ul>
+<li>Si solo querés navegar, cualquier red básica alcanza.</li>
+<li>Si vas a mover archivos grandes o hacer videollamadas constantes, necesitás más ancho de banda y mejor equipamiento.</li>
+<li>Si vas a tener servidores, la red necesita más planificación (direccionamiento fijo, seguridad, respaldos).</li>
+</ul>
+<h3 id="42-lo-necesito-localmente-o-con-mayor-alcance"><a class="header" href="#42-lo-necesito-localmente-o-con-mayor-alcance">4.2. ¿Lo necesito localmente o con mayor alcance?</a></h3>
+<p>Aquí aparece el concepto de <strong>escala</strong> que estudiamos en el punto 6:</p>
+<ul>
+<li>¿Todo queda en un mismo edificio? → <strong>LAN</strong> (red de área local).</li>
+<li>¿Hay varios edificios en un mismo campus? → <strong>CAN</strong>.</li>
+<li>¿Hay sucursales en distintas ciudades? → <strong>WAN</strong>.</li>
+</ul>
+<blockquote>
+<p><strong>Regla práctica:</strong> la escala define el equipamiento. Una LAN se arma con switches y un router. Una WAN requiere contratar enlaces a un proveedor (ISP) y enrutamiento entre sedes.</p>
+</blockquote>
+<h3 id="43-a-cuántos-participantes-me-dirijo-y-cuánto-tráfico-generan"><a class="header" href="#43-a-cuántos-participantes-me-dirijo-y-cuánto-tráfico-generan">4.3. ¿A cuántos participantes me dirijo y cuánto tráfico generan?</a></h3>
+<p>Esta pregunta define el <strong>tamaño del equipamiento</strong>:</p>
+<ul>
+<li>5 dispositivos → un router hogareño alcanza.</li>
+<li>100 dispositivos → necesitás switches de más puertos, posiblemente varios, y un router más robusto.</li>
+<li>1000 dispositivos → ya hablamos de redes segmentadas, VLANs y planificación profesional.</li>
+</ul>
+<p><strong>Un número clave:</strong> cada dispositivo conectado “compite” por el ancho de banda disponible. No es lo mismo 10 dispositivos mirando texto que 10 dispositivos en streaming de video.</p>
+<h3 id="44-la-red-debe-ser-privada-pública-o-ambas"><a class="header" href="#44-la-red-debe-ser-privada-pública-o-ambas">4.4. ¿La red debe ser privada, pública o ambas?</a></h3>
+<ul>
+<li>La gran mayoría de las redes internas son <strong>privadas</strong>: solo accesibles desde adentro.</li>
+<li>A veces hay partes que deben ser <strong>públicas</strong> (por ejemplo, un servidor web que atiende a clientes externos).</li>
+<li>La solución típica es una red privada + un punto controlado de salida a lo público (el router con su configuración de seguridad).</li>
+</ul>
+<h3 id="45-qué-tan-alta-debe-ser-la-seguridad"><a class="header" href="#45-qué-tan-alta-debe-ser-la-seguridad">4.5. ¿Qué tan alta debe ser la seguridad?</a></h3>
+<p>La respuesta depende de qué hay en la red:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Qué hay en la red</th><th>Nivel de seguridad necesario</th></tr>
+</thead>
+<tbody>
+<tr><td>Solo equipos personales de una casa</td><td>Básico (contraseña de Wi-Fi, firewall del router)</td></tr>
+<tr><td>Datos de una Pyme</td><td>Medio (firewall, permisos por usuario, backups)</td></tr>
+<tr><td>Datos sensibles o regulados (salud, finanzas, clientes)</td><td>Alto (segmentación, cifrado, auditoría, políticas formales)</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="46-qué-hardware-necesito"><a class="header" href="#46-qué-hardware-necesito">4.6. ¿Qué hardware necesito?</a></h3>
+<p>La respuesta sale de las preguntas anteriores. En términos generales:</p>
+<ul>
+<li><strong>Red hogareña</strong>: router + puntos de acceso (o router con Wi-Fi integrado) + módem del proveedor.</li>
+<li><strong>Oficina chica</strong>: switch + router + access point + cableado.</li>
+<li><strong>Empresa</strong>: switches, routers, firewalls, cableado estructurado, servidores, y un rack donde ordenarlo todo.</li>
+</ul>
+<h3 id="47-puedo-configurarla-yo-mismo-o-necesito-un-experto"><a class="header" href="#47-puedo-configurarla-yo-mismo-o-necesito-un-experto">4.7. ¿Puedo configurarla yo mismo o necesito un experto?</a></h3>
+<p>Siendo honestos: una red hogareña la configura cualquiera siguiendo un manual (de eso se trata este curso). Una red empresarial — con VLANs, seguridad, redundancia y WAN — requiere formación específica. No es una cuestión de capacidad sino de <strong>profesionalismo</strong>: así como no pedís a un plomero que diseñe un edificio, una red corporativa se diseña con criterio de ingeniería.</p>
+<h3 id="48-ejemplo-resuelto-la-red-de-una-familia"><a class="header" href="#48-ejemplo-resuelto-la-red-de-una-familia">4.8. Ejemplo resuelto: la red de una familia</a></h3>
+<p>Pongamos las preguntas en acción con un caso concreto:</p>
+<blockquote>
+<p>Una familia de cuatro quiere internet en casa: dos adultos trabajan remoto con videollamadas, dos adolescentes juegan online y ven streaming. Presupuesto acotado.</p>
+</blockquote>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Pregunta</th><th>Respuesta de la familia</th><th>Consecuencia técnica</th></tr>
+</thead>
+<tbody>
+<tr><td>¿Requisitos?</td><td>Videollamadas, streaming, juegos</td><td>Necesitan buen ancho de banda y Wi-Fi estable</td></tr>
+<tr><td>¿Alcance?</td><td>Un solo departamento</td><td>LAN doméstica</td></tr>
+<tr><td>¿Cuántos dispositivos?</td><td>~10 (2 notebooks, 2 celulares, 2 consolas, TV, tablet, impresora, smart-home)</td><td>Un router hogareño moderno alcanza</td></tr>
+<tr><td>¿Privada o pública?</td><td>Privada</td><td>Router con NAT y firewall</td></tr>
+<tr><td>¿Seguridad?</td><td>Media</td><td>Contraseña Wi-Fi fuerte, actualizar firmware</td></tr>
+<tr><td>¿Hardware?</td><td>Router + módem del ISP</td><td>Módem del proveedor + router propio con Wi-Fi</td></tr>
+<tr><td>¿Configuración?</td><td>Propia</td><td>Seguir el manual del fabricante</td></tr>
+</tbody>
+</table>
+</div>
+<p>Este caso lo vas a poder resolver vos mismo al final del curso.</p>
+<hr>
+<h2 id="5-administración-de-red-la-red-no-se-cuida-sola"><a class="header" href="#5-administración-de-red-la-red-no-se-cuida-sola">5. Administración de red: la red no se cuida sola</a></h2>
+<p>Una vez que la red está armada, <strong>empieza el trabajo de verdad</strong>: la administración. Es el equivalente a dar mantenimiento al edificio del sistema postal: si nadie lo hace, todo se deteriora.</p>
+<h3 id="51-las-cuatro-tareas-básicas"><a class="header" href="#51-las-cuatro-tareas-básicas">5.1. Las cuatro tareas básicas</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Tarea</th><th>¿Qué es?</th><th>¿Qué pasa si no se hace?</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Monitoreo</strong></td><td>Vigilar el estado de la red: qué dispositivos están conectados, cuánto tráfico circula, dónde hay errores</td><td>Los problemas se descubren cuando ya tumbaron la red</td></tr>
+<tr><td><strong>Actualizaciones</strong></td><td>Aplicar parches de seguridad y mejoras de firmware de routers, switches, impresoras, etc.</td><td>Vulnerabilidades conocidas quedan abiertas a ataques</td></tr>
+<tr><td><strong>Gestión de usuarios y permisos</strong></td><td>Crear/eliminar cuentas, dar accesos correctos, quitar accesos de quien se fue</td><td>Ex empleados con acceso, permisos excesivos</td></tr>
+<tr><td><strong>Mantenimiento preventivo</strong></td><td>Revisar cableado, limpiar equipos, verificar respaldos, probar la redundancia</td><td>Fallas por desgaste, polvo, conexiones flojas, fuentes viejas</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Dato real:</strong> la mayoría de las caídas de red en PYMES no son por ataques sofisticados, sino por mantenimiento básico descuidado: switches viejos sin actualizar, cables sueltos, routers sobrecalentados, o configuraciones de hace años que nadie revisó.</p>
+</blockquote>
+<h3 id="52-quién-administra-la-red"><a class="header" href="#52-quién-administra-la-red">5.2. ¿Quién administra la red?</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Tipo de red</th><th>¿Quién la administra?</th></tr>
+</thead>
+<tbody>
+<tr><td>Casa</td><td>Vos (con un mínimo de criterio: actualizar el router, cambiar contraseñas)</td></tr>
+<tr><td>Pyme chica</td><td>Un empleado con conocimientos técnicos, o un servicio técnico externo</td></tr>
+<tr><td>Empresa grande</td><td>Un equipo de administradores de red (o un proveedor administrado, “MSP”)</td></tr>
+<tr><td>La red del proveedor</td><td>El ISP (vos no administrás la infraestructura de internet)</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="53-herramientas-de-administración"><a class="header" href="#53-herramientas-de-administración">5.3. Herramientas de administración</a></h3>
+<p>Existen herramientas que simplifican todo esto: paneles de monitoreo (que muestran el estado de todos los dispositivos en un tablero), sistemas de gestión de configuración, alertas automáticas cuando un equipo cae. Estas herramientas se practican a fondo en los ejercicios de este curso.</p>
+<hr>
+<h2 id="6-tipos-de-redes-según-su-alcance"><a class="header" href="#6-tipos-de-redes-según-su-alcance">6. Tipos de redes según su alcance</a></h2>
+<p>Las redes se clasifican según <strong>qué tan lejos llegan</strong>. Es una escala continua: desde el Bluetooth de tus auriculares hasta la red mundial que es internet.</p>
+<h3 id="61-la-escala-completa"><a class="header" href="#61-la-escala-completa">6.1. La escala completa</a></h3>
+<pre><code>  PAN          LAN/WLAN         CAN             MAN               WAN            GAN
+  (metros)     (edificio)      (campus)         (ciudad)         (países)       (mundo)
+  [vos]        [tu casa/oficina] [universidad]  [Wi-Fi urbano]   [sucursales]   [internet]
+   &lt; 10 m       &lt; 300 m         &lt; pocos km       decenas de km    cientos-km     global
+</code></pre>
+<h3 id="62-pan--personal-area-network-red-de-área-personal"><a class="header" href="#62-pan--personal-area-network-red-de-área-personal">6.2. PAN — Personal Area Network (red de área personal)</a></h3>
+<p><strong>Alcance:</strong> unos pocos metros (≤ 10 m aproximadamente).</p>
+<p>Conecta dispositivos <strong>alrededor de una persona</strong>. Es la red más íntima que existe.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Ejemplo</th><th>¿Cómo se conecta?</th></tr>
+</thead>
+<tbody>
+<tr><td>Auriculares inalámbricos al celular</td><td>Bluetooth</td></tr>
+<tr><td>Reloj inteligente y teléfono</td><td>Bluetooth</td></tr>
+<tr><td>Teclado y mouse inalámbricos</td><td>Bluetooth o dongle de radiofrecuencia</td></tr>
+<tr><td>Celular y auto (Android Auto / CarPlay)</td><td>Bluetooth + Wi-Fi</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Analogía:</strong> si la red fuera el sistema postal, la PAN es el cartero que le entrega la carta directamente a tu mano, sin pasar por ninguna central.</p>
+</blockquote>
+<h3 id="63-lan--wlan--local-area-network-red-de-área-local"><a class="header" href="#63-lan--wlan--local-area-network-red-de-área-local">6.3. LAN / WLAN — Local Area Network (red de área local)</a></h3>
+<p><strong>Alcance:</strong> un edificio, una casa, una oficina (hasta unos cientos de metros).</p>
+<p>La LAN es <strong>la red por excelencia</strong>: la que tenés en tu casa y en tu trabajo. Conecta computadoras, impresoras, servidores, celulares y más, con alta velocidad y muy baja latencia.</p>
+<ul>
+<li><strong>LAN cableada</strong>: los dispositivos se conectan con cables Ethernet a un switch. Es la más rápida y estable.</li>
+<li><strong>WLAN</strong> (Wireless LAN): los dispositivos se conectan por Wi-Fi a un punto de acceso. Más cómoda, algo menos estable que el cable.</li>
+</ul>
+<pre><code>        LAN DE UNA OFICINA CHICA
+
+   [PC1]─┐
+   [PC2]─┼──[Switch]──[Router]── Internet
+   [PC3]─┘      │
+            [Impresora]
+</code></pre>
+<blockquote>
+<p><strong>Dato técnico importante:</strong> la velocidad típica de una LAN moderna es de <strong>1 Gbps</strong> (gigabit por segundo) en cable, y de unos cientos de Mbps en Wi-Fi. Si un día escuchás “mis archivos van lento”, casi siempre es el Wi-Fi, no el cable.</p>
+</blockquote>
+<h3 id="64-can--campus-area-network-red-de-área-de-campus"><a class="header" href="#64-can--campus-area-network-red-de-área-de-campus">6.4. CAN — Campus Area Network (red de área de campus)</a></h3>
+<p><strong>Alcance:</strong> varios edificios en un mismo terreno (hasta unos pocos kilómetros).</p>
+<p>Conecta las LANs de un <strong>campus</strong> (universidad, parque industrial, hospital) mediante enlaces de alta velocidad. Es como una LAN gigante con edificios en vez de habitaciones.</p>
+<blockquote>
+<p><strong>Ejemplo real:</strong> una universidad donde la facultad de ingeniería, la biblioteca y el edificio de administración comparten una misma red interna, con un solo punto de salida a internet.</p>
+</blockquote>
+<h3 id="65-man--metropolitan-area-network-red-de-área-metropolitana"><a class="header" href="#65-man--metropolitan-area-network-red-de-área-metropolitana">6.5. MAN — Metropolitan Area Network (red de área metropolitana)</a></h3>
+<p><strong>Alcance:</strong> una ciudad (decenas de kilómetros).</p>
+<p>Conecta redes dentro de una misma ciudad. Típicamente la arma un <strong>proveedor de servicios</strong> (ISP) o una municipalidad.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Ejemplo</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td>Wi-Fi urbano municipal</td><td>Red pública de internet en plazas y calles</td></tr>
+<tr><td>Cámaras de tránsito</td><td>La red que conecta las cámaras de una ciudad a la central de monitoreo</td></tr>
+<tr><td>Red de cable TV</td><td>La infraestructura por la que viaja tu cable e internet de una ciudad</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="66-wan--wide-area-network-red-de-área-extendida"><a class="header" href="#66-wan--wide-area-network-red-de-área-extendida">6.6. WAN — Wide Area Network (red de área extendida)</a></h3>
+<p><strong>Alcance:</strong> países, continentes (cientos o miles de kilómetros).</p>
+<p>Conecta redes que están <strong>lejos entre sí</strong>. Es la categoría que usan las empresas con sucursales en distintas ciudades, y la que arman los proveedores de internet.</p>
+<blockquote>
+<p><strong>La idea clave de la WAN:</strong> ninguna empresa “cablea” entre ciudades. Nadie entierra cientos de kilómetros de cable propio. Lo que se hace es <strong>contratar</strong> capacidad al proveedor (ISP), que ya tiene esa infraestructura. Así, la sucursal de Buenos Aires y la de Córdoba se conectan a través de la red del ISP, como si fueran una sola.</p>
+</blockquote>
+<pre><code>    Sucursal BA ──┐                     ┌── Sucursal Córdoba
+                  │     (red del ISP)  │
+    Casa central ─┴── [WAN] ───────────┴── Sucursal Rosario
+</code></pre>
+<h3 id="67-gan--global-area-network-red-de-área-global"><a class="header" href="#67-gan--global-area-network-red-de-área-global">6.7. GAN — Global Area Network (red de área global)</a></h3>
+<p><strong>Alcance:</strong> todo el planeta.</p>
+<p>Es la categoría de <strong>internet</strong>: la red que conecta todas las redes del mundo. Cuando navegás, tu red doméstica pasa a ser un pequeño suburbio dentro de esta red global.</p>
+<blockquote>
+<p><strong>Dato curioso:</strong> internet no tiene dueño. Ninguna empresa ni gobierno “es” internet. Lo que existe es un conjunto de miles de redes que se interconectan mediante acuerdos, y que comparten el mismo lenguaje (los protocolos TCP/IP).</p>
+</blockquote>
+<h3 id="68-tabla-resumen"><a class="header" href="#68-tabla-resumen">6.8. Tabla resumen</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Tipo</th><th>Alcance</th><th>Ejemplo típico</th><th>¿Quién la arma?</th></tr>
+</thead>
+<tbody>
+<tr><td>PAN</td><td>Metros</td><td>Auriculares Bluetooth</td><td>El usuario</td></tr>
+<tr><td>LAN/WLAN</td><td>Un edificio</td><td>Red de casa u oficina</td><td>El usuario / un técnico</td></tr>
+<tr><td>CAN</td><td>Un campus</td><td>Universidad</td><td>La institución</td></tr>
+<tr><td>MAN</td><td>Una ciudad</td><td>Wi-Fi urbano, cable TV</td><td>ISP / municipio</td></tr>
+<tr><td>WAN</td><td>Países</td><td>Sucursales de una empresa</td><td>ISP (se contrata)</td></tr>
+<tr><td>GAN</td><td>Mundo</td><td>Internet</td><td>Nadie en particular: es la interconexión de todas</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Nota importante:</strong> LAN y WAN no están separadas por una línea clara. Hoy las empresas mezclan tecnologías que se usan en ambas, y una red puede empezar como LAN y terminar conectada a una WAN. La clasificación es una herramienta para pensar, no una camisa de fuerza.</p>
+</blockquote>
+<hr>
+<h2 id="7-las-vpn-un-túnel-privado-dentro-de-una-red-pública"><a class="header" href="#7-las-vpn-un-túnel-privado-dentro-de-una-red-pública">7. Las VPN: un túnel privado dentro de una red pública</a></h2>
+<h3 id="71-el-problema-que-resuelve"><a class="header" href="#71-el-problema-que-resuelve">7.1. El problema que resuelve</a></h3>
+<p>Supongamos que trabajás desde tu casa y necesitás acceder a los archivos de la oficina. Internet es un espacio <strong>público</strong>: todo lo que viaja por ella puede ser interceptado (en el punto 13 vas a ver por qué exactamente). Mandar datos de la empresa por internet “pelado” es como enviar una carta sin sobre: cualquiera que la toque la lee.</p>
+<h3 id="72-la-solución-el-túnel"><a class="header" href="#72-la-solución-el-túnel">7.2. La solución: el túnel</a></h3>
+<p>Una <strong>VPN</strong> (<em>Virtual Private Network</em>, red privada virtual) crea un <strong>túnel cifrado</strong> entre tu dispositivo y la red de la oficina, atravesando internet. Todo lo que viaja por ese túnel va <strong>encriptado</strong>: aunque alguien lo intercepte, no puede leerlo.</p>
+<pre><code>    Tu casa                           Internet                          Oficina
+  [Notebook] ────[Túnel VPN cifrado ────────&gt;]──────────[VPN]──[Servidor de archivos]
+                  (nadie puede leer lo que viaja adentro)
+</code></pre>
+<blockquote>
+<p><strong>Analogía:</strong> internet es una autopista llena de gente mirando lo que llevás. Una VPN es un túnel cerrado que va de tu casa a la oficina: entrás con tu auto, nadie ve qué llevás adentro, y salís directo en el estacionamiento de la oficina.</p>
+</blockquote>
+<h3 id="73-para-qué-se-usan-las-vpn"><a class="header" href="#73-para-qué-se-usan-las-vpn">7.3. ¿Para qué se usan las VPN?</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Uso</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Teletrabajo</strong></td><td>El empleado accede a la red de la empresa como si estuviera en la oficina</td></tr>
+<tr><td><strong>Privacidad en redes públicas</strong></td><td>Usar el Wi-Fi de un hotel o aeropuerto sin que te espíen</td></tr>
+<tr><td><strong>Unir sedes</strong></td><td>Conectar la red de dos sucursales como si fueran una sola (VPN sitio a sitio)</td></tr>
+<tr><td><strong>Ocultar ubicación</strong></td><td>La dirección IP visible pasa a ser la del servidor VPN, no la propia</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="74-una-aclaración-importante-leyendo-entre-líneas"><a class="header" href="#74-una-aclaración-importante-leyendo-entre-líneas">7.4. Una aclaración importante (leyendo entre líneas)</a></h3>
+<p>Muchos servicios que se venden como “VPN para consumidores” lo que realmente hacen es <strong>enrutar tu tráfico por servidores del proveedor</strong>, además de cifrarlo. Eso sirve para privacidad, pero no convierte a tu conexión en “invisible” ni “impenetrable”. La disciplina de seguridad real está en el cifrado, las contraseñas, y las políticas — no en el logo de la app.</p>
+<blockquote>
+<p><strong>Dato técnico:</strong> la VPN es un <strong>complemento transversal</strong>: se puede aplicar sobre cualquier tipo de red (LAN, WAN, celular). No es “otra categoría de red” que reemplace a las anteriores — es un mecanismo que se suma a ellas.</p>
+</blockquote>
+<hr>
+<h2 id="8-modelos-de-conexión-iguales-o-jerárquicos"><a class="header" href="#8-modelos-de-conexión-iguales-o-jerárquicos">8. Modelos de conexión: ¿iguales o jerárquicos?</a></h2>
+<p>Dos computadoras conectadas pueden relacionarse de dos formas filosóficamente distintas: como <strong>iguales</strong> (P2P) o como <strong>jefe-empleado</strong> (cliente-servidor). Ambas siguen existiendo hoy, cada una en su terreno.</p>
+<h3 id="81-red-peer-to-peer-p2p--entre-pares"><a class="header" href="#81-red-peer-to-peer-p2p--entre-pares">8.1. Red Peer-to-Peer (P2P — entre pares)</a></h3>
+<p>En una red P2P, todas las computadoras tienen <strong>los mismos derechos</strong>: cada una puede ser a la vez cliente (pedir recursos) y servidor (ofrecer recursos). No hay jerarquía, no hay centro de control.</p>
+<pre><code>   [PC1] ────── [PC2]         Cada PC comparte archivos con las demás
+     │  \      /  │           y pide archivos a las demás
+     │   \    /   │           (todos son iguales)
+   [PC3] ────── [PC4]
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Característica</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td>Cómo funciona</td><td>Cada nodo ofrece y consume recursos</td></tr>
+<tr><td>Ventaja principal</td><td>Simple: no hace falta configurar un servidor</td></tr>
+<tr><td>Ejemplos reales</td><td>Compartir archivos en una red doméstica, juegos en red LAN, redes BitTorrent, aplicaciones de mensajería descentralizadas</td></tr>
+<tr><td>Limitaciones</td><td>Escala mal (a más nodos, más difícil controlar), sin gestión central de permisos, seguridad limitada</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="82-red-cliente-servidor"><a class="header" href="#82-red-cliente-servidor">8.2. Red Cliente-Servidor</a></h3>
+<p>Acá hay <strong>roles fijos</strong>: uno o más <strong>servidores</strong> (máquinas potentes que ofrecen servicios y almacenan datos) y muchos <strong>clientes</strong> (las computadoras de las personas, que piden servicios).</p>
+<pre><code>            [SERVIDOR]
+           /     |     \
+          /      |      \
+     [PC1]    [PC2]    [PC3]      ← los clientes piden, el servidor responde
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Característica</th><th>Descripción</th></tr>
+</thead>
+<tbody>
+<tr><td>Cómo funciona</td><td>El servidor (o varios) centraliza los datos y servicios; los clientes los consumen</td></tr>
+<tr><td>Ventaja principal</td><td>Control central: permisos, respaldos, seguridad y actualizaciones en un solo lugar</td></tr>
+<tr><td>Ejemplos reales</td><td>Navegar una web (tu navegador es cliente del servidor web), el correo, las bases de datos, YouTube, los juegos online con servidores centrales</td></tr>
+<tr><td>Limitaciones</td><td>El servidor es un punto de falla (si cae, todos se quedan sin servicio); requiere administración y presupuesto</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Dato curioso:</strong> cuando mirás una serie en Netflix, tu TV es el “cliente” y los servidores de Netflix son el “servidor”. Cuando descargás un archivo por BitTorrent, participás de una red P2P. Usás los dos modelos todos los días sin darte cuenta.</p>
+</blockquote>
+<h3 id="83-comparación-directa"><a class="header" href="#83-comparación-directa">8.3. Comparación directa</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Criterio</th><th>P2P</th><th>Cliente-Servidor</th></tr>
+</thead>
+<tbody>
+<tr><td>Quién ofrece los recursos</td><td>Todos</td><td>Solo los servidores</td></tr>
+<tr><td>Control central</td><td>No existe</td><td>El servidor es el centro</td></tr>
+<tr><td>Escalabilidad</td><td>Difícil (crece el caos)</td><td>Fácil (se agregan servidores o clientes)</td></tr>
+<tr><td>Seguridad</td><td>Débil por diseño</td><td>Fuerte si se configura bien</td></tr>
+<tr><td>Costo</td><td>Bajo (sin servidor)</td><td>Mayor (hardware + administración)</td></tr>
+<tr><td>Punto de falla</td><td>Ninguno en particular</td><td>El servidor</td></tr>
+<tr><td>Mejor para</td><td>Redes chicas, usos puntuales</td><td>Empresas, servicios públicos, casi todo en producción</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Regla de oro:</strong> si la red va a crecer, si hay datos importantes, o si hay más de ~10 dispositivos, se elige <strong>cliente-servidor</strong>. El P2P queda para redes pequeñas o usos específicos donde la simplicidad vale más que el control.</p>
+<hr>
+<h2 id="9-topologías-de-red-la-forma-de-la-red"><a class="header" href="#9-topologías-de-red-la-forma-de-la-red">9. Topologías de red: la forma de la red</a></h2>
+<h3 id="91-qué-es-una-topología"><a class="header" href="#91-qué-es-una-topología">9.1. ¿Qué es una topología?</a></h3>
+<p>La <strong>topología</strong> es <strong>cómo están conectados los nodos de una red entre sí</strong>. Es la “forma” de la red. Se puede pensar de dos maneras:</p>
+<ul>
+<li><strong>Topología física</strong>: cómo están conectados los <strong>cables y dispositivos en la realidad</strong>. Es el mapa de instalación.</li>
+<li><strong>Topología lógica</strong>: cómo <strong>viajan los datos</strong> entre los nodos, independientemente de los cables. Es el mapa de conversaciones.</li>
+</ul>
+<blockquote>
+<p><strong>Analogía:</strong> la topología física es el plano de las rutas de una ciudad (las calles reales). La topología lógica es el recorrido que hace una carta de una casa a otra (puede haber una ruta directa aunque las calles den vueltas). No siempre coinciden.</p>
+</blockquote>
+<p>A continuación, las seis topologías clásicas. Para cada una: qué es, un diagrama, sus fortalezas, sus debilidades, y <strong>cuándo conviene usarla</strong>.</p>
+<h3 id="92-topología-en-estrella"><a class="header" href="#92-topología-en-estrella">9.2. Topología en estrella</a></h3>
+<p>Todos los nodos se conectan a un <strong>dispositivo central</strong>. Todo el tráfico pasa por el centro.</p>
+<pre><code>              [PC2]
+               |
+      [PC1]──[CENTRO]──[PC3]
+               |
+              [PC4]
+</code></pre>
+<p>El “CENTRO” históricamente era un <strong>hub</strong> (un repetidor tonto que mandaba todo a todos), y hoy es un <strong>switch</strong> (un equipo inteligente que manda cada dato solo a su destinatario). La estrella es <strong>la topología de facto</strong> de las redes modernas: tu red de casa es una estrella con el router en el centro.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>A favor</th><th>En contra</th></tr>
+</thead>
+<tbody>
+<tr><td>Si un nodo falla, <strong>la red sigue funcionando</strong> (solo se cae ese nodo)</td><td>Si <strong>falla el centro, se cae todo</strong> (punto único de falla)</td></tr>
+<tr><td>Agregar o quitar dispositivos no interrumpe la red</td><td>El centro requiere una inversión (switch/router)</td></tr>
+<tr><td>Fácil detectar dónde está el problema: se aísla por nodo</td><td>Más cable que en un bus (cada nodo necesita su cable al centro)</td></tr>
+<tr><td>Rendimiento predecible: el centro gestiona el tráfico</td><td>El centro puede ser un cuello de botella si es muy chico para la red</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>¿Cuándo usarla?</strong> Casi siempre. Es la elección natural para hogares, oficinas y la mayoría de las LANs. Es flexible, fácil de administrar y de crecer.</p>
+<blockquote>
+<p><strong>Ojo con un error común:</strong> decimos “hub en el centro” y “switch en el centro” como si fueran sinónimos. No lo son. El hub (capa 1) repite todas las señales a todos los puertos; el switch (capa 2) aprende y envía solo al destino. Más adelante vas a ver exactamente cómo piensa un switch. La topología es la misma (estrella); el <em>cerebro</em> en el centro es distinto.</p>
+</blockquote>
+<h3 id="93-topología-en-bus"><a class="header" href="#93-topología-en-bus">9.3. Topología en bus</a></h3>
+<p>Todos los nodos cuelgan de <strong>un único cable central</strong> (el “bus” o troncal), con un <strong>terminador</strong> en cada extremo.</p>
+<pre><code>  [PC1]    [PC2]    [PC3]    [PC4]
+    │        │        │        │
+  ──┴────────┴────────┴────────┴───   ← cable principal
+   TERM.                              TERM.
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>A favor</th><th>En contra</th></tr>
+</thead>
+<tbody>
+<tr><td>Muy económica: un solo cable para toda la red</td><td><strong>Todo el cable es el punto de falla</strong>: si se corta en cualquier punto, se cae toda la red</td></tr>
+<tr><td>Instalación simple</td><td>Un nodo más = más lentitud para todos (el medio se comparte)</td></tr>
+<tr><td>Fácil de entender</td><td>Solo un equipo puede transmitir a la vez; si dos transmiten a la vez, <strong>colisión</strong> (y hay que retransmitir)</td></tr>
+<tr><td></td><td>Difícil encontrar la falla sin equipos de medición</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>¿Cuándo usarla?</strong> En la práctica, <strong>ya no se usa</strong> para LANs modernas (fue la red de cable coaxial de los años 80-90, 10Base2/10Base5). Pero la idea del bus <strong>sobrevive lógicamente</strong>: el cable de TV por cable (DOCSIS) y las primeras redes Ethernet eran buses. Lo estudiamos porque te explica por qué nacieron los switches: para eliminar las colisiones del bus.</p>
+<blockquote>
+<p><strong>Analogía:</strong> el bus es una charla de grupo donde todos hablan por el mismo megáfono: si dos hablan a la vez, no se entiende nada y hay que repetir. La estrella con switch es una reunión con un moderador que da la palabra solo a quien corresponde.</p>
+</blockquote>
+<h3 id="94-topología-en-anillo"><a class="header" href="#94-topología-en-anillo">9.4. Topología en anillo</a></h3>
+<p>Los nodos se conectan <strong>formando un círculo</strong>. Los datos viajan de nodo en nodo hasta llegar al destino. Existía en dos sabores: <strong>anillo simple</strong> (el tráfico circula en un solo sentido) y <strong>anillo doble</strong> (dos anillos en sentidos opuestos, para dar redundancia).</p>
+<pre><code>    [PC1] ─────── [PC2]
+      │             │
+      │             │
+    [PC4] ─────── [PC3]
+
+   Los datos pasan de nodo en nodo (token ring / FDDI)
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>A favor</th><th>En contra</th></tr>
+</thead>
+<tbody>
+<tr><td>Cada nodo actúa como repetidor: las distancias pueden ser largas</td><td><strong>Si un nodo muere, el anillo se rompe</strong> y afecta a toda la red</td></tr>
+<tr><td>Sin colisiones (el “token” da el turno de hablar)</td><td>Agregar o quitar un nodo <strong>detiene la red</strong> para todos</td></tr>
+<tr><td>Rendimiento predecible en cargas altas</td><td>El tráfico “da la vuelta” entera aunque el destino esté al lado</td></tr>
+<tr><td></td><td>Tecnología históricamente cara (FDDI requería fibra)</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>¿Cuándo usarla?</strong> Actualmente <strong>quedó en desuso</strong> en LANs (IBM Token Ring y FDDI fueron sus exponentes). Sigue viva la idea en algunos backbone de fibra (redes de anillo de los ISP para las ciudades) donde el anillo doble da redundancia: si se corta un tramo, el tráfico va por el otro lado.</p>
+<blockquote>
+<p><strong>Analogía:</strong> el anillo es un tren de juguete que pasa por todas las estaciones: la carga le da toda la vuelta y cada estación mira si es para ella. Si una estación desaparece… el tren descarrila.</p>
+</blockquote>
+<h3 id="95-topología-en-árbol"><a class="header" href="#95-topología-en-árbol">9.5. Topología en árbol</a></h3>
+<p>Es una <strong>estrella de estrellas</strong>: varios concentradores secundarios se conectan a un concentrador central, con una relación jerárquica “padre-hijo”. Como un árbol real: tronco (concentrador central), ramas (concentradores secundarios) y hojas (dispositivos).</p>
+<pre><code>                [CENTRO PRINCIPAL]
+                /        |        \
+        [SW A]           |           [SW B]
+        /    \           |           /    \
+     [PC1]  [PC2]    [SW C]      [PC5]  [PC6]
+                     /    \
+                  [PC3]  [PC4]
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>A favor</th><th>En contra</th></tr>
+</thead>
+<tbody>
+<tr><td>Muy escalable: se agregan “ramas” a medida que crece la organización</td><td>Si falla el <strong>tronco</strong> (centro principal), todo lo que cuelga de él se cae</td></tr>
+<tr><td>Facilita aislar problemas por rama (se diagnostica cada subred por separado)</td><td>Requiere más cableado que una estrella simple</td></tr>
+<tr><td>Natural para organizaciones por departamentos/funciones</td><td>La gestión se vuelve compleja en árboles grandes: hay que documentar bien</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>¿Cuándo usarla?</strong> En redes de tamaño medio/grande: un edificio de oficinas donde cada piso tiene su switch, y todos los switches suben al switch central. Es la evolución natural de la estrella cuando una sola no alcanza.</p>
+<blockquote>
+<p><strong>Dato técnico:</strong> casi todas las LANs empresariales modernas son, en la práctica, un árbol de estrella: switches de acceso por piso → switch de distribución → switch de núcleo (core). Esta jerarquía se llama “diseño jerárquico de red” y es la base de las redes empresariales modernas.</p>
+</blockquote>
+<h3 id="96-topología-de-malla-mesh"><a class="header" href="#96-topología-de-malla-mesh">9.6. Topología de malla (mesh)</a></h3>
+<p>Los nodos están <strong>interconectados entre sí</strong> por múltiples caminos. Dos variantes:</p>
+<ul>
+<li><strong>Malla completa (full mesh)</strong>: cada nodo está conectado con todos los demás.</li>
+<li><strong>Malla parcial (partial mesh)</strong>: hay múltiples rutas, pero no todas las conexiones posibles.</li>
+</ul>
+<pre><code>  FULL MESH                    PARTIAL MESH
+   [A]──[B]                     [A]──[B]
+   │ \/ │                        │  ╲ │
+   │ /\ │                        │   ╲│
+   [C]──[D]                     [C]──[D]
+
+   Cada nodo habla con todos     Hay rutas alternativas
+   los demás directamente        sin conectar absolutamente todo
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>A favor</th><th>En contra</th></tr>
+</thead>
+<tbody>
+<tr><td>Altísima fiabilidad: si falla un enlace, <strong>hay rutas alternativas</strong></td><td>Mucho cable y puertos (la malla completa con n nodos necesita n(n−1)/2 enlaces)</td></tr>
+<tr><td>Sin “cuello de botella” central: el tráfico puede tomar el camino más corto</td><td>Instalación costosa y laboriosa</td></tr>
+<tr><td>Escala bien para redes críticas</td><td>La lógica de enrutamiento es compleja (hay que elegir la mejor ruta)</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>¿Cuándo usarla?</strong> En sistemas críticos donde la caída no es opción: el núcleo de internet (los grandes proveedores se conectan entre sí en malla parcial), redes militares, y el <strong>Wi-Fi mesh</strong> de hogares modernos (varios puntos de acceso que se cubren entre sí para eliminar zonas sin señal).</p>
+<blockquote>
+<p><strong>Dato real del día a día:</strong> el Wi-Fi mesh de tu casa (esos sistemas con varios aparatos que se llaman igual) es una malla inalámbrica parcial: cada punto se conecta con los otros puntos para extender la cobertura sin cablear.</p>
+</blockquote>
+<h3 id="97-topología-híbrida"><a class="header" href="#97-topología-híbrida">9.7. Topología híbrida</a></h3>
+<p>Combina <strong>dos o más topologías</strong> en una misma red. Es, de lejos, la más común en organizaciones grandes: cada departamento puede tener su estrella, los edificios se conectan en árbol, y las sedes lejanas se unen con malla parcial a través de la WAN.</p>
+<pre><code>   [Edificio 1: árbol]       [Edificio 2: estrella]
+          │                         │
+          └─────────(WAN)───────────┘
+                    (enlace de malla entre sedes)
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>A favor</th><th>En contra</th></tr>
+</thead>
+<tbody>
+<tr><td>Máxima flexibilidad: cada zona usa la topología que le conviene</td><td>Complejidad: hay que entender y administrar varias topologías a la vez</td></tr>
+<tr><td>Crece a medida de las necesidades</td><td>Diagnosticar problemas es más difícil (¿de qué topología es este problema?)</td></tr>
+<tr><td></td><td>Cuesta más documentar y capacitar al equipo</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>¿Cuándo usarla?</strong> Cuando la organización tiene zonas con necesidades distintas (una oficina chica no necesita la redundancia de una sala de servidores). En la práctica: casi toda red empresarial de cierto tamaño es híbrida.</p>
+<h3 id="98-arquitecturas-prácticas-vs-topologías-puras"><a class="header" href="#98-arquitecturas-prácticas-vs-topologías-puras">9.8. Arquitecturas prácticas vs. topologías puras</a></h3>
+<p>Un apunte honesto para principiantes: las topologías “puras” (bus, anillo) son <strong>modelos teóricos e históricos</strong>. Las redes reales de hoy son, en su gran mayoría:</p>
+<ol>
+<li><strong>Estrella</strong> en cada piso/hogar (switch o router central).</li>
+<li><strong>Árbol</strong> uniendo las estrellas (jerarquía de switches).</li>
+<li><strong>Malla parcial</strong> en los enlaces críticos (entre sedes, en el núcleo de los ISP).</li>
+<li><strong>Híbrida</strong> combinando lo anterior.</li>
+</ol>
+<p>Dominar el modelo de estrella es el 80% de lo que necesitás para entender LANs reales. Las demás son contexto que explica el porqué del diseño.</p>
+<hr>
+<h2 id="10-qué-topología-es-mejor"><a class="header" href="#10-qué-topología-es-mejor">10. ¿Qué topología es mejor?</a></h2>
+<h3 id="101-la-respuesta-honesta"><a class="header" href="#101-la-respuesta-honesta">10.1. La respuesta honesta</a></h3>
+<p><strong>No existe la “mejor” topología.</strong> Existe la mejor topología <strong>para cada caso</strong>. La elección depende de cuatro factores que se pesan entre sí:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Factor</th><th>Qué preguntarse</th><th style="text-align: center">Estrella</th><th style="text-align: center">Malla</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Presupuesto</strong></td><td>¿Cuánto puedo gastar en cables, puertos y equipos?</td><td style="text-align: center">Barata</td><td style="text-align: center">Cara (muchos enlaces)</td></tr>
+<tr><td><strong>Fiabilidad</strong></td><td>¿Puedo permitirme que se caiga la red?</td><td style="text-align: center">Punto único de falla (el centro)</td><td style="text-align: center">Redundancia natural</td></tr>
+<tr><td><strong>Escalabilidad</strong></td><td>¿Va a crecer la red?</td><td style="text-align: center">Crece fácil (sumar nodos)</td><td style="text-align: center">Crece caro (n(n−1)/2 enlaces)</td></tr>
+<tr><td><strong>Facilidad de gestión</strong></td><td>¿Quién la va a administrar?</td><td style="text-align: center">Simple, problemas aislados</td><td style="text-align: center">Compleja</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="102-guía-de-decisión-rápida"><a class="header" href="#102-guía-de-decisión-rápida">10.2. Guía de decisión rápida</a></h3>
+<pre><code>¿Cuántos dispositivos aprox.?
+
+    ≤ 20  →  ESTRELLA (un switch/router central alcanza)
+   20–200 →  ÁRBOL de estrellas (un switch por zona + switch central)
+   &gt; 200  →  ÁRBOL + segmentación (VLANs)
+             + MESH parcial en los enlaces críticos
+¿Hay caídas inaceptables? →  agregá redundancia (malla parcial, doble enlace)
+¿Varias sedes?            →  la WAN entre sedes se diseña con malla parcial
+</code></pre>
+<blockquote>
+<p><strong>Regla memorable:</strong> “<em>Si no sabés qué topología usar, usá estrella.</em> Es la respuesta correcta en la mayoría de los casos, y el lugar perfecto para empezar. Las excepciones se justifican solas: cuando la fiabilidad manda (malla) o cuando la escala obliga (árbol/híbrida). La elección equivocada no suele ser “estrella cuando debía ser malla”, sino <strong>no documentar lo que elegiste</strong>.“</p>
+</blockquote>
+<h3 id="103-impacto-de-la-topología-en-la-red"><a class="header" href="#103-impacto-de-la-topología-en-la-red">10.3. Impacto de la topología en la red</a></h3>
+<p>La topología no es un capricho de dibujo: condiciona directamente cuatro propiedades de la red:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Propiedad</th><th>Cómo la afecta la topología</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Rendimiento</strong></td><td>En estrella, el centro puede saturarse con mucho tráfico. En malla, los datos eligen la ruta más corta. En bus/anillo, el medio se comparte y todos compiten.</td></tr>
+<tr><td><strong>Fiabilidad</strong></td><td>Estrella y bus tienen puntos únicos de falla (centro / cable único). Malla y anillo doble sobreviven a fallas parciales.</td></tr>
+<tr><td><strong>Escalabilidad</strong></td><td>Estrella y árbol crecen sumando nodos sin tocar la estructura. Malla crece pero cada nodo nuevo encarece el total.</td></tr>
+<tr><td><strong>Costo (TCO)</strong></td><td>El <strong>TCO</strong> (Total Cost of Ownership — costo total de propiedad) suma la inversión inicial + mantenimiento + costo del tiempo de inactividad. Una malla barata no existe: los enlaces redundantes cuestan. Un bus barato termina saliendo caro en horas de diagnóstico.</td></tr>
+<tr><td><strong>Seguridad</strong></td><td>Las topologías centralizadas (estrella, árbol) facilitan aplicar políticas: todo pasa por un punto que se puede controlar. Las descentralizadas (malla) tienen diversidad de rutas, lo que puede ser positivo (no hay un solo “embudo” para atacar) o negativo (más difícil vigilar todo).</td></tr>
+<tr><td><strong>Gestión</strong></td><td>Estrella: el problema se aísla rápido (es ese nodo o el centro). Anillo: hay que recorrer todo el círculo. Malla: hay que trazarse la ruta de los datos para entender dónde falló.</td></tr>
 </tbody>
 </table>
 </div>
 <hr>
-<h2 id="componentes-de-red-para-redes-locales"><a class="header" href="#componentes-de-red-para-redes-locales">Componentes de Red para Redes Locales</a></h2>
-<p>Para crear una red, se deben conectar al menos dos computadoras u otros dispositivos finales. Los datos pueden transmitirse a través de:</p>
-<ul>
-<li><strong>Cobre</strong> (cableado tradicional)</li>
-<li><strong>Fibra óptica</strong></li>
-<li><strong>WLAN/WiFi</strong></li>
-<li><strong>Combinación de estos</strong></li>
-</ul>
-<h3 id="dispositivos-de-red"><a class="header" href="#dispositivos-de-red">Dispositivos de Red</a></h3>
+<h2 id="11-mapeo-de-la-topología-dibuja-tu-red"><a class="header" href="#11-mapeo-de-la-topología-dibuja-tu-red">11. Mapeo de la topología: dibuja tu red</a></h2>
+<h3 id="111-por-qué-documentar"><a class="header" href="#111-por-qué-documentar">11.1. Por qué documentar</a></h3>
+<p>Una red <strong>sin mapa</strong> es una red sin diagnóstico. Cuando algo falla (y va a fallar), el primer paso de cualquier profesional es <strong>mirar el mapa</strong> y decir “por acá no puede ser; el problema está en esta rama”.</p>
+<p>Además, el mapa es la base de la <strong>continuidad del negocio</strong>: si mañana se va el único que conocía la red, el mapa permite que cualquiera entienda qué hay, cómo está conectado y dónde están los puntos críticos.</p>
+<blockquote>
+<p><strong>Analogía:</strong> navegar sin mapa es posible… hasta que hay tormenta. La red es el barco, el mapa de topología es la carta náutica. Cuando el barco se hunde, la carta es lo primero que buscás.</p>
+</blockquote>
+<h3 id="112-qué-debe-tener-un-buen-mapa-de-red"><a class="header" href="#112-qué-debe-tener-un-buen-mapa-de-red">11.2. Qué debe tener un buen mapa de red</a></h3>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>Dispositivo</th><th>Función</th></tr>
+<tr><th>Elemento</th><th>Qué se dibuja</th></tr>
 </thead>
 <tbody>
-<tr><td><strong>HUB</strong></td><td>Reúnen dispositivos en una LAN. No diferencian participantes individuales. Siempre envía paquetes a todos los usuarios.</td></tr>
-<tr><td><strong>Switch</strong></td><td>Identifica participantes por su <strong>dirección MAC</strong>. Solo envía datos al destinatario deseado.</td></tr>
-<tr><td><strong>Router</strong></td><td>Lee y asigna <strong>direcciones IP</strong>. Permite comunicación fuera de la LAN y uso de Internet.</td></tr>
-<tr><td><strong>Switch de Capa 3</strong></td><td>Combinación de router y switch. Útil en redes grandes por su mayor velocidad.</td></tr>
+<tr><td><strong>Dispositivos</strong></td><td>Routers, switches, access points, servidores, impresoras, PCs</td></tr>
+<tr><td><strong>Enlaces</strong></td><td>Qué conecta a qué, por qué medio (cable/fibra/Wi-Fi) y a qué velocidad</td></tr>
+<tr><td><strong>Segmentos</strong></td><td>Si hay VLANs o subredes, dibujarlas aparte</td></tr>
+<tr><td><strong>Puntos críticos</strong></td><td>Dónde está el punto único de falla (por ejemplo: “si cae el switch del piso 2, se caen 25 máquinas”)</td></tr>
+<tr><td><strong>Cuellos de botella</strong></td><td>Enlaces lentos, equipos viejos, zonas de Wi-Fi débil</td></tr>
 </tbody>
 </table>
 </div>
+<h3 id="113-herramientas-para-mapear"><a class="header" href="#113-herramientas-para-mapear">11.3. Herramientas para mapear</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Nivel</th><th>Herramienta</th></tr>
+</thead>
+<tbody>
+<tr><td>Manual simple</td><td>Dibujo a mano, diagramas en herramientas de diagramación (draw.io, excalidraw)</td></tr>
+<tr><td>Profesional</td><td>Software de monitoreo con <strong>descubrimiento automático</strong> (LLDP/CDP, SNMP, nmap): escanea la red y dibuja la topología de capa 2 y 3 solita</td></tr>
+<tr><td>Cisco / Packet Tracer</td><td>El simulador permite armar y documentar topologías completas</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Regla de administración:</strong> toda red que supere los ~10 dispositivos merece un mapa actualizado. Actualizarlo cada vez que se hace un cambio es parte del trabajo, no un extra.</p>
+</blockquote>
+<hr>
+<h2 id="12-componentes-de-red-en-profundidad"><a class="header" href="#12-componentes-de-red-en-profundidad">12. Componentes de red en profundidad</a></h2>
+<p>Llegó el momento de estudiar las piezas. Acá está el detalle técnico que un futuro administrador necesita.</p>
+<h3 id="121-dispositivos-finales-hosts"><a class="header" href="#121-dispositivos-finales-hosts">12.1. Dispositivos finales (hosts)</a></h3>
+<p>Son los que las personas usan: la computadora, el celular, la impresora, el servidor, la Smart TV, la cámara IP. <strong>Un host es el origen o el destino de los datos</strong> — no un mero transportador.</p>
+<p>Todos los hosts tienen una <strong>NIC</strong> (Network Interface Card — tarjeta de interfaz de red): el componente que los conecta al enlace. Es el “oído y boca” del dispositivo.</p>
+<ul>
+<li>En una notebook suele estar integrada en la placa madre (y tiene además una antena Wi-Fi).</li>
+<li>Cada NIC tiene una dirección <strong>MAC</strong> única de fábrica: su identificador físico.</li>
+</ul>
+<blockquote>
+<p><strong>Dato para “hacelo vos”:</strong> en Windows, abrí una terminal y escribí <code>ipconfig /all</code>; en Linux, <code>ip a</code>. Vas a ver la IP de tu equipo, la máscara, el gateway y la MAC física. Eso que aparece en pantalla son exactamente los conceptos de este curso. Tratá de identificar cada campo con lo que ya sabés.</p>
+</blockquote>
+<h3 id="122-dispositivos-intermedios-los-trabajadores-de-la-red"><a class="header" href="#122-dispositivos-intermedios-los-trabajadores-de-la-red">12.2. Dispositivos intermedios: los “trabajadores” de la red</a></h3>
+<p>Estos son los equipos que hacen que los datos <strong>lleguen</strong> adonde tienen que llegar. Diferenciarlos bien es la base de TODO lo que viene.</p>
+<h4 id="hub-concentrador"><a class="header" href="#hub-concentrador">Hub (concentrador)</a></h4>
+<ul>
+<li><strong>Capa:</strong> 1 (física).</li>
+<li><strong>Qué hace:</strong> recibe una señal en un puerto y la <strong>repite por TODOS los demás puertos</strong>.</li>
+<li><strong>Qué NO hace:</strong> no distingue destinatarios, no aprende nada, no filtra nada.</li>
+<li><strong>Analogía:</strong> un altoparlante en una reunión: lo que decís, lo escuchan todos.</li>
+<li><strong>Estado actual:</strong> obsoleto para redes reales. Lo vemos por historia y porque explica las colisiones.</li>
+</ul>
+<pre><code>  [PC1] →  [HUB] → manda la señal a PC2, PC3 y PC4
+            aunque el destino sea solo PC2
+</code></pre>
+<h4 id="switch-conmutador"><a class="header" href="#switch-conmutador">Switch (conmutador)</a></h4>
+<ul>
+<li><strong>Capa:</strong> 2 (enlace de datos).</li>
+<li><strong>Qué hace:</strong> aprende <strong>quién está en cada puerto</strong> (por la dirección MAC) y envía cada trama <strong>solo al puerto del destinatario</strong>.</li>
+<li><strong>Qué NO hace:</strong> no maneja direcciones IP ni decide rutas entre redes.</li>
+<li><strong>Analogía:</strong> una central telefónica que conoce cada oficina y conecta la llamada directamente, sin que todo el edificio escuche.</li>
+<li><strong>Estado actual:</strong> el corazón de toda LAN moderna.</li>
+</ul>
+<pre><code>  [PC1] →  [Switch] → envía solo a PC2
+            (ya sabe que PC2 está en ese puerto)
+</code></pre>
+<h4 id="router-enrutador"><a class="header" href="#router-enrutador">Router (enrutador)</a></h4>
+<ul>
+<li><strong>Capa:</strong> 3 (red).</li>
+<li><strong>Qué hace:</strong> lee las <strong>direcciones IP</strong>, decide por qué camino enviar los paquetes hacia otras redes, y conecta tu red con el resto del mundo.</li>
+<li><strong>Qué NO hace:</strong> no “inunda” nada ni se entera de MACs ajenas… bueno, en realidad sí usa MAC para el tramo local (ARP), pero su función central es el enrutamiento.</li>
+<li><strong>Analogía:</strong> la oficina central de correos que mira el código postal (la IP) y decide por qué ruta despachar el paquete.</li>
+<li><strong>Estado actual:</strong> el dispositivo que tenés en tu casa (combinado con switch, Wi-Fi y módem en uno solo).</li>
+</ul>
+<pre><code>  [LAN 192.168.1.0] → [Router] → decide ruta → [otra red / Internet]
+</code></pre>
+<h4 id="punto-de-acceso-inalámbrico-ap--access-point"><a class="header" href="#punto-de-acceso-inalámbrico-ap--access-point">Punto de acceso inalámbrico (AP — Access Point)</a></h4>
+<ul>
+<li><strong>Qué hace:</strong> conecta dispositivos <strong>Wi-Fi</strong> a la red cableada. Es como un switch pero con ondas de radio.</li>
+<li><strong>Para qué sirve:</strong> sin AP, los dispositivos inalámbricos no pueden entrar a la LAN.</li>
+</ul>
+<h4 id="módem--ont"><a class="header" href="#módem--ont">Módem / ONT</a></h4>
+<ul>
+<li><strong>Qué hace:</strong> convierte la señal que te entrega el <strong>proveedor</strong> (fibra, cable, DSL, 4G/5G) en una señal que tus dispositivos entienden (Ethernet).</li>
+<li><strong>Por qué existe:</strong> tu red interna habla “Ethernet”; la red del ISP habla “fibra/coaxial”. Alguien tiene que traducir. Ese alguien es el módem.</li>
+</ul>
+<h4 id="firewall"><a class="header" href="#firewall">Firewall</a></h4>
+<ul>
+<li><strong>Qué hace:</strong> filtra el tráfico según reglas de seguridad: permite lo permitido y bloquea el resto.</li>
+<li><strong>Analogía:</strong> el guardia de seguridad del edificio del sistema postal: controla qué cartas entran y salen.</li>
+<li><strong>Dato honesto:</strong> muchos routers hogareños incluyen un firewall básico. Las redes profesionales tienen firewalls dedicados.</li>
+</ul>
+<h3 id="123-tabla-comparativa-de-los-tres-grandes"><a class="header" href="#123-tabla-comparativa-de-los-tres-grandes">12.3. Tabla comparativa de los tres grandes</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Criterio</th><th>Hub</th><th>Switch</th><th>Router</th></tr>
+</thead>
+<tbody>
+<tr><td>Capa OSI</td><td>1 (física)</td><td>2 (enlace)</td><td>3 (red)</td></tr>
+<tr><td>Lee qué dato</td><td>Nada (solo repite señales)</td><td>Dirección MAC</td><td>Dirección IP</td></tr>
+<tr><td>Envía el tráfico</td><td>A todos los puertos</td><td>Solo al puerto destino</td><td>Hacia la red destino</td></tr>
+<tr><td>¿Separa dominios de colisión?</td><td>No</td><td>Sí (por puerto)</td><td>Sí</td></tr>
+<tr><td>¿Separa dominios de broadcast?</td><td>No</td><td>No (sin VLANs)</td><td>Sí</td></tr>
+<tr><td>¿Aprende algo?</td><td>No</td><td>Sí (tabla MAC)</td><td>Sí (tabla de rutas)</td></tr>
+<tr><td>Uso actual</td><td>Obsoleto</td><td>Toda LAN</td><td>Unión de redes, salida a Internet</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Regla fácil de recordar:</strong> <em>el hub replica, el switch entrega, el router decide.</em> Si lo pensás así, nunca más los vas a confundir.</p>
+</blockquote>
+<h3 id="124-switch-de-capa-3-multicapa"><a class="header" href="#124-switch-de-capa-3-multicapa">12.4. Switch de capa 3 (multicapa)</a></h3>
+<p>Existe un híbrido: el <strong>switch de capa 3</strong>, que combina la velocidad del switch con la capacidad de enrutamiento del router. Por eso cuando veas “capa 3” en un switch, significa que puede enrutar entre VLANs o entre redes sin necesitar un router aparte. Es habitual en redes grandes.</p>
+<h3 id="125-los-medios-de-transmisión-en-detalle"><a class="header" href="#125-los-medios-de-transmisión-en-detalle">12.5. Los medios de transmisión en detalle</a></h3>
+<h4 id="par-trenzado-utp"><a class="header" href="#par-trenzado-utp">Par trenzado (UTP)</a></h4>
+<ul>
+<li>Es el cable Ethernet clásico: 8 hilos de cobre trenzados de a pares dentro de una chaqueta, con conector <strong>RJ45</strong>.</li>
+<li><strong>Alcance práctico:</strong> hasta 100 metros por tramo (después se necesita switch o repetidor).</li>
+<li><strong>Categorías comunes:</strong> Cat5e (1 Gbps), Cat6 (1-10 Gbps según distancia), Cat6a (10 Gbps).</li>
+<li><strong>Uso:</strong> la columna vertebral de las LANs cableadas.</li>
+</ul>
+<h4 id="fibra-óptica"><a class="header" href="#fibra-óptica">Fibra óptica</a></h4>
+<ul>
+<li>Los datos viajan como <strong>pulsos de luz</strong> por filamentos de vidrio.</li>
+<li><strong>Ventajas:</strong> velocidades enormes (10/40/100/400 Gbps), distancias largas (kilómetros), inmune a interferencias eléctricas.</li>
+<li><strong>Variantes:</strong> monomodo (largas distancias, láser) y multimodo (distancias cortas, LED).</li>
+<li><strong>Uso:</strong> internet actual — desde los cables submarinos entre continentes hasta la “fibra al hogar” (FTTH) que te instala tu proveedor.</li>
+</ul>
+<h4 id="coaxial"><a class="header" href="#coaxial">Coaxial</a></h4>
+<ul>
+<li>Un conductor central rodeado de un blindaje. Fue el cable de las redes Ethernet originales y hoy es el cable de <strong>TV por cable / internet por cable</strong> (estándar DOCSIS).</li>
+</ul>
+<h4 id="inalámbrico"><a class="header" href="#inalámbrico">Inalámbrico</a></h4>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Tipo</th><th>Alcance típico</th><th>Uso</th></tr>
+</thead>
+<tbody>
+<tr><td>Wi-Fi (802.11)</td><td>10-50 m en interiores</td><td>LAN inalámbrica</td></tr>
+<tr><td>Bluetooth</td><td>~10 m</td><td>Periféricos y PAN</td></tr>
+<tr><td>Celular 4G/5G</td><td>Kilómetros (cobertura de la antena)</td><td>Internet móvil</td></tr>
+<tr><td>Satelital</td><td>Global</td><td>Zonas sin otra cobertura</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Dato importante sobre velocidades (error típico de principiantes):</strong> cuando un proveedor te vende “300 megas”, habla de <strong>megabits por segundo (Mbps)</strong>. Un <strong>megabyte (MB)</strong> son <strong>8 megabits</strong>. O sea: 300 Mbps ≈ 37,5 MB/s reales. La gente confunde las unidades y cree que su conexión “anda mal”. Saber esto te va a evitar dolores de cabeza de por vida.</p>
+</blockquote>
+<h3 id="126-el-camino-completo-de-un-dato-versión-corta"><a class="header" href="#126-el-camino-completo-de-un-dato-versión-corta">12.6. El camino completo de un dato (versión corta)</a></h3>
+<p>Ya tenés todas las piezas. Armemos el rompecabezas con lo aprendido:</p>
+<ol>
+<li>Tu <strong>host</strong> (PC) crea los datos.</li>
+<li>La <strong>NIC</strong> los convierte en señales que viajan por el <strong>enlace</strong> (cable o Wi-Fi).</li>
+<li>El <strong>switch</strong> (si hay) los entrega al destino correcto dentro de tu LAN.</li>
+<li>El <strong>router</strong> los saca de tu red y los envía hacia internet (decidiendo la ruta).</li>
+<li>En internet, <strong>los routers de los ISP</strong> los van pasando de red en red.</li>
+<li>En destino, el proceso se invierte: router → switch → enlace → NIC → dispositivo final.</li>
+</ol>
+<p>Ese trayecto, todo el tiempo, para todo lo que hacés en la red. Ahora sí: vamos a verlo en detalle con un ejemplo real.</p>
+<hr>
+<h2 id="13-qué-pasa-cuando-abro-google-el-viaje-completo"><a class="header" href="#13-qué-pasa-cuando-abro-google-el-viaje-completo">13. ¿Qué pasa cuando abro Google? El viaje completo</a></h2>
+<p>Esta es la sección más importante del manual, porque junta TODO lo anterior en una sola historia. Cuando escribís <code>google.com</code> en el navegador y tocás Enter, esto es lo que pasa (en orden, y sin profundizar todavía):</p>
+<h3 id="paso-1--tu-navegador-prepara-el-pedido"><a class="header" href="#paso-1--tu-navegador-prepara-el-pedido">Paso 1 — Tu navegador prepara el pedido</a></h3>
+<p>El navegador genera una <strong>solicitud</strong> de la página (protocolo HTTP/HTTPS). Esa solicitud es un montón de datos que quieren ir a Google.</p>
+<h3 id="paso-2--traducir-el-nombre-a-una-dirección"><a class="header" href="#paso-2--traducir-el-nombre-a-una-dirección">Paso 2 — Traducir el nombre a una dirección</a></h3>
+<p>Tu navegador no sabe dónde está “google.com”: internet no entiende nombres, entiende <strong>direcciones IP</strong>. Entonces pregunta al <strong>servidor DNS</strong> (el “directorio telefónico” de internet): “¿cuál es la IP de google.com?”. El DNS responde, por ejemplo, <code>142.250.64.14</code>.</p>
+<blockquote>
+<p><strong>Analogía:</strong> el DNS es la guía telefónica de internet. Guardás “Pizzería del Centro” en la agenda, pero el teléfono solo marca números.</p>
+</blockquote>
+<h3 id="paso-3--el-viaje-de-ida"><a class="header" href="#paso-3--el-viaje-de-ida">Paso 3 — El viaje de ida</a></h3>
+<p>La solicitud se parte en <strong>paquetes</strong> y cada paquete sale de tu host:</p>
+<ol>
+<li>Atraviesa tu red local (<strong>LAN</strong>) por el switch, si lo hay.</li>
+<li>Llega al <strong>router de tu casa</strong>, que le pone tu “dirección de origen” y lo despacha a través del <strong>módem</strong> hacia el proveedor (en el camino, el router aplica <strong>NAT</strong>, el mecanismo que permite que miles de redes compartan un mismo rango de IPs).</li>
+<li>Los <strong>routers de los ISP</strong> lo reenvían de red en red, eligiendo cada vez la mejor ruta, hasta llegar al router de Google.</li>
+</ol>
+<h3 id="paso-4--el-servidor-de-google-responde"><a class="header" href="#paso-4--el-servidor-de-google-responde">Paso 4 — El servidor de Google responde</a></h3>
+<p>Los servidores de Google procesan la solicitud y devuelven la página. La respuesta viaja por <strong>el mismo tipo de camino pero en sentido inverso</strong>.</p>
+<h3 id="paso-5--el-viaje-de-vuelta"><a class="header" href="#paso-5--el-viaje-de-vuelta">Paso 5 — El viaje de vuelta</a></h3>
+<p>Los paquetes vuelven: routers de ISP → tu router → tu LAN → tu host. Tu navegador los <strong>rearma en orden</strong> (gracias a TCP) y <strong>dibuja la página</strong> en pantalla.</p>
+<p>Todo esto, en circunstancias normales, tarda <strong>menos de un segundo</strong>.</p>
+<pre><code>  [Tu PC] ──[tu router/NAT]──[ISP]──[routers de internet]──[servidores de Google]
+     ▲                                                           │
+     │                     ← respuesta ←                        │
+     └───────────────────────────────────────────────────────────┘
+     (DNS primero: "¿qué IP tiene google.com?")
+</code></pre>
+<h3 id="los-términos-técnicos-que-aparecieron-y-qué-significan"><a class="header" href="#los-términos-técnicos-que-aparecieron-y-qué-significan">Los términos técnicos que aparecieron (y qué significan)</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Término</th><th>Qué es (en una línea)</th></tr>
+</thead>
+<tbody>
+<tr><td>Dirección IP</td><td>El “código postal” numérico de cada dispositivo</td></tr>
+<tr><td>DNS</td><td>El directorio que traduce nombres a IPs</td></tr>
+<tr><td>Paquete</td><td>Un “sobre” de datos con dirección de origen y destino</td></tr>
+<tr><td>NAT</td><td>El mecanismo del router que traduce direcciones privadas a públicas</td></tr>
+<tr><td>Enrutamiento</td><td>La decisión de qué camino toma cada paquete</td></tr>
+<tr><td>TCP</td><td>El protocolo que garantiza que todo llegue completo y en orden</td></tr>
+<tr><td>Dirección MAC</td><td>El identificador físico de la tarjeta de red de cada dispositivo</td></tr>
+<tr><td>Switch</td><td>El equipo que entrega datos dentro de tu red local</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Recordá este momento.</strong> Cuando domines el vocabulario técnico, vas a poder explicarle a cualquiera — con lujo de detalle — qué pasa entre el Enter y la página en pantalla.</p>
+<hr>
+<h2 id="14-comprobá-lo-que-aprendiste"><a class="header" href="#14-comprobá-lo-que-aprendiste">14. Comprobá lo que aprendiste</a></h2>
+<p>Intenta responder sin mirar las respuestas. Cuando termines, desplegá cada una para verificar.</p>
+<h3 id="pregunta-1"><a class="header" href="#pregunta-1">Pregunta 1</a></h3>
+<p>¿Cuáles son los tres ingredientes básicos de toda red?</p>
+<details>
+<summary>Ver respuesta</summary>
+<p><strong>Nodos</strong> (los dispositivos), <strong>enlaces</strong> (los caminos: cable, fibra, Wi-Fi) y <strong>protocolos</strong> (el idioma común que les permite entenderse).</p>
+</details>
+<h3 id="pregunta-2"><a class="header" href="#pregunta-2">Pregunta 2</a></h3>
+<p>Tu oficina tiene 30 computadoras conectadas a un switch central. ¿Qué topología es? ¿Qué pasa si el switch se estropea?</p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Es una topología en <strong>estrella</strong>: todos los nodos cuelgan de un dispositivo central. Si el centro (switch) falla, <strong>toda la red se cae</strong> — es el punto único de falla de la estrella.</p>
+</details>
+<h3 id="pregunta-3"><a class="header" href="#pregunta-3">Pregunta 3</a></h3>
+<p>¿Cuál es la diferencia entre un hub y un switch?</p>
+<details>
+<summary>Ver respuesta</summary>
+<p>El <strong>hub</strong> repite toda señal por TODOS los puertos (no distingue destinatarios). El <strong>switch</strong> aprende en qué puerto está cada dispositivo y envía los datos <strong>solo al puerto del destinatario</strong>. Regla: <em>el hub replica, el switch entrega, el router decide</em>.</p>
+</details>
+<h3 id="pregunta-4"><a class="header" href="#pregunta-4">Pregunta 4</a></h3>
+<p>¿Qué tipo de red va de una ciudad a otra conectando sucursales de una empresa? ¿Y qué tipo conecta tus auriculares al celular?</p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Sucursales en distintas ciudades → <strong>WAN</strong> (y se contrata al proveedor, no se cablea solo). Auriculares al celular → <strong>PAN</strong> (red de área personal, típicamente Bluetooth).</p>
+</details>
+<h3 id="pregunta-5"><a class="header" href="#pregunta-5">Pregunta 5</a></h3>
+<p>¿Por qué una red P2P no suele ser la mejor opción para una empresa?</p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Porque no tiene <strong>control central</strong>: escalar es caótico, la seguridad y los permisos son difíciles de gestionar, y no hay un punto donde respaldar y proteger los datos. El modelo <strong>cliente-servidor</strong> centraliza la administración, los permisos y los respaldos, que es justo lo que una empresa necesita.</p>
+</details>
+<h3 id="pregunta-6"><a class="header" href="#pregunta-6">Pregunta 6</a></h3>
+<p>Estás navegando y la página tarda mucho en cargar. Tu amigo dice “seguro es tu placa de red, la capa 1”. ¿Qué podés responderle con criterio?</p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Que la lentitud puede venir de <strong>muchas capas</strong>: el enlace (capa 1), la red doméstica con muchos dispositivos compitiendo, el enrutamiento del ISP, o el propio servidor de la página (capa 7). Con una sola medición no se puede culpar a la placa de red. Un buen diagnóstico separa los síntomas: ¿pasa con un solo sitio o con todos? ¿pasa por cable y por Wi-Fi? ¿pasa a otra hora?</p>
+</details>
+<h3 id="pregunta-7"><a class="header" href="#pregunta-7">Pregunta 7</a></h3>
+<p>El proveedor te vende “100 megas”. ¿Cuántos megabytes por segundo podés esperar como máximo, aproximadamente?</p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Los “megas” del proveedor son <strong>megabits por segundo</strong>. Un byte son 8 bits, así que 100 Mbps ≈ <strong>12,5 MB/s</strong> como máximo teórico (en la práctica, menos). Confundir las unidades es el error de principiante más común del mundo de las redes.</p>
+</details>
+<hr>
+<h2 id="15-glosario"><a class="header" href="#15-glosario">15. Glosario</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Término</th><th>Definición</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Red</strong></td><td>Conjunto de dos o más dispositivos conectados para compartir datos y recursos</td></tr>
+<tr><td><strong>Nodo</strong></td><td>Cualquier dispositivo de la red con capacidad de enviar o recibir datos</td></tr>
+<tr><td><strong>Host</strong></td><td>Dispositivo final (PC, celular, impresora, servidor) origen o destino de los datos</td></tr>
+<tr><td><strong>Enlace</strong></td><td>Medio físico o inalámbrico por el que viajan los datos (cable, fibra, Wi-Fi)</td></tr>
+<tr><td><strong>Protocolo</strong></td><td>Conjunto de reglas que define cómo se comunican los dispositivos</td></tr>
+<tr><td><strong>NIC</strong></td><td>Tarjeta de interfaz de red: el componente que conecta un dispositivo al enlace</td></tr>
+<tr><td><strong>Dirección MAC</strong></td><td>Identificador físico único de 48 bits grabado en cada tarjeta de red</td></tr>
+<tr><td><strong>Dirección IP</strong></td><td>Identificador lógico numérico de un dispositivo dentro de una red</td></tr>
+<tr><td><strong>ISP</strong></td><td>Proveedor de servicios de internet: la empresa que te brinda la conexión</td></tr>
+<tr><td><strong>PAN</strong></td><td>Red de área personal: metros de alcance (Bluetooth)</td></tr>
+<tr><td><strong>LAN / WLAN</strong></td><td>Red de área local (cableada / inalámbrica): un edificio, una casa</td></tr>
+<tr><td><strong>CAN</strong></td><td>Red de área de campus: varios edificios de una misma organización</td></tr>
+<tr><td><strong>MAN</strong></td><td>Red de área metropolitana: una ciudad</td></tr>
+<tr><td><strong>WAN</strong></td><td>Red de área extendida: entre ciudades o países</td></tr>
+<tr><td><strong>GAN</strong></td><td>Red de área global: internet</td></tr>
+<tr><td><strong>VPN</strong></td><td>Red privada virtual: túnel cifrado dentro de una red pública</td></tr>
+<tr><td><strong>P2P</strong></td><td>Red entre pares: todos los nodos son iguales</td></tr>
+<tr><td><strong>Cliente-servidor</strong></td><td>Modelo con roles fijos: servidores centrales y clientes que consumen</td></tr>
+<tr><td><strong>Topología</strong></td><td>La forma de la red: cómo están conectados los nodos</td></tr>
+<tr><td><strong>Hub</strong></td><td>Repetidor de capa 1 que envía toda señal a todos los puertos (obsoleto)</td></tr>
+<tr><td><strong>Switch</strong></td><td>Equipo de capa 2 que entrega los datos solo al puerto del destinatario</td></tr>
+<tr><td><strong>Router</strong></td><td>Equipo de capa 3 que decide la ruta de los datos entre redes</td></tr>
+<tr><td><strong>AP (Access Point)</strong></td><td>Equipo que conecta dispositivos Wi-Fi a la red cableada</td></tr>
+<tr><td><strong>Módem / ONT</strong></td><td>Equipo que traduce la señal del proveedor a Ethernet</td></tr>
+<tr><td><strong>Firewall</strong></td><td>Equipo o software que filtra el tráfico según reglas de seguridad</td></tr>
+<tr><td><strong>TCO</strong></td><td>Costo total de propiedad: inversión inicial + mantenimiento + costos de caídas</td></tr>
+<tr><td><strong>DNS</strong></td><td>Sistema que traduce nombres de dominio a direcciones IP</td></tr>
+<tr><td><strong>Encaminar / Enrutar</strong></td><td>Decidir por qué camino enviar los paquetes</td></tr>
+<tr><td><strong>Ancho de banda</strong></td><td>Cantidad de datos que puede transportar un enlace por unidad de tiempo</td></tr>
+<tr><td><strong>Latencia</strong></td><td>Tiempo que tarda un dato en ir de un punto a otro</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="16-resumen-en-10-puntos"><a class="header" href="#16-resumen-en-10-puntos">16. Resumen en 10 puntos</a></h2>
+<ol>
+<li>Una <strong>red</strong> es un conjunto de dispositivos conectados para compartir datos y recursos.</li>
+<li>Toda red tiene <strong>tres ingredientes</strong>: nodos, enlaces y protocolos.</li>
+<li>Las redes traen grandes <strong>ventajas</strong> (compartir, centralizar, comunicar) y también <strong>costos</strong> (seguridad, dependencia, mantenimiento).</li>
+<li>Antes de crear una red hay que responder <strong>siete preguntas</strong>: requisitos, alcance, participantes, privacidad, seguridad, hardware y soporte.</li>
+<li>La administración no es opcional: <strong>monitorear, actualizar, gestionar permisos y mantener</strong> son las cuatro tareas básicas.</li>
+<li>Las redes se clasifican por alcance: <strong>PAN → LAN → CAN → MAN → WAN → GAN</strong>.</li>
+<li>La <strong>VPN</strong> es un túnel cifrado que atraviesa redes públicas con privacidad.</li>
+<li>Hay dos modelos de relación: <strong>P2P</strong> (todos iguales) y <strong>cliente-servidor</strong> (jerarquía con centro).</li>
+<li>Las topologías — <strong>estrella, bus, anillo, árbol, malla e híbrida</strong> — definen la forma, la fiabilidad y el costo de la red. La estrella es la reina de las LANs modernas.</li>
+<li><strong>Hub replica, switch entrega, router decide.</strong> Con esa frase y el mapa del viaje de “abrir Google”, ya tenés el esqueleto de todo el curso.</li>
+</ol>
+<hr>
+<h2 id="próximo-paso"><a class="header" href="#próximo-paso">Próximo paso</a></h2>
+<p>Este manual te dio el <strong>mapa general</strong>: qué es una red y con qué piezas se construye.</p>
+<p>El siguiente paso profundiza en <em>cómo piensan</em> los dispositivos: cómo se apilan los “sobres” de datos (la encapsulación), qué hace cada capa y cómo viaja un paquete de punta a punta con sus protocolos. Es el paso que convierte el mapa en un <strong>plano de ingeniería</strong>.</p>
+<p>Cuando lo tengas listo, vas a poder decir: “lo que acá llamé <em>router decide</em>, allá se llama <em>capa 3</em>”, y ahí empieza a aparecer el vocabulario técnico profesional.</p>
 <hr>
 <blockquote>
-<p><strong>Fuente:</strong> The Network Monitor, CCNadesdecero.es</p>
+<p><strong>Fuente:</strong> Documentación propia basada en estándares IEEE 802, material educativo de redes (CCNA, redes de computadoras) y el manual original de este curso.</p>
 </blockquote>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="18-modelos-de-red"><a class="header" href="#18-modelos-de-red">18. Modelos de Red</a></h1>
@@ -77950,7 +78689,7 @@ Broadcast: 192.168.10.255 (bits de host = 11111110 → 255)
 <li><a href="#tipos-de-nat">Tipos de NAT</a></li>
 <li><a href="#seguridad-nat">Seguridad NAT</a></li>
 <li><a href="#ventajas-y-desventajas-de-las-nat">Ventajas y desventajas de las NAT</a></li>
-<li><a href="#impacto-en-el-rendimiento-1">Impacto en el rendimiento</a></li>
+<li><a href="#impacto-en-el-rendimiento">Impacto en el rendimiento</a></li>
 <li><a href="#carrier-grade-nat-cg-nat">Carrier Grade NAT (CG-NAT)</a></li>
 <li><a href="#comprobación-de-uso-de-cg-nat">Comprobación de uso de CG-NAT</a></li>
 <li><a href="#impacto-de-cg-nat-en-usuarios">Impacto de CG-NAT en usuarios</a></li>
@@ -78006,7 +78745,7 @@ Broadcast: 192.168.10.255 (bits de host = 11111110 → 255)
 <li>Mayor complejidad en configuración y mantenimiento, principalmente a la hora de establecer reglas de traducción de direcciones IP y puertos para aplicaciones específicas. Por ejemplo, NAT modifica los valores en los encabezados que interfieren en las verificaciones de integridad realizadas por IPsec y otros protocolos de tunneling.</li>
 <li>Posibles interrupciones en conexiones de Protocolo de Control de Transmisión (Transmission Control Protocol, TCP). Los servicios que requieren una conexión TCP desde una red externa o “protocolos” sin estado pueden interrumpirse. A menos que el router NAT esté configurado para admitir estos protocolos, los paquetes entrantes podrían no llegar a su destino.</li>
 </ul>
-<h3 id="impacto-en-el-rendimiento-1"><a class="header" href="#impacto-en-el-rendimiento-1">Impacto en el rendimiento</a></h3>
+<h3 id="impacto-en-el-rendimiento"><a class="header" href="#impacto-en-el-rendimiento">Impacto en el rendimiento</a></h3>
 <p>NAT ayuda a reducir la carga en la red cuando permite que varios dispositivos compartan una única dirección IP pública. Esto puede ser útil cuando contamos con pocas o una única IP Pública disponible, aportando también una capa de seguridad al impedir la no identificación y el acceso directo a los dispositivos internos de la red.</p>
 <p>Sin embargo, también puede generar limitaciones en el ancho de banda y posibles problemas de conectividad en entornos de red con un gran número de dispositivos y tráfico de red intenso. En entornos con NAT PAT se puede producir una congestión si hay muchas conexiones simultáneas desde múltiples dispositivos, lo que puede añadir una latencia adicional en la comunicación de red afectando negativamente a la experiencia del usuario.</p>
 <h3 id="carrier-grade-nat-cg-nat"><a class="header" href="#carrier-grade-nat-cg-nat">Carrier Grade NAT (CG-NAT)</a></h3>

@@ -36,7 +36,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "dark";
-            window.path_to_searchindex_js = "../searchindex-810a00bc.js";
+            window.path_to_searchindex_js = "../searchindex-48e3875e.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-cd1280d9.js"></script>
@@ -23745,6 +23745,7 @@ describe("subscriptions mappers", () =&gt; {
 <blockquote>
 <p><strong>paypal.webhook-verifier.test.ts — tests de verificación de firma/webhook (cryptografía)</strong><br>Ruta: <code>backend-fastify/src/modules/subscriptions/_tests_/infrastructure/paypal.webhook-verifier.test.ts</code></p>
 </blockquote>
+<p>{% raw %}</p>
 <pre><code class="language-typescript">import { describe, it, beforeEach, afterEach, mock } from "node:test"
 import assert from "node:assert/strict"
 import { env } from "@/config/env"
@@ -23944,10 +23945,12 @@ describe("isTrustedCertUrl", () =&gt; {
   })
 })
 </code></pre>
+<p>{% endraw %}</p>
 <h4 id="2455-webhookcontrollertestts"><a class="header" href="#2455-webhookcontrollertestts">24.5.5 <code>webhook.controller.test.ts</code></a></h4>
 <blockquote>
 <p><strong>webhook.controller.test.ts — tests del controller de webhooks</strong><br>Ruta: <code>backend-fastify/src/modules/subscriptions/_tests_/presentation/webhook.controller.test.ts</code></p>
 </blockquote>
+<p>{% raw %}</p>
 <pre><code class="language-typescript">import { describe, it, beforeEach, afterEach, mock } from "node:test"
 import assert from "node:assert/strict"
 import { env } from "@/config/env"
@@ -24536,6 +24539,7 @@ describe("webhookController.receive", () =&gt; {
   })
 })
 </code></pre>
+<p>{% endraw %}</p>
 <h2 id="25-módulo-super-admin--operación-global-del-sistema"><a class="header" href="#25-módulo-super-admin--operación-global-del-sistema">25. Módulo super-admin — operación global del sistema</a></h2>
 <p>El módulo <code>super-admin</code> es el <strong>panel de control de la plataforma</strong> (no de una tienda). Lo usa el operador del sistema para ver métricas globales, listar todas las tiendas con sus usuarios, auditar eventos de suscripción y ajustar estados. <strong>Solo usuarios con rol <code>super_admin</code></strong> (sin tienda asignada).</p>
 <h3 id="endpoints-prefijo-super-admin"><a class="header" href="#endpoints-prefijo-super-admin">Endpoints (prefijo <code>/super-admin</code>)</a></h3>
