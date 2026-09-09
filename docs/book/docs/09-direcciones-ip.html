@@ -36,7 +36,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "dark";
-            window.path_to_searchindex_js = "../searchindex-4ccd5ef4.js";
+            window.path_to_searchindex_js = "../searchindex-4f628c84.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-cd1280d9.js"></script>
@@ -175,313 +175,607 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="redes---direcciones-ip-y-subredes"><a class="header" href="#redes---direcciones-ip-y-subredes">Redes - Direcciones IP y Subredes</a></h1>
+                        <h1 id="09-direcciones-ip-y-subredes"><a class="header" href="#09-direcciones-ip-y-subredes">09. Direcciones IP y Subredes</a></h1>
 <hr>
 <h2 id="índice"><a class="header" href="#índice">Índice</a></h2>
 <ul>
-<li><a href="#qué-es-una-dirección-ip">¿Qué es una Dirección IP?</a>
-<ul>
-<li><a href="#el-protocolo-de-internet-ip">El Protocolo de Internet (IP)</a></li>
-<li><a href="#cómo-funciona-ip">Cómo Funciona IP</a></li>
-<li><a href="#versiones-de-ip">Versiones de IP</a></li>
-</ul>
-</li>
-<li><a href="#direcciones-ipv4">Direcciones IPv4</a>
-<ul>
-<li><a href="#máscaras-de-subred">Máscaras de Subred</a></li>
-<li><a href="#clases-de-direcciones-ip">Clases de Direcciones IP</a></li>
-<li><a href="#resumen-clases-de-direcciones-ip-y-representaciones-de-bits">Resumen: Clases y Representaciones de Bits</a></li>
-<li><a href="#direcciones-privadas">Direcciones Privadas</a></li>
-<li><a href="#direcciones-especiales">Direcciones Especiales</a></li>
-<li><a href="#agotamiento-de-direcciones-ipv4">Agotamiento de Direcciones IPv4</a></li>
-</ul>
-</li>
-<li><a href="#direcciones-ipv6">Direcciones IPv6</a>
-<ul>
-<li><a href="#abreviatura-de-direcciones-ipv6">Abreviatura de Direcciones IPv6</a></li>
-<li><a href="#direcciones-ipv6-privadas">Direcciones IPv6 Privadas</a></li>
-</ul>
-</li>
-<li><a href="#resolución-de-nombres">Resolución de Nombres</a></li>
-<li><a href="#subredes">Subredes</a>
-<ul>
-<li><a href="#qué-es-una-subred">¿Qué es una Subred?</a></li>
-<li><a href="#proceso-para-crear-subredes">Proceso para Crear Subredes</a></li>
-<li><a href="#comunicación-entre-subredes">Comunicación entre Subredes</a></li>
-<li><a href="#subredes-ipv6">Subredes IPv6</a></li>
-<li><a href="#redes-punto-a-punto">Redes Punto a Punto</a></li>
-<li><a href="#qué-significan-las-diferentes-partes-de-una-dirección-ip">¿Qué Significan las Diferentes Partes de una Dirección IP?</a></li>
-<li><a href="#importancia-de-las-subredes">Importancia de las Subredes</a></li>
-<li><a href="#qué-es-una-máscara-de-subred">¿Qué es una Máscara de Subred?</a></li>
-</ul>
-</li>
-<li><a href="#tabla-de-referencia-de-máscaras-de-subred">Tabla de Referencia de Máscaras de Subred</a></li>
-<li><a href="#rangos-de-direcciones-de-clase">Rangos de Direcciones de Clase</a></li>
-<li><a href="#conclusión">Conclusión</a></li>
+<li><a href="#1-el-problema-que-resuelven-las-direcciones-ip">El problema que resuelven las direcciones IP</a></li>
+<li><a href="#2-binario-y-hexadecimal-las-herramientas">Binario y hexadecimal: las herramientas</a></li>
+<li><a href="#3-la-anatomía-de-una-dirección-ipv4-red--host">La anatomía de una dirección IPv4: red + host</a></li>
+<li><a href="#4-la-máscara-de-subred">La máscara de subred</a></li>
+<li><a href="#5-las-clases-de-direcciones-el-legado">Las clases de direcciones: el legado</a></li>
+<li><a href="#6-direcciones-especiales-y-privadas">Direcciones especiales y privadas</a></li>
+<li><a href="#7-dirección-de-red-y-dirección-de-broadcast-los-dos-bordes">Dirección de red y dirección de broadcast: los dos bordes</a></li>
+<li><a href="#8-subredes-por-qué-dividir-y-cómo-se-hace">Subredes: por qué dividir y cómo se hace</a></li>
+<li><a href="#9-la-tabla-de-máscaras-completa">La tabla de máscaras completa</a></li>
+<li><a href="#10-el-cálculo-práctico-en-4-pasos">El cálculo práctico en 4 pasos</a></li>
+<li><a href="#11-ipv6-lo-que-tenés-que-saber">IPv6: lo que tenés que saber</a></li>
+<li><a href="#12-dhcp-de-dónde-sale-tu-ip">DHCP: de dónde sale tu IP</a></li>
+<li><a href="#13-la-resolución-de-nombres-dns">La resolución de nombres: DNS</a></li>
+<li><a href="#14-tu-ip-en-la-práctica">Tu IP en la práctica</a></li>
+<li><a href="#15-comprobá-lo-que-aprendiste">Comprobá lo que aprendiste</a></li>
+<li><a href="#16-glosario">Glosario</a></li>
+<li><a href="#17-resumen-en-10-puntos">Resumen en 10 puntos</a></li>
 </ul>
 <hr>
-<h2 id="1-qué-es-una-dirección-ip"><a class="header" href="#1-qué-es-una-dirección-ip">1. ¿Qué es una Dirección IP?</a></h2>
-<p>Una dirección IP (protocolo de internet, por sus siglas en inglés) es una representación numérica que identifica una interfaz concreta de manera única en la red.</p>
-<p>Las direcciones IPv4 tienen una longitud de 32 bits, que permite un máximo de 4.294.967.296 (2^32) direcciones únicas. Las direcciones IPv6 son de 128 bits, lo que permite 3,4 x 10^38 (2^128) direcciones únicas.</p>
-<p>No obstante, el conjunto total de direcciones utilizables en ambas versiones es menor a causa de una serie de direcciones reservadas y otros aspectos a considerar.</p>
-<p>Las direcciones IP son números binarios, pero, generally, se expresan en forma decimal (IPv4) o hexadecimal (IPv6) para facilitar su lectura y uso por parte de los humanos.</p>
-<hr>
-<h3 id="11-el-protocolo-de-internet-ip"><a class="header" href="#11-el-protocolo-de-internet-ip">1.1. El Protocolo de Internet (IP)</a></h3>
-<p>Como ya hemos dicho, IP significa «protocolo de internet» y describe un conjunto de estándares y requisitos para crear y transmitir paquetes de datos (o datagramas) entre las redes. El protocolo de internet (IP) es parte de la capa de internet del conjunto de protocolos de internet. En el modelo OSI, la IP se consideraría parte de la capa de red. Tradicionalmente, IP se usa junto con un protocolo de nivel superior, de los cuales el más frecuente es TCP. El estándar IP está regido por la especificación RFC 791.</p>
-<h3 id="12-cómo-funciona-ip"><a class="header" href="#12-cómo-funciona-ip">1.2. Cómo Funciona IP</a></h3>
-<p>Se ha diseñado el protocolo IP para funcionar en una red dinámica, lo que significa que IP debe operar sin un directorio o monitor central y que no puede depender de la existencia de enlaces o nodos específicos. IP es un protocolo sin conexión orientado a datagramas, por lo tanto, cada paquete debe contener un encabezado con la dirección IP de origen, la de destino y otros datos para poder entregarlo con éxito.</p>
-<p>Todos estos factores hacen de IP un protocolo no fiable, que consigue entregar los datos con el mejor esfuerzo. La parte de corrección de errores se realiza en otros protocolos de nivel superior, como TCP, que es un protocolo orientado a la conexión, y UDP, que es uno sin conexión.</p>
-<p>La mayoría del tráfico de internet es TCP/IP.</p>
-<h3 id="13-versiones-de-ip"><a class="header" href="#13-versiones-de-ip">1.3. Versiones de IP</a></h3>
-<p>Actualmente hay dos versiones de IP en uso: IPv4 e IPv6. El protocolo IPv4 original todavía se usa en internet y en muchas redes corporativas. Sin embargo, el protocolo IPv4 solo permite 2^32 direcciones que, aunque puedan parecer muchas, no lo son si tenemos en cuenta la forma de asignarlas, así como el gran número de solicitudes de las mismas. A causa de todo ello, podríamos encontrarnos con que no habría suficientes direcciones únicas para todos los dispositivos conectados a internet.</p>
-<p>El Grupo de Trabajo de Ingeniería de Internet (Internet Engineering Task Force o IETF, por sus siglas en inglés) desarrolló el protocolo IPv6, que se formalizó en 1998. Esta actualización incrementó sustancialmente el espacio de direcciones disponible y permite asignar hasta 2^128. Además, se incluyeron cambios para mejorar la eficiencia de los encabezados de paquetes IP, así como mejoras en el enrutamiento y la seguridad.</p>
-<hr>
-<h2 id="2-direcciones-ipv4"><a class="header" href="#2-direcciones-ipv4">2. Direcciones IPv4</a></h2>
-<p>Las direcciones IPv4 son básicamente números binarios de 32 bits que consisten en las dos subdirecciones (identificadores) mencionadas anteriormente que identifican la red y el host a la red, respectivamente, con un límite imaginario que los separa. Una dirección IP, como tal, generalmente se muestra como 4 octetos de números, del 0 al 255, representados en forma decimal en lugar de binaria.</p>
-<p>Por ejemplo, la dirección <code>168.212.226.204</code> representa el número binario de 32 bits <code>10101000.11010100.11100010.11001100</code>.</p>
-<p>El número binario es importante, porque es lo que determinará a qué clase de red pertenece una dirección IP.</p>
-<p>Una dirección IPv4 se expresa típicamente en notación decimal con puntos, representando cada ocho bits (octetos) mediante un número del 1 al 255, separando cada octeto por un punto. Un ejemplo de dirección IPv4 sería así: <code>192.168.17.43</code></p>
-<p>Las direcciones IPv4 están compuestas de dos partes. Los primeros números de la dirección indican la red, mientras que los últimos especifican el host concreto. La máscara de subred es lo que indica qué parte de una dirección es la de la red y qué parte se refiere al host específico.</p>
-<p>Un paquete con una dirección de destino que no se encuentre en la misma red que la dirección de origen se reenviará o enrutará a la red apropiada. Una vez que se encuentre en la red correcta, la parte del host de la dirección determinará a qué interfaz se entrega el paquete.</p>
-<hr>
-<h3 id="21-máscaras-de-subred"><a class="header" href="#21-máscaras-de-subred">2.1. Máscaras de Subred</a></h3>
-<p>Cada dirección IP identifica una red y una interfaz única en la misma. También se puede escribir la máscara de subred en notación decimal, con puntos, y determina dónde termina la parte de la red y dónde comienza la parte del host de la dirección IP.</p>
-<p>Cuando se expresa en binario, cualquier bit puesto a uno significa que el correspondiente bit en la dirección IP es parte de la dirección de red. Los bits puestos a cero indican los bits correspondientes a parte de la dirección del host en la dirección IP.</p>
-<p>Los bits que marcar la máscara de subred deben ser unos consecutivos. La mayoría de las máscaras de subred comienzan con 255 y continúan hasta que finaliza la máscara de red. Por ejemplo, una máscara de subred de clase C sería <code>255.255.255.0</code>.</p>
-<hr>
-<h3 id="22-clases-de-direcciones-ip"><a class="header" href="#22-clases-de-direcciones-ip">2.2. Clases de Direcciones IP</a></h3>
-<p>Antes de que las máscaras de subred de longitud variable permitieran definir redes de cualquier tamaño, el espacio de direcciones IPv4 se dividía en cinco clases.</p>
+<h2 id="1-el-problema-que-resuelven-las-direcciones-ip"><a class="header" href="#1-el-problema-que-resuelven-las-direcciones-ip">1. El problema que resuelven las direcciones IP</a></h2>
+<h3 id="11-el-sistema-de-direcciones-del-correo"><a class="header" href="#11-el-sistema-de-direcciones-del-correo">1.1. El sistema de direcciones del correo</a></h3>
+<p>Pensá en el correo postal: para que una carta llegue, no alcanza con escribirle al “vecino de la casa amarilla”. Necesitás un sistema de direcciones que TODOS respeten: calle, número, ciudad, país. Sin ese sistema, los carteros del mundo no podrían hacer su trabajo — cada uno repartiría a su manera y la carta se perdería siempre.</p>
+<p>Internet es exactamente igual, pero a escala planetaria: hay <strong>miles de millones de dispositivos</strong> conectados entre sí, y cada uno necesita una dirección única para que los datos lleguen a destino sin confundirse.</p>
+<p>Esa dirección es la <strong>dirección IP</strong> (<em>Internet Protocol</em> address).</p>
+<blockquote>
+<p><strong>Idea central de este manual:</strong> cada dispositivo conectado a una red tiene una dirección IP: un número único que identifica <em>dónde está</em> ese dispositivo para poder mandarle datos. Y como hay muchísimos dispositivos, esas direcciones se organizan en <strong>redes</strong> y se subdividen en <strong>subredes</strong> — como las calles, cuadras y manzanas de una ciudad.</p>
+</blockquote>
+<h3 id="12-qué-es-exactamente-una-dirección-ip"><a class="header" href="#12-qué-es-exactamente-una-dirección-ip">1.2. Qué es exactamente una dirección IP</a></h3>
+<p>Hay una precisión fina que separa a los que entienden de los que memorizan:</p>
+<blockquote>
+<p><strong>Una dirección IP no identifica a un dispositivo: identifica a una <em>interfaz</em> de red.</strong></p>
+</blockquote>
+<p>Si tu notebook tiene cable Ethernet y Wi-Fi, tiene DOS direcciones IP — una por cada interfaz. Un servidor con dos placas de red tiene dos IPs. La dirección IP le dice a la red: “los datos para esta dirección se entregan en esta entrada”.</p>
+<h3 id="13-el-tamaño-del-problema"><a class="header" href="#13-el-tamaño-del-problema">1.3. El tamaño del problema</a></h3>
+<p>Hoy conviven dos versiones del protocolo IP:</p>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>Clase</th><th>Bits de Encabezado</th><th>Tamaño de Red (bits)</th><th>Tamaño del Campo de Host (bits)</th><th>Número de Redes</th><th>Direcciones por Red</th><th>Total en Clase</th><th>Dirección Inicial</th><th>Dirección Final</th></tr>
+<tr><th>Versión</th><th>Longitud de la dirección</th><th>Cantidad teórica de direcciones</th><th>Formato</th></tr>
 </thead>
 <tbody>
-<tr><td>A</td><td>0</td><td>8</td><td>24</td><td>128 (2^7)</td><td>16.777.216 (2^24)</td><td>2.147.483.648 (2^31)</td><td>0.0.0.0</td><td>127.255.255.255</td></tr>
-<tr><td>B</td><td>10</td><td>16</td><td>16</td><td>16.384 (2^14)</td><td>65.536 (2^16)</td><td>1.073.741.824 (2^30)</td><td>128.0.0.0</td><td>191.255.255.255</td></tr>
-<tr><td>C</td><td>110</td><td>24</td><td>8</td><td>2.097.152 (2^21)</td><td>256 (2^8)</td><td>536.870.912 (2^29)</td><td>192.0.0.0</td><td>223.255.255.255</td></tr>
-<tr><td>D (Multidifusión)</td><td>1110</td><td>no definido</td><td>no definido</td><td>no definido</td><td>no definido</td><td>268.435.456 (2^28)</td><td>224.0.0.0</td><td>239.255.255.255</td></tr>
-<tr><td>E (Reservado)</td><td>1111</td><td>no definido</td><td>no definido</td><td>no definido</td><td>no definido</td><td>268.435.456 (2^28)</td><td>240.0.0.0</td><td>255.255.255.255</td></tr>
+<tr><td><strong>IPv4</strong></td><td>32 bits</td><td>2³² = 4.294.967.296 (≈ 4.300 millones)</td><td>Decimal punteado: <code>192.168.1.10</code></td></tr>
+<tr><td><strong>IPv6</strong></td><td>128 bits</td><td>2¹²⁸ ≈ 3,4 × 10³⁸</td><td>Hexadecimal con dos puntos: <code>2001:0db8::1</code></td></tr>
 </tbody>
 </table>
 </div>
-<h4 id="clase-a"><a class="header" href="#clase-a">Clase A</a></h4>
-<p>En una red de clase A, los primeros ocho bits de la dirección, o el primer punto decimal, son la parte de la red, y la parte restante es la del host. Hay 128 redes de clase A posibles.</p>
-<ul>
-<li><strong>Rango</strong>: <code>0.0.0.0</code> a <code>127.0.0.0</code></li>
-</ul>
-<p>Sin embargo, cualquier dirección que comience con <code>127.</code> se denomina dirección de loopback, es decir, que apunta al propio host.</p>
-<p><strong>Ejemplo de dirección IP de clase A</strong>: <code>2.134.213.2</code></p>
-<h4 id="clase-b"><a class="header" href="#clase-b">Clase B</a></h4>
-<p>En una red de clase B, los primeros 16 bits de la dirección son la parte de la red. Todas las redes de clase B tienen el primer bit a 1 y el segundo bit a 0. Si dividimos la dirección en octetos, nos queda que las direcciones <code>128.0.0.0</code> a <code>191.255.0.0</code> corresponden a redes de clase B. Hay 16.384 redes de clase B posibles.</p>
-<p><strong>Ejemplo de dirección IP de clase B</strong>: <code>135.58.24.17</code></p>
-<h4 id="clase-c"><a class="header" href="#clase-c">Clase C</a></h4>
-<p>En una red de clase C, los dos primeros bits están puestos a 1 y el tercero a 0. Eso hace que los primeros 24 bits de la dirección sean la parte de la red, y el resto, la del host. Las direcciones de red de clase C van desde <code>192.0.0.0</code> a <code>223.255.255.0</code>. Hay más de 2 millones de redes de clase C posibles.</p>
-<p><strong>Ejemplo de dirección IP de clase C</strong>: <code>192.168.178.1</code></p>
-<h4 id="clase-d"><a class="header" href="#clase-d">Clase D</a></h4>
-<p>Las direcciones de clase D se utilizan para aplicaciones de multidifusión. A diferencia de las clases anteriores, la Clase D no se utiliza para operaciones de red “comunes”. Las direcciones de clase D tienen los primeros tres bits a “1” y el cuarto bit establecido a “0”. Las direcciones de clase D son direcciones de red de 32 bits, lo que significa que todos los valores que podemos encontrar en el rango <code>224.0.0.0</code> - <code>239.255.255.255</code> se utilizan para identificar grupos de multidifusión de forma única. No hay direcciones de host dentro del espacio de direcciones de clase D, puesto que todos los hosts dentro de un grupo comparten la dirección IP del grupo a la hora de recibir datagramas.</p>
-<p><strong>Ejemplo de dirección IP de clase D</strong>: <code>227.21.6.173</code></p>
-<h4 id="clase-e"><a class="header" href="#clase-e">Clase E</a></h4>
-<p>Las redes de clase E se definen marcando los primeros cuatro bits de la dirección de red a 1, lo que genera las direcciones que van desde <code>240.0.0.0</code> a <code>255.255.255.255</code>. A pesar de que esta clase está reservada, nunca se definió su uso, por lo que la mayoría de las implementaciones de red descartan estas direcciones como ilegales o indefinidas, a excepción, claro está, de <code>255.255.255.255</code>, que se utiliza como una dirección de difusión (broadcast).</p>
-<p><strong>Ejemplo de dirección IP de clase E</strong>: <code>243.164.89.28</code></p>
+<p>Ojo con una trampa que aparece en todos lados: el total teórico no es el total utilizable. Hay direcciones reservadas (privadas, de prueba, de multicast, de broadcast), así que el número real de direcciones públicas utilizables es menor.</p>
+<h3 id="14-por-qué-ipv4-es-la-madre-de-todo"><a class="header" href="#14-por-qué-ipv4-es-la-madre-de-todo">1.4. Por qué IPv4 es “la madre” de todo</a></h3>
+<p>Casi todo lo que vas a configurar en tu vida profesional (y en tu casa) es IPv4: <code>192.168.1.1</code>, <code>10.0.0.5</code>, <code>172.16.0.24</code>… Por eso este manual se centra en IPv4 y deja IPv6 para la sección 11: primero hay que dominar el sistema que está en la calle hoy.</p>
 <hr>
-<h3 id="23-resumen-clases-de-direcciones-ip-y-representaciones-de-bits"><a class="header" href="#23-resumen-clases-de-direcciones-ip-y-representaciones-de-bits">2.3. Resumen: Clases de Direcciones IP y Representaciones de Bits</a></h3>
-<h4 id="clase-a-1"><a class="header" href="#clase-a-1">Clase A</a></h4>
-<ul>
-<li>Decimal: <code>0.0.0.0</code> = <code>00000000.00000000.00000000.00000000</code></li>
-<li>Decimal: <code>127.255.255.255</code> = <code>01111111.11111111.11111111.11111111</code></li>
-<li>Binario: <code>0nnnnnnn.HHHHHHHH.HHHHHHHH.HHHHHHHH</code></li>
-</ul>
-<h4 id="clase-b-1"><a class="header" href="#clase-b-1">Clase B</a></h4>
-<ul>
-<li>Decimal: <code>128.0.0.0</code> = <code>10000000.00000000.00000000.00000000</code></li>
-<li>Decimal: <code>191.255.255.255</code> = <code>10111111.11111111.11111111.11111111</code></li>
-<li>Binario: <code>10nnnnnn.nnnnnnnn.HHHHHHHH.HHHHHHHH</code></li>
-</ul>
-<h4 id="clase-c-1"><a class="header" href="#clase-c-1">Clase C</a></h4>
-<ul>
-<li>Decimal: <code>192.0.0.0</code> = <code>11000000.00000000.00000000.00000000</code></li>
-<li>Decimal: <code>223.255.255.255</code> = <code>11011111.11111111.11111111.11111111</code></li>
-<li>Binario: <code>110nnnnn.nnnnnnnn.nnnnnnnn.HHHHHHHH</code></li>
-</ul>
-<h4 id="clase-d-1"><a class="header" href="#clase-d-1">Clase D</a></h4>
-<ul>
-<li>Decimal: <code>224.0.0.0</code> = <code>11100000.00000000.00000000.00000000</code></li>
-<li>Decimal: <code>239.255.255.255</code> = <code>11101111.11111111.11111111.11111111</code></li>
-<li>Binario: <code>1110XXXX.XXXXXXXX.XXXXXXXX.XXXXXXXX</code></li>
-</ul>
-<h4 id="clase-e-1"><a class="header" href="#clase-e-1">Clase E</a></h4>
-<ul>
-<li>Decimal: <code>240.0.0.0</code> = <code>11110000.00000000.00000000.00000000</code></li>
-<li>Decimal: <code>255.255.255.255</code> = <code>11111111.11111111.11111111.11111111</code></li>
-<li>Binario: <code>1111XXXX.XXXXXXXX.XXXXXXXX.XXXXXXXX</code></li>
-</ul>
+<h2 id="2-binario-y-hexadecimal-las-herramientas"><a class="header" href="#2-binario-y-hexadecimal-las-herramientas">2. Binario y hexadecimal: las herramientas</a></h2>
+<h3 id="21-las-computadoras-no-cuentan-como-nosotros"><a class="header" href="#21-las-computadoras-no-cuentan-como-nosotros">2.1. Las computadoras no cuentan como nosotros</a></h3>
+<p>La dirección IP es un número binario de 32 bits. Los humanos lo escribimos en decimal para poder leerlo, pero la máquina lo ve como una tira de ceros y unos. Si no sabés leer binario, vas a memorizar reglas sin entender por qué existen. Con tabla de potencias y un ejemplo, se aprende en cinco minutos.</p>
+<p>Un octeto (8 bits) representa las potencias de 2:</p>
+<pre><code> 128   64   32   16    8    4    2    1   ← valor de cada posición
+  1    0    1    0    1    0    0    0   ← los bits
+─────────────────────────────────────────
+ 128 + 0  + 32 + 0  + 8  + 0  + 0  + 0  = 168
+</code></pre>
+<p><strong>Regla:</strong> sumá el valor de las posiciones donde hay un <code>1</code>.</p>
+<p>Ejemplo completo — la dirección <code>168.212.226.204</code> en binario:</p>
+<pre><code>168 = 10101000     128+32+8
+212 = 11010100     128+64+16+4
+226 = 11100010     128+64+32+2
+204 = 11001100     128+64+8+4
+
+168.212.226.204 = 10101000.11010100.11100010.11001100
+</code></pre>
+<blockquote>
+<p><strong>Dato que ahorra años:</strong> el valor máximo de un octeto es 255 (todos los bits en 1), y el mínimo es 0 (todos en 0). Por eso los octetos van de 0 a 255 — y por eso una IP jamás tiene un octeto mayor a 255.</p>
+</blockquote>
+<h3 id="22-de-binario-a-decimal-en-3-pasos"><a class="header" href="#22-de-binario-a-decimal-en-3-pasos">2.2. De binario a decimal en 3 pasos</a></h3>
+<ol>
+<li>Escribí las potencias sobre los bits: <code>128 64 32 16 8 4 2 1</code>.</li>
+<li>Marcá las posiciones donde hay un <code>1</code>.</li>
+<li>Sumá los valores marcados.</li>
+</ol>
+<p>Hacelo vos con <code>11000000</code>:</p>
+<pre><code> 128 64 32 16 8 4 2 1
+  1   1  0  0 0 0 0 0  → 128 + 64 = 192
+</code></pre>
+<h3 id="23-hexadecimal-el-formato-de-ipv6"><a class="header" href="#23-hexadecimal-el-formato-de-ipv6">2.3. Hexadecimal: el formato de IPv6</a></h3>
+<p>IPv6 es tan largo que ni en decimal se puede manejar: usa <strong>hexadecimal</strong> (base 16). Los dígitos son <code>0 1 2 3 4 5 6 7 8 9 A B C D E F</code> (donde A=10, B=11, …, F=15), y un grupo de <strong>4 bits</strong> se escribe como UN dígito hexadecimal:</p>
+<pre><code>1010 = A       1111 = F
+0011 = 3       0001 = 1
+</code></pre>
+<p>Por eso las direcciones IPv6 se ven raras: cada grupo de 4 dígitos hexadecimales representa 16 bits. No hace falta más que eso por ahora — lo vas a usar en la sección 11.</p>
 <hr>
-<h3 id="24-direcciones-privadas"><a class="header" href="#24-direcciones-privadas">2.4. Direcciones Privadas</a></h3>
-<p>Dentro del espacio de direcciones hay ciertas redes reservadas para redes privadas. Eso significa que los paquetes de dichas redes no se enrutan a través de la internet pública; de este modo, tenemos una forma perfecta para que las redes privadas usen direcciones IP internas que no interfieran con otras redes.</p>
-<p>Las redes privadas son:</p>
+<h2 id="3-la-anatomía-de-una-dirección-ipv4-red--host"><a class="header" href="#3-la-anatomía-de-una-dirección-ipv4-red--host">3. La anatomía de una dirección IPv4: red + host</a></h2>
+<h3 id="31-las-dos-partes-de-toda-dirección"><a class="header" href="#31-las-dos-partes-de-toda-dirección">3.1. Las dos partes de toda dirección</a></h3>
+<p>Toda dirección IPv4 tiene <strong>dos partes</strong>:</p>
+<ul>
+<li>La parte de <strong>RED</strong>: identifica la red (el “barrio” o la “manzana”).</li>
+<li>La parte de <strong>HOST</strong>: identifica el dispositivo puntual <em>dentro</em> de esa red (la “casa”).</li>
+</ul>
+<p><code>192.168.1.10</code> con máscara <code>255.255.255.0</code> significa: red <code>192.168.1</code> + host <code>.10</code>. El número que separa las dos partes NO lo dice la dirección: lo dice la <strong>máscara de subred</strong>, que viste por primera vez en el manual de modelos de red — acá la vamos a dominar.</p>
+<blockquote>
+<p><strong>Analogía del correo (la que no se te va a olvidar):</strong></p>
+<ul>
+<li>La dirección IP es el <strong>domicilio completo</strong>: <code>Calle del Sol 1234</code>.</li>
+<li>La parte de red es <strong>la calle</strong>: <code>Calle del Sol</code>.</li>
+<li>La parte de host es <strong>el número</strong>: <code>1234</code>.</li>
+<li>La máscara de subred es <strong>la regla que dice qué parte es la calle y qué parte es el número</strong>.</li>
+</ul>
+</blockquote>
+<h3 id="32-por-qué-dividir-en-red--host"><a class="header" href="#32-por-qué-dividir-en-red--host">3.2. Por qué dividir en red + host</a></h3>
+<p>Porque si TODOS los dispositivos del planeta estuvieran en una sola red gigante, cada router tendría que saber el camino hasta cada uno de los 4.000 millones de dispositivos — imposible. Al dividir en redes, los routers solo necesitan saber <strong>cómo llegar a la red</strong>, y dentro de la red, el último equipo (el switch, el router local) se encarga de encontrar al host exacto.</p>
+<h3 id="33-la-notación-del-prefijo-24"><a class="header" href="#33-la-notación-del-prefijo-24">3.3. La notación del prefijo: /24</a></h3>
+<p>La máscara se puede escribir de dos formas equivalentes:</p>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>Rango</th><th>Clase</th></tr>
+<tr><th>Forma</th><th>Ejemplo</th></tr>
 </thead>
 <tbody>
-<tr><td><code>10.0.0.1</code> - <code>10.255.255.255</code></td><td>A</td></tr>
-<tr><td><code>172.16.0.0</code> - <code>172.31.255.255</code></td><td>B</td></tr>
-<tr><td><code>192.168.0.0</code> - <code>192.168.255.255</code></td><td>C</td></tr>
+<tr><td>Decimal punteada</td><td><code>255.255.255.0</code></td></tr>
+<tr><td>Prefijo (CIDR)</td><td><code>192.168.1.0/24</code></td></tr>
 </tbody>
 </table>
 </div>
-<h3 id="25-direcciones-especiales"><a class="header" href="#25-direcciones-especiales">2.5. Direcciones Especiales</a></h3>
-<p>Ciertas direcciones IPv4 se reservan para usos específicos:</p>
+<p>El <code>/24</code> es <strong>la cantidad de bits en 1 de la máscara</strong>: 24 bits de red. <code>/8</code> = 8 bits de red, <code>/16</code> = 16, <code>/24</code> = 24. Cuanto más grande el número del prefijo, más chica la red.</p>
+<hr>
+<h2 id="4-la-máscara-de-subred"><a class="header" href="#4-la-máscara-de-subred">4. La máscara de subred</a></h2>
+<h3 id="41-qué-es"><a class="header" href="#41-qué-es">4.1. Qué es</a></h3>
+<blockquote>
+<p><strong>Definición en una línea:</strong> la máscara de subred es un número de 32 bits, igual de largo que la dirección IP, que marca con <code>1</code>s la parte de red y con <code>0</code>s la parte de host.</p>
+</blockquote>
+<p>En binario, se ve así (para /24):</p>
+<pre><code>Dirección:  192.168.1.10  →  11000000.10101000.00000001.00001010
+Máscara:    255.255.255.0 →  11111111.11111111.11111111.00000000
+                              ↑ 24 bits en 1     ↑ 8 bits en 0
+                              ←── parte de RED ──→  ← parte de HOST →
+</code></pre>
+<p><strong>Regla de oro:</strong> los <code>1</code> de la máscara son consecutivos y van primero. Nunca vas a ver una máscara “trucha” como <code>11101111...</code> — los unos van todos juntos al inicio, los ceros al final.</p>
+<h3 id="42-la-trampa-del-255"><a class="header" href="#42-la-trampa-del-255">4.2. La trampa del 255</a></h3>
+<p><code>255</code> es el número engañoso: en binario es <code>11111111</code>, ocho unos. Por eso:</p>
+<ul>
+<li><code>255.0.0.0</code> = 8 unos = <strong>/8</strong> → red de 16 millones de hosts (gigantesca)</li>
+<li><code>255.255.0.0</code> = 16 unos = <strong>/16</strong> → red grande</li>
+<li><code>255.255.255.0</code> = 24 unos = <strong>/24</strong> → la red clásica de las casas y oficinas chicas</li>
+<li><code>255.255.255.255</code> = 32 unos = <strong>/32</strong> → un único host (nada de red)</li>
+</ul>
+<p>Para saber el prefijo, contá cuántos <code>1</code>s tiene la máscara en binario. Para saber la máscara a partir del prefijo, poné ese número de <code>1</code>s al principio y completá con <code>0</code>s.</p>
+<h3 id="43-otro-truco-el-octeto-interesante"><a class="header" href="#43-otro-truco-el-octeto-interesante">4.3. Otro truco: el octeto “interesante”</a></h3>
+<p>Cuando la máscara NO termina en un octeto entero (ej: <code>/26</code> = <code>255.255.255.192</code>, <code>/28</code> = <code>255.255.255.240</code>), el octeto donde aparecen el último <code>1</code> y los primeros <code>0</code> juntos se llama <strong>octeto interesante</strong>: es ahí donde se juega el cálculo de subredes. El resto de la máscara (los <code>255</code>) solo indica “este octeto es 100% red”.</p>
+<hr>
+<h2 id="5-las-clases-de-direcciones-el-legado"><a class="header" href="#5-las-clases-de-direcciones-el-legado">5. Las clases de direcciones: el legado</a></h2>
+<h3 id="51-de-dónde-salen"><a class="header" href="#51-de-dónde-salen">5.1. De dónde salen</a></h3>
+<p>Antes de que existiera CIDR (la notación <code>/24</code> de hoy), el espacio IPv4 estaba dividido en <strong>clases fijas</strong>: A, B, C (para redes de distinto tamaño), D (multicast) y E (reservada). Se reconocen por los <strong>primeros bits del primer octeto</strong>, o directamente por el rango del primer número.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Clase</th><th style="text-align: center">Primeros bits</th><th>Primer octeto</th><th>Tamaño de red</th><th>Tamaño de host</th><th style="text-align: right">Direcciones por red</th><th>Uso</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>A</strong></td><td style="text-align: center"><code>0</code></td><td>1 – 126</td><td>8 bits (N)</td><td>24 bits (H)</td><td style="text-align: right">16.777.216</td><td>Redes gigantes (pocas, enormes)</td></tr>
+<tr><td><strong>B</strong></td><td style="text-align: center"><code>10</code></td><td>128 – 191</td><td>16 bits (N)</td><td>16 bits (H)</td><td style="text-align: right">65.536</td><td>Redes grandes</td></tr>
+<tr><td><strong>C</strong></td><td style="text-align: center"><code>110</code></td><td>192 – 223</td><td>24 bits (N)</td><td>8 bits (H)</td><td style="text-align: right">256</td><td>Redes chicas (las clásicas de casa/empresa)</td></tr>
+<tr><td><strong>D</strong></td><td style="text-align: center"><code>1110</code></td><td>224 – 239</td><td>—</td><td>—</td><td style="text-align: right">—</td><td>Multicast (grupos, no hosts)</td></tr>
+<tr><td><strong>E</strong></td><td style="text-align: center"><code>1111</code></td><td>240 – 255</td><td>—</td><td>—</td><td style="text-align: right">—</td><td>Reservada para experimentación</td></tr>
+</tbody>
+</table>
+</div>
+<p>Fijate que el 127 no aparece: <strong>todo <code>127.x.x.x</code> es loopback</strong> (la propia máquina).</p>
+<h3 id="52-la-notación-de-letras-n-n-h-h"><a class="header" href="#52-la-notación-de-letras-n-n-h-h">5.2. La notación de letras: N, n, H, h</a></h3>
+<p>Una convención clásica para visualizar las partes:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Clase</th><th>Estructura</th></tr>
+</thead>
+<tbody>
+<tr><td>A</td><td><strong>N</strong>.H.H.H (red de 1 octeto, host de 3)</td></tr>
+<tr><td>B</td><td><strong>N</strong>.N.H.H (red de 2 octetos, host de 2)</td></tr>
+<tr><td>C</td><td><strong>N</strong>.N.N.H (red de 3 octetos, host de 1)</td></tr>
+</tbody>
+</table>
+</div>
+<p>Ejemplo clase C: en <code>192.168.1.10</code> la red es <code>192.168.1</code> y el host es <code>.10</code>. En clase B, <code>172.16.5.9</code> → red <code>172.16</code>, host <code>5.9</code>.</p>
+<h3 id="53-por-qué-hoy-se-usa-cidr-y-no-clases"><a class="header" href="#53-por-qué-hoy-se-usa-cidr-y-no-clases">5.3. Por qué hoy se usa CIDR y no clases</a></h3>
+<p>Las clases eran un molde rígido: tu empresa tenía 300 dispositivos → clase B (65.536 direcciones) era demasiado, clase C (256) no alcanzaba. <strong>Desperdicio o escasez, siempre.</strong> Con CIDR se puede tener <code>192.168.1.0/25</code> (128 direcciones), <code>/26</code> (64), <code>/27</code> (32)… cualquier tamaño. Por eso las clases son historia, pero las seguís viendo en exámenes y material viejo — y porque la notación N/H viene de ahí.</p>
+<blockquote>
+<p><strong>Regla rápida para clasificar:</strong> mirá solo el primer octeto. ¿1 a 126? Clase A. ¿128 a 191? B. ¿192 a 223? C. ¿224 a 239? D. ¿240+? E. 15 segundos, sin calculadora.</p>
+</blockquote>
+<hr>
+<h2 id="6-direcciones-especiales-y-privadas"><a class="header" href="#6-direcciones-especiales-y-privadas">6. Direcciones especiales y privadas</a></h2>
+<h3 id="61-las-direcciones-que-no-se-usan-como-host"><a class="header" href="#61-las-direcciones-que-no-se-usan-como-host">6.1. Las direcciones que NO se usan como host</a></h3>
 <div class="table-wrapper">
 <table>
 <thead>
 <tr><th>Dirección</th><th>Propósito</th></tr>
 </thead>
 <tbody>
-<tr><td><code>127.0.0.0</code></td><td>Loopback (la propia interfaz del host)</td></tr>
-<tr><td><code>224.0.0.0</code></td><td>IP multicast</td></tr>
-<tr><td><code>255.255.255.255</code></td><td>Broadcast (se envía a todas las interfaces en la red)</td></tr>
+<tr><td><code>0.0.0.0</code></td><td>“Esta red de momento” — no se usa como destino; significa “cualquier red” en configuraciones</td></tr>
+<tr><td><code>127.0.0.0/8</code></td><td><strong>Loopback</strong>: siempre apunta a la propia máquina. <code>127.0.0.1</code> es “yo mismo”</td></tr>
+<tr><td><code>169.254.0.0/16</code></td><td><strong>Link-local (APIPA)</strong>: la IP que se pone sola el equipo cuando no consigue una por DHCP</td></tr>
+<tr><td><code>224.0.0.0/4</code></td><td><strong>Multicast</strong>: envío a un grupo, no a una dirección puntual</td></tr>
+<tr><td><code>255.255.255.255</code></td><td><strong>Broadcast limitado</strong>: llega a todas las interfaces de la red local</td></tr>
 </tbody>
 </table>
 </div>
-<h3 id="26-agotamiento-de-direcciones-ipv4"><a class="header" href="#26-agotamiento-de-direcciones-ipv4">2.6. Agotamiento de Direcciones IPv4</a></h3>
-<p>Las especificaciones originales de IPv4 se diseñaron para la red DARPA que, finalmente, acabaría convirtiéndose en lo que hoy es internet. Originalmente se trataba de una red de pruebas, por lo que nadie contempló cuántas direcciones podrían ser necesarias en el futuro.</p>
-<p>En aquel momento, se consideró que un total de 2^32 direcciones (4.300 millones) sería más que suficiente; no obstante, conforme pasó el tiempo, se hizo evidente que el espacio de direcciones IPv4, tal y como estaba implementado, no sería lo suficientemente grande para una internet mundial con numerosos dispositivos conectados por persona. Los últimos bloques de direcciones de nivel superior se asignaron en 2011.</p>
+<blockquote>
+<p><strong>El dato que te salva un diagnóstico:</strong> si tu notebook tiene una IP <code>169.254.x.x</code>, no es que haya “elegido” esa dirección: es que <strong>el DHCP no le contestó</strong> y se la autoasignó. Eso grita “problema de conexión con el servidor de IPs”, no de tu placa.</p>
+</blockquote>
+<h3 id="62-las-direcciones-privadas-el-barrio-cerrado"><a class="header" href="#62-las-direcciones-privadas-el-barrio-cerrado">6.2. Las direcciones privadas: el barrio cerrado</a></h3>
+<p>Hay tres rangos reservados para <strong>redes privadas</strong>: cualquiera puede usarlos adentro de su red, y los routers de internet <strong>no los enrutan</strong> (no salen al mundo). Gracias a ellos, todos los routers de casas del planeta usan <code>192.168.x.x</code> sin pisarse entre sí.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Rango</th><th>Notación CIDR</th><th>De dónde viene</th></tr>
+</thead>
+<tbody>
+<tr><td><code>10.0.0.0</code> – <code>10.255.255.255</code></td><td><code>10.0.0.0/8</code></td><td>El clásico de redes empresariales grandes</td></tr>
+<tr><td><code>172.16.0.0</code> – <code>172.31.255.255</code></td><td><code>172.16.0.0/12</code></td><td>Empresas medianas</td></tr>
+<tr><td><code>192.168.0.0</code> – <code>192.168.255.255</code></td><td><code>192.168.0.0/16</code></td><td>El de las casas y oficinas chicas</td></tr>
+</tbody>
+</table>
+</div>
+<p>Fijate el detalle fino: el rango privado de la clase B <strong>no es todo el 172</strong>: es solo de <code>172.16</code> a <code>172.31</code>. <code>172.32.0.0</code> ya es pública.</p>
+<blockquote>
+<p><strong>Cómo salen las privadas a internet:</strong> cuando un paquete de tu casa (<code>192.168.1.10</code>) quiere llegar a Google, tu router le cambia la dirección de origen por la <strong>pública</strong> que te dio el proveedor. Ese cambio se llama NAT y es el tema de un manual entero — acá solo necesitás saber que las privadas existen y que sin esa traducción no saldrían de tu red.</p>
+</blockquote>
+<h3 id="63-privada-vs-pública-la-regla-en-una-línea"><a class="header" href="#63-privada-vs-pública-la-regla-en-una-línea">6.3. Privada vs pública: la regla en una línea</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th></th><th>Privada</th><th>Pública</th></tr>
+</thead>
+<tbody>
+<tr><td>La asigna</td><td>Tu red (el router/DHCP)</td><td>El proveedor de internet (o el registro regional)</td></tr>
+<tr><td>¿Se enruta por internet?</td><td>NO</td><td>SÍ</td></tr>
+<tr><td>¿Puedo elegirla yo?</td><td>Sí (dentro de los rangos)</td><td>No (son únicas y asignadas)</td></tr>
+<tr><td>Ejemplo</td><td><code>192.168.1.10</code></td><td><code>181.164.5.2</code></td></tr>
+</tbody>
+</table>
+</div>
 <hr>
-<h2 id="3-direcciones-ipv6"><a class="header" href="#3-direcciones-ipv6">3. Direcciones IPv6</a></h2>
-<p>Parece que uno de los males endémicos de la tecnología es el típico problema en que la limitación de una especificación parece más que suficiente en un momento dado, pero, posteriormente, se vuelve demasiado pequeña y restrictiva. Pues eso mismo pasó con las direcciones IPv4, motivo por el cual los diseñadores de IPv6 crearon un enorme espacio de direcciones para su nueva especificación. El tamaño de la dirección aumentó de 32 bits en IPv4 a 128 bits en IPv6.</p>
-<p>Con IPv6 tenemos un límite teórico de 3,4 x 10^38 direcciones, que equivale a más de 340 sextillones, lo que nos permitiría disponer de direcciones suficientes como para asignar una a cada átomo de la superficie de la Tierra.</p>
-<p>Las direcciones IPv6 están representadas por ocho conjuntos de cuatro dígitos hexadecimales, y cada conjunto de números está separado por dos puntos. Un ejemplo de dirección IPv6 sería así:</p>
-<pre><code>2DAB:FFFF:0000:3EAE:01AA:00FF:DD72:2C4A
-</code></pre>
-<h3 id="31-abreviatura-de-direcciones-ipv6"><a class="header" href="#31-abreviatura-de-direcciones-ipv6">3.1. Abreviatura de Direcciones IPv6</a></h3>
-<p>Puesto que las direcciones IPv6 son tan largas, existen algunas convenciones para permitir su abreviatura:</p>
-<ol>
-<li>
-<p><strong>Eliminar ceros iniciales</strong>: Se pueden eliminar los ceros iniciales de cualquier grupo de números. Por ejemplo, <code>:0033:</code> se puede escribir como <code>:33:</code>.</p>
-</li>
-<li>
-<p><strong>Comprimir secciones consecutivas de ceros</strong>: Cualquier sección consecutivas de ceros se puede representar con un par de dos puntos (<code>::</code>), aunque esto solo puede hacerse una vez en cada dirección. Por ejemplo, <code>2DAB::DD72:2C4A</code>.</p>
-</li>
-</ol>
-<p>La dirección de loopback:</p>
-<pre><code>0000:0000:0000:0000:0000:0000:0000:0001
-</code></pre>
-<p>se puede abreviar como <code>::1</code>.</p>
-<h3 id="32-direcciones-ipv6-privadas"><a class="header" href="#32-direcciones-ipv6-privadas">3.2. Direcciones IPv6 Privadas</a></h3>
-<p>Al igual que en IPv4, ciertos bloques de direcciones están reservados para redes privadas. Estas direcciones no se enrutan a través de la internet pública. En IPv6, las direcciones privadas se denominan <strong>direcciones locales únicas (ULA)</strong>. Por defecto, las direcciones que parten del bloque <code>FC00::/7</code> se ignoran y no se enrutan.</p>
-<hr>
-<h2 id="4-resolución-de-nombres"><a class="header" href="#4-resolución-de-nombres">4. Resolución de Nombres</a></h2>
-<p>Tanto en IPv4 como en IPv6, recordar la dirección IP de todos los dispositivos es prácticamente imposible, excepto en las redes más pequeñas. La resolución de nombres proporciona una forma de buscar una dirección IP a partir de un nombre más fácil de usar.</p>
-<p>En internet, la resolución de nombres la gestiona el sistema de nombres de dominio (DNS). Con DNS, se puede usar un nombre en el formato <code>host.dominio</code> en lugar de la dirección IP numérica.</p>
-<hr>
-<h2 id="5-subredes"><a class="header" href="#5-subredes">5. Subredes</a></h2>
-<h3 id="51-qué-es-una-subred"><a class="header" href="#51-qué-es-una-subred">5.1. ¿Qué es una Subred?</a></h3>
-<p>Una subred es una subdivisión lógica de una red IP. El proceso de creación de subredes implica dividir una red grande en redes más pequeñas y manejables.</p>
-<h3 id="52-proceso-para-crear-subredes"><a class="header" href="#52-proceso-para-crear-subredes">5.2. Proceso para Crear Subredes</a></h3>
-<p>Para crear subredes, se toma bits de la porción de host de la dirección IP y se usan para crear subdivisiones lógicas dentro de la red. Esto permite:</p>
+<h2 id="7-dirección-de-red-y-dirección-de-broadcast-los-dos-bordes"><a class="header" href="#7-dirección-de-red-y-dirección-de-broadcast-los-dos-bordes">7. Dirección de red y dirección de broadcast: los dos bordes</a></h2>
+<h3 id="71-cada-red-tiene-dos-direcciones-que-no-son-de-ningún-host"><a class="header" href="#71-cada-red-tiene-dos-direcciones-que-no-son-de-ningún-host">7.1. Cada red tiene DOS direcciones que no son de ningún host</a></h3>
+<p>En toda red, la primera y la última dirección están reservadas:</p>
 <ul>
-<li>Mejor organización de la red</li>
-<li>Reducir el tráfico broadcast</li>
-<li>Facilitar la administración</li>
-<li>Mejorar la seguridad</li>
+<li><strong>Dirección de RED</strong>: todos los bits de host en <code>0</code>. Es la “esquina de la cuadra”: identifica a la red entera cuando hablamos de ella.</li>
+<li><strong>Dirección de BROADCAST</strong>: todos los bits de host en <code>1</code>. Es el “megáfono del barrio”: el mensaje que se manda a esa dirección lo reciben TODOS los hosts de la red.</li>
 </ul>
-<h3 id="53-comunicación-entre-subredes"><a class="header" href="#53-comunicación-entre-subredes">5.3. Comunicación entre Subredes</a></h3>
-<p>Para que dos subredes diferentes se comuniquen entre sí, se necesita un router que actúe como gateway entre ellas.</p>
-<h3 id="54-subredes-ipv6"><a class="header" href="#54-subredes-ipv6">5.4. Subredes IPv6</a></h3>
-<p>El concepto de subredes en IPv6 es similar al de IPv6, pero con un espacio de direcciones mucho más grande. Las subredes IPv6 típicamente usan /64 como ukuran mínimo para cada subred.</p>
-<h3 id="55-redes-punto-a-punto"><a class="header" href="#55-redes-punto-a-punto">5.5. Redes Punto a Punto</a></h3>
-<p>Las redes punto a punto conectan dos dispositivos directamente. En IPv4, se usaban subredes /30 para evitar el desperdicio de direcciones. En IPv6, se pueden usar /127 para este propósito.</p>
-<h3 id="56-qué-significan-las-diferentes-partes-de-una-dirección-ip"><a class="header" href="#56-qué-significan-las-diferentes-partes-de-una-dirección-ip">5.6. ¿Qué Significan las Diferentes Partes de una Dirección IP?</a></h3>
-<p>Una dirección IP tiene dos componentes principales:</p>
-<ol>
-<li><strong>Parte de red</strong>: Identifica la red específica</li>
-<li><strong>Parte de host</strong>: Identifica el dispositivo específico dentro de esa red</li>
-</ol>
-<p>La máscara de subred determina dónde termina la parte de red y comienza la parte de host.</p>
-<h3 id="57-importancia-de-las-subredes"><a class="header" href="#57-importancia-de-las-subredes">5.7. Importancia de las Subredes</a></h3>
-<p>Las subredes son fundamentales para:</p>
+<p>Por eso los hosts utilizables son siempre <strong>el total menos 2</strong>.</p>
+<h3 id="72-el-ejemplo-clásico-1921681024"><a class="header" href="#72-el-ejemplo-clásico-1921681024">7.2. El ejemplo clásico: 192.168.1.0/24</a></h3>
+<pre><code>Red:         192.168.1.0      (hosts en 0)
+Primer host: 192.168.1.1      ← suele ser el router (gateway)
+┆            192.168.1.2
+┆            …               ← 252 direcciones más
+┆            192.168.1.254
+Último host: 192.168.1.254
+Broadcast:   192.168.1.255    (hosts en 1)
+</code></pre>
 <ul>
-<li><strong>Escalabilidad</strong>: Permiten crecer las redes de forma ordenada</li>
-<li><strong>Rendimiento</strong>: Reducen el dominio de broadcast</li>
-<li><strong>Seguridad</strong>: Aíslan segmentos de red</li>
-<li><strong>Administración</strong>: Facilitan la gestión de grupos dehosts</li>
+<li>Direcciones totales: 2⁸ = <strong>256</strong></li>
+<li>Hosts utilizables: 256 − 2 = <strong>254</strong></li>
+<li>El host <code>.1</code> es casi siempre el router, pero es una convención, no una regla.</li>
 </ul>
-<h3 id="58-qué-es-una-máscara-de-subred"><a class="header" href="#58-qué-es-una-máscara-de-subred">5.8. ¿Qué es una Máscara de Subred?</a></h3>
-<p>Una máscara de subred es un número de 32 bits que acompaña a una dirección IP y define cómo está dividida la dirección entre la parte de red y la parte de host.</p>
-<p><strong>Ejemplo de máscara de subred</strong>: <code>255.255.255.0</code> (para una red /24)</p>
+<h3 id="73-cómo-se-calcula-en-binario-para-no-memorizar"><a class="header" href="#73-cómo-se-calcula-en-binario-para-no-memorizar">7.3. Cómo se calcula en binario (para no memorizar)</a></h3>
+<p>Con <code>192.168.1.10/24</code>:</p>
+<pre><code>Hosts:  .10  = 11001010   ← bits de host (los últimos 8)
+Red:    .0   = 00000000   ← poner todos los bits de host en 0
+Broadcast: .255 = 11111111 ← poner todos los bits de host en 1
+</code></pre>
+<p>Poner todos los bits de host en 0 te da la red; ponerlos todos en 1 te da el broadcast. Esa es LA operación. Todo el resto del manual es practicar esta misma idea con redes más chicas.</p>
 <hr>
-<h2 id="tabla-de-referencia-de-máscaras-de-subred"><a class="header" href="#tabla-de-referencia-de-máscaras-de-subred">Tabla de Referencia de Máscaras de Subred</a></h2>
+<h2 id="8-subredes-por-qué-dividir-y-cómo-se-hace"><a class="header" href="#8-subredes-por-qué-dividir-y-cómo-se-hace">8. Subredes: por qué dividir y cómo se hace</a></h2>
+<h3 id="81-por-qué-dividir-una-red"><a class="header" href="#81-por-qué-dividir-una-red">8.1. Por qué dividir una red</a></h3>
+<p>Tomar tu red de 256 direcciones y partirla en cuatro de 64 tiene beneficios reales:</p>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>CIDR</th><th>Máscara Decimal</th><th>Direcciones Disponibles</th><th>Hosts Utilizables</th></tr>
+<tr><th>Beneficio</th><th>Qué pasa en la práctica</th></tr>
 </thead>
 <tbody>
-<tr><td>/8</td><td>255.0.0.0</td><td>16.777.216</td><td>16.777.214</td></tr>
-<tr><td>/16</td><td>255.255.0.0</td><td>65.536</td><td>65.534</td></tr>
-<tr><td>/24</td><td>255.255.255.0</td><td>256</td><td>254</td></tr>
-<tr><td>/25</td><td>255.255.255.128</td><td>128</td><td>126</td></tr>
-<tr><td>/26</td><td>255.255.255.192</td><td>64</td><td>62</td></tr>
-<tr><td>/27</td><td>255.255.255.224</td><td>32</td><td>30</td></tr>
-<tr><td>/28</td><td>255.255.255.240</td><td>16</td><td>14</td></tr>
-<tr><td>/29</td><td>255.255.255.248</td><td>8</td><td>6</td></tr>
-<tr><td>/30</td><td>255.255.255.252</td><td>4</td><td>2</td></tr>
-<tr><td>/31</td><td>255.255.255.254</td><td>2</td><td>2 (P2P)</td></tr>
-<tr><td>/32</td><td>255.255.255.255</td><td>1</td><td>1 (Host)</td></tr>
+<tr><td><strong>Menos tráfico broadcast</strong></td><td>El megáfono de una subred no llega a la otra: cada subred solo oye lo suyo</td></tr>
+<tr><td><strong>Orden y organización</strong></td><td>Una subred para ventas, otra para administración, otra para invitados</td></tr>
+<tr><td><strong>Seguridad</strong></td><td>Las subredes no se ven entre sí: para comunicarse, sí o sí pasa por un router (donde se puede filtrar)</td></tr>
+<tr><td><strong>Escalabilidad</strong></td><td>Crecés por partes sin rediseñar toda la red</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="82-la-operación-tomar-bits-prestados"><a class="header" href="#82-la-operación-tomar-bits-prestados">8.2. La operación: tomar bits prestados</a></h3>
+<p>Subdividir es <strong>tomar bits de la parte de host y transformarlos en bits de red</strong>.</p>
+<ul>
+<li>Cada bit prestado <strong>duplica</strong> la cantidad de subredes: 1 bit → 2 subredes, 2 bits → 4, 3 bits → 8.</li>
+<li>Pero cada bit prestado <strong>reduce a la mitad</strong> los hosts por subred.</li>
+</ul>
+<p>Las dos fórmulas que hay que saber:</p>
+<pre><code>Cantidad de subredes = 2^bits prestados (s)
+Hosts por subred     = 2^bits de host restantes (h) − 2
+</code></pre>
+<h3 id="83-el-ejemplo-completo-partir-1921681024-en-4-subredes"><a class="header" href="#83-el-ejemplo-completo-partir-1921681024-en-4-subredes">8.3. El ejemplo completo: partir 192.168.1.0/24 en 4 subredes</a></h3>
+<p><strong>Paso 1 — ¿Cuántos bits presto?</strong> Necesito 4 subredes → 2² = 4 → <strong>s = 2 bits</strong>.</p>
+<p><strong>Paso 2 — ¿Cuál es la nueva máscara?</strong> Originalmente era /24; presto 2 → <strong>/26</strong> (<code>255.255.255.192</code>).</p>
+<p><strong>Paso 3 — ¿Cuántos hosts por subred?</strong> Quedan 6 bits de host → 2⁶ − 2 = <strong>62 hosts</strong> por subred.</p>
+<p><strong>Paso 4 — ¿Cuáles son los rangos?</strong> El bloque salta de a 64 (2⁶):</p>
+<pre><code>Subred 1: 192.168.1.0   a 192.168.1.63    (hosts: .1 a .62, broadcast .63)
+Subred 2: 192.168.1.64  a 192.168.1.127   (hosts: .65 a .126, broadcast .127)
+Subred 3: 192.168.1.128 a 192.168.1.191   (hosts: .129 a .190, broadcast .191)
+Subred 4: 192.168.1.192 a 192.168.1.255   (hosts: .193 a .254, broadcast .255)
+</code></pre>
+<p>Cada subred se comporta como una red independiente: su propia dirección de red, su propio broadcast, sus propios 62 hosts.</p>
+<h3 id="84-la-regla-del-tamaño-del-bloque"><a class="header" href="#84-la-regla-del-tamaño-del-bloque">8.4. La regla del tamaño del bloque</a></h3>
+<p>Para saber de cuánto en cuánto saltan las subredes hay un atajo que usan todos los profesionales:</p>
+<blockquote>
+<p><strong>Tamaño del bloque = 256 − último octeto de la máscara.</strong></p>
+</blockquote>
+<ul>
+<li>Máscara <code>/26</code> = <code>255.255.255.192</code> → bloque de 256 − 192 = <strong>64</strong></li>
+<li>Máscara <code>/27</code> = <code>255.255.255.224</code> → bloque de <strong>32</strong></li>
+<li>Máscara <code>/28</code> = <code>255.255.255.240</code> → bloque de <strong>16</strong></li>
+</ul>
+<p>Con eso, armás todos los rangos sin tocar binario — pero recién después de haber entendido el binario, que es lo que te salva cuando la máscara no cae en octeto entero.</p>
+<h3 id="85-comunicación-entre-subredes"><a class="header" href="#85-comunicación-entre-subredes">8.5. Comunicación entre subredes</a></h3>
+<p>Dos subredes distintas <strong>no se ven entre sí sin un router</strong>. El router es el que tiene una interfaz en cada subred y reenvía los paquetes de una a otra — por eso cada subred termina en el gateway (la IP del router en ESE barrio). Si las subredes tienen que comunicarse, el tráfico pasa por el router: ahí es donde se controla, se filtra y se cobra peaje.</p>
+<h3 id="86-redes-punto-a-punto"><a class="header" href="#86-redes-punto-a-punto">8.6. Redes punto a punto</a></h3>
+<p>Cuando solo conectás DOS equipos (un router con otro router), usar una subred entera es desperdicio. Se usa un <strong>/30</strong> (2 hosts) o en la práctica moderna un <strong>/31</strong> (2 hosts, sin broadcast):</p>
+<pre><code>192.168.1.0/30 → red .0, hosts .1 y .2, broadcast .3
+</code></pre>
+<p>El /31 existe porque un enlace de 2 equipos no necesita red ni broadcast: se usan las dos direcciones directamente.</p>
+<hr>
+<h2 id="9-la-tabla-de-máscaras-completa"><a class="header" href="#9-la-tabla-de-máscaras-completa">9. La tabla de máscaras completa</a></h2>
+<p>La referencia que usás toda la vida, desde /8 hasta /32:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">Prefijo</th><th>Máscara decimal</th><th style="text-align: right">Direcciones</th><th style="text-align: right">Hosts utilizables</th><th>Para qué se usa</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">/8</td><td>255.0.0.0</td><td style="text-align: right">16.777.216</td><td style="text-align: right">16.777.214</td><td>Redes enormes (los <code>10.x</code> privados)</td></tr>
+<tr><td style="text-align: center">/9</td><td>255.128.0.0</td><td style="text-align: right">8.388.608</td><td style="text-align: right">8.388.606</td><td></td></tr>
+<tr><td style="text-align: center">/10</td><td>255.192.0.0</td><td style="text-align: right">4.194.304</td><td style="text-align: right">4.194.302</td><td></td></tr>
+<tr><td style="text-align: center">/11</td><td>255.224.0.0</td><td style="text-align: right">2.097.152</td><td style="text-align: right">2.097.150</td><td></td></tr>
+<tr><td style="text-align: center">/12</td><td>255.240.0.0</td><td style="text-align: right">1.048.576</td><td style="text-align: right">1.048.574</td><td>El privado <code>172.16/12</code></td></tr>
+<tr><td style="text-align: center">/13</td><td>255.248.0.0</td><td style="text-align: right">524.288</td><td style="text-align: right">524.286</td><td></td></tr>
+<tr><td style="text-align: center">/14</td><td>255.252.0.0</td><td style="text-align: right">262.144</td><td style="text-align: right">262.142</td><td></td></tr>
+<tr><td style="text-align: center">/15</td><td>255.254.0.0</td><td style="text-align: right">131.072</td><td style="text-align: right">131.070</td><td></td></tr>
+<tr><td style="text-align: center">/16</td><td>255.255.0.0</td><td style="text-align: right">65.536</td><td style="text-align: right">65.534</td><td>El privado <code>192.168/16</code> clásico de empresas</td></tr>
+<tr><td style="text-align: center">/17</td><td>255.255.128.0</td><td style="text-align: right">32.768</td><td style="text-align: right">32.766</td><td></td></tr>
+<tr><td style="text-align: center">/18</td><td>255.255.192.0</td><td style="text-align: right">16.384</td><td style="text-align: right">16.382</td><td></td></tr>
+<tr><td style="text-align: center">/19</td><td>255.255.224.0</td><td style="text-align: right">8.192</td><td style="text-align: right">8.190</td><td></td></tr>
+<tr><td style="text-align: center">/20</td><td>255.255.240.0</td><td style="text-align: right">4.096</td><td style="text-align: right">4.094</td><td></td></tr>
+<tr><td style="text-align: center">/21</td><td>255.255.248.0</td><td style="text-align: right">2.048</td><td style="text-align: right">2.046</td><td></td></tr>
+<tr><td style="text-align: center">/22</td><td>255.255.252.0</td><td style="text-align: right">1.024</td><td style="text-align: right">1.022</td><td></td></tr>
+<tr><td style="text-align: center">/23</td><td>255.255.254.0</td><td style="text-align: right">512</td><td style="text-align: right">510</td><td></td></tr>
+<tr><td style="text-align: center">/24</td><td>255.255.255.0</td><td style="text-align: right">256</td><td style="text-align: right">254</td><td>LA red de casa/oficina chica</td></tr>
+<tr><td style="text-align: center">/25</td><td>255.255.255.128</td><td style="text-align: right">128</td><td style="text-align: right">126</td><td>Media red /24</td></tr>
+<tr><td style="text-align: center">/26</td><td>255.255.255.192</td><td style="text-align: right">64</td><td style="text-align: right">62</td><td>Un cuarto de /24</td></tr>
+<tr><td style="text-align: center">/27</td><td>255.255.255.224</td><td style="text-align: right">32</td><td style="text-align: right">30</td><td></td></tr>
+<tr><td style="text-align: center">/28</td><td>255.255.255.240</td><td style="text-align: right">16</td><td style="text-align: right">14</td><td>Segmentos chicos</td></tr>
+<tr><td style="text-align: center">/29</td><td>255.255.255.248</td><td style="text-align: right">8</td><td style="text-align: right">6</td><td>Redes de 6 equipos</td></tr>
+<tr><td style="text-align: center">/30</td><td>255.255.255.252</td><td style="text-align: right">4</td><td style="text-align: right">2</td><td>Enlaces punto a punto</td></tr>
+<tr><td style="text-align: center">/31</td><td>255.255.255.254</td><td style="text-align: right">2</td><td style="text-align: right">2</td><td>Punto a punto moderno (sin red/broadcast)</td></tr>
+<tr><td style="text-align: center">/32</td><td>255.255.255.255</td><td style="text-align: right">1</td><td style="text-align: right">1</td><td>Un solo host (reglas de firewall, VPN)</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Cómo leerla:</strong> la columna de “hosts utilizables” es siempre <code>direcciones − 2</code>, salvo /31 y /32 que son casos especiales sin broadcast.</p>
+</blockquote>
+<hr>
+<h2 id="10-el-cálculo-práctico-en-4-pasos"><a class="header" href="#10-el-cálculo-práctico-en-4-pasos">10. El cálculo práctico en 4 pasos</a></h2>
+<h3 id="101-el-método"><a class="header" href="#101-el-método">10.1. El método</a></h3>
+<p>Cuando te den una IP y un prefijo y necesites red, broadcast, primer y último host, el método es siempre el mismo:</p>
+<ol>
+<li><strong>Ubicá el octeto interesante</strong> (donde la máscara no es 255 ni 0).</li>
+<li><strong>Calculá el tamaño del bloque</strong>: <code>256 − valor del octeto en la máscara</code>.</li>
+<li><strong>Encontrá la red</strong>: el múltiplo del bloque más cercano, menor o igual a la IP.</li>
+<li><strong>Completá</strong>: broadcast = red + bloque − 1; hosts = red+1 hasta broadcast−1.</li>
+</ol>
+<h3 id="102-ejemplo-resuelto-1-192168413726"><a class="header" href="#102-ejemplo-resuelto-1-192168413726">10.2. Ejemplo resuelto 1: 192.168.4.137/26</a></h3>
+<p><strong>Paso 1:</strong> máscara /26 = <code>255.255.255.192</code> → octeto interesante: el 4º (valor 192).
+<strong>Paso 2:</strong> bloque = 256 − 192 = <strong>64</strong>.
+<strong>Paso 3:</strong> múltiplos de 64: …, 64, <strong>128</strong>, 192… → 137 está entre 128 y 192 → <strong>red = 192.168.4.128</strong>.
+<strong>Paso 4:</strong></p>
+<pre><code>Red:        192.168.4.128
+Primer host: 192.168.4.129
+Último host: 192.168.4.190
+Broadcast:   192.168.4.191
+</code></pre>
+<p><strong>Paso 5 (la verificación):</strong> ¿la IP original cae entre primer y último host? 137 sí. ✓</p>
+<h3 id="103-ejemplo-resuelto-2-1020304020"><a class="header" href="#103-ejemplo-resuelto-2-1020304020">10.3. Ejemplo resuelto 2: 10.20.30.40/20</a></h3>
+<p><strong>Paso 1:</strong> /20 = <code>255.255.240.0</code> → octeto interesante: el 3º (240), el 4º es 0 (todo host).
+<strong>Paso 2:</strong> bloque = 256 − 240 = <strong>16</strong>.
+<strong>Paso 3:</strong> múltiplos de 16 en el 3º octeto: 16, <strong>32</strong>, 48… → 30 está entre 16 y 32 → red = <code>10.20.16.0</code>.
+<strong>Paso 4:</strong></p>
+<pre><code>Red:        10.20.16.0
+Primer host: 10.20.16.1
+Último host: 10.20.31.254
+Broadcast:   10.20.31.255
+</code></pre>
+<p>Fijate que el 4º octeto va de 0 a 255 dentro del bloque (los 8 bits de host + los 4 del octeto interesante dan 12 bits de host: los últimos 4 bits del 3º octeto + los 8 del 4º).</p>
+<h3 id="104-ejemplo-resuelto-3-1722057730"><a class="header" href="#104-ejemplo-resuelto-3-1722057730">10.4. Ejemplo resuelto 3: 172.20.5.77/30</a></h3>
+<p><strong>Paso 1:</strong> /30 = <code>255.255.255.252</code> → octeto interesante: el 4º (252).
+<strong>Paso 2:</strong> bloque = 256 − 252 = <strong>4</strong>.
+<strong>Paso 3:</strong> múltiplos de 4: 72, <strong>76</strong>, 80… → 77 está entre 76 y 80 → red = <code>172.20.5.76</code>.
+<strong>Paso 4:</strong></p>
+<pre><code>Red:        172.20.5.76
+Primer host: 172.20.5.77   ← ¡la propia IP!
+Último host: 172.20.5.78
+Broadcast:   172.20.5.79
+</code></pre>
+<p>Este es el típico enlace punto a punto: dos direcciones utilizables.</p>
+<blockquote>
+<p><strong>HACELO VOS:</strong> agarrá papel y lápiz y resolvé <code>192.168.10.99/27</code> con el método de 4 pasos. Después compará con el final de esta sección (la respuesta está al pie, tapada).</p>
+</blockquote>
+<details>
+<summary>Respuesta del ejercicio</summary>
+<p>/27 = 255.255.255.224 → bloque 32 → múltiplos: 64, 96, 128… → 99 está entre 96 y 128 → red <code>192.168.10.96</code>, primer host <code>.97</code>, último host <code>.126</code>, broadcast <code>.127</code>.</p>
+</details>
+<hr>
+<h2 id="11-ipv6-lo-que-tenés-que-saber"><a class="header" href="#11-ipv6-lo-que-tenés-que-saber">11. IPv6: lo que tenés que saber</a></h2>
+<h3 id="111-por-qué-existe"><a class="header" href="#111-por-qué-existe">11.1. Por qué existe</a></h3>
+<p>IPv4 tiene 4.300 millones de direcciones, pero el mundo tiene más dispositivos que eso. Los últimos bloques grandes de IPv4 se agotaron en 2011. IPv6 nació para eso: <strong>128 bits, más direcciones que átomos en la superficie de la Tierra</strong> (exageramos poco: hay 3,4 × 10³⁸, y se estiman ~10³⁰ átomos en un planeta).</p>
+<h3 id="112-cómo-se-lee"><a class="header" href="#112-cómo-se-lee">11.2. Cómo se lee</a></h3>
+<p>Ocho grupos de 4 dígitos hexadecimales, separados por dos puntos:</p>
+<pre><code>2001:0db8:0000:0000:0000:ff00:0042:8329
+└─┬─┘└─┬─┘  └──┬──┘ └──┬──┘  └──┬──┘  └──┬──┘
+ grupo1 grupo2  ...    ...    ...    grupo8 → 8 grupos × 16 bits = 128 bits
+</code></pre>
+<h3 id="113-las-dos-reglas-de-abreviatura"><a class="header" href="#113-las-dos-reglas-de-abreviatura">11.3. Las dos reglas de abreviatura</a></h3>
+<ol>
+<li><strong>Ceros iniciales se eliminan</strong>: <code>0db8</code> → <code>db8</code>, <code>0042</code> → <code>42</code>. (Ojo: los ceros <em>finales</em> NO se tocan: <code>0080</code> no es <code>8</code>, es <code>80</code>.)</li>
+<li><strong>Un solo bloque de ceros consecutivos se comprime con <code>::</code></strong> (una sola vez por dirección):</li>
+</ol>
+<pre><code>2001:0db8:0000:0000:0000:ff00:0042:8329
+→ 2001:db8::ff00:42:8329
+
+::1    → la dirección de loopback (antes: 0000…0001)
+</code></pre>
+<h3 id="114-lo-que-sí-tenés-que-saber-para-trabajar"><a class="header" href="#114-lo-que-sí-tenés-que-saber-para-trabajar">11.4. Lo que SÍ tenés que saber para trabajar</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Dato</th><th>Valor</th></tr>
+</thead>
+<tbody>
+<tr><td>Privadas</td><td><code>FC00::/7</code> (<strong>ULA</strong>): no se enrutan por internet, como los privados de IPv4</td></tr>
+<tr><td>Loopback</td><td><code>::1</code> (equivalente a <code>127.0.0.1</code>)</td></tr>
+<tr><td>Tamaño típico de subred</td><td><strong>/64</strong> — las subredes IPv6 casi siempre son de 64 bits de red y 64 de host</td></tr>
+<tr><td>Enlace punto a punto</td><td>/127 (equivalente moderno del /30)</td></tr>
+</tbody>
+</table>
+</div>
+<p>En IPv6, la idea de red+host es la misma que en IPv4, pero con números tan enormes que “ahorrar direcciones” dejó de ser una preocupación: cada subred /64 tiene 2⁶⁴ hosts, más que toda internet IPv4 junta.</p>
+<hr>
+<h2 id="12-dhcp-de-dónde-sale-tu-ip"><a class="header" href="#12-dhcp-de-dónde-sale-tu-ip">12. DHCP: de dónde sale tu IP</a></h2>
+<h3 id="121-cargar-ips-a-mano-insostenible"><a class="header" href="#121-cargar-ips-a-mano-insostenible">12.1. Cargar IPs a mano: insostenible</a></h3>
+<p>En una red de 200 equipos, ponerle la IP a cada uno a mano es un error asegurado: errores de tipeo, dos equipos con la misma IP, cambios que nadie registra. Por eso existe el <strong>DHCP</strong> (<em>Dynamic Host Configuration Protocol</em>): el protocolo que le asigna la dirección automáticamente a cada equipo que se conecta.</p>
+<h3 id="122-las-cuatro-letras-dora"><a class="header" href="#122-las-cuatro-letras-dora">12.2. Las cuatro letras: DORA</a></h3>
+<p>El diálogo entre tu equipo y el servidor DHCP (a menudo el router) es famoso por sus siglas en inglés:</p>
+<pre><code>  TU EQUIPO                        SERVIDOR DHCP
+     │                                   │
+     │ 1. DISCOVER  "¿Hay alguien que me dé IP?"  ►
+     │                                   │
+     │ 2. OFFER     "Sí: te propongo 192.168.1.50" ◄
+     │                                   │
+     │ 3. REQUEST   "Acepto, dame esa"    ►
+     │                                   │
+     │ 4. ACK       "Queda tuya. ¡Bienvenido!" ◄
+     │                                   │
+</code></pre>
+<p>El DHCP no te da solo la IP: te da también la <strong>máscara</strong>, el <strong>gateway</strong> (la IP del router para salir) y el <strong>DNS</strong> (para resolver nombres). Todo lo que tu equipo necesita para vivir, en un solo servicio.</p>
+<h3 id="123-cuando-dhcp-no-contesta"><a class="header" href="#123-cuando-dhcp-no-contesta">12.3. Cuando DHCP no contesta</a></h3>
+<p>Si el equipo no recibe respuesta (cable cortado, servidor caído), se autoasigna una dirección del rango <code>169.254.0.0/16</code> — la <strong>APIPA</strong>. Es la “IP de emergencia”: sirve para comunicarse con equipos de la misma red que también fallaron, pero NO da acceso a nada más. Si ves un <code>169.254.x.x</code>, ya sabés: problema de DHCP.</p>
+<hr>
+<h2 id="13-la-resolución-de-nombres-dns"><a class="header" href="#13-la-resolución-de-nombres-dns">13. La resolución de nombres: DNS</a></h2>
+<h3 id="131-el-problema"><a class="header" href="#131-el-problema">13.1. El problema</a></h3>
+<p>Recordar <code>142.250.64.14</code> es imposible; recordar <code>google.com</code>, no. El <strong>DNS</strong> (<em>Domain Name System</em>) es el traductor: convierte los nombres que usamos (<code>google.com</code>) en las direcciones IP que usa la red.</p>
+<h3 id="132-cómo-funciona-en-una-línea"><a class="header" href="#132-cómo-funciona-en-una-línea">13.2. Cómo funciona en una línea</a></h3>
+<p>Tu equipo le pregunta al servidor DNS (el “directorio de internet”): <em>“¿qué IP tiene google.com?”</em> — y el servidor responde con la dirección. Después, todos los paquetes usan la IP.</p>
+<p>Esto explica un síntoma clásico: “tengo internet pero no abre ninguna página”. Si el <code>ping</code> a una IP funciona pero el navegador no carga, sospechá del DNS: el camino existe, lo que falla es el traductor.</p>
+<hr>
+<h2 id="14-tu-ip-en-la-práctica"><a class="header" href="#14-tu-ip-en-la-práctica">14. Tu IP en la práctica</a></h2>
+<h3 id="141-mirá-tu-propia-configuración"><a class="header" href="#141-mirá-tu-propia-configuración">14.1. Mirá tu propia configuración</a></h3>
+<p>Abrí una terminal y corré el comando de tu sistema:</p>
+<pre><code>Windows:  ipconfig /all
+Linux:    ip addr
+</code></pre>
+<p>Vas a ver algo así:</p>
+<pre><code>IPv4 Address. . . . . . . . . . . : 192.168.1.10
+Subnet Mask . . . . . . . . . . . : 255.255.255.0
+Default Gateway . . . . . . . . . : 192.168.1.1
+DNS Servers . . . . . . . . . . . : 8.8.8.8
+</code></pre>
+<p>Ahora sabés leerlo como un profesional:</p>
+<ul>
+<li><strong>IPv4</strong>: tu dirección en la red local.</li>
+<li><strong>Máscara</strong>: 255.255.255.0 = /24 = tu red es <code>192.168.1.0</code> y hay 254 hosts posibles.</li>
+<li><strong>Gateway</strong>: la IP del router, la puerta de salida a internet. Tu equipo manda ahí todo lo que no es local.</li>
+<li><strong>DNS</strong>: el traductor que se usa para resolver nombres.</li>
+</ul>
+<h3 id="142-comprobá-que-tu-red-y-tu-broadcast-dan-bien"><a class="header" href="#142-comprobá-que-tu-red-y-tu-broadcast-dan-bien">14.2. Comprobá que tu red y tu broadcast dan bien</a></h3>
+<p>Con <code>192.168.1.10/24</code>: red = <code>192.168.1.0</code> (hosts en 0), broadcast = <code>192.168.1.255</code> (hosts en 1). Coincide con lo que viste en la sección 7 — la teoría y la práctica son la misma cuenta.</p>
+<hr>
+<h2 id="15-comprobá-lo-que-aprendiste"><a class="header" href="#15-comprobá-lo-que-aprendiste">15. Comprobá lo que aprendiste</a></h2>
+<p>Respondé antes de mirar, y destapá cada respuesta recién después de intentarlo.</p>
+<p><strong>1. ¿Cuánto vale <code>10110000</code> en decimal?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>128 + 32 + 16 = <strong>176</strong>. (Posiciones con 1: 128, 64, 32, 16, 8, 4, 2, 1 → 1,0,1,1,0,0,0,0 → 128+32+16.)</p>
+</details>
+<p><strong>2. ¿Qué parte de la dirección es red y cuál host en <code>172.16.5.9/16</code>?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>/16 = 16 bits de red → red <code>172.16</code>, host <code>5.9</code>. Con /12 (la máscara privada de clase B), la cuenta sería distinta: red <code>172.16</code>, host <code>5.9</code> también, pero por otras razones — el límite cae a la mitad del 2º octeto.</p>
+</details>
+<p><strong>3. ¿Por qué una red /24 tiene 254 hosts y no 256?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Porque la primera dirección es la de red (bits de host en 0) y la última es el broadcast (bits de host en 1). Hosts utilizables = 2⁸ − 2 = <strong>254</strong>.</p>
+</details>
+<p><strong>4. ¿Cuál es la dirección de red, broadcast y los hosts de <code>10.10.10.5/28</code>?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>/28 = 255.255.255.240 → bloque de 16 → múltiplos: 0, 16, 32… → red <code>10.10.10.0</code>, broadcast <code>10.10.10.15</code>, hosts <code>.1</code> a <code>.14</code>.</p>
+</details>
+<p><strong>5. ¿Qué significan estas direcciones: <code>127.0.0.1</code>, <code>169.254.1.5</code>, <code>255.255.255.255</code>?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p><code>127.0.0.1</code>: loopback, la propia máquina. <code>169.254.1.5</code>: link-local/APIPA, autoasignada porque el DHCP no contestó. <code>255.255.255.255</code>: broadcast limitado, llega a todos los equipos de la red local.</p>
+</details>
+<p><strong>6. Tu empresa tiene 500 equipos y te dan <code>10.0.0.0/23</code>. ¿Alcanza?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>/23 = 512 direcciones, 510 hosts utilizables. <strong>Sí, alcanza justito</strong> (500 ≤ 510). Si fueran 520, haría falta /22 (1022 hosts).</p>
+</details>
+<p><strong>7. ¿Qué es el octeto interesante y cuál es en <code>192.168.50.77/22</code>?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Es el octeto donde conviven el último 1 y los primeros 0 de la máscara — ahí se juega el cálculo de subredes. En /22 = 255.255.252.0 es el <strong>3º octeto</strong> (252).</p>
+</details>
+<p><strong>8. ¿Qué tan grande es una subred IPv6 típica?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>/64: 64 bits de red y 64 de host, es decir 2⁶⁴ direcciones posibles — más que todos los equipos de internet IPv4 actual. El desperdicio dejó de ser un problema en IPv6.</p>
+</details>
+<hr>
+<h2 id="16-glosario"><a class="header" href="#16-glosario">16. Glosario</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Término</th><th>Qué es</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Dirección IP</strong></td><td>Identificador numérico único de una interfaz en una red</td></tr>
+<tr><td><strong>IPv4</strong></td><td>Versión de 32 bits del protocolo IP (formato decimal punteado)</td></tr>
+<tr><td><strong>IPv6</strong></td><td>Versión de 128 bits (formato hexadecimal con <code>:</code>)</td></tr>
+<tr><td><strong>Octeto</strong></td><td>8 bits: el bloque básico de una dirección IPv4 (0–255)</td></tr>
+<tr><td><strong>Bit</strong></td><td>Dígito binario: 0 o 1</td></tr>
+<tr><td><strong>Binario</strong></td><td>Sistema numérico de base 2, el idioma de las computadoras</td></tr>
+<tr><td><strong>Hexadecimal</strong></td><td>Sistema de base 16 (0-9, A-F), usado en IPv6</td></tr>
+<tr><td><strong>Parte de red</strong></td><td>La porción de la dirección que identifica la red (la “calle”)</td></tr>
+<tr><td><strong>Parte de host</strong></td><td>La porción que identifica al dispositivo (el “número”)</td></tr>
+<tr><td><strong>Máscara de subred</strong></td><td>32 bits con 1s consecutivos que marcan la parte de red</td></tr>
+<tr><td><strong>Prefijo / CIDR</strong></td><td>Notación del tipo <code>/24</code>: cantidad de bits de red</td></tr>
+<tr><td><strong>Octeto interesante</strong></td><td>El octeto donde la máscara no es 255 ni 0: el del cálculo</td></tr>
+<tr><td><strong>Clase A/B/C</strong></td><td>Divisiones históricas del espacio IPv4 por tamaño fijo</td></tr>
+<tr><td><strong>Dirección de red</strong></td><td>La primera de la subred: bits de host en 0</td></tr>
+<tr><td><strong>Broadcast</strong></td><td>Mensaje para todos: la última dirección (bits de host en 1)</td></tr>
+<tr><td><strong>Hosts utilizables</strong></td><td>Total de direcciones menos red y broadcast (2^h − 2)</td></tr>
+<tr><td><strong>Loopback</strong></td><td><code>127.0.0.1</code> / <code>::1</code>: la propia máquina</td></tr>
+<tr><td><strong>Privada</strong></td><td>Dirección no enrutada por internet (10/8, 172.16/12, 192.168/16)</td></tr>
+<tr><td><strong>Pública</strong></td><td>Dirección única en internet, asignada por el proveedor</td></tr>
+<tr><td><strong>APIPA / Link-local</strong></td><td><code>169.254.0.0/16</code>: autoasignada cuando el DHCP no responde</td></tr>
+<tr><td><strong>Subred</strong></td><td>División lógica de una red; se comunica con otras solo vía router</td></tr>
+<tr><td><strong>Bit prestado</strong></td><td>Bit de host convertido en bit de red para crear subredes</td></tr>
+<tr><td><strong>Bloque</strong></td><td>256 − octeto de la máscara: el paso entre subredes</td></tr>
+<tr><td><strong>DHCP</strong></td><td>Protocolo que asigna IP, máscara, gateway y DNS automáticamente</td></tr>
+<tr><td><strong>DORA</strong></td><td>El diálogo del DHCP: Discover, Offer, Request, Ack</td></tr>
+<tr><td><strong>DNS</strong></td><td>Traductor de nombres a IPs</td></tr>
+<tr><td><strong>Gateway</strong></td><td>La IP del router de tu red: la puerta de salida</td></tr>
+<tr><td><strong>ULA</strong></td><td>Privadas IPv6 (<code>FC00::/7</code>), el equivalente de los rangos privados de IPv4</td></tr>
+<tr><td><strong>Multicast</strong></td><td>Envío a un grupo de destinatarios (224/4 en IPv4)</td></tr>
 </tbody>
 </table>
 </div>
 <hr>
-<h2 id="rangos-de-direcciones-de-clase"><a class="header" href="#rangos-de-direcciones-de-clase">Rangos de Direcciones de Clase</a></h2>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Clase</th><th>Rango</th><th>Bits Iniciales</th></tr>
-</thead>
-<tbody>
-<tr><td>A</td><td>0.0.0.0 - 127.255.255.255</td><td>0</td></tr>
-<tr><td>B</td><td>128.0.0.0 - 191.255.255.255</td><td>10</td></tr>
-<tr><td>C</td><td>192.0.0.0 - 223.255.255.255</td><td>110</td></tr>
-<tr><td>D</td><td>224.0.0.0 - 239.255.255.255</td><td>1110</td></tr>
-<tr><td>E</td><td>240.0.0.0 - 255.255.255.255</td><td>1111</td></tr>
-</tbody>
-</table>
-</div>
-<h3 id="rangos-de-direcciones-reservados-para-uso-privado-no-enrutado"><a class="header" href="#rangos-de-direcciones-reservados-para-uso-privado-no-enrutado">Rangos de Direcciones Reservados para Uso Privado (No Enrutado)</a></h3>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Clase</th><th>Rango</th><th>Notación CIDR</th></tr>
-</thead>
-<tbody>
-<tr><td>A</td><td>10.0.0.0 - 10.255.255.255</td><td>10.0.0.0/8</td></tr>
-<tr><td>B</td><td>172.16.0.0 - 172.31.255.255</td><td>172.16.0.0/12</td></tr>
-<tr><td>C</td><td>192.168.0.0 - 192.168.255.255</td><td>192.168.0.0/16</td></tr>
-</tbody>
-</table>
-</div>
-<h3 id="otras-direcciones-reservadas"><a class="header" href="#otras-direcciones-reservadas">Otras Direcciones Reservadas</a></h3>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Dirección</th><th>Propósito</th></tr>
-</thead>
-<tbody>
-<tr><td>0.0.0.0</td><td>Esta red (no usar)</td></tr>
-<tr><td>127.0.0.0 - 127.255.255.255</td><td>Loopback/Localhost</td></tr>
-<tr><td>169.254.0.0 - 169.254.255.255</td><td>Link-local (APIPA)</td></tr>
-<tr><td>224.0.0.0 - 239.255.255.255</td><td>Multicast</td></tr>
-<tr><td>255.255.255.255</td><td>Broadcast limitado</td></tr>
-</tbody>
-</table>
-</div>
+<h2 id="17-resumen-en-10-puntos"><a class="header" href="#17-resumen-en-10-puntos">17. Resumen en 10 puntos</a></h2>
+<ol>
+<li><strong>Cada dispositivo tiene una dirección IP</strong> que identifica su interfaz: sin ella, los datos no saben a dónde ir.</li>
+<li><strong>Las direcciones son binarias de 32 bits</strong> (IPv4) o 128 (IPv6); las escribimos en decimal o hexadecimal para poder leerlas.</li>
+<li><strong>Toda dirección tiene dos partes</strong>: red (la calle) y host (el número). La <strong>máscara</strong> dice dónde está el corte.</li>
+<li><strong>La máscara son 1s consecutivos</strong> (red) seguidos de 0s (host); se abrevia como prefijo <code>/n</code> (cantidad de 1s).</li>
+<li><strong>Las clases A/B/C son historia</strong>, pero la notación sobrevivió: se reconocen por el primer octeto y sirven para hablar rápido.</li>
+<li><strong>Existen direcciones reservadas</strong>: loopback (<code>127.0.0.1</code>), privadas (10/8, 172.16/12, 192.168/16), APIPA (169.254), multicast y broadcast — cada una con su uso exacto.</li>
+<li><strong>En cada red, la primera dirección es la red y la última el broadcast</strong>: hosts utilizables = 2^h − 2.</li>
+<li><strong>Subdividir es prestar bits de host</strong>: cada bit duplica las subredes y reduce a la mitad los hosts — con la regla del bloque (256 − máscara) armás los rangos.</li>
+<li><strong>El método de 4 pasos</strong> (octeto interesante → bloque → red → extremos) resuelve cualquier IP/prefijo sin memorizar.</li>
+<li><strong>La IP no aparece sola</strong>: el DHCP la asigna (DORA) y el DNS traduce los nombres que sí podemos recordar.</li>
+</ol>
 <hr>
-<h2 id="conclusión"><a class="header" href="#conclusión">Conclusión</a></h2>
-<p>Las direcciones IP son fundamentales para el funcionamiento de Internet y las redes locales. El entendimiento de IPv4 e IPv6, incluyendo clases, subredes, máscaras de subred y direcciones especiales, es esencial para cualquier profesional de redes o sistemas.</p>
-<p>Con el agotamiento de direcciones IPv4, la transición a IPv6 se vuelve cada vez más importante. IPv6 no solo proporciona un espacio de direcciones prácticamente infinito, sino que también incluye mejoras en seguridad, eficiencia y configuración automática.</p>
+<blockquote>
+<p><strong>Fuente:</strong> Documentación propia basada en RFC 791, RFC 1918, RFC 4291 y material educativo de redes.</p>
+</blockquote>
 
                     </main>
 
