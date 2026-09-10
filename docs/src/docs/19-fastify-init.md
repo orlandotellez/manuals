@@ -4,7 +4,7 @@
 
 Este documento describe **todo** el backend de un sistema POS de ejemplo: cómo está construido, por qué está construido así, cómo levantar una copia desde cero, cómo está organizado el código, cómo funciona cada módulo, cómo está modelada la base de datos, y cuáles son todos los endpoints disponibles con sus request/response.
 
-> **Estado del documento:** generado a partir del código fuente real del proyecto de ejemplo (`example-project/`). Todo bloque de código que aparece aquí fue extraído directamente de los archivos del proyecto — no hay código inventado, resumido ni aproximado.
+[Repositorio de Github](https://github.com/orlandotellez/example-project)
 
 ---
 
