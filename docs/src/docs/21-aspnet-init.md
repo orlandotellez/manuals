@@ -288,7 +288,7 @@ src/
 │   │   │       └── ITokenService.cs
 │   │   ├── Mapping/                  # extensión: entidad → DTO
 │   │   │   └── MappingProduct.cs
-│   │   └── Models/                   # DTOs
+│   │   └── DTO/                      # DTOs
 │   │       ├── Auth/
 │   │       │   ├── AuthRequest.cs
 │   │       │   └── AuthResult.cs
@@ -734,12 +734,12 @@ Esta capa conoce a `Domain` (usa las entidades). NO conoce a `Infrastructure` ni
 
 ### 7.1 DTOs - los "envelopes" de datos
 
-Los DTOs viven en `Application/Common/Models/{Feature}`. Se usan para **separar** lo que entra y sale de la lógica, sin exponer las entidades internas.
+Los DTOs viven en `Application/Common/DTO/{Feature}`. Se usan para **separar** lo que entra y sale de la lógica, sin exponer las entidades internas.
 
 #### Products/ProductRequest.cs (lo que el cliente envía)
 
 ```csharp
-namespace Example.Application.Common.Models.Products;
+namespace Example.Application.Common.DTO.Products;
 
 // Registrar/Crear un producto
 public record CreateProductRequest(
@@ -761,7 +761,7 @@ public record UpdateProductRequest(
 #### Products/ProductResult.cs (lo que el cliente recibe)
 
 ```csharp
-namespace Example.Application.Common.Models.Products;
+namespace Example.Application.Common.DTO.Products;
 
 public record ProductDto
 {
@@ -785,7 +785,7 @@ public record ProductDto
 #### Auth/AuthRequest.cs
 
 ```csharp
-namespace Example.Application.Common.Models.Auth;
+namespace Example.Application.Common.DTO.Auth;
 
 public record LoginRequest(
     string Email,
@@ -806,7 +806,7 @@ public record RefreshRequest(
 #### Auth/AuthResult.cs
 
 ```csharp
-namespace Example.Application.Common.Models.Auth;
+namespace Example.Application.Common.DTO.Auth;
 
 public record AuthResponse
 {
@@ -914,7 +914,7 @@ public interface ITokenService
 #### Services/IProductService.cs
 
 ```csharp
-using Example.Application.Common.Models.Products;
+using Example.Application.Common.DTO.Products;
 
 namespace Example.Application.Common.Interfaces.Services;
 
@@ -935,7 +935,7 @@ Ahora la parte interesante: **implementamos la lógica de negocio** usando solo 
 ```csharp
 using Example.Application.Common.Interfaces.Services;
 using Example.Application.Common.Interfaces.Repositories.Products;
-using Example.Application.Common.Models.Products;
+using Example.Application.Common.DTO.Products;
 using Example.Application.Common.Mapping;
 using Example.Domain.Entities.Products;
 using Example.Domain.Exceptions;
@@ -1030,7 +1030,7 @@ using System.Security.Claims;
 using Example.Application.Common.Interfaces.Services;
 using Example.Application.Common.Interfaces.Repositories.Auth;
 using Example.Application.Common.Interfaces.Repositories.Users;
-using Example.Application.Common.Models.Auth;
+using Example.Application.Common.DTO.Auth;
 using Example.Domain.Entities.Users;
 using Example.Domain.Entities.Auth;
 using Example.Domain.Enums;
@@ -2505,7 +2505,7 @@ La combinación de `[Authorize]` (en el controller) + `[RequirePermission(...)]`
 
 ```csharp
 using Example.Application.Common.Interfaces.Services;
-using Example.Application.Common.Models.Auth;
+using Example.Application.Common.DTO.Auth;
 using Example.Api.Helpers;
 using Example.Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
@@ -2602,7 +2602,7 @@ public class AuthController : ControllerBase
 using Example.Api.Authorization;
 using Example.Api.Helpers;
 using Example.Application.Common.Interfaces.Services;
-using Example.Application.Common.Models.Products;
+using Example.Application.Common.DTO.Products;
 using Example.Domain.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -2977,7 +2977,7 @@ Un validador es una clase que extiende `AbstractValidator<T>` y define las regla
 
 ```csharp
 using FluentValidation;
-using Example.Application.Common.Models.Products;
+using Example.Application.Common.DTO.Products;
 
 namespace Example.Api.Validators;
 

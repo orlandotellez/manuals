@@ -37,7 +37,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "dark";
-            window.path_to_searchindex_js = "searchindex-11a6d156.js";
+            window.path_to_searchindex_js = "searchindex-7566d327.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-cd1280d9.js"></script>
@@ -66455,7 +66455,7 @@ src/
 │   │   │       └── ITokenService.cs
 │   │   ├── Mapping/                  # extensión: entidad → DTO
 │   │   │   └── MappingProduct.cs
-│   │   └── Models/                   # DTOs
+│   │   └── DTO/                      # DTOs
 │   │       ├── Auth/
 │   │       │   ├── AuthRequest.cs
 │   │       │   └── AuthResult.cs
@@ -66848,9 +66848,9 @@ throw AppExceptions.Conflict("Email already registered");
 </ol>
 <p>Esta capa conoce a <code>Domain</code> (usa las entidades). NO conoce a <code>Infrastructure</code> ni a <code>Api</code>.</p>
 <h3 id="71-dtos---los-envelopes-de-datos"><a class="header" href="#71-dtos---los-envelopes-de-datos">7.1 DTOs - los “envelopes” de datos</a></h3>
-<p>Los DTOs viven en <code>Application/Common/Models/{Feature}</code>. Se usan para <strong>separar</strong> lo que entra y sale de la lógica, sin exponer las entidades internas.</p>
+<p>Los DTOs viven en <code>Application/Common/DTO/{Feature}</code>. Se usan para <strong>separar</strong> lo que entra y sale de la lógica, sin exponer las entidades internas.</p>
 <h4 id="productsproductrequestcs-lo-que-el-cliente-envía"><a class="header" href="#productsproductrequestcs-lo-que-el-cliente-envía">Products/ProductRequest.cs (lo que el cliente envía)</a></h4>
-<pre><code class="language-csharp">namespace Example.Application.Common.Models.Products;
+<pre><code class="language-csharp">namespace Example.Application.Common.DTO.Products;
 
 // Registrar/Crear un producto
 public record CreateProductRequest(
@@ -66869,7 +66869,7 @@ public record UpdateProductRequest(
 );
 </code></pre>
 <h4 id="productsproductresultcs-lo-que-el-cliente-recibe"><a class="header" href="#productsproductresultcs-lo-que-el-cliente-recibe">Products/ProductResult.cs (lo que el cliente recibe)</a></h4>
-<pre><code class="language-csharp">namespace Example.Application.Common.Models.Products;
+<pre><code class="language-csharp">namespace Example.Application.Common.DTO.Products;
 
 public record ProductDto
 {
@@ -66893,7 +66893,7 @@ public record ProductDto
 </ul>
 </blockquote>
 <h4 id="authauthrequestcs"><a class="header" href="#authauthrequestcs">Auth/AuthRequest.cs</a></h4>
-<pre><code class="language-csharp">namespace Example.Application.Common.Models.Auth;
+<pre><code class="language-csharp">namespace Example.Application.Common.DTO.Auth;
 
 public record LoginRequest(
     string Email,
@@ -66911,7 +66911,7 @@ public record RefreshRequest(
 );
 </code></pre>
 <h4 id="authauthresultcs"><a class="header" href="#authauthresultcs">Auth/AuthResult.cs</a></h4>
-<pre><code class="language-csharp">namespace Example.Application.Common.Models.Auth;
+<pre><code class="language-csharp">namespace Example.Application.Common.DTO.Auth;
 
 public record AuthResponse
 {
@@ -66997,7 +66997,7 @@ public interface ITokenService
 }
 </code></pre>
 <h4 id="servicesiproductservicecs"><a class="header" href="#servicesiproductservicecs">Services/IProductService.cs</a></h4>
-<pre><code class="language-csharp">using Example.Application.Common.Models.Products;
+<pre><code class="language-csharp">using Example.Application.Common.DTO.Products;
 
 namespace Example.Application.Common.Interfaces.Services;
 
@@ -67014,7 +67014,7 @@ public interface IProductService
 <p>Ahora la parte interesante: <strong>implementamos la lógica de negocio</strong> usando solo las interfaces. El service <strong>no sabe</strong> que existe PostgreSQL; solo usa <code>IProductRepository</code>.</p>
 <pre><code class="language-csharp">using Example.Application.Common.Interfaces.Services;
 using Example.Application.Common.Interfaces.Repositories.Products;
-using Example.Application.Common.Models.Products;
+using Example.Application.Common.DTO.Products;
 using Example.Application.Common.Mapping;
 using Example.Domain.Entities.Products;
 using Example.Domain.Exceptions;
@@ -67105,7 +67105,7 @@ public class ProductService : IProductService
 using Example.Application.Common.Interfaces.Services;
 using Example.Application.Common.Interfaces.Repositories.Auth;
 using Example.Application.Common.Interfaces.Repositories.Users;
-using Example.Application.Common.Models.Auth;
+using Example.Application.Common.DTO.Auth;
 using Example.Domain.Entities.Users;
 using Example.Domain.Entities.Auth;
 using Example.Domain.Enums;
@@ -68474,7 +68474,7 @@ public async Task&lt;ActionResult&gt; CreateProduct([FromBody] CreateProductRequ
 <h3 id="912-controllers"><a class="header" href="#912-controllers">9.12 Controllers</a></h3>
 <h4 id="controllersauthcontrollercs"><a class="header" href="#controllersauthcontrollercs">Controllers/AuthController.cs</a></h4>
 <pre><code class="language-csharp">using Example.Application.Common.Interfaces.Services;
-using Example.Application.Common.Models.Auth;
+using Example.Application.Common.DTO.Auth;
 using Example.Api.Helpers;
 using Example.Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
@@ -68568,7 +68568,7 @@ public class AuthController : ControllerBase
 <pre><code class="language-csharp">using Example.Api.Authorization;
 using Example.Api.Helpers;
 using Example.Application.Common.Interfaces.Services;
-using Example.Application.Common.Models.Products;
+using Example.Application.Common.DTO.Products;
 using Example.Domain.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -68877,7 +68877,7 @@ new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())  // id único 
 <h3 id="121-crear-un-validador"><a class="header" href="#121-crear-un-validador">12.1 Crear un validador</a></h3>
 <p>Un validador es una clase que extiende <code>AbstractValidator&lt;T&gt;</code> y define las reglas para un DTO:</p>
 <pre><code class="language-csharp">using FluentValidation;
-using Example.Application.Common.Models.Products;
+using Example.Application.Common.DTO.Products;
 
 namespace Example.Api.Validators;
 
