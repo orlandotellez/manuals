@@ -1,0 +1,636 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>BGP - Manuales</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-0392ca55.css">
+        <link rel="stylesheet" href="../css/chrome-fc474251.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/dark-cca273e4.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "dark";
+            window.path_to_searchindex_js = "../searchindex-f7857309.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-54fda1d6.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Manuales</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="42-bgp-el-pegamento-de-internet"><a class="header" href="#42-bgp-el-pegamento-de-internet">42. BGP: El Pegamento de Internet</a></h1>
+<p><strong>El protocolo que decide cómo viaja el tráfico entre sistemas autónomos — donde la política vale más que la velocidad</strong></p>
+<hr>
+<h2 id="índice"><a class="header" href="#índice">Índice</a></h2>
+<ul>
+<li><a href="#1-el-protocolo-que-no-vive-en-tu-red">El protocolo que no vive en tu red</a></li>
+<li><a href="#2-los-sistemas-autónomos-el-mapa-político-de-internet">Los sistemas autónomos: el mapa político de Internet</a></li>
+<li><a href="#3-path-vector-la-familia-nueva">Path Vector: la familia nueva</a></li>
+<li><a href="#4-ebgp-e-ibgp-las-dos-caras-de-bgp">eBGP e iBGP: las dos caras de BGP</a></li>
+<li><a href="#5-los-atributos-la-moneda-de-la-política">Los atributos: la moneda de la política</a></li>
+<li><a href="#6-el-algoritmo-de-selección-de-camino-en-orden">El algoritmo de selección de camino (en orden)</a></li>
+<li><a href="#7-las-3-reglas-de-ibgp-que-rompen-cabezas">Las 3 reglas de iBGP que rompen cabezas</a></li>
+<li><a href="#8-configuración-ebgp-e-ibgp-en-10-minutos">Configuración: eBGP e iBGP en 10 minutos</a></li>
+<li><a href="#9-por-qué-no-usar-bgp-para-todo-el-caso-de-uso-honesto">¿Por qué no usar BGP para todo? El caso de uso honesto</a></li>
+<li><a href="#10-verificación-cómo-leer-a-bgp">Verificación: cómo leer a BGP</a></li>
+<li><a href="#11-los-5-errores-más-comunes">Los 5 errores más comunes</a></li>
+<li><a href="#12-comprobá-lo-que-aprendiste">Comprobá lo que aprendiste</a></li>
+<li><a href="#13-glosario">Glosario</a></li>
+<li><a href="#14-resumen-en-10-puntos">Resumen en 10 puntos</a></li>
+</ul>
+<hr>
+<h2 id="1-el-protocolo-que-no-vive-en-tu-red"><a class="header" href="#1-el-protocolo-que-no-vive-en-tu-red">1. El protocolo que no vive en tu red</a></h2>
+<p>Hasta acá, todos los protocolos que estudiaste (OSPF, EIGRP, IS-IS) son de <strong>red interna</strong>: deciden cómo viaja el tráfico DENTRO de una organización. Ahora llega el que vive en la frontera: <strong>BGP</strong> (<em>Border Gateway Protocol</em>).</p>
+<blockquote>
+<p><strong>BGP es el protocolo de routing de Internet.</strong> Cuando tu casa navega, el tráfico atraviesa un puñado de redes de proveedores (ISP) que “hablan” BGP entre sí. BGP no decide “cuál es el camino más rápido”: decide <strong>cuál es el camino MÁS APROPIADO según las reglas políticas y comerciales</strong> de cada red. Es dinero, contratos y soberanía técnica convertidos en un protocolo.</p>
+</blockquote>
+<p><strong>Analogía madre de este manual:</strong> OSPF elige la ruta como un GPS (más corta, más rápida). BGP elige la ruta como una <strong>decisión de tráfico internacional</strong>: “¿por qué país hago pasar la mercadería?” — por acuerdos comerciales, por seguridad, por a quién le pago y a quién no. La métrica “más rápido” es secundaria: gana “por dónde me conviene”.</p>
+<blockquote>
+<p><strong>La frase que hay que memorizar (y entender):</strong> OSPF/EIGRP/IS-IS eligen por <strong>métrica de red</strong>; BGP elige por <strong>política</strong>. BGP no calcula el camino más corto: ejecuta las reglas del administrador de cada sistema autónomo.</p>
+</blockquote>
+<hr>
+<h2 id="2-los-sistemas-autónomos-el-mapa-político-de-internet"><a class="header" href="#2-los-sistemas-autónomos-el-mapa-político-de-internet">2. Los sistemas autónomos: el mapa político de Internet</a></h2>
+<h3 id="21-qué-es-un-as"><a class="header" href="#21-qué-es-un-as">2.1. ¿Qué es un AS?</a></h3>
+<p>Un <strong>Sistema Autónomo (AS)</strong> es un conjunto de redes (routers) bajo <strong>una sola administración técnica</strong> — una empresa, un ISP, un organismo — con una <strong>política de routing única</strong> y un <strong>número identificatorio (ASN)</strong>.</p>
+<pre><code class="language-text">             AS65001 (tu empresa)                 AS65002 (el ISP)
+     ┌─────────────────────────┐         ┌─────────────────────────┐
+     │   R1 ── R2 ── R3        │         │  R4 ── R5 ── R6         │
+     │      (OSPF interno)     │         │     (IS-IS interno)     │
+     │         │    │          │         │          │              │
+     └─────────┼────┼──────────┘         └──────────┼──────────────┘
+               │    │        ◄──BGP──►              │
+               └────┴────  (frontera eBGP)  ────────┘
+</code></pre>
+<p>Datos fundamentales:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Dato</th><th>Valor</th></tr>
+</thead>
+<tbody>
+<tr><td>ASN público</td><td>1 - 64511 (registrados, únicos en Internet, por RIR)</td></tr>
+<tr><td>ASN privado</td><td><strong>64512 - 65535</strong> (para uso interno, como las IPs privadas que ya conocés)</td></tr>
+<tr><td>Quién asigna</td><td>Los RIR (ARIN, RIPE, LACNIC…)</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>La regla de oro (el “interior vs exterior” que ordena todo):</strong> <strong>BGP = entre sistemas autónomos (inter-AS)</strong>. <strong>OSPF/EIGRP/IS-IS = dentro de un sistema autónomo (intra-AS)</strong>. Hasta podés ver un ISP usando IS-IS <em>adentro</em> de su AS y BGP <em>entre</em> los AS. Son capas distintas, no competidores excluyentes.</p>
+</blockquote>
+<hr>
+<h2 id="3-path-vector-la-familia-nueva"><a class="header" href="#3-path-vector-la-familia-nueva">3. Path Vector: la familia nueva</a></h2>
+<p>En el tema de enrutamiento dinámico viste las dos familias (DV y LS). BGP es la <strong>tercera familia</strong>: <strong>path vector</strong> (vector de caminos).</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Familia</th><th>Qué guarda</th><th>Ejemplo</th></tr>
+</thead>
+<tbody>
+<tr><td>Distance Vector</td><td>destino + distancia (rumor)</td><td>RIP</td></tr>
+<tr><td>Link-State</td><td>mapa completo (LSA/LSP + SPF)</td><td>OSPF, IS-IS</td></tr>
+<tr><td><strong>Path Vector</strong></td><td><strong>la lista COMPLETA de AS por los que pasa el camino</strong></td><td><strong>BGP</strong></td></tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-text">Camino hacia 203.0.113.0/24:
+AS-PATH = 65001 65002 65010      ← la "cadena" de AS que atraviesa el anuncio
+                                 (es el "vector" de actores del camino)
+</code></pre>
+<p><strong>La potencia de la lista:</strong> con el AS-PATH completo, BGP puede:</p>
+<ol>
+<li><strong>Detectar bucles al instante</strong>: si un anuncio vuelve conteniendo TU AS, lo descartás (lo anunciaste vos). Sin rumores, sin contar hasta 16: la lista física del viaje.</li>
+<li><strong>Aplicar política por actor</strong>: “si el camino pasa por el AS 65010, no lo quiero” — un solo atributo de lista habilita política sin precedentes.</li>
+<li><strong>Evaluar “qué tan directo”</strong>: menos AS en la lista suele preferir caminos más directos (regla 4 del path selection).</li>
+</ol>
+<blockquote>
+<p><strong>Analogía:</strong> el AS-PATH es la <strong>etiqueta de origen del viaje</strong>: “Hecho en China; transitó: Argentina, Brasil, París…”. Cada actor que toca el producto le suma su nombre. Si la etiqueta vuelve al país de origen, el paquete se descarta (está en bucle). Y el comprador puede decidir por etiqueta: “si pasa por X, no lo quiero”.</p>
+</blockquote>
+<hr>
+<h2 id="4-ebgp-e-ibgp-las-dos-caras-de-bgp"><a class="header" href="#4-ebgp-e-ibgp-las-dos-caras-de-bgp">4. eBGP e iBGP: las dos caras de BGP</a></h2>
+<p>BGP tiene dos modalidades según QUIÉN es el peer:</p>
+<pre><code class="language-text">eBGP = BGP entre AS DISTINTOS   (vecino con remote-as ≠ el mío)
+iBGP = BGP dentro del MISMO AS  (vecino con remote-as = el mío)
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Característica</th><th>eBGP</th><th>iBGP</th></tr>
+</thead>
+<tbody>
+<tr><td>Vecino (peer)</td><td>En otro AS</td><td>En mi propio AS</td></tr>
+<tr><td>Distancia (AD)</td><td><strong>20</strong></td><td><strong>200</strong></td></tr>
+<tr><td>Next-hop</td><td>Cambia (el router de borde vecino)</td><td><strong>NO cambia</strong> (se mantiene el next-hop del eBGP: por eso existe <code>next-hop-self</code>)</td></tr>
+<tr><td>Loop prevention</td><td>AS-PATH (si tu AS aparece, descartás)</td><td><strong>Split horizon de iBGP</strong> (no se re-anuncia una ruta aprendida por iBGP a OTRO iBGP — de ahí la regla de full mesh)</td></tr>
+<tr><td>TTL en el salto</td><td>1 por defecto (un solo salto)</td><td>255 (multi-hop típicamente)</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Los AD que ya conocés de la tabla de selección de rutas:</strong> eBGP 20 e iBGP 200. Ver <code>[20/0]</code> en la tabla de rutas = ruta BGP externa. Y nota la asimetría: el propio fabricante de BGP hace que lo externo (20, más confiable que todo lo interno) gane sobre iBGP (200, menos que RIP 120 y que EIGRP externo 170) — porque lo interno ya debería estar resuelto por OSPF/IS-IS adentro.</p>
+</blockquote>
+<hr>
+<h2 id="5-los-atributos-la-moneda-de-la-política"><a class="header" href="#5-los-atributos-la-moneda-de-la-política">5. Los atributos: la moneda de la política</a></h2>
+<h3 id="51-la-tabla-de-los-atributos-que-gobiernan"><a class="header" href="#51-la-tabla-de-los-atributos-que-gobiernan">5.1. La tabla de los atributos que gobiernan</a></h3>
+<p>Cada ruta BGP viaja con sus <strong>atributos</strong>: metadatos que los routers usan para decidir a quién prefieren y qué anuncian. Los cuatro que importan (ordenados por la selección):</p>
+<pre><code class="language-text">WEIGHT (Cisco, solo local)   → "este camino me gusta, más alto mejor"
+LOCAL_PREF (dentro del AS)   → "este camino le conviene a MI AS, más alto mejor"
+AS_PATH (en todos los anuncios) → "cuánto viajó", MÁS CORTO mejor (y bucle si muestra mi AS)
+MED (entra a mi AS)          → "el costo que el vecino sugiere para entrar", MÁS BAJO mejor
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Atributo</th><th>Ámbito</th><th>Preferencia</th><th>Analogía</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Weight</strong></td><td>Solo este router (Cisco)</td><td>Mayor = mejor</td><td>“A mí me conviene este proveedor, punto”</td></tr>
+<tr><td><strong>Local Preference</strong></td><td>Todo mi AS</td><td>Mayor = mejor</td><td>“A TODA la empresa le conviene salir por acá”</td></tr>
+<tr><td><strong>AS-Path</strong></td><td>Global (en cada anuncio)</td><td><strong>Menor = mejor</strong></td><td>“Menos intermediarios = más directo”</td></tr>
+<tr><td><strong>MED</strong></td><td>Entre vecinos externos</td><td>Menor = mejor</td><td>“Entrá por mi puerta A (barata) y no por la B”</td></tr>
+<tr><td>Next-hop</td><td>Global</td><td>(se usa para reenviar)</td><td>“El siguiente salto físico”</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="52-la-clave-conceptual-lo-que-nadie-entiende-al-principio"><a class="header" href="#52-la-clave-conceptual-lo-que-nadie-entiende-al-principio">5.2. La clave conceptual (lo que nadie entiende al principio)</a></h3>
+<blockquote>
+<p><strong>BGP no “mide” rutas: LAS NEGOCIA.</strong> Cada atributo es una “seducción”: el atributo dice “preferime”. Weight dice “yo (router) prefiero”; Local-Pref dice “nosotros (AS) preferimos”; MED dice “el vecino me seduce con precio barato”. El path selection (sección 6) es el orden de precedencia de esas seducciones. Nadie se come el mapa completo: se comen los atributos.</p>
+</blockquote>
+<blockquote>
+<p><strong>Analogía:</strong> elegir proveedor de internet en tu casa: Weight = “mi máquina de gaming prefiere esta línea”. Local-Pref = “en casa todos prefieren fibra”. AS-Path = “fibra directa de Telefónica (1 intermediario) vs fibra con reventa (3 intermediarios)”. MED = “el ISP A me ofrece más por menos”. BGP pondera en ese orden y elige.</p>
+</blockquote>
+<hr>
+<h2 id="6-el-algoritmo-de-selección-de-camino-en-orden"><a class="header" href="#6-el-algoritmo-de-selección-de-camino-en-orden">6. El algoritmo de selección de camino (en orden)</a></h2>
+<p>Cuando BGP tiene MÚLTIPLES caminos hacia el mismo prefijo, corre esta lista <strong>en orden</strong> — el primer empate desempatado gana, y el que rompe el empate decide:</p>
+<pre><code class="language-text">1.  Mayor WEIGHT (solo Cisco, local)          ← "yo prefiero"
+2.  Mayor LOCAL_PREF                          ← "mi AS prefiere"
+3.  Rutas ORIGINADAS por el propio router     ← "yo la generé"
+4.  AS_PATH más CORTO                        ← "más directo"
+5.  Menor ORIGIN (IGP &lt; EGP &lt; incomplete)     ← "de dónde salió"
+6.  Menor MED                                ← "me seduce el precio"
+7.  eBGP &gt; iBGP                              ← "externa antes que interna"
+8.  Menor costo IGP hacia el next-hop         ← "el enlace físico más barato"
+9.  ... (desempates finales: RID, etc.)
+</code></pre>
+<blockquote>
+<p><strong>HACELO VOS (la regla mnemotécnica del examen y de la vida):</strong> recordá el <strong>orden de acción</strong>: “Weight y LocalPref primero (míos y de mi AS); después el AS-PATH; después el ORIGEN; después el MED”. Y la dirección de la preferencia: <strong>Weight/LocalPref = más alto gana; AS-Path = más corto gana; MED = más bajo gana.</strong> Tres direcciones distintas, el 90% de los errores son confundir una con otra.</p>
+</blockquote>
+<h3 id="61-localpref-vs-med-la-confusión-más-cara-de-bgp-resuelta"><a class="header" href="#61-localpref-vs-med-la-confusión-más-cara-de-bgp-resuelta">6.1. LocalPref vs MED: la confusión más cara de BGP (resuelta)</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Pregunta</th><th>Local-Pref</th><th>MED</th></tr>
+</thead>
+<tbody>
+<tr><td>¿Quién la usa?</td><td><strong>Mi</strong> AS (para elegir SALIDA)</td><td>El <strong>vecino</strong> (para sugerir ENTRADA)</td></tr>
+<tr><td>Dirección del tráfico</td><td>Tráfico que SALE</td><td>Tráfico que ENTRA</td></tr>
+<tr><td>Valor preferido</td><td>Mayor mejor</td><td>Menor mejor</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>La regla de pulgar:</strong> querés que tu tráfico salga por X → subís LocalPref en X. Querés que los vecinos entren por X (y no por Y) → bajás MED en X (o lo subís en Y). Una controla la salida, la otra persuade la entrada. Nunca mezcles las dos cuando diagnostiques “¿por qué sale/entra por allá?”.</p>
+</blockquote>
+<hr>
+<h2 id="7-las-3-reglas-de-ibgp-que-rompen-cabezas"><a class="header" href="#7-las-3-reglas-de-ibgp-que-rompen-cabezas">7. Las 3 reglas de iBGP que rompen cabezas</a></h2>
+<p>Dentro de tu AS, iBGP tiene tres reglas que parecen arbitrarias… hasta que ves el motivo:</p>
+<h3 id="71-regla-1-full-mesh-obligatorio-o-route-reflectors"><a class="header" href="#71-regla-1-full-mesh-obligatorio-o-route-reflectors">7.1. Regla 1: Full Mesh obligatorio (o route reflectors)</a></h3>
+<pre><code class="language-text">Regla: lo que aprendo por iBGP NO se lo re-anuncio a otro peer iBGP.
+       (splithorizon de iBGP: "el rumor no vuelve a circular dentro del AS")
+
+Consecuencia: para que TODOS tengan todo, cada router iBGP debe ser vecino
+de TODOS los demás → FULL MESH (N routers = N×(N-1)/2 sesiones)
+</code></pre>
+<p>¿Por qué existe la regla? Para <strong>impedir bucles en un AS</strong>: el AS-PATH no cambia dentro del AS (mismo AS), así que no sirve para detectar bucles internos. El splithorizon de iBGP es la protección: “lo que entró por iBGP no sale por iBGP” → no hay ciclos.</p>
+<p>Cuando el full mesh explota (50 routers = 1.225 sesiones), se usan <strong>Route Reflectors</strong> (un RR “refleja” el rumor a sus clientes, centralizando el full mesh). Es un capítulo avanzado — para este manual alcanza con saber que existe la solución al problema del full mesh.</p>
+<h3 id="72-regla-2-el-next-hop-no-cambia-y-el-next-hop-self"><a class="header" href="#72-regla-2-el-next-hop-no-cambia-y-el-next-hop-self">7.2. Regla 2: el next-hop NO cambia (y el <code>next-hop-self</code>)</a></h3>
+<p>En iBGP el next-hop <strong>sigue siendo el del eBGP original</strong>:</p>
+<pre><code class="language-text">R1 (borde, eBGP con el ISP) aprende 203.0.113.0/24 con next-hop = 198.51.100.2 (el ISP)
+R1 se lo anuncia a R2 (iBGP): el next-hop sigue siendo 198.51.100.2 (NO cambia)
+R2 necesita RESOLVER 198.51.100.2... fuera de su área/seciencia → por IGP interno
+</code></pre>
+<p>¿Por qué? Porque iBGP asume que “la ruta interna para llegar al borde la resuelve el IGP” (OSPF/IS-IS). Pero si R1 no redistribuye la red del next-hop… R2 no sabe cómo llegar. <strong>La solución estándar: <code>neighbor X next-hop-self</code></strong> en el router de borde: fuerza a que el next-hop sea él mismo (R1), y R2 resuelve con el IGP.</p>
+<h3 id="73-regla-3-la-sincronización-legado--y-la-trampa-de-examen"><a class="header" href="#73-regla-3-la-sincronización-legado--y-la-trampa-de-examen">7.3. Regla 3: la sincronización (legado — y la trampa de examen)</a></h3>
+<p>Históricamente, un router iBGP NO anunciaba a eBGP rutas iBGP-descubiertas si la ruta no estaba también en el IGP (evitaba “huecos negros” en redes viejas). Hoy, con el full mesh moderno y el next-hop-self, la regla de sincronización <strong>está deshabilitada por defecto</strong> y es irrelevante. Pero sigue apareciendo en exámenes viejos: sabé que existe, que se desactiva con <code>no synchronization</code>, y que en el 99% de las configs modernas ya está apagada.</p>
+<hr>
+<h2 id="8-configuración-ebgp-e-ibgp-en-10-minutos"><a class="header" href="#8-configuración-ebgp-e-ibgp-en-10-minutos">8. Configuración: eBGP e iBGP en 10 minutos</a></h2>
+<h3 id="81-la-topología"><a class="header" href="#81-la-topología">8.1. La topología</a></h3>
+<pre><code class="language-text">  AS65001 (tuyo)                    AS65002 (ISP)
+  R1 ─────────── R2              R3 ─────────── R4
+  lo0 1.1.1.1    │               │              lo0 4.4.4.4
+     iBGP (R1-R2)│               │
+                 └─ eBGP ────────┘
+                 10.0.0.0/30     (R2 = 10.0.0.2, R3 = 10.0.0.3)
+</code></pre>
+<h3 id="82-la-configuración-los-4-pasos-de-oro"><a class="header" href="#82-la-configuración-los-4-pasos-de-oro">8.2. La configuración (los 4 pasos de oro)</a></h3>
+<pre><code class="language-cisco">! R2 (el router de frontera de TU AS)
+router bgp 65001
+ bgp router-id 2.2.2.2
+ neighbor 10.0.0.3 remote-as 65002          ! eBGP: el ISP (AS distinto)
+ neighbor 1.1.1.1 remote-as 65001           ! iBGP: R1 (tu mismo AS)
+ neighbor 1.1.1.1 update-source loopback 0  ! iBGP siempre sobre loopback (estable)
+ neighbor 1.1.1.1 next-hop-self             ! Regla 2 resuelta: R1 aprende a llegar a R2 vía IGP
+!
+! ¿Qué anunciamos? Solo lo que esté en la TABLA DE RUTAS (¡ojo, igual que con OSPF!)
+network 10.0.0.0 mask 255.255.255.252       ! la subred entre R2-R3 (sí, "mask" explícito)
+network 192.168.1.0 mask 255.255.255.0      ! una red interna que querés anunciar al mundo
+</code></pre>
+<h3 id="83-la-sintaxis-explicada-los-3-misterios-de-bgp"><a class="header" href="#83-la-sintaxis-explicada-los-3-misterios-de-bgp">8.3. La sintaxis explicada (los 3 misterios de BGP)</a></h3>
+<pre><code class="language-text">router bgp 65001                ← el ASN PROPIO (≠ el AS de EIGRP de eBGP 65002: apunta al VECINO)
+neighbor X remote-as Y          ← "X es mi vecino, y pertenece al AS Y"
+neighbor X update-source loopback 0 ← iBGP: la sesión "vive" en la loopback (si una interfaz
+                                  cae, la sesión no muere) — con el IGP garantizando el camino
+neighbor X next-hop-self        ← Regla 2: R1 (iBGP) aprenderá next-hop = R2 (no el ISP)
+network 10.0.0.0 mask ...       ← ¡DIFERENTE A OSPF! En BGP, "network" NO activa interfaces:
+                                  ANUNCIA un prefijo que YA está en la tabla de rutas.
+                                  Si no está en la tabla → no se anuncia (y no "aparece")
+</code></pre>
+<blockquote>
+<p><strong>La trampa clásica de BGP (<code>network</code>):</strong> en OSPF, <code>network</code> matchea interfaces y las mete al proceso. En BGP, <code>network</code> <strong>declara qué prefijos de mi tabla de rutas voy a anunciar</strong>. Si el prefijo no está en la tabla (o no se alcanza exacto), BGP no anuncia NADA — y no da error visible. Diagnóstico: <code>show ip bgp</code> sin la ruta, o en “not in table”.</p>
+</blockquote>
+<h3 id="84-ebgp-multihop-el-caso-vecino-no-directo"><a class="header" href="#84-ebgp-multihop-el-caso-vecino-no-directo">8.4. eBGP multihop (el caso “vecino no directo”)</a></h3>
+<pre><code class="language-text">router bgp 65001
+ neighbor 10.0.0.3 remote-as 65002
+ neighbor 10.0.0.3 ebgp-multihop 2    ← permite que eBGP salte más de 1 hop (default TTL=1)
+ neighbor 10.0.0.3 update-source loopback 0  ← con multihop, la sesión puede vivir en loopbacks
+</code></pre>
+<blockquote>
+<p><strong>Regla del eBGP default:</strong> el eBGP clásico asume que el vecino está a <strong>un salto</strong> (TTL=1). Si lo definís con <code>update-source loopback</code> (para estabilidad), necesitás <code>ebgp-multihop</code> con el TTL suficiente. Sin eso, la sesión no sube — “estoy enviando a un vecino a 2 saltos y el vecino no responde”.</p>
+</blockquote>
+<hr>
+<h2 id="9-por-qué-no-usar-bgp-para-todo-el-caso-de-uso-honesto"><a class="header" href="#9-por-qué-no-usar-bgp-para-todo-el-caso-de-uso-honesto">9. ¿Por qué no usar BGP para todo? El caso de uso honesto</a></h2>
+<p>Pregunta que TODOS se hacen en clase: “¿por qué no reemplazo OSPF por BGP y listo?” Respuesta honesta:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Criterio</th><th>OSPF/IS-IS (IGP)</th><th>BGP (EGP)</th></tr>
+</thead>
+<tbody>
+<tr><td>Objetivo</td><td>Convergencia rápida + métrica</td><td>Política + estabilidad</td></tr>
+<tr><td>Convergencia</td><td>Segundos</td><td><strong>Minutos</strong> (los timers y la cautela)</td></tr>
+<tr><td>Auto-descubrimiento</td><td>Sí (Hello)</td><td><strong>NO</strong>: cada vecino se configura a mano</td></tr>
+<tr><td>Métrica</td><td>Costo/BW</td><td><strong>No hay “métrica de red”</strong>: solo política</td></tr>
+<tr><td>Uso típico</td><td>Dentro del AS</td><td>Entre AS y en el borde</td></tr>
+<tr><td>“Escala”</td><td>Hasta miles de routers</td><td>El ENTERO de Internet</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>La conclusión profesional (sección 11 del mercado real):</strong> BGP se usa en el <strong>borde</strong>: para conectar tu AS con el ISP (default route o tablas parciales), para multi-homing (dos ISP, redundancia con política: “por acá salen los videos, por allá el resto”), y para peering entre ISP. <strong>Dentro</strong> de tu red, seguís usando OSPF/IS-IS/EIGRP: rápido, auto-descubrible, con métrica real. BGP no reemplaza al IGP: lo acompaña en la frontera.</p>
+</blockquote>
+<hr>
+<h2 id="10-verificación-cómo-leer-a-bgp"><a class="header" href="#10-verificación-cómo-leer-a-bgp">10. Verificación: cómo leer a BGP</a></h2>
+<pre><code class="language-text">R1# show ip bgp summary
+BGP router identifier 2.2.2.2, local AS number 65001
+Neighbor    V   AS  MsgRcvd  MsgSent  TblVer  InQ OutQ  Up/Down  State/PfxRcd
+10.0.0.3     4 65002     123     121      17    0    0 00:12:34     2  ← eBGP OK, 2 prefijos
+1.1.1.1      4 65001      89      90      17    0    0 00:11:02     1  ← iBGP OK
+                    │                      │                 │        └─ Estado del vecino
+                    └─ Estado que importa:     └─ Tabla estable    ("2" = 2 rutas recibidas)
+                       en "State/PfxRcd" los
+                       estados son: Idle → Connect → Active…
+                       → OpenSent → OpenConfirm → ESTABLISHED
+</code></pre>
+<p><strong>La escala de estados (la leés en “State/PfxRcd”):</strong></p>
+<pre><code class="language-text">Idle → Connect → Active → OpenSent → OpenConfirm → ESTABLISHED
+  └─ fases de "levantar la sesión TCP" (BGP usa TCP 179)
+  ESTABLISHED con un número = TODO BIEN (las rutas están fluyendo)
+  "Active" o "Idle" o "Established sin prefijos" = problema (sección 11)
+</code></pre>
+<pre><code class="language-text">R1# show ip bgp
+BGP table version is 17...
+     Network          Next Hop            Metric LocPrf Weight Path
+ *   203.0.113.0/24   10.0.0.3                 0         32768 i      ← eBGP del ISP
+ *&gt;i 192.168.1.0/24   1.1.1.1                  0    100      0 i      ← iBGP (LocPrf 100, "*&gt;" = mejor)
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Comando</th><th>Qué te dice</th></tr>
+</thead>
+<tbody>
+<tr><td><code>show ip bgp summary</code></td><td>Estado de cada vecino + cantidad de prefijos recibidos (ESTABLISHED = sano)</td></tr>
+<tr><td><code>show ip bgp</code></td><td>La tabla BGP completa: rutas, next-hop, LocPrf, Weight, AS-Path</td></tr>
+<tr><td><code>show ip bgp &lt;red&gt;</code></td><td>Análisis de UNA ruta: atributos y caminos disponibles</td></tr>
+<tr><td><code>show ip bgp neighbors 10.0.0.3</code></td><td>Detalle de sesión: timers, capabilities, mensajes, estados</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="11-los-5-errores-más-comunes"><a class="header" href="#11-los-5-errores-más-comunes">11. Los 5 errores más comunes</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>#</th><th>Error</th><th>Síntoma</th><th>Fix</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td><td><strong>ASN mal en <code>remote-as</code></strong> (invertido)</td><td>La sesión nunca queda ESTABLISHED (rebota entre Connect/Active)</td><td><code>neighbor X remote-as &lt;AS DEL VECINO&gt;</code>, no el tuyo</td></tr>
+<tr><td>2</td><td><strong><code>network ... mask</code> de un prefijo que NO está en la tabla de rutas</strong></td><td>Sesión ESTABLISHED pero 0 prefijos anunciados (¡sin error!)</td><td>Verificar que el prefijo exista en <code>show ip route</code> (exacto)</td></tr>
+<tr><td>3</td><td><strong>iBGP sin full mesh / sin next-hop-self</strong></td><td>Rutas que faltan en R1: no se re-anuncian (Regla 1) o next-hop irresoluble (Regla 2)</td><td>Full mesh o route reflector; <code>next-hop-self</code> en los bordes</td></tr>
+<tr><td>4</td><td><strong>eBGP con loopback sin <code>ebgp-multihop</code></strong></td><td>Sesión nunca sube (TTL=1 por defecto)</td><td><code>ebgp-multihop 2</code> + <code>update-source loopback</code></td></tr>
+<tr><td>5</td><td><strong>Firewall/ACL bloqueando TCP 179</strong></td><td>Sesión en “Active” eterno (BGP necesita la sesión TCP)</td><td>Permitir TCP 179 hacia/desde los peers</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>El error #2 es el más traicionero de la serie:</strong> ESTABLISHED con cero prefijos. No hay mensaje de error: BGP simplemente “no tiene qué anunciar”. La sesión está viva y tu ruta no se anuncia porque el prefijo no está en la tabla. Verificá SIEMPRE con <code>show ip bgp</code> si el prefijo aparece (o figura “not in table”) antes de tocar timers o ACLs.</p>
+</blockquote>
+<hr>
+<h2 id="12-comprobá-lo-que-aprendiste"><a class="header" href="#12-comprobá-lo-que-aprendiste">12. Comprobá lo que aprendiste</a></h2>
+<p><strong>1. ¿Cuál es la diferencia esencial entre BGP y los protocolos de red interna?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Los IGPs (OSPF/EIGRP/IS-IS) eligen por MÉTRICA (más corto/rápido). BGP elige por <strong>POLÍTICA</strong>: los atributos (Weight, LocalPref, AS-Path, MED) son reglas administrativas/comerciales sobre “por dónde conviene”. Es dinero y preferencia convertidos en protocolo.</p>
+</details>
+<p><strong>2. ¿Qué es el AS-PATH y qué resuelve?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Es la lista completa de AS por los que pasa el anuncio (el “vector” del path vector). Resuelve: (a) detección de bucles instantánea (si tu AS aparece en el path, descartás el anuncio) y (b) política por actor y evaluación de “directura” (path más corto gana en la regla 4).</p>
+</details>
+<p><strong>3. ¿Qué es eBGP y qué es iBGP? ¿Y sus AD?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>eBGP = sesión entre AS distintos (vecino con otro ASN), AD 20, next-hop cambia, TTL=1. iBGP = dentro del mismo AS, AD 200, next-hop NO cambia (por eso next-hop-self), TTL multi-hop (loopbacks), y splithorizon propio (no se reanuncia iBGP a iBGP → full mesh).</p>
+</details>
+<p><strong>4. Ordená los pasos principales de la selección de camino BGP.</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<ol>
+<li>Mayor Weight → 2. Mayor Local-Pref → 3. Originadas por el router → 4. AS-Path más corto → 5. Mejor Origin → 6. Menor MED → 7. eBGP antes que iBGP → 8. Menor costo IGP al next-hop. Preferencias: Weight/LocalPref más alto, AS-Path más corto, MED más bajo.</li>
+</ol>
+</details>
+<p><strong>5. LocalPref vs MED: ¿quién la usa y con qué tráfico?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>LocalPref la usa MI AS para elegir SALIDA (más alto mejor). MED la usa el VECINO para persuadir la ENTRADA (más bajo mejor). No mezclarlas al diagnosticar: una controla por dónde sale mi tráfico, la otra por dónde entra el del vecino.</p>
+</details>
+<p><strong>6. ¿Por qué iBGP necesita full mesh?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Por el splithorizon de iBGP: lo aprendido por iBGP no se reanuncia a otro iBGP (protección contra bucles dentro del AS, donde el AS-PATH no ayuda). Consecuencia: todos deben ser vecinos de todos (N×N). La escala de eso se resuelve con Route Reflectors.</p>
+</details>
+<p><strong>7. ¿Qué hace <code>network ... mask</code> en BGP (vs OSPF)?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>En BGP NO activa interfaces: <strong>anuncia un prefijo que ya está en la tabla de rutas</strong> (con esa máscara exacta). Si el prefijo no está en la tabla, no se anuncia y no hay error visible — la trampa clásica.</p>
+</details>
+<p><strong>8. ¿Por qué no usar BGP en lugar del IGP dentro de mi red?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Porque BGP no descubre vecinos (todo manual), no tiene métrica de red (solo política), y converge en MINUTOS (los IGPs en segundos). BGP es para el borde y la interconexión; el IGP sigue siendo el corazón rápido de la red.</p>
+</details>
+<hr>
+<h2 id="13-glosario"><a class="header" href="#13-glosario">13. Glosario</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Término</th><th>Qué es</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>AS / ASN</strong></td><td>Sistema Autónomo: conjunto de redes bajo una administración/política única, con su número (1-64511 públicos, 64512-65535 privados)</td></tr>
+<tr><td><strong>Path Vector</strong></td><td>Familia de BGP: guarda la lista completa de AS del camino (AS-PATH), no solo destino+distancia</td></tr>
+<tr><td><strong>eBGP / iBGP</strong></td><td>Sesión entre AS distintos (AD 20) / dentro del mismo AS (AD 200)</td></tr>
+<tr><td><strong>AS-PATH</strong></td><td>La cadena de AS que atraviesa el anuncio: loop prevention + preferencia (más corto gana)</td></tr>
+<tr><td><strong>WEIGHT</strong></td><td>Preferencia local a un router (Cisco): mayor mejor</td></tr>
+<tr><td><strong>LOCAL_PREF</strong></td><td>Preferencia de salida de todo el AS: mayor mejor</td></tr>
+<tr><td><strong>MED</strong></td><td>Sugerencia de entrada del vecino: menor mejor</td></tr>
+<tr><td><strong>Next-hop-self</strong></td><td>Fuerza que el next-hop de iBGP sea el router de borde (resuelve la Regla 2)</td></tr>
+<tr><td><strong>Full mesh / RR</strong></td><td>Obligación de iBGP (todos con todos) y su solución (Route Reflector)</td></tr>
+<tr><td><strong>Estados BGP</strong></td><td>Idle→Connect→Active→OpenSent→OpenConfirm→ESTABLISHED</td></tr>
+<tr><td><strong>TCP 179</strong></td><td>El transporte de BGP: sesión TCP (por eso los firewalls lo bloquean)</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="14-resumen-en-10-puntos"><a class="header" href="#14-resumen-en-10-puntos">14. Resumen en 10 puntos</a></h2>
+<ol>
+<li><strong>BGP es el protocolo de Internet</strong>: interconecta sistemas autónomos; lo demás (OSPF/EIGRP/IS-IS) vive DENTRO del AS.</li>
+<li><strong>Tercera familia</strong>: path vector — la lista completa de AS (AS-PATH) en cada anuncio; bucle = “tu AS aparece”.</li>
+<li><strong>eBGP (AD 20) entre AS; iBGP (AD 200) dentro del AS</strong> — dos caras, reglas distintas (next-hop, full mesh).</li>
+<li><strong>Los atributos son la moneda de la política</strong>: Weight y LocalPref (más alto), AS-Path (más corto), MED (más bajo).</li>
+<li><strong>Solamente el path selection en orden decide</strong>: Weight → LocalPref → origen → AS-Path → origin → MED → eBGP → IGP.</li>
+<li><strong>LocalPref controla SALIDA; MED persuade ENTRADA</strong> — no se mezclan al diagnosticar.</li>
+<li><strong>iBGP: no re-anuncio iBGP a iBGP</strong> → full mesh (o route reflectors); next-hop no cambia (→ <code>next-hop-self</code>).</li>
+<li><strong>Config</strong>: <code>router bgp &lt;ASN&gt;</code> + <code>neighbor X remote-as Y</code> + anunciar con <code>network ... mask</code> SOLO prefijos que ya están en la tabla.</li>
+<li><strong>eBGP default TTL=1</strong>: si usás loopbacks, <code>ebgp-multihop</code>; y siempre revisá TCP 179 en los firewalls.</li>
+<li><strong>No reemplaza al IGP</strong>: BGP es el borde (multi-homing, peering); el IGP es el corazón. Saber elegir y combinar = nivel senior.</li>
+</ol>
+<hr>
+<blockquote>
+<p><strong>Fuente:</strong> Documentación propia basada en RFC 4271 (BGP-4), RFC 1997 (BGP communities), CCNA 200-301 Official Cert Guide (W. Odom), Cisco IOS Configuration Guides y material educativo de redes.</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../docs/41-is-is.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../docs/43-redistribucion-ingenieria-trafico.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../docs/41-is-is.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../docs/43-redistribucion-ingenieria-trafico.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-09f2665d.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-c22b7243.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../theme/dark-6e51c595.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

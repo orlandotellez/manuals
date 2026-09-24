@@ -1,0 +1,723 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>OSPF Avanzado: DR/BDR, LSA y Multi-Área - Manuales</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-0392ca55.css">
+        <link rel="stylesheet" href="../css/chrome-fc474251.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/dark-cca273e4.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "dark";
+            window.path_to_searchindex_js = "../searchindex-f7857309.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-54fda1d6.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Manuales</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="38-ospf-avanzado-drbdr-lsa-y-multi-área"><a class="header" href="#38-ospf-avanzado-drbdr-lsa-y-multi-área">38. OSPF Avanzado: DR/BDR, LSA y Multi-Área</a></h1>
+<p><strong>Las piezas que hacen que OSPF escale de 10 a 10.000 routers (y los tipos de LSA que examinan de verdad)</strong></p>
+<hr>
+<h2 id="índice"><a class="header" href="#índice">Índice</a></h2>
+<ul>
+<li><a href="#1-lo-que-viene-después-del-single-area-la-escalabilidad">Lo que viene después del single-area: la escalabilidad</a></li>
+<li><a href="#2-dr-y-bdr-el-representante-del-segmento">DR y BDR: el representante del segmento</a></li>
+<li><a href="#3-la-elección-quién-se-vuelve-dr-la-prioridad-que-todo-el-mundo-calcula-mal">La elección: quién se vuelve DR (la prioridad que todo el mundo calcula mal)</a></li>
+<li><a href="#4-los-tipos-de-lsa-los-mensajes-que-arman-el-mapa">Los tipos de LSA: los mensajes que arman el mapa</a></li>
+<li><a href="#5-multi-área-el-aplanamiento-del-mapa">Multi-área: el aplanamiento del mapa</a></li>
+<li><a href="#6-abr-y-asbr-los-dos-roles-que-hay-que-saber">ABR y ASBR: los dos roles que hay que saber</a></li>
+<li><a href="#7-tipos-de-área-especiales-stub-totally-stubby-y-nssa">Tipos de área especiales: stub, totally stubby y NSSA</a></li>
+<li><a href="#8-sumarización-la-ruta-que-condensa-miles">Sumarización: la ruta que condensa miles</a></li>
+<li><a href="#9-configuración-de-multi-área-la-receta-completa">Configuración de multi-área: la receta completa</a></li>
+<li><a href="#10-verificación-avanzada-los-comandos-que-revelan-todo">Verificación avanzada: los comandos que revelan todo</a></li>
+<li><a href="#11-los-5-errores-avanzados-más-comunes">Los 5 errores avanzados más comunes</a></li>
+<li><a href="#12-comprobá-lo-que-aprendiste">Comprobá lo que aprendiste</a></li>
+<li><a href="#13-glosario">Glosario</a></li>
+<li><a href="#14-resumen-en-10-puntos">Resumen en 10 puntos</a></li>
+</ul>
+<hr>
+<h2 id="1-lo-que-viene-después-del-single-area-la-escalabilidad"><a class="header" href="#1-lo-que-viene-después-del-single-area-la-escalabilidad">1. Lo que viene después del single-area: la escalabilidad</a></h2>
+<p>En el tema de OSPF configuraste single-area (todo en el área 0). Funcionó: vecinos <code>Full</code>, rutas <code>O</code>, ping a todo el mundo. La red era chica, entonces nunca te choqué con las preguntas incómodas:</p>
+<blockquote>
+<ul>
+<li>Si meto 50 routers en el mismo segmento Ethernet, ¿cada uno tiene que ser vecino de los otros 49? (45 adyacencias por router…)</li>
+<li>¿Qué contiene EXACTAMENTE la LSDB? ¿Cómo viaja “el pedacito de cada router”?</li>
+<li>¿Cómo se conectan dos áreas grandes SIN pasar toda la información de una a otra?</li>
+<li>¿Qué pasa cuando quiero traer rutas de OTRO protocolo (EIGRP, BGP, estáticas) a OSPF?</li>
+</ul>
+</blockquote>
+<p>Ese es este manual: <strong>las respuestas a esas cuatro preguntas</strong>. Las cuatro respuestas tienen nombre propio: <strong>DR/BDR</strong>, los <strong>tipos de LSA</strong>, <strong>multi-área con ABR</strong>, y <strong>redistribución (ASBR)</strong>.</p>
+<blockquote>
+<p><strong>Analogía:</strong> con OSPF aprendiste a manejar un auto en una ciudad chica. Este es el manual de la RUTA NACIONAL: autopistas con peajes (DR/BDR), los tipos de cartel que existen (LSA), cómo se dividen las provincias (áreas) y cómo se entra a otra red de caminos (ASBR). Mismo auto, reglas más grandes.</p>
+</blockquote>
+<hr>
+<h2 id="2-dr-y-bdr-el-representante-del-segmento"><a class="header" href="#2-dr-y-bdr-el-representante-del-segmento">2. DR y BDR: el representante del segmento</a></h2>
+<h3 id="21-el-problema-que-resuelven"><a class="header" href="#21-el-problema-que-resuelven">2.1. El problema que resuelven</a></h3>
+<p>Imaginá un segmento Ethernet (broadcast) con 6 routers:</p>
+<pre><code class="language-text">       sin DR (el infierno de las adyacencias)
+       R1─┬─R2─┬─R3
+          │    │
+       R4─┴─R5─┴─R6
+       Cada router = vecino de los otros 5 = 15 adyacencias
+       Cada cambio = flood a 5 vecinos = mucho tráfico y CPU
+</code></pre>
+<p>Con <strong>DR (Designated Router)</strong> y <strong>BDR (Backup)</strong>:</p>
+<pre><code class="language-text">            DR = R3 (el representante)
+         ┌─────────────────────────┐
+       R1─┤                        ├─R2
+          │  adyacencias FULL solo │
+       R4─┤  con DR y BDR          ├─R5
+          └─────────────────────────┘
+            BDR = R5 (el suplente)
+       DROthers (R1,R2,R4,R6) quedan en 2-Way entre sí
+       Adyacencias: cada router con DR + con BDR = mucho menos
+</code></pre>
+<p><strong>Las reglas de oro del DR (memorizá estas tres, son las que examinan):</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Regla</th><th>Detalle</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>El DR se sincroniza con TODOS</strong></td><td>Todos forman adyacencia <code>Full</code> con el DR (y con el BDR)</td></tr>
+<tr><td><strong>Los DROthers no forman Full entre ellos</strong></td><td>Quedan en <strong>2-Way</strong> — y eso es SALUDABLE, no un problema</td></tr>
+<tr><td><strong>El DR reemplaza al hub</strong></td><td>En Ethernet, el DR es el “hub”: todos hablan con él, y él con todos (multicast 224.0.0.6 solo DR/BDR)</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Analogía:</strong> el DR es el <strong>representante del curso</strong>. No todos hablan con todos (60 adyacencias): todos le hablan a él, y él les pasa los comunicados (flooding de LSA). Si el representante se va (se cayó), el <strong>BDR</strong>, que venía observando todo, toma el cargo al instante.</p>
+</blockquote>
+<h3 id="22-qué-pasa-si-el-dr-se-cae"><a class="header" href="#22-qué-pasa-si-el-dr-se-cae">2.2. Qué pasa si el DR se cae</a></h3>
+<p>El <strong>BDR</strong> ya estaba en <code>Full</code> con todos: tenía la LSDB sincronizada. Cuando el DR muere (Dead timer vencido), el BDR <strong>se convierte en DR</strong> sin re-elección de todo el segmento — porque ya estaba al día. Se elige un BDR nuevo. Eso es “convergencia rápida de OSPF hecha diseño”: el backup de LSA ya está listo, no hay que re-sincronizar nada.</p>
+<blockquote>
+<p><strong>Cuidado (el mito que todos repiten):</strong> “Si el DR se cae, se elige el DROther con mayor prioridad.” MAL. El <strong>BDR es quien sube</strong> (siempre tiene la LSDB al día); recién después se elige un BDR nuevo entre los DROthers. El DR no se “reelige”: se REEMPLAZA por el BDR que estaba esperando.</p>
+</blockquote>
+<hr>
+<h2 id="3-la-elección-quién-se-vuelve-dr-la-prioridad-que-todo-el-mundo-calcula-mal"><a class="header" href="#3-la-elección-quién-se-vuelve-dr-la-prioridad-que-todo-el-mundo-calcula-mal">3. La elección: quién se vuelve DR (la prioridad que todo el mundo calcula mal)</a></h2>
+<h3 id="31-los-criterios-en-orden"><a class="header" href="#31-los-criterios-en-orden">3.1. Los criterios, en orden</a></h3>
+<p>Cuando un segmento broadcast despierta, los routers eligen al DR/BDR así:</p>
+<pre><code class="language-text">1. Mayor PRIORIDAD (interface)          → `ip ospf priority X` (0-255, default 1)
+2. Si empatan: mayor ROUTER ID          → el RID más alto gana
+3. Regla implícita: lo que es DR, sigue siendo DR
+   ("el que está, está": no hay re-elección salvo caída)
+</code></pre>
+<p><strong>Priority 0</strong> = “nunca quiero ser DR ni BDR” (inútil: quedás DROther data). Priority 255 = “quiero ser DR, por favor”.</p>
+<h3 id="32-el-detalle-que-rompe-a-todos-en-los-labs"><a class="header" href="#32-el-detalle-que-rompe-a-todos-en-los-labs">3.2. El detalle que rompe a todos en los labs</a></h3>
+<blockquote>
+<p><strong>La elección OSPF es NO PREEMPTIVA.</strong> Si configurás prioridad 200 en R4 DESPUÉS de que R3 ya ganó como DR… R3 sigue siendo DR. La elección ocurre UNA vez (cuando el segmento forma las primeras adyacencias), y no se repite hasta que el DR se cae o reiniciás el proceso OSPF.</p>
+</blockquote>
+<p>Esto explica el 90% de los dolores de cabeza del laboratorio:</p>
+<pre><code class="language-text">"Configuré ip ospf priority 255 en R4 y sigue siendo DR R3... ¿bug de Packet Tracer?"
+→ No es bug: la elección ya pasó. clear ip ospf process (o reiniciar) para re-elegir.
+</code></pre>
+<blockquote>
+<p><strong>HACELO VOS:</strong> para controlar QUIÉN es el DR de un segmento, configurá la prioridad ANTES de encender OSPF (o reiniciá el proceso después de cambiarla: <code>clear ip ospf process</code> — reinicia las vecindades, así que hacelo en ventana de mantenimiento).</p>
+</blockquote>
+<h3 id="33-por-qué-los-drothers-siguen-escuchando-224005"><a class="header" href="#33-por-qué-los-drothers-siguen-escuchando-224005">3.3. Por qué los DROthers siguen escuchando 224.0.0.5</a></h3>
+<p>Los Hells los escucha TODO el segmento (224.0.0.5). Los LSA que genera el DR van al 224.0.0.6 (solo DR/BDR) y el DR los retransmite. Los DROthers escuchan el canal general: están al día de los cambios SIN tener adyacencia Full entre sí. Listo: nadie se pierde nada, pero nadie paga el costo de adyacencia con todos.</p>
+<hr>
+<h2 id="4-los-tipos-de-lsa-los-mensajes-que-arman-el-mapa"><a class="header" href="#4-los-tipos-de-lsa-los-mensajes-que-arman-el-mapa">4. Los tipos de LSA: los mensajes que arman el mapa</a></h2>
+<h3 id="41-la-ficha-de-los-que-examinan-tipo-1-al-5"><a class="header" href="#41-la-ficha-de-los-que-examinan-tipo-1-al-5">4.1. La ficha de los que examinan (tipo 1 al 5)</a></h3>
+<p>Cada LSA es un “pedacito de mapa”. La LSDB (la del enrutamiento dinámico) se arma con ESTOS tipos:</p>
+<pre><code class="language-text">┌────────┬──────────────────────────┬──────────────────────────────────────┐
+│ Tipo   │ Nombre                   │ Qué contiene / quién lo genera        │
+├────────┼──────────────────────────┼──────────────────────────────────────┤
+│ T1     │ Router LSA               │ "Las interfaces de UN router"         │
+│        │                          │ Cada router genera uno por área       │
+│ T2     │ Network LSA              │ "Los routers de UN segmento"          │
+│        │                          │ Lo genera el DR del segmento          │
+│ T3     │ Network Summary          │ "Las redes de la OTRA área"           │
+│        │                          │ Lo genera el ABR (resumen de área)    │
+│ T4     │ ASBR Summary             │ "Cómo llegar al ASBR"                 │
+│        │                          │ Lo genera el ABR                      │
+│ T5     │ External (AS-external)   │ "Redes de FUERA de OSPF"              │
+│        │                          │ Lo genera el ASBR (redistribución)    │
+│ T7     │ NSSA External            │ "Redes externas dentro de NSSA"       │
+│        │                          │ (raro pero aparece en exámenes)       │
+└────────┴──────────────────────────┴──────────────────────────────────────┘
+</code></pre>
+<h3 id="42-cómo-leerlos-el-truco-de-la-lsdb"><a class="header" href="#42-cómo-leerlos-el-truco-de-la-lsdb">4.2. Cómo leerlos (el truco de la LSDB)</a></h3>
+<blockquote>
+<p><strong>El patrón que desbloquea todo:</strong> T1 y T2 son “dentro de tu área” (intra-area). T3 y T4 son “lo que el ABR resume de otras áreas” (inter-area). T5 es “lo que vino de afuera” (externo). Cuando veas un LSA en <code>show ip ospf database</code>, hacete la pregunta: ¿quién lo generó y para qué área? Con esa pregunta, la tabla de arriba te da la respuesta sola.</p>
+</blockquote>
+<p>Ejemplo de la vida real:</p>
+<pre><code class="language-text">R1# show ip ospf database (resumen)
+
+       Link ID         ADV Router      Age  Seq#       Type
+10.0.1.0/30            2.2.2.2         123  0x80000006  Network   ← T2 (el DR, segmento)
+10.0.2.0/30            3.3.3.3         95   0x80000004  Router    ← T1 (R3, su red)
+192.168.1.0/24         5.5.5.5         400  0x80000008  External  ← T5 (ASBR, redistribuye)
+</code></pre>
+<p>El T5 con link ID <code>192.168.1.0/24</code> y ADV Router <code>5.5.5.5</code> te está diciendo: “esa red NO es OSPF nativa, vino de afuera por el router 5.5.5.5”.</p>
+<h3 id="43-el-flood-cómo-se-propaga-un-lsa"><a class="header" href="#43-el-flood-cómo-se-propaga-un-lsa">4.3. El flood (cómo se propaga un LSA)</a></h3>
+<p>Recordá lo que viste en el enrutamiento dinámico: el flooding. En OSPF real:</p>
+<pre><code class="language-text">1. R4 detecta un cambio → genera un LSA tipo 1
+2. Se lo manda a los vecinos en FULL (al DR también)
+3. Cad/Todo router que lo recibe: 1) lo copia a su LSDB,
+   2) lo reenvía a todos los vecinos menos al que vino
+4. Si llega un LSA repetido (mismo Seq#) → se descarta (inundación finita)
+5. Cada router corre SPF y actualiza su tabla
+</code></pre>
+<p>El <strong>Seq#</strong> (número de secuencia) es lo que hace al flood FINITO: cada LSA nuevo tiene un numero más alto, y los duplicados se tiran. Sin eso, el LSA daría vueltas para siempre (el fantasma del count to infinity, pero del lado link-state — OSPF lo resuelve de raíz).</p>
+<blockquote>
+<p><strong>Dato de examen clásico:</strong> la edad (Age) del LSA sube con el tiempo; si un LSA viejo (Age alto) llega opacado por uno nuevo, se descarta el viejo. La <strong>LSDB siempre gana con el LSA más nuevo</strong>. Esa es la regla de oro del flood.</p>
+</blockquote>
+<hr>
+<h2 id="5-multi-área-el-aplanamiento-del-mapa"><a class="header" href="#5-multi-área-el-aplanamiento-del-mapa">5. Multi-área: el aplanamiento del mapa</a></h2>
+<h3 id="51-por-qué-una-sola-área-no-escala"><a class="header" href="#51-por-qué-una-sola-área-no-escala">5.1. Por qué una sola área no escala</a></h3>
+<p>Con single-area, TODOS los routers comparten la MISMA LSDB: el mapa completo. Con 500 routers y 2.000 redes, cada router guarda 2.000+ LSA y corre SPF sobre todo eso. Cada cambio en cualquier lado → recálculo de TODOS. Es el muro de la escala (LSA en la CPU, memoria y ancho de banda).</p>
+<h3 id="52-la-solución-dividir-el-mapa-en-provincias"><a class="header" href="#52-la-solución-dividir-el-mapa-en-provincias">5.2. La solución: dividir el mapa en provincias</a></h3>
+<pre><code class="language-text">                ÁREA 0 (backbone)
+        ┌──────────────────────────────┐
+        │  R1 ──── R2 ──── ABR1 ──────│──┐
+        │  R9 ──── R10 ─── ABR2 ──────│──│──┐
+        └──────────────────────────────┘  │  │
+               ┌──────────────────┐       │  │
+               │  ÁREA 1 (R6,R7)  │◄──────┘  │
+               └──────────────────┘          │
+                    ┌──────────────────┐     │
+                    │ ÁREA 2 (R8,R11)  │◄────┘
+                    └──────────────────┘
+</code></pre>
+<p><strong>Las reglas de oro de multi-área (las que rigen TODO el diseño):</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Regla</th><th>Por qué</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>El área 0 es OBLIGATORIA</strong> (backbone)</td><td>Todas las áreas se conectan al backbone; sin él no hay diseño válido</td></tr>
+<tr><td><strong>Un ABR separa las LSDB</strong></td><td>Los routers de área 1 NO reciben los LSA internos del área 2: reciben un RESUMEN (T3)</td></tr>
+<tr><td><strong>El tráfico entre áreas SIEMPRE pasa por el área 0</strong></td><td>Por diseño del protocolo: los T3 viajan por el backbone</td></tr>
+<tr><td><strong>Un router en single-area = toda su OSPF en el área 0</strong></td><td>El single-area ya era multi-área en potencia: solo que con un área</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>El beneficio invisible pero gigante:</strong> el SPF se corre <strong>por área</strong> en cada router. Un router del área 1 solo corre SPF sobre SU área + los resúmenes (T3) del resto. La CPU, la memoria y el ancho de banda del flood caen en picada. OSPF multi-área no es “una opción de diseño”: es el mecanismo de escalabilidad del protocolo.</p>
+</blockquote>
+<hr>
+<h2 id="6-abr-y-asbr-los-dos-roles-que-hay-que-saber"><a class="header" href="#6-abr-y-asbr-los-dos-roles-que-hay-que-saber">6. ABR y ASBR: los dos roles que hay que saber</a></h2>
+<h3 id="61-los-tipos-de-router-ospf"><a class="header" href="#61-los-tipos-de-router-ospf">6.1. Los tipos de router OSPF</a></h3>
+<pre><code class="language-text">┌────────────────┐   ┌────────────────┐   ┌────────────────┐
+│ Internal       │   │ ABR            │   │ ASBR           │
+│ (que no es     │   │ (Area Border   │   │ (Autonomous    │
+│  ni ABR ni     │   │  Router)       │   │  System        │
+│  ASBR)         │   │                │   │  Boundary      │
+│                │   │ ≥2 áreas       │   │  Router)       │
+│ 100% OSPF      │   │ Entre área y   │   │ Redistribuye   │
+│ (T1 y T2)      │   │  área          │   │  de OTRO       │
+└────────────────┘   └────────────────┘   │  protocolo     │
+Tipos:              Inter-area (T3/T4)    └────────────────┘
+  2. ABR            Genera T3/T4          Sombrero:
+  3. ASBR                                    Redistribución
+                                            (T5) → tema de redistribución
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Rol</th><th>Qué hace</th><th>Qué genera</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Internal</strong></td><td>Vive en una sola área</td><td>T1, T2</td></tr>
+<tr><td><strong>ABR (Área Border Router)</strong></td><td>En el borde entre 2+ áreas; resume una área para la otra</td><td><strong>T3</strong> (redes), <strong>T4</strong> (ASBR reachability)</td></tr>
+<tr><td><strong>ASBR (Autonomous System Boundary Router)</strong></td><td>Trae redes de OTRO protocolo a OSPF (redistribución)</td><td><strong>T5</strong> (externals)</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>La confusión clásica (resuelta de una vez):</strong> ABR y ASBR NO son excluyentes. Un router puede ser ABR (borde de áreas) Y ASBR (redistribuye) a la vez. Y el ASBR NO necesita estar en el borde de áreas: puede redistribuir dentro de su propia área. Roles, no títulos: cada router puede acumularlos.</p>
+</blockquote>
+<blockquote>
+<p><strong>Analogía:</strong> el ABR es la <strong>aduana entre provincias</strong>: no deja pasar el detalle de cada calle, solo “el resumen de la provincia”. El ASBR es el <strong>puerto internacional</strong>: por ahí entra mercadería de otro país (EIGRP, BGP, estáticas) al territorio OSPF.</p>
+</blockquote>
+<hr>
+<h2 id="7-tipos-de-área-especiales-stub-totally-stubby-y-nssa"><a class="header" href="#7-tipos-de-área-especiales-stub-totally-stubby-y-nssa">7. Tipos de área especiales: stub, totally stubby y NSSA</a></h2>
+<h3 id="71-el-problema-que-resuelven"><a class="header" href="#71-el-problema-que-resuelven">7.1. El problema que resuelven</a></h3>
+<p>Las áreas filtran LSA internos (eso ya lo viste: T1/T2 quedan adentro). Pero TODAS las áreas reciben los <strong>T5</strong> (rutas externas del ASBR): si tenés 10.000 rutas redistribuidas, todas llegan a todas las áreas. ¿Y si una área chica no las necesita (solo necesita “salir por la default”)? Para eso existen los tipos especiales.</p>
+<h3 id="72-el-menú-de-áreas-la-tabla-que-tenés-que-dominar"><a class="header" href="#72-el-menú-de-áreas-la-tabla-que-tenés-que-dominar">7.2. El menú de áreas (la tabla que tenés que dominar)</a></h3>
+<pre><code class="language-text">┌────────────────┬────────────────┬───────────────────────────┬─────────────┐
+│ Tipo de área   │ T3 (summaries) │ T5 (externals)            │ Default     │
+├────────────────┼────────────────┼───────────────────────────┼─────────────┤
+│ Normal         │ ✔ sí          │ ✔ sí                      │ según LSA   │
+│ Stub           │ ✔ sí          │ ✘ NO (las bloquea)        │ genera 1    │
+│ Totally Stubby │ ✘ NO (solo    │ ✘ NO                       │ genera 1    │
+│                │   la default) │                            │             │
+│ NSSA           │ ✔ sí          │ ✘ NO (las bloquea;        │ genera 1    │
+│                │               │   pero DEJA pasar T7 si    │             │
+│                │               │   hay ASBR propio)         │             │
+└────────────────┴────────────────┴───────────────────────────┴─────────────┘
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Área</th><th>Uso típico</th><th>Comando</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Stub</strong></td><td>“Acá no hay ASBR, solo quiero salir”</td><td><code>area 1 stub</code> (en TODOS los routers del área)</td></tr>
+<tr><td><strong>Totally stubby</strong></td><td>El área más “tranquila” posible</td><td><code>area 1 stub no-summary</code> (solo en el ABR)</td></tr>
+<tr><td><strong>NSSA</strong></td><td>Stub con ASBR propio adentro</td><td><code>area 1 nssa</code></td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Regla de oro (la corta y filosa):</strong> <code>stub</code> y <code>nssa</code> se configuran en TODOS los routers del área (todos hacen la misma area). <code>no-summary</code> se configura SOLO en el ABR. ¿Por qué? Porque el ABR es quien decide qué resúmenes deja pasar. El resto del área solo “obedece” con su <code>stub</code>/<code>nssa</code> a juego.</p>
+</blockquote>
+<h3 id="73-el-caso-nssa-explicado-en-una-línea"><a class="header" href="#73-el-caso-nssa-explicado-en-una-línea">7.3. El caso NSSA explicado en una línea</a></h3>
+<p>Un área <strong>NSSA</strong> es “un stub que no puede ser tan tonto”: tiene un router que redistribuye (ASBR propio). Como stub no acepta T5, el ASBR de la NSSA genera <strong>T7</strong> (NSSA-external), que el ABR traduce a T5 cuando salen al resto de OSPF. El área queda “aislada” de externos ajenos, pero puede meter los suyos propios.</p>
+<blockquote>
+<p><strong>Regla práctica:</strong> si NO hay ASBR en el área → Stub/Totally Stubby. Si HAY ASBR en el área → NSSA. Sin excepción en la mayoría de los casos de examen.</p>
+</blockquote>
+<hr>
+<h2 id="8-sumarización-la-ruta-que-condensa-miles"><a class="header" href="#8-sumarización-la-ruta-que-condensa-miles">8. Sumarización: la ruta que condensa miles</a></h2>
+<h3 id="81-el-concepto-la-secuencia-mágica"><a class="header" href="#81-el-concepto-la-secuencia-mágica">8.1. El concepto (la secuencia mágica)</a></h3>
+<p>Una sumarización es: <strong>una ruta que representa a muchas</strong>. Ya la conocés del tema de selección de rutas (y del de direcciones IP): <code>192.168.0.0/22</code> cubre 4 × /24. En OSPF multi-área hay <strong>dos tipos de sumarización</strong> (confundirlos desaprueba):</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Tipo</th><th>Dónde se hace</th><th>Comando</th><th>Qué resume</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Inter-area</strong></td><td>En el <strong>ABR</strong></td><td><code>area 1 range 192.168.0.0 255.255.252.0</code></td><td>Las redes del área 1 vistas desde afuera (T3)</td></tr>
+<tr><td><strong>External</strong></td><td>En el <strong>ASBR</strong></td><td><code>summary-address 192.168.0.0 255.255.252.0</code></td><td>Las rutas redistribuidas (T5)</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="82-el-ejemplo-que-lo-aclara-todo"><a class="header" href="#82-el-ejemplo-que-lo-aclara-todo">8.2. El ejemplo que lo aclara todo</a></h3>
+<p>Tenés el área 1 con cuatro redes /24 (192.168.0.0, .1.0, .2.0, .3.0). Sin sumarizar, el ABR genera <strong>4 T3</strong> hacia el área 0. Con <code>area 1 range 192.168.0.0 255.255.252.0</code>, genera <strong>1 T3</strong>: <code>192.168.0.0/22</code>.</p>
+<pre><code class="language-text">ÁREA 1 (4 redes /24)          ABR                  ÁREA 0
+192.168.0.0/24   ─┐
+192.168.1.0/24   ─┼──►  area 1 range 192.168.0.0 255.255.252.0
+192.168.2.0/24   ─┤         │
+192.168.3.0/24   ─┘         └───────────────►   UN solo T3: 192.168.0.0/22
+</code></pre>
+<h3 id="83-los-pros-y-contras-para-que-no-la-apliques-a-ciegas"><a class="header" href="#83-los-pros-y-contras-para-que-no-la-apliques-a-ciegas">8.3. Los pros y contras (para que no la apliques a ciegas)</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Pro</th><th>Contra</th></tr>
+</thead>
+<tbody>
+<tr><td>Menos LSA en el backbone (LSDB chica)</td><td>Pierde el detalle: si 192.168.1.0 está caída, el T3 /22 sigue anunciándola (rutas “fantasma”)</td></tr>
+<tr><td>Más rápido el SPF de todos</td><td>Enrutamiento subóptimo en casos raros (una ruta /22 “de palo” a un destino que tiene camino mejor)</td></tr>
+<tr><td>Menos memoria en los routers</td><td>Requiere que las redes sean <strong>contiguas y consecutivas</strong> (no sirve resumir redes sueltas)</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>La regla de oro de la sumarización:</strong> solo resumí redes que son <strong>contiguas y del mismo tamaño</strong> (o múltiplos). <code>192.168.0.0/22</code> requiere 4 redes /24 seguidas de 0 a 3. Si tenés 192.168.0.0/24 y 192.168.5.0/24, NO son resumibles sin colar redes que no existen. Y el “rastro fantasma”: el enrutamiento hacia la red caída se va a la default/sumaría hasta que expire — aceptalo o no lo diferencies.</p>
+</blockquote>
+<hr>
+<h2 id="9-configuración-de-multi-área-la-receta-completa"><a class="header" href="#9-configuración-de-multi-área-la-receta-completa">9. Configuración de multi-área: la receta completa</a></h2>
+<h3 id="91-la-topología-abr-de-por-medio"><a class="header" href="#91-la-topología-abr-de-por-medio">9.1. La topología (ABR de por medio)</a></h3>
+<pre><code class="language-text">              ÁREA 0                        ÁREA 1
+   ┌─────────────────────────┐      ┌──────────────────┐
+   │  R1 ── R2 ──── ABR1     │──────│ ABR1 ── R4       │
+   │  (10.0.0.0/30)    R3    │ 10.0.1.0/30  R5         │
+   │       └─ 10.0.2.0/30 ──  │      │ (10.0.3.0/30)   │
+   └─────────────────────────┘      └──────────────────┘
+        ABR1 interface:
+        G0/0 10.0.1.1/30 → área 0   (sí, el ABR tiene UN pie en cada área)
+        G0/1 10.0.0.1/30 → área 1
+        loopback 0: 4.4.4.4
+</code></pre>
+<h3 id="92-la-configuración-del-abr-solo-el-abr-es-distinto"><a class="header" href="#92-la-configuración-del-abr-solo-el-abr-es-distinto">9.2. La configuración del ABR (solo el ABR es distinto)</a></h3>
+<pre><code class="language-cisco">! ABR1
+interface loopback 0
+ ip address 4.4.4.4 255.255.255.255
+!
+interface GigabitEthernet0/0      ! hacia el backbone (área 0)
+ ip address 10.0.1.1 255.255.255.252
+ no shutdown
+!
+interface GigabitEthernet0/1      ! hacia el área 1
+ ip address 10.0.0.1 255.255.255.252
+ no shutdown
+!
+router ospf 1
+ router-id 4.4.4.4
+ network 10.0.1.0 0.0.0.3 area 0      ! interfaz del backbone → area 0
+ network 10.0.0.0 0.0.0.3 area 1      ! interfaz del área 1 → area 1
+ network 4.4.4.4 0.0.0.0 area 0       ! la loopback, adonde la pongas
+ area 1 range 192.168.0.0 255.255.252.0   ! sumarización inter-area (si las redes del área 1 son esas)
+</code></pre>
+<pre><code class="language-cisco">! R4 (área 1, internal)
+interface loopback 0
+ ip address 5.5.5.5 255.255.255.255
+!
+interface GigabitEthernet0/0
+ ip address 10.0.0.2 255.255.255.252
+ no shutdown
+!
+router ospf 1
+ router-id 5.5.5.5
+ network 10.0.0.0 0.0.0.3 area 1
+ network 5.5.5.5 0.0.0.0 area 1
+</code></pre>
+<blockquote>
+<p><strong>La sintaxis que desbloquea multi-área:</strong> <code>network X wildcard area N</code> — el <strong>mismo proceso OSPF puede tener interfaces en áreas distintas</strong>: es el ABR. La magia no es un comando “soy ABR”: es TENER interfaces en 2+ áreas. Reconocelo por eso, no por un check “ABR feature”.</p>
+</blockquote>
+<h3 id="93-la-receta-paso-a-paso-multi-área-en-5-pasos"><a class="header" href="#93-la-receta-paso-a-paso-multi-área-en-5-pasos">9.3. La receta paso a paso (multi-área en 5 pasos)</a></h3>
+<pre><code class="language-text">1. Diseñá las áreas en papel (NUNCA configures sin dibujar el mapa)
+2. Definí el ABR (el router que tocara 2 áreas) y su RID (loopback)
+3. Configurá cada interfaz del ABR con su `network ... area N` correcta
+4. Configurá los internals de cada área (todo su OSPF en SU area)
+5. Verificá: `show ip ospf neighbor` en el ABR muestra vecinos en 2 áreas
+   (ver un vecino en área 0 y otro en área 1 confirma que sos ABR)
+</code></pre>
+<hr>
+<h2 id="10-verificación-avanzada-los-comandos-que-revelan-todo"><a class="header" href="#10-verificación-avanzada-los-comandos-que-revelan-todo">10. Verificación avanzada: los comandos que revelan todo</a></h2>
+<h3 id="101-los-4-comandos-que-definen-el-nivel"><a class="header" href="#101-los-4-comandos-que-definen-el-nivel">10.1. Los 4 comandos que definen el nivel</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Comando</th><th>Qué revela</th></tr>
+</thead>
+<tbody>
+<tr><td><code>show ip ospf neighbor</code></td><td>Prioridad, estado (FULL/DR, FULL/BDR, 2-Way/DROther)</td></tr>
+<tr><td><code>show ip ospf database</code></td><td>Los LSA: quién los generó (ADV Router), de qué tipo (T1-T5)</td></tr>
+<tr><td><code>show ip ospf database router 4.4.4.4</code></td><td>El detalle de UN LSA tipo 1 (qué redes anunció 4.4.4.4)</td></tr>
+<tr><td><code>show ip ospf border-routers</code></td><td>Cómo se llega al ABR/ASBR (rutas hacia los roles)</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="102-la-lectura-de-un-neighbor-modo-detective"><a class="header" href="#102-la-lectura-de-un-neighbor-modo-detective">10.2. La lectura de un neighbor (modo detective)</a></h3>
+<pre><code class="language-text">R1# show ip ospf neighbor
+
+Neighbor ID     Pri   State           Dead Time   Address         Interface
+2.2.2.2           1   FULL/BDR        00:00:39    10.0.0.2        Gi0/0
+4.4.4.4           5   FULL/DR         00:00:37    10.0.1.2        Gi0/1
+</code></pre>
+<p>Del ejemplo: R2 es BDR de un segmento, el ABR (RID 4.4.4.4) es DR con prioridad 5, y el vecino del Gi0/1 (área 1) está FULL. Tres datos, tres historias: segmento con DR/BDR, prioridad configurada en el ABR, y vecino del área 1 arriba.</p>
+<h3 id="103-el-show-que-casi-nadie-hace-y-que-salva-vidas"><a class="header" href="#103-el-show-que-casi-nadie-hace-y-que-salva-vidas">10.3. El show que casi nadie hace (y que salva vidas)</a></h3>
+<pre><code class="language-text">R1# show ip ospf border-routers
+
+OSPF Process 1 internal Routing Table
+Codes: i - Intra-area route, I - Inter-area route
+
+i 4.4.4.4 [1] via 10.0.1.2, ABR, Area 0, SPF 5
+I 5.5.5.5 [2] via 10.0.1.2, ASBR, Area 0, SPF 3
+</code></pre>
+<blockquote>
+<p>Acá ves el mapa de los ROLES: 4.4.4.4 es ABR (intra-area, costo 1), 5.5.5.5 es ASBR (inter-area, costo 2). <strong>¿Pregunta de examen en serio? “¿Qué comando muestra los ABR y ASBR conocidos?” → <code>show ip ospf border-routers</code>.</strong> No lo olvides.</p>
+</blockquote>
+<hr>
+<h2 id="11-los-5-errores-avanzados-más-comunes"><a class="header" href="#11-los-5-errores-avanzados-más-comunes">11. Los 5 errores avanzados más comunes</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>#</th><th>Error</th><th>Síntoma</th><th>Fix</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td><td><strong>Configurar <code>area X stub</code> solo en un lado</strong></td><td>Vecindad no levanta (los tipos de área no matchean)</td><td><code>stub</code> en TODOS los routers del área</td></tr>
+<tr><td>2</td><td><strong>Esperar que el DR cambie al subir prioridad</strong></td><td>R3 sigue siendo DR con R4 ya en 255</td><td>La elección no es preemptiva: <code>clear ip ospf process</code></td></tr>
+<tr><td>3</td><td><strong>Sacar T5 del área con stub sin querer</strong></td><td>Las rutas externas desaparecen del área</td><td>Neutral: stub bloquea T5 POR DISEÑO; si necesitás externos → NSSA</td></tr>
+<tr><td>4</td><td><strong>OJO con el ABR + <code>network</code> en la loopback</strong></td><td>La loopback queda en un área que no querés</td><td>Elegí conscientemente en qué área publicás la loopback (convención: área 0)</td></tr>
+<tr><td>5</td><td><strong>Sumarización mal hecha (redes no contiguas)</strong></td><td>Rutas fantasma o tráfico a ninguna parte</td><td><code>area N range</code> exige contigüidad + consecutividad</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>El error campeón de los labs multitarea:</strong> “configuré stub en R5 (área 1) pero el ABR sigue mandando T3” — porque <code>stub no-summary</code> (totally) es el que borra T3, y además va SOLO en el ABR. Stub plano solo borra T5. Tipo de área por tipo de área, no “más o menos filtro”: la tabla del 7.2 es tu mapa.</p>
+</blockquote>
+<hr>
+<h2 id="12-comprobá-lo-que-aprendiste"><a class="header" href="#12-comprobá-lo-que-aprendiste">12. Comprobá lo que aprendiste</a></h2>
+<p><strong>1. ¿Por qué existe el DR en un segmento broadcast?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Para evitar el festival de adyacencias: con N routers, sin DR serían N×(N−1)/2 adyacencias Full y floods a todos. Con DR, todos se sincronizan SOLO con el DR (y con el BDR); los DROthers quedan en 2-Way entre sí. Menos CPU, menos tráfico, convergencia más controlada.</p>
+</details>
+<p><strong>2. ¿Qué pasa cuando se cae el DR? ¿Se “reeelige”?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>NO se reelige desde cero: el BDR ya tiene la LSDB al día (estaba en Full con todos) y asciende a DR al instante. Después se elige un BDR nuevo entre los DROthers. El BDR es el reemplazo diseñado, no un sorteo.</p>
+</details>
+<p><strong>3. ¿Cómo se elige al DR en un segmento?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Mayor prioridad (<code>ip ospf priority</code>, default 1; 0 = nunca), y si empatan, mayor Router ID. La elección es NO preemptiva: lo que es DR sigue siendo DR hasta que caiga o se reinicie el proceso (<code>clear ip ospf process</code>). Prioridad 255 = “quiero ganar”.</p>
+</details>
+<p><strong>4. Nombra los tipos de LSA 1-5 y quién genera cada uno.</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>T1 Router LSA (cada router, por área). T2 Network LSA (el DR del segmento). T3 Network Summary (el ABR, resumiendo áreas). T4 ASBR Summary (el ABR, hacia el ASBR). T5 External (el ASBR, redes de fuera de OSPF). Patrón: T1/T2 intra-área, T3/T4 inter-área, T5 externo.</p>
+</details>
+<p><strong>5. ¿Qué diferencia hay entre ABR y ASBR?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>ABR: router con interfaces en 2+ áreas; resume áreas entre sí (genera T3/T4). ASBR: router que redistribuye rutas de OTRO protocolo (o estáticas) hacia OSPF (genera T5). Un mismo router puede ser ambos. Se ven con <code>show ip ospf border-routers</code>.</p>
+</details>
+<p><strong>6. ¿Cuál es la diferencia entre stub y totally stubby?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Stub bloquea T5 (externas) pero recibe T3 (resúmenes inter-área). Totally stubby (<code>no-summary</code>, configurado en el ABR) bloquea también T3 y solo deja la default. NSSA es el “stub con ASBR propio” (usa T7).</p>
+</details>
+<p><strong>7. ¿Cómo y dónde se suma una ruta en OSPF multi-área?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>En el ABR con <code>area N range X wildcard</code> (resume las redes del área N para el resto). En el ASBR con <code>summary-address</code> (resume lo redistribuido, T5). Regla: redes contiguas y consecutivas; el beneficio es LSDB chica, el costo es rutas “fantasma” hacia redes caídas.</p>
+</details>
+<p><strong>8. ¿Qué comando muestra ABR y ASBR conocidos?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p><code>show ip ospf border-routers</code> — muestra la tabla interna hacia los routers de borde con su tipo (ABR/ASBR) y costo. Pregunta clásica de examen, respuesta clásica.</p>
+</details>
+<hr>
+<h2 id="13-glosario"><a class="header" href="#13-glosario">13. Glosario</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Término</th><th>Qué es</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>DR / BDR</strong></td><td>Designated Router / Backup: concentradores de adyacencia en segmentos broadcast; el BDR reemplaza al DR si cae</td></tr>
+<tr><td><strong>DROther</strong></td><td>Router que no es DR ni BDR; se sincroniza solo con ambos, queda en 2-Way con los demás</td></tr>
+<tr><td><strong>LSA tipo 1-5</strong></td><td>Router/Network/Summary/ASBR-Summary/External: los “pedacitos de mapa” que arman la LSDB</td></tr>
+<tr><td><strong>Seq#, Age</strong></td><td>Número de secuencia y edad del LSA: controlan el flood (duplicados se descartan)</td></tr>
+<tr><td><strong>Multi-área</strong></td><td>División de la red en áreas para aislar LSDB; el área 0 (backbone) es obligatoria</td></tr>
+<tr><td><strong>ABR</strong></td><td>Router con interfaces en 2+ áreas; resume (T3/T4) entre áreas</td></tr>
+<tr><td><strong>ASBR</strong></td><td>Router que redistribuye rutas externas hacia OSPF (T5); la redistribución tiene su propio tema</td></tr>
+<tr><td><strong>Stub / Totally Stubby / NSSA</strong></td><td>Áreas que filtran T5 (stub), T3+T5 (totally) o aceptan solo externos propios (NSSA, T7)</td></tr>
+<tr><td><strong>Sumarización</strong></td><td>Una ruta que representa a muchas: <code>area N range</code> (ABR) o <code>summary-address</code> (ASBR)</td></tr>
+<tr><td><strong>Flooding</strong></td><td>Propagación de LSA a toda el área; finito gracias a Seq#</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="14-resumen-en-10-puntos"><a class="header" href="#14-resumen-en-10-puntos">14. Resumen en 10 puntos</a></h2>
+<ol>
+<li><strong>El DR resuelve el infierno de adyacencias</strong>: en broadcast, todos se sincronizan solo con DR/BDR; los DROthers en 2-Way entre sí es sano.</li>
+<li><strong>Elección del DR</strong>: mayor prioridad (default 1, 0 = nunca), empate por RID. Y NO es preemptiva: reiniciá el proceso si cambiás prioridad.</li>
+<li><strong>BDR = plan B diseñado</strong>: sube a DR cuando este cae, con la LSDB ya al día — convergencia rápida garantizada por diseño.</li>
+<li><strong>Los LSA son el mapa</strong>: T1/T2 intra-área (router/segmento), T3/T4 inter-área (lo que resume el ABR), T5 externo (lo que trae el ASBR).</li>
+<li><strong>Multi-área = escalabilidad</strong>: cada área mantiene su LSDB; el SPF corre por área; todo pasa por el área 0.</li>
+<li><strong>ABR ≠ ASBR</strong>: ABR cruza áreas (T3/T4); ASBR cruza protocolos (T5); un router puede ser ambos.</li>
+<li><strong>Áreas especiales</strong>: stub (no T5), totally stubby (ni T3, solo default), NSSA (stub con ASBR propio vía T7).</li>
+<li><strong>Sumarización</strong>: <code>area N range</code> en el ABR, <code>summary-address</code> en el ASBR; exige redes contiguas; crea rutas fantasma.</li>
+<li><strong><code>show ip ospf border-routers</code></strong> revela ABR/ASBR conocidos; <code>show ip ospf database</code> muestra los LSA con su generador (ADV Router).</li>
+<li><strong>Diagnóstico avanzado</strong>: tipo de área que no matchea y DR que no se reelige son los dos errores campeones de los labs.</li>
+</ol>
+<hr>
+<blockquote>
+<p><strong>Fuente:</strong> Documentación propia basada en RFC 2328 (OSPFv2), RFC 3101 (NSSA), CCNA 200-301 Official Cert Guide (W. Odom), Cisco IOS Configuration Guides y material educativo de redes.</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../docs/37-ospf-conceptos.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../docs/39-ospfv3-ipv6.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../docs/37-ospf-conceptos.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../docs/39-ospfv3-ipv6.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-09f2665d.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-c22b7243.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../theme/dark-6e51c595.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

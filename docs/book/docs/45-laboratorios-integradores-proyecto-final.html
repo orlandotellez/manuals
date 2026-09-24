@@ -1,0 +1,538 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Laboratorios integradores y proyecto final - Manuales</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-0392ca55.css">
+        <link rel="stylesheet" href="../css/chrome-fc474251.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/dark-cca273e4.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "dark";
+            window.path_to_searchindex_js = "../searchindex-f7857309.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-54fda1d6.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Manuales</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="45-laboratorios-integradores-y-proyecto-final"><a class="header" href="#45-laboratorios-integradores-y-proyecto-final">45. Laboratorios Integradores y Proyecto Final</a></h1>
+<p><strong>Todo lo que aprendiste, en una red que funciona — el examen final de la serie es PRÁCTICO</strong></p>
+<hr>
+<h2 id="índice"><a class="header" href="#índice">Índice</a></h2>
+<ul>
+<li><a href="#1-la-meta-final-integrar-toda-la-serie">La meta final: integrar toda la serie</a></li>
+<li><a href="#2-reglas-del-laboratorio">Reglas del laboratorio</a></li>
+<li><a href="#3-lab-1--repaso-estáticas-floating-y-balanceo">Lab 1 — Repaso: estáticas, floating y balanceo</a></li>
+<li><a href="#4-lab-2--ospf-multiárea-con-drbdr-y-sumarización">Lab 2 — OSPF multiárea con DR/BDR y sumarización</a></li>
+<li><a href="#5-lab-3--eigrp-con-variance-y-eigrpv6">Lab 3 — EIGRP con variance y EIGRPv6</a></li>
+<li><a href="#6-lab-4--bgp-ebgp--ibgp-con-next-hop-self">Lab 4 — BGP: eBGP + iBGP con next-hop-self</a></li>
+<li><a href="#7-proyecto-final--la-red-integral">PROYECTO FINAL — La red integral</a></li>
+<li><a href="#8-la-matriz-de-auto-evaluación">La matriz de auto-evaluación</a></li>
+<li><a href="#9-comprobá-lo-que-aprendiste">Comprobá lo que aprendiste</a></li>
+<li><a href="#10-glosario">Glosario</a></li>
+<li><a href="#11-resumen-en-10-puntos">Resumen en 10 puntos</a></li>
+</ul>
+<hr>
+<h2 id="1-la-meta-final-integrar-toda-la-serie"><a class="header" href="#1-la-meta-final-integrar-toda-la-serie">1. La meta final: integrar toda la serie</a></h2>
+<p>Este es el último manual de “Redes de Datos II” — y el cierre no es un resumen de teoría: es <strong>práctica integradora</strong>. Toda la serie te dio las piezas; acá las armamos TODAS juntas en una red que sirve para algo real.</p>
+<blockquote>
+<p><strong>La filosofía de este manual:</strong> NO hay teoría nueva. Miralo como el examen práctico de la serie: cada lab te pide que construyas algo que ya conocés, con la diferencia de que al final todo convive en la misma red. Si podés armar el Proyecto Final completo y defenderlo, te llevás la serie entera adentro.</p>
+</blockquote>
+<p><strong>El mapa mental de la serie (miralo antes de cada lab):</strong></p>
+<pre><code class="language-text">Rutas estáticas y selección de rutas → AD, ECMP, floating static = la FUNDACIÓN
+Enrutamiento dinámico · RIP → el DV que te enseña la métrica = la TRANSICIÓN
+OSPF (v2 y v3) → LS, áreas, DR/BDR, LSA, v6 = el INTERIOR serio
+EIGRP e IS-IS → los "otros" IGPs = el PANORAMA completo
+BGP → eBGP/iBGP, atributos = la FRONTERA
+Redistribución → route-maps = el PEGAMENTO
+Troubleshooting → el MÉTODO
+Este manual → labs + proyecto final = TÚ, armándolo todo
+</code></pre>
+<hr>
+<h2 id="2-reglas-del-laboratorio"><a class="header" href="#2-reglas-del-laboratorio">2. Reglas del laboratorio</a></h2>
+<p>Antes de tocar un router, estas reglas te ahorran horas (son las del mundo real):</p>
+<ol>
+<li><strong>Todo en Packet Tracer</strong> (tenés de referencia el tema de Packet Tracer de la serie de redes) o en tu simulador favorito (GNS3/EVE-NG si tenés imágenes reales).</li>
+<li><strong>Nomenclatura estricta</strong>: nombres de host, IPs y descripciones con formato consistente (ej. <code>Sucursal-A</code>, descripciones en las interfaces). Un lab sin nombres es un lab imposible de debuggear.</li>
+<li><strong>Verificá en cada paso</strong>: después de CADA bloque de configuración, un <code>show</code> que confirme lo que acabás de hacer (no al final: al final es tarde).</li>
+<li><strong>Redistribución SIEMPRE con filtro</strong> (tema de redistribución): si no hay route-map, no hay redistribución.</li>
+<li><strong>Cambiá una cosa a la vez</strong> (tema de troubleshooting): cuando algo no funcione, el culpable es el último cambio.</li>
+</ol>
+<blockquote>
+<p><strong>HACELO VOS (la regla invisible):</strong> el lab no se entrega cuando “anda”: se entrega cuando PODÉS EXPLICAR por qué anda. Si te preguntan “¿por qué esta ruta tiene AD 110?” y no sabés responderlo, el lab está a medias por más que el ping responda.</p>
+</blockquote>
+<hr>
+<h2 id="3-lab-1--repaso-estáticas-floating-y-balanceo"><a class="header" href="#3-lab-1--repaso-estáticas-floating-y-balanceo">3. Lab 1 — Repaso: estáticas, floating y balanceo</a></h2>
+<p><strong>Objetivo:</strong> rearmar rutas estáticas y selección de rutas en un escenario de doble salida.</p>
+<h3 id="31-topología"><a class="header" href="#31-topología">3.1. Topología</a></h3>
+<pre><code class="language-text">                      192.168.10.0/24 (LAN)
+                          │
+                     ┌────┴────┐
+                     │   R1    │
+                     └────┬────┘
+              (enlace A)  │  (enlace B)
+                10.0.0.0/30│  10.0.1.0/30
+                     ┌─────┴──┐─────┐
+                     │   R2    │   R3    (dos "proveedores")
+                     └────────┘   └────┘
+</code></pre>
+<h3 id="32-consignas"><a class="header" href="#32-consignas">3.2. Consignas</a></h3>
+<ol>
+<li>En R1, ruta por defecto por el enlace A (R2), <strong>administrative distance 5</strong>.</li>
+<li>La MISMA default por el enlace B (R3) pero con <strong>AD 10</strong> → floating static (tema de rutas estáticas): R3 solo se usa si R2 cae.</li>
+<li>A la red 192.168.10.0/24, ECMP: <strong>dos estáticas con la misma AD y métrica</strong> (balanceo, tema de selección de rutas).</li>
+<li>Verificá con <code>show ip route</code> que las tres (default + ECMP) coexisten y que <code>sh ip route 0.0.0.0</code> muestra la lista de candidatas con <code>[5/0]</code> y <code>[10/0]</code>.</li>
+<li><strong>Prueba de fuego:</strong> apagá la interfaz hacia R2 (<code>shutdown</code>) y verificá que la default migra sola a R3 (AD 10) y vuelve cuando R2 reaparece.</li>
+</ol>
+<p><strong>Verificación esperada (R1):</strong></p>
+<pre><code class="language-text">S*   0.0.0.0/0 [5/0] via 10.0.0.2                    ← la que gana (AD 5)
+                 [10/0] via 10.0.1.2                 ← la de respaldo (AD 10)
+S    192.168.10.0/24 [1/0] via 10.0.0.2
+                     [1/0] via 10.0.1.2              ← ECMP: dos caminos, misma AD
+</code></pre>
+<hr>
+<h2 id="4-lab-2--ospf-multiárea-con-drbdr-y-sumarización"><a class="header" href="#4-lab-2--ospf-multiárea-con-drbdr-y-sumarización">4. Lab 2 — OSPF multiárea con DR/BDR y sumarización</a></h2>
+<p><strong>Objetivo:</strong> rearmar OSPF (single-area y avanzado) con áreas y un toque de diseño.</p>
+<h3 id="41-topología"><a class="header" href="#41-topología">4.1. Topología</a></h3>
+<pre><code class="language-text">               ÁREA 0 (backbone)                ÁREA 1
+   R1 ─── R2 ─── R3 ─── R4 ─── R5
+        (loopbacks: 1.1.1.1, 2.2.2.2, 3.3.3.3, 4.4.4.4, 5.5.5.5)
+   R2 y R4 en el backbone; R5 (y su LAN 172.16.0.0/16) en área 1
+</code></pre>
+<h3 id="42-consignas"><a class="header" href="#42-consignas">4.2. Consignas</a></h3>
+<ol>
+<li>OSPF proceso 1 con <code>router-id</code> explícito en CADA router (1.1.1.1 → 5.5.5.5).</li>
+<li>R2 y R4 son ABR (área 0 + área 1): las reds de área 1 viven detrás de R5.</li>
+<li><strong>Sumarización en el ABR</strong> (OSPF avanzado): R4 anuncia a área 0 un resumen <code>area 1 range 172.16.0.0 255.255.0.0</code> si R5 tiene la /16 particionada.</li>
+<li>Verificá <strong>DR/BDR</strong> en el segmento compartido del backbone: <code>show ip ospf neighbor</code> debe mostrar <code>FULL/DR</code> y <code>FULL/BDR</code> (en OSPF, primero arranca el de mayor RID).</li>
+<li>Confirmá en <code>show ip ospf database</code> que los <strong>LSA tipo 3</strong> (sumarios) entran a área 0 y los tipo 1 solo viven en su área.</li>
+</ol>
+<p><strong>Pregunta de cierre del lab:</strong> si R3 tiene AD 110 y EIGRP le inyecta la misma ruta con AD 90… ¿quién gana y qué dice <code>show ip route</code>? (Respuesta: EIGRP, y la ves como <code>D</code> — tema de selección de rutas.)</p>
+<hr>
+<h2 id="5-lab-3--eigrp-con-variance-y-eigrpv6"><a class="header" href="#5-lab-3--eigrp-con-variance-y-eigrpv6">5. Lab 3 — EIGRP con variance y EIGRPv6</a></h2>
+<p><strong>Objetivo:</strong> rearmar EIGRP con los dos trucos que diferencian al que sabe: variance y el IPv6.</p>
+<h3 id="51-topología-ipv4"><a class="header" href="#51-topología-ipv4">5.1. Topología (IPv4)</a></h3>
+<pre><code class="language-text">           10.0.0.0/30 (rápido, 1 Gbps)      ← camino A
+     R1 ─────────────────────────── R2
+     └─────────────────────────────┘
+           10.0.1.0/30 (lento, 100 Mbps)     ← camino B
+   (R1 y R2 unidos por DOS enlaces: EIGRP 100)
+</code></pre>
+<h3 id="52-consignas"><a class="header" href="#52-consignas">5.2. Consignas</a></h3>
+<ol>
+<li>EIGRP 100 con las dos interfaces en el proceso (uso <strong>named mode</strong> al configurar, como práctica del tema de EIGRP).</li>
+<li><strong>Variance</strong>: con el camino A como sucesor y el B como feasible successor, configurá <code>variance 4</code> y verificá que la tabla muestra AMBAS rutas con <code>*</code> (balanceo desigual — el truco de EIGRP).</li>
+<li>Fijate la condición: variance solo funciona si el camino B cumple <strong>RD &lt; FD</strong> del sucesor. Si no lo cumple, no entra (aunque subas variance; ese es el punto).</li>
+<li>Verificá en <code>show ip eigrp topology</code> que el camino B figura como <code>via ... (</code> en la columna de las alternativas.</li>
+</ol>
+<h3 id="53-consigna-de-ipv6-retando-a-eigrp"><a class="header" href="#53-consigna-de-ipv6-retando-a-eigrp">5.3. Consigna de IPv6 (retando a EIGRP)</a></h3>
+<p>Configurá EIGRPv6 en un enlace con direcciones <code>2001:db8::/64</code> de ida y vuelta, y acordate de la <strong>trampa</strong>: el AF viene en <code>shutdown</code> por defecto. Verificá que sin <code>no shutdown</code> NO hay vecinos, y que con <code>no shutdown</code> aparecen.</p>
+<hr>
+<h2 id="6-lab-4--bgp-ebgp--ibgp-con-next-hop-self"><a class="header" href="#6-lab-4--bgp-ebgp--ibgp-con-next-hop-self">6. Lab 4 — BGP: eBGP + iBGP con next-hop-self</a></h2>
+<p><strong>Objetivo:</strong> rearmar BGP con la topología clásica de examen.</p>
+<h3 id="61-topología"><a class="header" href="#61-topología">6.1. Topología</a></h3>
+<pre><code class="language-text">   AS 65001 (tuyo)                         AS 65002 (ISP)
+   R1 ─────── R2 ─────────────────────── R3 ─────── R4
+   lo0 1.1.1.1  lo0 2.2.2.2  10.0.0.0/30   lo0 3.3.3.3   lo0 4.4.4.4
+   ←─ iBGP ─→  (R1↔R2)   ←──── eBGP ────→  (R2↔R3)   (R3↔R4 en el ISP)
+</code></pre>
+<h3 id="62-consignas"><a class="header" href="#62-consignas">6.2. Consignas</a></h3>
+<ol>
+<li>En R2: sesión <strong>eBGP</strong> con R3 (<code>remote-as 65002</code>) y sesión <strong>iBGP</strong> con R1 (<code>remote-as 65001</code>) sobre <strong>loopbacks</strong> con <code>update-source loopback 0</code>.</li>
+<li><strong>next-hop-self</strong> en R2 hacia R1 (BGP, regla 2): sin esto, R1 hereda el next-hop de R3 y no puede resolverlo.</li>
+<li>En R1, verificá que recibe el prefijo del ISP y que su next-hop es <strong>2.2.2.2</strong> (R2), no el del ISP: <code>show ip bgp</code> debe decir <code>*&gt;i ... via 2.2.2.2</code> con <code>i</code> (iBGP).</li>
+<li>Para la parte eBGP de R2→R3: usá <code>ebgp-multihop 2</code> si la sesión vive en loopbacks — y fijate qué pasa si NO lo ponés (sesión que nunca levanta: BGP, error #4).</li>
+<li><strong>Verificación final:</strong> <code>show ip bgp summary</code> en R2 mostrando DOS vecinos ESTABLISHED (uno eBGP <code>65002</code> y uno iBGP <code>65001</code>).</li>
+</ol>
+<hr>
+<h2 id="7-proyecto-final--la-red-integral"><a class="header" href="#7-proyecto-final--la-red-integral">7. PROYECTO FINAL — La red integral</a></h2>
+<p><strong>Este es el examen:</strong> una sola topología que usa TODA la serie. La red de una empresa ficticia con dos sucursales, un núcleo EIGRP, un área OSPF en cada sucursal, un borde BGP hacia el ISP — y una redistribución que no rompe nada.</p>
+<h3 id="71-arquitectura-del-proyecto"><a class="header" href="#71-arquitectura-del-proyecto">7.1. Arquitectura del proyecto</a></h3>
+<pre><code class="language-text">                                     INTERNET
+                                        │
+                                    [ISP R9]  (AS 65002)
+                                        │ eBGP
+                        ┌────────────── R6 (BORDER, AS 65001) ──────────────┐
+                        │            │                                      │
+                    [R5] (núcleo)  [R7] (núcleo)                       [R8] (backup)
+                      │  EIGRP 100  │  EIGRP 100                           │ eBGP (respaldo)
+                     OSPF area 0   OSPF area 0                             │
+                      │                │                                   │
+                  [R1]──[R2]        [R3]──[R4]                    (R8→ISP por 2° enlace)
+                  Sucursal Norte    Sucursal Sur
+                  10.10.0.0/16      10.20.0.0/16
+                        (cada sucursal: OSPF el área 0 + sus áreas 1 si querés V2 empezar)
+</code></pre>
+<h3 id="72-requerimientos-la-lista-de-entrega"><a class="header" href="#72-requerimientos-la-lista-de-entrega">7.2. Requerimientos (la lista de entrega)</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>#</th><th>Requerimiento</th><th>Temas que evaluás</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td><td><strong>Direccionamiento</strong>: plan VLSM con etiquetas por rol (loopbacks, enlaces, LANs)</td><td>Rutas estáticas, redistribución</td></tr>
+<tr><td>2</td><td><strong>IGP interno</strong>: EIGRP 100 en el núcleo (R5-R6-R7), cada sucursal con OSPF (el norte y el sur)</td><td>OSPF, EIGRP</td></tr>
+<tr><td>3</td><td><strong>Redistribución</strong>: OSPF ↔ EIGRP en R5 y R7, con route-map filtrando el retorno (¡nada de feedback loop!)</td><td>Redistribución</td></tr>
+<tr><td>4</td><td><strong>BGP en el borde</strong>: R6 = eBGP principal con el ISP (default route), R8 = backup</td><td>BGP</td></tr>
+<tr><td>5</td><td><strong>Default route propagada</strong> a toda la red: desde R6 hacia el EIGRP (y de ahí al OSPF)</td><td>Rutas estáticas, OSPF, EIGRP, redistribución</td></tr>
+<tr><td>6</td><td><strong>Redundancia</strong>: si R6 cae, R8 asume (floating o BGP); si el enlace del norte cae, el sur sigue sirviendo</td><td>Rutas estáticas, selección de rutas, BGP</td></tr>
+<tr><td>7</td><td><strong>Verificación documentada</strong> (matriz de la sección 8)</td><td>Troubleshooting</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="73-el-plan-de-armado-el-orden-que-te-salva"><a class="header" href="#73-el-plan-de-armado-el-orden-que-te-salva">7.3. El plan de armado (el orden que te salva)</a></h3>
+<pre><code class="language-text">FASE A — Capa física y direccionamiento: TODAS las IPs y loopbacks PRIMERO
+        (sin IPs, nada de lo que sigue existe: es la pregunta 1 del tema de troubleshooting)
+FASE B — IGP del núcleo: EIGRP 100 entre R5, R6, R7 (y las interfaces del núcleo)
+FASE C — OSPF por sucursal: R1-R2 (norte) y R3-R4 (sur) en sus áreas
+FASE D — Redistribución en R5 y R7: dos route-maps, uno por sentido, filtrado el retorno
+FASE E — BGP en R6 (+R8 backup) y propagación de la default: EIGRP → OSPF
+FASE F — Verificación integral (matriz de la sección 8) y regrabado de configs a .txt
+</code></pre>
+<blockquote>
+<p><strong>HACELO VOS (el orden es parte del lab):</strong> por QUÉ en ese orden — porque cada fase se verifica ANTES de construir la siguiente. Si armás BGP y después el IGP, cuando algo no funciona no sabés si es BGP, el IGP o la redistribución. En el orden de arriba, cuando llegás a F ya verificaste E, y cuando llegaste a E verificaste D… <strong>el error queda acotado a la ÚLTIMA fase que tocaste</strong> (troubleshooting en la práctica).</p>
+</blockquote>
+<h3 id="74-el-resumen-de-config-crítica-lo-que-tu-proyecto-tiene-que-tener-bien"><a class="header" href="#74-el-resumen-de-config-crítica-lo-que-tu-proyecto-tiene-que-tener-bien">7.4. El resumen de config crítica (lo que tu proyecto TIENE que tener bien)</a></h3>
+<pre><code class="language-text">! R6 (border) — el corazón del proyecto
+router eigrp 100
+ redistribute static metric 10000 100 255 1 1500      ! la default entra al EIGRP
+ ! (la static es la default que BGP instaló — o directamente:
+ redistribute bgp 65001 metric 10000 100 255 1 1500)  ! BGP ya instaló la default
+router bgp 65001
+ network 0.0.0.0 mask 0.0.0.0            ! opportunidad: ¡la default se anuncia a veces!
+ neighbor 203.0.113.2 remote-as 65002    ! eBGP con el ISP
+ neighbor 10.0.0.5 remote-as 65001
+ neighbor 10.0.0.5 next-hop-self         ! iBGP a R5 (regla de BGP)
+
+! R5 (redistributor OSPF↔EIGRP, con filtro de retorno — tema de redistribución)
+access-list 15 permit 10.0.0.0 0.255.255.255
+route-map RETORNO permit 10
+ match ip address 15
+router ospf 1
+ redistribute eigrp 100 subnets route-map RETORNO metric 30
+router eigrp 100
+ redistribute ospf 1 metric 10000 100 255 1 1500
+</code></pre>
+<h3 id="75-la-entrega"><a class="header" href="#75-la-entrega">7.5. La entrega</a></h3>
+<p>El proyecto se entrega con:</p>
+<ol>
+<li>El archivo <code>.pkt</code> (o la topología exportada) <strong>funcionando</strong>.</li>
+<li>Un documento con el plan de direccionamiento completo (tabla: red / VLSM / dispositivo / interfaz / IP).</li>
+<li>Las <strong>configuraciones guardadas</strong> (una por router, en <code>.txt</code>, con nombres de host y descripciones).</li>
+<li>La <strong>matriz de verificación</strong> (sección 8) con las salidas reales de cada prueba.</li>
+<li>La <strong>respuesta escrita</strong> a la pregunta de oro: “¿por qué tu redistribución no genera bucles?” (si no la podés responder, el lab tiene un problema, no vos).</li>
+</ol>
+<hr>
+<h2 id="8-la-matriz-de-auto-evaluación"><a class="header" href="#8-la-matriz-de-auto-evaluación">8. La matriz de auto-evaluación</a></h2>
+<p>Corré ESTAS pruebas en tu proyecto final y marcá cada una ✅ (con la salida real pegada):</p>
+<pre><code class="language-text">PRUEBA                                          COMANDO                     ESPERADO
+──────────────────────────────────────────────────────────────────────────────────────
+1. Todas las interfaces up/up con IP            show ip interface brief      Ninguna "administratively down"
+2. El núcleo ve toda la red                     show ip route | include D    rutas D (EIGRP) a TODO
+3. El norte rutea al sur                        ping 10.20.0.1 (desde R1)    !!!!! éxito
+4. La sucursal sur ve el norte por EIGRP        show ip route                ruta D + O E1 (redistribuída)
+5. ESPICA: rutas externas E1 / D / B cohexisten show ip route                tres códigos visibles luego de los IGPs
+6. Desde una LAN salís a Internet               ping 8.8.8.8 (desde R1)      !!!!!
+7. Redundancia: apagás R6 → internet sigue      shutdown en R6               por R8 (floating/backup) ✔
+8. Sin feedback loop: la ruta no late           show ip route &lt;red&gt; 2 veces  IDÉNTICA (sin flapping)
+9. BGP: vecinos ESTABLISHED con prefijos        show ip bgp summary          2 vecinos, prefijos &gt; 0
+10. El método de troubleshooting documentado    (escrito en la entrega)      cada falla: hipótesis → evidencia
+</code></pre>
+<blockquote>
+<p><strong>El criterio de aprobación honesto:</strong> si 9 de 10 pruebas pasan y la #10 está documentada, el proyecto está aprobado. Si la #8 falla (rutas que laten), el proyecto NO está aprobado aunque el ping responda: tenés un feedback loop de redistribución (tema de redistribución) y lo vas a sufrir en producción.</p>
+</blockquote>
+<hr>
+<h2 id="9-comprobá-lo-que-aprendiste"><a class="header" href="#9-comprobá-lo-que-aprendiste">9. Comprobá lo que aprendiste</a></h2>
+<p><strong>1. ¿Por qué Lab 1 usa AD 5 y AD 10 en lugar de AD 1 en las dos default routes?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Para que la default “principal” (AD 5) gane SIEMPRE sobre la de respaldo (AD 10) mientras esté viva (selección de rutas: menor AD gana). Si tuvieran la misma AD, entrarían en ECMP y balancearían hacia un enlace que quizás querés solo de backup. La AD distinta implementa “activo + respaldo” (floating static, tema de rutas estáticas).</p>
+</details>
+<p><strong>2. En Lab 2, ¿cómo sabés sin mirar cuál router será el DR del segmento?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>En un segmento multipunto, gana primero el de mayor prioridad de interfaz (default 1) y desempata el mayor <strong>router-id</strong> (OSPF). Con <code>router-id</code> explícito, controlás quién es el DR: en el lab, el de RID más alto del segmento.</p>
+</details>
+<p><strong>3. ¿Qué condición tiene que cumplir el camino B de Lab 3 para que <code>variance</code> lo deje balancear?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Ser <strong>feasible successor</strong>: su Reported Distance (RD) debe ser MENOR que la Feasible Distance (FD) del sucesor (EIGRP). Si no cumple RD &lt; FD, subir variance no lo mete — EIGRP lo descarta por no cumplir la condición de loop-free.</p>
+</details>
+<p><strong>4. En Lab 4, ¿qué pasa en R1 si R2 NO tiene <code>next-hop-self</code>?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>R1 hereda el next-hop del eBGP original (el router del ISP, R3) y no puede resolverlo (esa ruta no está en su tabla de rutas internas → BGP, regla 2). La ruta iBGP aparece “instalada” pero no usable; el ping al ISP falla desde R1 aunque la sesión esté ESTABLISHED.</p>
+</details>
+<p><strong>5. En el Proyecto Final, ¿por qué la redistribución OSPF↔EIGRP se hace con route-map en SOLO UNO de los sentidos?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Para evitar el feedback loop (tema de redistribución): la ruta que sale del OSPF al EIGRP, y la que vuelve del EIGRP al OSPF, deben estar filtrando el retorno. El patrón sano: un sentido redistribuye TODO, el otro redistribuye filtrado (solo las rutas PROPIAS del otro lado). Si redistribuís ambos sentidos completos, las rutas vuelven eternamente.</p>
+</details>
+<p><strong>6. ¿Cuál es la fase del plan que NO se puede saltear y por qué?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>La Fase A (direccionamiento completo primero). Sin IPs no hay interfaz que verificar, ni IGP que levante, ni BGP que peeree — y el troubleshooting sin línea base es imposible (troubleshooting, pregunta 1 del árbol de diagnóstico).</p>
+</details>
+<p><strong>7. La prueba #8 de la matriz: ¿por qué es la que define la aprobación?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Porque detecta el feedback loop de redistribución: una ruta que “late” (cambia entre protocolos/AD en dos <code>show ip route</code> seguidos) es inestabilidad real que en producción significa flapping, CPU al máximo y usuarios que pierden conexión. Un proyecto sin esta prueba puede “andar” en el simulador y romper todo en producción.</p>
+</details>
+<hr>
+<h2 id="10-glosario"><a class="header" href="#10-glosario">10. Glosario</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Término</th><th>Qué es</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Floating static</strong></td><td>Estática de respaldo con AD mayor (tema de rutas estáticas): solo actúa si la principal cae</td></tr>
+<tr><td><strong>ECMP</strong></td><td>Equal-Cost Multi-Path: varias rutas con misma AD y métrica balancean (selección de rutas)</td></tr>
+<tr><td><strong>DR/BDR</strong></td><td>Designated/Backup Designated Router de OSPF en segmentos multipunto (OSPF)</td></tr>
+<tr><td><strong>ABR</strong></td><td>Area Border Router: router OSPF en dos áreas (OSPF avanzado)</td></tr>
+<tr><td><strong>Variance</strong></td><td>Multiplicador EIGRP que habilita el balanceo desigual (EIGRP)</td></tr>
+<tr><td><strong>Named mode</strong></td><td>Forma moderna de configurar EIGRP (modo AF de EIGRP)</td></tr>
+<tr><td><strong>Next-hop-self</strong></td><td>Fuerza en iBGP que el next-hop sea el router de borde (BGP)</td></tr>
+<tr><td><strong>Feedback loop</strong></td><td>Bucle de redistribución: rutas que van y vuelven entre protocolos (redistribución)</td></tr>
+<tr><td><strong>Route-map</strong></td><td>Filtro + modificación de rutas; el control de toda redistribución (redistribución)</td></tr>
+<tr><td><strong>Matriz de verificación</strong></td><td>Lista de pruebas con comando y resultado esperado (troubleshooting, aplicado)</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="11-resumen-en-10-puntos"><a class="header" href="#11-resumen-en-10-puntos">11. Resumen en 10 puntos</a></h2>
+<ol>
+<li><strong>Este manual es el examen PRÁCTICO de la serie</strong>: Labs 1-4 repasan la teoría; el Proyecto Final la integra.</li>
+<li><strong>Lab 1 = rutas estáticas y selección</strong>: floating static (AD 5 vs 10) y ECMP; la prueba de fuego es apagar un enlace.</li>
+<li><strong>Lab 2 = OSPF</strong>: OSPF multiárea, DR/BDR controlado por router-id, sumarización en el ABR.</li>
+<li><strong>Lab 3 = EIGRP</strong>: variance con la condición RD &lt; FD, y EIGRPv6 con la trampa del <code>no shutdown</code>.</li>
+<li><strong>Lab 4 = BGP</strong>: eBGP + iBGP, next-hop-self y ebgp-multihop; ESTABLISHED con prefijos.</li>
+<li><strong>El Proyecto Final usa TODO</strong>: EIGRP de núcleo, OSPF por sucursal, BGP al ISP, redistribución filtrada.</li>
+<li><strong>El orden de armado es parte del lab</strong>: cada fase se verifica antes de la siguiente; el error queda acotado.</li>
+<li><strong>La redistribución con filtro es innegociable</strong>: un solo sentido completo y el otro filtrado (o feedback loop).</li>
+<li><strong>La matriz de 10 pruebas evalúa el proyecto</strong>: la #8 (sin flapping) define la aprobación.</li>
+<li><strong>Entregás evidencia, no promesas</strong>: salidas reales de cada prueba + configs exportadas + la defensa de por qué tu diseño no genera bucles.</li>
+</ol>
+<hr>
+<blockquote>
+<p><strong>Fuente:</strong> Documentación propia basada en CCNA 200-301 Official Cert Guide (W. Odom), Cisco Networking Academy (Packet Tracer), RFC 2328 (OSPFv2), RFC 4271 (BGP-4) y material educativo de redes. Proyecto final diseñado como integración pedagógica de toda la serie.</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../docs/44-troubleshooting-routing.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../docs/13-docker-installation.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../docs/44-troubleshooting-routing.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../docs/13-docker-installation.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-09f2665d.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-c22b7243.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../theme/dark-6e51c595.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

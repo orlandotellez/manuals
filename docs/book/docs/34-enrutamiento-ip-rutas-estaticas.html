@@ -1,0 +1,826 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Enrutamiento IP y Rutas Estáticas - Manuales</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-0392ca55.css">
+        <link rel="stylesheet" href="../css/chrome-fc474251.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/dark-cca273e4.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "dark";
+            window.path_to_searchindex_js = "../searchindex-f7857309.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-54fda1d6.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Manuales</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="34-enrutamiento-ip-y-rutas-estáticas"><a class="header" href="#34-enrutamiento-ip-y-rutas-estáticas">34. Enrutamiento IP y Rutas Estáticas</a></h1>
+<p><strong>Cómo un router decide hacia dónde mandar cada paquete</strong></p>
+<hr>
+<h2 id="índice"><a class="header" href="#índice">Índice</a></h2>
+<ul>
+<li><a href="#1-el-problema-que-resuelve-el-enrutamiento">El problema que resuelve el enrutamiento</a></li>
+<li><a href="#2-qué-hace-un-router-la-decisión-de-reenvío">¿Qué hace un router? La decisión de reenvío</a></li>
+<li><a href="#3-la-tabla-de-enrutamiento-el-mapa-del-router">La tabla de enrutamiento: el mapa del router</a></li>
+<li><a href="#4-cómo-leer-show-ip-route-el-idioma-de-las-rutas">Cómo leer <code>show ip route</code>: el idioma de las rutas</a></li>
+<li><a href="#5-rutas-conectadas-y-locales-la-memoria-del-router">Rutas conectadas y locales: la memoria del router</a></li>
+<li><a href="#6-rutas-estáticas-el-administrador-tiene-la-última-palabra">Rutas estáticas: el administrador tiene la última palabra</a></li>
+<li><a href="#7-next-hop-vs-interfaz-de-salida-dos-formas-de-decir-lo-mismo">Next-hop vs interfaz de salida: dos formas de decir lo mismo</a></li>
+<li><a href="#8-la-ruta-por-defecto-el-plan-b-universal">La ruta por defecto: el Plan B universal</a></li>
+<li><a href="#9-floating-static-route-la-redundancia-manual">Floating static route: la redundancia manual</a></li>
+<li><a href="#10-el-viaje-de-un-paquete-paso-a-paso">El viaje de un paquete paso a paso</a></li>
+<li><a href="#11-aplicación-laboratorio-guiado-en-packet-tracer">Aplicación: laboratorio guiado en Packet Tracer</a></li>
+<li><a href="#12-errores-comunes-y-cómo-diagnosticarlos">Errores comunes y cómo diagnosticarlos</a></li>
+<li><a href="#13-comprobá-lo-que-aprendiste">Comprobá lo que aprendiste</a></li>
+<li><a href="#14-glosario">Glosario</a></li>
+<li><a href="#15-resumen-en-10-puntos">Resumen en 10 puntos</a></li>
+</ul>
+<hr>
+<h2 id="1-el-problema-que-resuelve-el-enrutamiento"><a class="header" href="#1-el-problema-que-resuelve-el-enrutamiento">1. El problema que resuelve el enrutamiento</a></h2>
+<h3 id="11-el-edificio-con-dos-direcciones"><a class="header" href="#11-el-edificio-con-dos-direcciones">1.1. El edificio con dos direcciones</a></h3>
+<p>En los manuales anteriores viste que cada dispositivo tiene una dirección IP, que las redes se dividen en subredes y que los paquetes viajan envueltos en sobres (encapsulación). Ahora viene la pregunta que todo eso dejó pendiente:</p>
+<blockquote>
+<p>Si R1 está conectado solo a R2, y R2 está conectado a una red que R1 ni siquiera conoce… <strong>¿cómo sabe R1 que tiene que mandar el paquete por R2?</strong> ¿Y por qué no por R3, que también está conectado?</p>
+</blockquote>
+<p>Esa es exactamente la pregunta que resuelve el <strong>enrutamiento</strong> (routing): la disciplina que decide <strong>por dónde</strong> viaja cada paquete para llegar de su origen a su destino, aunque el origen y el destino estén separados por muchas redes intermedias.</p>
+<blockquote>
+<p><strong>Analogía del sistema postal (la continuamos):</strong> en el manual de modelos viste que el correo funciona por capas. El enrutamiento es la <strong>oficina de clasificación</strong>: cuando llega una carta con un código postal, alguien mira un mapa (o una tabla) y decide “esta carta va por la ruta 9 al centro de distribución de Córdoba”. Ese “alguien con el mapa” es el router. La tabla con los códigos postales y las rutas es la <strong>tabla de enrutamiento</strong>.</p>
+</blockquote>
+<h3 id="12-la-idea-madre-de-este-manual"><a class="header" href="#12-la-idea-madre-de-este-manual">1.2. La idea madre de este manual</a></h3>
+<blockquote>
+<p><strong>Un router NO “sabe” hacia dónde va un paquete por arte de magia. Toma decisiones paquete por paquete, mirando SU tabla de enrutamiento: para cada destino, elige la entrada más específica que tenga y manda el paquete al “próximo salto” (next-hop) que esa entrada le indica.</strong></p>
+</blockquote>
+<p>Todo lo que sigue en este manual (y en los próximos dos: selección de rutas y enrutamiento dinámico) es una profundización de esa frase. Si la entendés, ya ganaste la mitad de la batalla.</p>
+<h3 id="13-qué-vas-a-aprender-acá"><a class="header" href="#13-qué-vas-a-aprender-acá">1.3. Qué vas a aprender acá</a></h3>
+<ul>
+<li>Qué decide un router y con qué herramienta (la tabla de enrutamiento).</li>
+<li>A leer una tabla de rutas como un profesional (<code>show ip route</code>).</li>
+<li>De dónde salen las rutas: conectadas, locales, estáticas.</li>
+<li>Cómo se escribe una <strong>ruta estática</strong> y la <strong>ruta por defecto</strong>.</li>
+<li>Qué es una <strong>floating static route</strong> (la primera idea de redundancia).</li>
+<li>Un laboratorio guiado para verlo funcionando en Packet Tracer.</li>
+</ul>
+<hr>
+<h2 id="2-qué-hace-un-router-la-decisión-de-reenvío"><a class="header" href="#2-qué-hace-un-router-la-decisión-de-reenvío">2. ¿Qué hace un router? La decisión de reenvío</a></h2>
+<h3 id="21-dos-trabajos-distintos-enrutar-y-reenviar"><a class="header" href="#21-dos-trabajos-distintos-enrutar-y-reenviar">2.1. Dos trabajos distintos: enrutar y reenviar</a></h3>
+<p>Los routers hacen dos trabajos que los principiantes confunden:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Trabajo</th><th>Nombre técnico</th><th>Qué es</th><th>Cada cuánto</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Decidir la ruta</strong></td><td>Enrutamiento (routing)</td><td>Elegir la mejor ruta para llegar a cada destino y guardarla en la tabla</td><td>Cuando se aprende una ruta nueva (cambio de topología, configuración)</td></tr>
+<tr><td><strong>Mandar los paquetes</strong></td><td>Reenvío (forwarding)</td><td>Mirar la tabla, encontrar la entrada para el destino, enviar el paquete al next-hop</td><td>Por CADA paquete que llega, millones de veces por segundo</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Analogía:</strong> el enrutamiento es el trabajo del que <strong>diseña</strong> los recorridos de los micros en una ciudad (una vez por mes). El reenvío es el trabajo del <strong>chofer</strong> que sigue el recorrido con su micro (cada viaje, todos los días). Uno piensa, el otro ejecuta.</p>
+</blockquote>
+<p>En este manual estudiamos el primero (cómo se arma la tabla); el segundo es mecánico y rapidísimo, y solo te interesa cuando algo no funciona (eso lo ves en el manual de troubleshooting).</p>
+<h3 id="22-el-router-no-tiene-cerebro-tiene-tablas"><a class="header" href="#22-el-router-no-tiene-cerebro-tiene-tablas">2.2. El router no tiene “cerebro”: tiene tablas</a></h3>
+<p>Momento importante, porque separa a los que entienden de los que memorizan:</p>
+<blockquote>
+<p><strong>El router NO analiza el contenido de tus datos.</strong> Nunca mira “la carta”. Solo mira la <strong>etiqueta</strong>: la dirección IP destino del paquete. Con esa sola información consulta su tabla y decide.</p>
+</blockquote>
+<p>Por eso los routers pueden procesar millones de paquetes por segundo: porque no <em>piensan</em>, <strong>comparan y reenvían</strong>. Todo el “pensamiento” está en la tabla, y todo el trabajo de armar esa tabla está en los protocolos de enrutamiento (o en tu mano, cuando configurás rutas estáticas).</p>
+<h3 id="23-las-tres-preguntas-de-cada-paquete"><a class="header" href="#23-las-tres-preguntas-de-cada-paquete">2.3. Las tres preguntas de cada paquete</a></h3>
+<p>Cuando un paquete llega a un router, este se hace tres preguntas:</p>
+<ol>
+<li><strong>¿Está el destino en una red conectada a mí?</strong> → Entonces lo mando directamente por esa interfaz (a la MAC de ese vecino, como viste en capa 2).</li>
+<li><strong>¿Tengo una ruta hacia ese destino?</strong> → Entonces lo mando al next-hop que dice mi tabla.</li>
+<li><strong>¿No tengo nada?</strong> → Si tengo ruta por defecto, la uso. Si no tengo ni eso… <strong>el paquete se descarta</strong> y el router manda un ICMP “destination unreachable” al origen.</li>
+</ol>
+<blockquote>
+<p><strong>Dato que sorprende a todos:</strong> un router NO reenvía un paquete “porque sí” a todos lados. Si no tiene ruta (ni siquiera default), <strong>tira el paquete</strong>. Eso explica por qué un router mal configurado “se come” el tráfico: no es que lo pierda, es que no sabe a quién pasárselo.</p>
+</blockquote>
+<hr>
+<h2 id="3-la-tabla-de-enrutamiento-el-mapa-del-router"><a class="header" href="#3-la-tabla-de-enrutamiento-el-mapa-del-router">3. La tabla de enrutamiento: el mapa del router</a></h2>
+<h3 id="31-qué-es"><a class="header" href="#31-qué-es">3.1. Qué es</a></h3>
+<p>La <strong>tabla de enrutamiento</strong> (tabla de rutas, routing table) es una lista que el router mantiene en memoria con todas las rutas que conoce: para cada red de destino, guarda el <em>próximo salto</em> y la <em>interfaz de salida</em>.</p>
+<p>En Cisco IOS se mira con:</p>
+<pre><code class="language-cisco">show ip route
+</code></pre>
+<h3 id="32-una-tabla-real-anotada"><a class="header" href="#32-una-tabla-real-anotada">3.2. Una tabla real, anotada</a></h3>
+<p>Mirá esta salida real (topología R1 conectado a dos redes):</p>
+<pre><code class="language-cisco">R1# show ip route
+Codes: C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2, E - EGP
+       i - IS-IS, L1 - IS-IS level-1, L2 - IS-IS level-2, ia - IS-IS inter area
+       * - candidate default, U - per-user static route, o - ODR
+       P - periodic downloaded static route
+
+Gateway of last resort is 10.0.0.2 to network 0.0.0.0
+
+     10.0.0.0/8 is variably subnetted, 2 subnets, 2 masks
+C       10.0.12.0/30 is directly connected, GigabitEthernet0/0
+L       10.0.12.1/32 is directly connected, GigabitEthernet0/0
+S       192.168.1.0/24 [1/0] via 10.0.12.2, GigabitEthernet0/0
+S*      0.0.0.0/0 [1/0] via 10.0.12.2, GigabitEthernet0/0
+</code></pre>
+<p>Cada línea tiene partes que ya podés empezar a leer:</p>
+<pre><code>S   192.168.1.0/24  [1/0]  via 10.0.12.2,  GigabitEthernet0/0
+│         │           │           │              │
+│         │           │           │              └── Interfaz de salida
+│         │           │           └── Next-hop (a quién se lo paso)
+│         │           └── [Administrative Distance / Métrica]
+│         └── Red destino (con su máscara /24)
+└── Origen de la ruta (S = static, C = connected, etc.)
+</code></pre>
+<blockquote>
+<p><strong>Analogía:</strong> la tabla es la guía de rutas de un chofer de micro: lista de destinos (redes), con la indicación “para llegar a X, doblá en la calle Y” (el next-hop) y “salí por la puerta Z” (la interfaz). El chofer no decide nada: <strong>sigue la guía</strong>.</p>
+</blockquote>
+<h3 id="33-el-gateway-of-last-resort"><a class="header" href="#33-el-gateway-of-last-resort">3.3. El “gateway of last resort”</a></h3>
+<p>Fijate la línea que dice:</p>
+<pre><code class="language-cisco">Gateway of last resort is 10.0.0.2 to network 0.0.0.0
+</code></pre>
+<p>Eso significa: “si no encuentro ninguna otra ruta, mando todo al 10.0.0.2”. Es la <strong>ruta por defecto</strong> (sección 8). La vas a ver marcada con <code>S*</code> (el asterisco = candidate default).</p>
+<hr>
+<h2 id="4-cómo-leer-show-ip-route-el-idioma-de-las-rutas"><a class="header" href="#4-cómo-leer-show-ip-route-el-idioma-de-las-rutas">4. Cómo leer <code>show ip route</code>: el idioma de las rutas</a></h2>
+<h3 id="41-las-letras-que-tenés-que-reconocer"><a class="header" href="#41-las-letras-que-tenés-que-reconocer">4.1. Las letras que tenés que reconocer</a></h3>
+<p>Cada ruta de la tabla empieza con una letra que dice <strong>de dónde vino</strong>. Esas letras aparecen en la cabecera del comando y son EL idioma del enrutamiento:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">Código</th><th>Origen</th><th>Quién la pone</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center"><code>C</code></td><td><strong>Connected</strong> (conectada)</td><td>El router mismo: es una red pegada a una de sus interfaces</td></tr>
+<tr><td style="text-align: center"><code>L</code></td><td><strong>Local</strong> (local)</td><td>El router mismo: la IP propia de esa interfaz</td></tr>
+<tr><td style="text-align: center"><code>S</code></td><td><strong>Static</strong> (estática)</td><td>Vos, el administrador, a mano</td></tr>
+<tr><td style="text-align: center"><code>S*</code></td><td>Static por defecto</td><td>Vos, con destino <code>0.0.0.0/0</code></td></tr>
+<tr><td style="text-align: center"><code>D</code></td><td><strong>EIGRP</strong></td><td>Protocolo dinámico (lo ves más adelante, con cada protocolo en su tema)</td></tr>
+<tr><td style="text-align: center"><code>O</code></td><td><strong>OSPF</strong></td><td>Protocolo dinámico</td></tr>
+<tr><td style="text-align: center"><code>R</code></td><td><strong>RIP</strong></td><td>Protocolo dinámico (histórico)</td></tr>
+<tr><td style="text-align: center"><code>B</code></td><td><strong>BGP</strong></td><td>Protocolo dinámico externo</td></tr>
+<tr><td style="text-align: center"><code>i</code></td><td><strong>IS-IS</strong></td><td>Protocolo dinámico (proveedores)</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Consejo de estudio:</strong> en este manual solo necesitás dominar <code>C</code>, <code>L</code> y <code>S</code>. Las demás (<code>O</code>, <code>D</code>, <code>B</code>…) aparecen cuando los protocolos dinámicos las aprenden solos — eso es literalmente el tema de los protocolos dinámicos, que vienen enseguida.</p>
+</blockquote>
+<h3 id="42-las-dos-columnas-de-la-derecha-admétrica"><a class="header" href="#42-las-dos-columnas-de-la-derecha-admétrica">4.2. Las dos columnas de la derecha: [AD/métrica]</a></h3>
+<p>Fijate este detalle:</p>
+<pre><code class="language-cisco">S       192.168.1.0/24 [1/0] via 10.0.12.2
+</code></pre>
+<p>El par <code>[1/0]</code> son dos números clavados:</p>
+<ul>
+<li><strong>1</strong> = <strong>Administrative Distance</strong> (AD): qué tan “confiable” es la fuente de esta ruta. Las estáticas tienen AD 1 (muy confiables, porque las escribiste vos).</li>
+<li><strong>0</strong> = <strong>métrica</strong> de la ruta. En estáticas es 0 casi siempre.</li>
+</ul>
+<p>No profundices todavía: el tema de selección de rutas está dedicado entero a “cuando hay dos rutas para el mismo destino, ¿cuál gana?” — y esa pregunta se responde con AD y métrica. Acá solo anotá que existen.</p>
+<h3 id="43-subredes-variables"><a class="header" href="#43-subredes-variables">4.3. Subredes variables</a></h3>
+<p>La línea <code>10.0.0.0/8 is variably subnetted, 2 subnets, 2 masks</code> es solo una forma que tiene IOS de agrupar: dice “dentro de este bloque /8 hay subredes de distinto tamaño”. No es una ruta en sí; es un aviso de organización.</p>
+<hr>
+<h2 id="5-rutas-conectadas-y-locales-la-memoria-del-router"><a class="header" href="#5-rutas-conectadas-y-locales-la-memoria-del-router">5. Rutas conectadas y locales: la memoria del router</a></h2>
+<h3 id="51-las-rutas-gratis"><a class="header" href="#51-las-rutas-gratis">5.1. Las rutas “gratis”</a></h3>
+<p>Cuando prendés un router y le ponés IP a una interfaz bien configurada (activa, con cable y link up), el router <strong>aprende solo</strong> dos rutas:</p>
+<pre><code class="language-cisco">C       10.0.12.0/30 is directly connected, GigabitEthernet0/0
+L       10.0.12.1/32 is directly connected, GigabitEthernet0/0
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Ruta</th><th>Qué significa</th></tr>
+</thead>
+<tbody>
+<tr><td><code>C</code></td><td>“Conozco la red <strong>10.0.12.0/30</strong> porque está pegada a mi interfaz G0/0. Los paquetes para esa red salen por acá.”</td></tr>
+<tr><td><code>L</code></td><td>“La dirección <strong>10.0.12.1</strong> es la mía, la de mi interfaz G0/0. Los paquetes dirigidos a esa IP soy yo.”</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Analogía:</strong> las rutas conectadas son el <strong>barrio donde vivo</strong>: no necesito que nadie me lo enseñe, lo conozco. La ruta local es <strong>mi propia casa</strong>: sé exactamente que esa dirección soy yo.</p>
+</blockquote>
+<h3 id="52-la-condición-de-oro-de-toda-ruta-conectada"><a class="header" href="#52-la-condición-de-oro-de-toda-ruta-conectada">5.2. La condición de oro de toda ruta conectada</a></h3>
+<blockquote>
+<p><strong>Regla de oro:</strong> una ruta conectada aparece SOLO si la interfaz está <strong>up/up</strong> (capa 1 y capa 2 funcionando: cable conectado, línea activa). Si la interfaz está <em>administratively down</em> o el cable está cortado, la ruta <code>C</code> desaparece de la tabla.</p>
+</blockquote>
+<p>Este es el primer y más común “fantasma” de todo troubleshooting: <em>“el router no tiene la ruta”</em> cuando en realidad <strong>la interfaz está apagada</strong>. Siempre, SIEMPRE, verificá primero las interfaces:</p>
+<pre><code class="language-cisco">show ip interface brief
+</code></pre>
+<pre><code class="language-cisco">Interface              IP-Address      OK? Method Status                Protocol
+GigabitEthernet0/0     10.0.12.1       YES manual up                    up
+GigabitEthernet0/1     192.168.1.254   YES manual up                    up
+</code></pre>
+<p>Si ves <code>administratively down</code>, el problema no es de ruta: es que alguien apagó la interfaz (o no la encendió con <code>no shutdown</code>).</p>
+<hr>
+<h2 id="6-rutas-estáticas-el-administrador-tiene-la-última-palabra"><a class="header" href="#6-rutas-estáticas-el-administrador-tiene-la-última-palabra">6. Rutas estáticas: el administrador tiene la última palabra</a></h2>
+<h3 id="61-qué-es-una-ruta-estática"><a class="header" href="#61-qué-es-una-ruta-estática">6.1. Qué es una ruta estática</a></h3>
+<p>Una <strong>ruta estática</strong> es una ruta que <strong>vos escribís a mano</strong> en la configuración del router. Le decís: “para llegar a la red X, pasale el paquete al router Y”.</p>
+<p>Se configura así:</p>
+<pre><code class="language-cisco">ip route &lt;red_destino&gt; &lt;máscara&gt; &lt;next-hop&gt;
+</code></pre>
+<p>Ejemplo clásico: R1 quiere llegar a la red <code>192.168.2.0/24</code>, que está del otro lado de R2 (IP <code>10.0.12.2</code>):</p>
+<pre><code class="language-cisco">R1(config)# ip route 192.168.2.0 255.255.255.0 10.0.12.2
+</code></pre>
+<p>Después de ese comando, la tabla de R1 muestra:</p>
+<pre><code class="language-cisco">S       192.168.2.0/24 [1/0] via 10.0.12.2, GigabitEthernet0/0
+</code></pre>
+<blockquote>
+<p><strong>Analogía:</strong> la ruta estática es el <strong>recorrido escrito a mano</strong> que le dejás en el asiento al chofer nuevo: “Para ir al depósito, doblá en la estación de servicio”. El chofer lee eso y obedece. No pregunta, no aprende, no duda.</p>
+</blockquote>
+<h3 id="62-qué-se-puede-y-qué-no-con-estáticas"><a class="header" href="#62-qué-se-puede-y-qué-no-con-estáticas">6.2. Qué se puede (y qué no) con estáticas</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Lo que podés hacer</th><th>Lo que NO podés hacer cómodamente</th></tr>
+</thead>
+<tbody>
+<tr><td>Conectar redes chicas (2-5 routers)</td><td>Redes grandes: son cientos de rutas escritas a mano</td></tr>
+<tr><td>Crear rutas por defecto (default route)</td><td>Reaccionar a fallas: si un enlace cae, la estática no “se entera”</td></tr>
+<tr><td>Redundancia simple (floating static)</td><td>Adaptarse a caminos alternativos automáticamente (hay que escribir todas las combinaciones a mano)</td></tr>
+<tr><td>Laboratorios y exámenes (rápidas y predecibles)</td><td>Mantenimiento: cada cambio de topología = cambiar rutas a mano</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Ventaja clave de la estática:</strong> NO consume ancho de banda (no “habla” con nadie), NO es vulnerable a ataques de protocolos, y su comportamiento es 100% predecible. Por eso en la práctica se usa mucho la default route estática “hacia internet”, incluso en redes gigantes.</p>
+</blockquote>
+<h3 id="63-el-camino-de-ida-no-alcanza-el-problema-del-ping-que-no-vuelve"><a class="header" href="#63-el-camino-de-ida-no-alcanza-el-problema-del-ping-que-no-vuelve">6.3. El “camino de ida” no alcanza: el problema del ping que no vuelve</a></h3>
+<p>Este es EL error de principiante por excelencia del enrutamiento:</p>
+<blockquote>
+<p>Configuraste la estática en R1 hacia R2, hacés <code>ping 192.168.2.2</code> desde R1… y no responde. ¿Por qué? <strong>Porque la ruta de vuelta no existe.</strong> El paquete llega a la red 192.168.2.0 (R2 lo recibe), pero R2 no tiene ninguna ruta para volver a la red de R1. Sin ruta de retorno, descarta el paquete de respuesta… o la respuesta se pierde en el vacío.</p>
+</blockquote>
+<p><strong>El enrutamiento es simétrico en teoría pero NO se deduce solo:</strong> cada router DEBE tener rutas para llegar a todos los destinos por donde tiene que volver el tráfico. Regla del profesional:</p>
+<blockquote>
+<p><strong>Regla de oro:</strong> SIEMPRE que configures una ruta en un router, preguntate: “¿y el router del otro lado, cómo vuelve?”. El ping que no vuelve casi siempre es una ruta de vuelta que falta.</p>
+</blockquote>
+<hr>
+<h2 id="7-next-hop-vs-interfaz-de-salida-dos-formas-de-decir-lo-mismo"><a class="header" href="#7-next-hop-vs-interfaz-de-salida-dos-formas-de-decir-lo-mismo">7. Next-hop vs interfaz de salida: dos formas de decir lo mismo</a></h2>
+<h3 id="71-las-dos-variantes-del-comando"><a class="header" href="#71-las-dos-variantes-del-comando">7.1. Las dos variantes del comando</a></h3>
+<p>Hay (principalmente) dos formas de escribir una ruta estática en Cisco:</p>
+<pre><code class="language-cisco">! Variante A: next-hop (la más común y recomendada)
+ip route 192.168.2.0 255.255.255.0 10.0.12.2
+
+! Variante B: interfaz de salida
+ip route 192.168.2.0 255.255.255.0 g0/0
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Variante</th><th>Le dice al router</th><th>Cuándo se usa</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>A. Next-hop</strong></td><td>“Pasale el paquete a la IP 10.0.12.2”</td><td>Casi siempre. El router resuelve la MAC del vecino con ARP y manda.</td></tr>
+<tr><td><strong>B. Interfaz</strong></td><td>“Sacalo por mi interfaz g0/0 y que se arregle”</td><td>Enlaces punto a punto (seriales) o cuando no conocés la IP del vecino.</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Ojo con la variante B en Ethernet:</strong> si ponés solo <code>g0/0</code> en un enlace Ethernet compartido por varios routers, el router manda el paquete por esa interfaz <strong>sin saber a quién</strong> — pregunta con ARP por el destino final, y si el destino final no está en ese segmento, puede fallar. En enlaces seriales punto a punto no hay problema. Por eso, <strong>regla práctica: en Ethernet, usá siempre next-hop.</strong></p>
+</blockquote>
+<p>La forma completa combina ambas para ser muy explícito:</p>
+<pre><code class="language-cisco">ip route 192.168.2.0 255.255.255.0 10.0.12.2 g0/0
+</code></pre>
+<h3 id="72-y-si-el-next-hop-no-es-alcanzable"><a class="header" href="#72-y-si-el-next-hop-no-es-alcanzable">7.2. Y si el next-hop no es alcanzable…</a></h3>
+<p>Si el next-hop que pones NO existe o no es alcanzable (no tenés ruta hacia él), el router rechaza la configuración o la marca como inactiva. Verás la ruta pero con una <code>?</code> o directamente no funcionará el reenvío. La verificación honesta de una estática siempre es un ping <strong>desde el destino hacia atrás</strong> o <code>show ip route</code> bien leído.</p>
+<hr>
+<h2 id="8-la-ruta-por-defecto-el-plan-b-universal"><a class="header" href="#8-la-ruta-por-defecto-el-plan-b-universal">8. La ruta por defecto: el Plan B universal</a></h2>
+<h3 id="81-qué-es"><a class="header" href="#81-qué-es">8.1. Qué es</a></h3>
+<p>La <strong>ruta por defecto</strong> (default route) le dice al router: <em>“todo lo que no sepas a dónde mandar, mandalo acá”</em>. Es el “cajón de todo lo que no tiene lugar”.</p>
+<blockquote>
+<p><strong>Analogía:</strong> es el número de <strong>informes</strong> del edificio postal: cuando el cartero no sabe en qué piso vive alguien, pregunta en informes. La respuesta casi nunca es “volvé a tu casa”: es “mirá, todo lo que no sabés mandalo a la central”.</p>
+</blockquote>
+<h3 id="82-cómo-se-configura"><a class="header" href="#82-cómo-se-configura">8.2. Cómo se configura</a></h3>
+<pre><code class="language-cisco">R1(config)# ip route 0.0.0.0 0.0.0.0 10.0.12.2
+</code></pre>
+<p>¿Por qué <code>0.0.0.0 0.0.0.0</code>? Porque esa “red” con máscara de todo ceros es la menos específica posible: <strong>matchea con cualquier destino</strong>. Cualquier paquete que no tenga una ruta más específica cae en esta.</p>
+<p>En la tabla aparece así:</p>
+<pre><code class="language-cisco">S*      0.0.0.0/0 [1/0] via 10.0.12.2, GigabitEthernet0/0
+</code></pre>
+<p>El <code>*</code> marca que es la default candidate (la “gateway of last resort”).</p>
+<h3 id="83-por-qué-es-tan-importante"><a class="header" href="#83-por-qué-es-tan-importante">8.3. Por qué es tan importante</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Escenario</th><th>Por qué la default es la solución</th></tr>
+</thead>
+<tbody>
+<tr><td>Router de borde de una empresa</td><td>“Todo lo que no es de mi empresa, salí por acá hacia el ISP” — UNA ruta reemplaza a millones</td></tr>
+<tr><td>Router de tu casa</td><td>Tu router doméstico tiene una default route hacia el módem del ISP: no conoce “internet”, solo conoce “salí por la puerta de afuera”</td></tr>
+<tr><td>Simplicidad</td><td>En vez de escribir rutas para cada red lejana, escribís UNA para todo lo desconocido</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Dato clave para entender internet:</strong> ningún router de internet tiene una ruta para “toda internet”. Tienen rutas para redes específicas… y una <strong>default route</strong> para todo lo demás. Internet no es una red gigante que todos conocen: es una red donde cada uno <strong>sabe un pedacito y pasa el resto hacia arriba</strong>.</p>
+</blockquote>
+<hr>
+<h2 id="9-floating-static-route-la-redundancia-manual"><a class="header" href="#9-floating-static-route-la-redundancia-manual">9. Floating static route: la redundancia manual</a></h2>
+<h3 id="91-el-problema-y-si-el-enlace-principal-se-cae"><a class="header" href="#91-el-problema-y-si-el-enlace-principal-se-cae">9.1. El problema: ¿y si el enlace principal se cae?</a></h3>
+<p>Pensá en dos routers conectados por DOS caminos: un enlace principal (rápido, caro) y uno de respaldo (lento, barato, olvidado). Si el principal se cae, lo ideal es que el tráfico pase automáticamente por el respaldo.</p>
+<p>Con una sola estática, eso NO pasa: cuando el enlace principal cae, la ruta desaparece y no hay reemplazo. La red se queda sin camino.</p>
+<h3 id="92-la-solución-dos-rutas-con-ad-distintas"><a class="header" href="#92-la-solución-dos-rutas-con-ad-distintas">9.2. La solución: dos rutas con AD distintas</a></h3>
+<p>Acá entra la <strong>Administrative Distance</strong> (AD) que viste en la sección 4: el número que dice “qué tan confiable es la fuente”.</p>
+<p>Podés escribir DOS rutas estáticas al mismo destino con AD diferentes:</p>
+<pre><code class="language-cisco">! Ruta principal (AD 1, la default de las estáticas)
+ip route 192.168.2.0 255.255.255.0 10.0.12.2
+
+! Ruta de respaldo (AD 200 — solo se usa si la principal desaparece)
+ip route 192.168.2.0 255.255.255.0 10.0.13.2 200
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Ruta</th><th style="text-align: center">AD</th><th>Estado</th></tr>
+</thead>
+<tbody>
+<tr><td>Principal (<code>via 10.0.12.2</code>)</td><td style="text-align: center">1</td><td><strong>Activa</strong>: gana siempre que exista</td></tr>
+<tr><td>Respaldo (<code>via 10.0.13.2</code>)</td><td style="text-align: center">200</td><td><strong>Dormida</strong>: esperando en la tabla</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>¿Cuándo se activa el respaldo?</strong> Cuando la principal <strong>desaparece</strong> de la tabla (porque el enlace se cayó o el next-hop dejó de ser alcanzable). Ahí el router elige la siguiente con menor AD, y el respaldo —¡que estaba guardado como “candidate”!— se activa.</p>
+<blockquote>
+<p><strong>Analogía:</strong> es el <strong>neumático de auxilio</strong>. Está en el auto (guardado en la tabla), pero solo se usa cuando la rueda principal falla. Nadie conduce toda la vida con el auxilio; es un plan de contingencia. En redes, ese patrón se llama <strong>floating static route</strong> porque “flota” en la tabla esperando que la principal se hunda.</p>
+</blockquote>
+<h3 id="93-el-detalle-que-hay-que-entender"><a class="header" href="#93-el-detalle-que-hay-que-entender">9.3. El detalle que hay que entender</a></h3>
+<blockquote>
+<p>La ruta de respaldo <strong>está configurada pero dormida</strong>: no aparece como ruta activa mientras la principal exista. Si hacés <code>show ip route</code>, solo vas a ver la principal. El respaldo aparece recién cuando la principal muere. “Floating” significa exactamente eso: aparece y desaparece según la salud de la principal.</p>
+</blockquote>
+<p>Regla práctica del AD en estáticas:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th style="text-align: center">Usamos</th><th style="text-align: center">AD</th><th>Por qué</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: center">Estática normal</td><td style="text-align: center">1 (default)</td><td>Gana a casi todo</td></tr>
+<tr><td style="text-align: center">Floating static</td><td style="text-align: center">200 o más</td><td>Pierde contra dinámicas, gana contra nada (es el último recurso)</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="10-el-viaje-de-un-paquete-paso-a-paso"><a class="header" href="#10-el-viaje-de-un-paquete-paso-a-paso">10. El viaje de un paquete paso a paso</a></h2>
+<h3 id="101-la-topología-completa"><a class="header" href="#101-la-topología-completa">10.1. La topología completa</a></h3>
+<p>Armemos el caso que vamos a usar en el laboratorio:</p>
+<pre><code class="language-text">PC-A (192.168.1.10)
+   │
+   │  red 192.168.1.0/24
+   │
+┌──┴──┐       10.0.12.0/30      ┌──┴──┐
+│ R1  │ ────────────────────── │ R2  │
+│  .1 │                         │  .2 │
+└──┬──┘                         └──┬──┘
+   │                                │  red 192.168.2.0/24
+   │                                │
+                                PC-B (192.168.2.10)
+</code></pre>
+<p>Interfaces:</p>
+<pre><code class="language-text">R1: g0/0 = 10.0.12.1/30    g0/1 = 192.168.1.254/24
+R2: g0/0 = 10.0.12.2/30    g0/1 = 192.168.2.254/24
+</code></pre>
+<h3 id="102-las-tablas-antes-de-configurar-nada"><a class="header" href="#102-las-tablas-antes-de-configurar-nada">10.2. Las tablas antes de configurar nada</a></h3>
+<p>Estado natural (sin configurar estáticas), con solo las rutas conectadas:</p>
+<pre><code class="language-cisco">! TABLA DE R1                          ! TABLA DE R2
+C  192.168.1.0/24  via g0/1            C  192.168.2.0/24  via g0/1
+L  192.168.1.254/32 via g0/1           L  192.168.2.254/32 via g0/1
+C  10.0.12.0/30    via g0/0            C  10.0.12.0/30    via g0/0
+L  10.0.12.1/32    via g0/0            L  10.0.12.2/32    via g0/0
+</code></pre>
+<p><strong>Problema:</strong> R1 no conoce <code>192.168.2.0/24</code> y R2 no conoce <code>192.168.1.0/24</code>. Si PC-A pingea a PC-B: el paquete llega a R1 → R1 mira la tabla → <strong>no tiene ruta</strong> → lo descarta (ni siquiera tiene default). <em>Ping fail.</em></p>
+<h3 id="103-configurando-las-estáticas-las-dos-famosas"><a class="header" href="#103-configurando-las-estáticas-las-dos-famosas">10.3. Configurando las estáticas (las dos famosas)</a></h3>
+<pre><code class="language-cisco">! R1
+R1(config)# ip route 192.168.2.0 255.255.255.0 10.0.12.2
+
+! R2  ← la ruta de VUELTA, el error más común es olvidarla
+R2(config)# ip route 192.168.1.0 255.255.255.0 10.0.12.1
+</code></pre>
+<h3 id="104-qué-pasa-cuando-pc-a-pingea-a-pc-b"><a class="header" href="#104-qué-pasa-cuando-pc-a-pingea-a-pc-b">10.4. Qué pasa cuando PC-A pingea a PC-B</a></h3>
+<p>Seguí el paquete salto por salto (esto es oro para diagnosticar):</p>
+<pre><code class="language-text">1. PC-A arma el paquete: origen 192.168.1.10 → destino 192.168.2.10.
+   Como el destino NO está en su red, lo manda a su gateway: 192.168.1.254 (R1).
+
+2. R1 recibe el paquete. Consulta su tabla:
+   → "192.168.2.0/24 = via 10.0.12.2, g0/0".
+   → Cambia el sobre Ethernet (la MAC destino ahora es la de R2, 10.0.12.2)
+     y lo manda por g0/0. El paquete IP no cambia.
+
+3. R2 recibe el paquete. Consulta su tabla:
+   → "192.168.2.0/24 está conectada a mi g0/1" (ruta C).
+   → Cambia el sobre Ethernet y lo manda directo a PC-B.
+     PC-B responde el echo.
+
+4. Ahora la RESPUESTA: origen 192.168.2.10 → destino 192.168.1.10.
+   PC-B manda al gateway 192.168.2.254 (R2).
+
+5. R2 consulta su tabla:
+   → "192.168.1.0/24 = via 10.0.12.1, g0/0"   ← ¡LA ESTÁTICA QUE CONFIGURASTE!
+   → La manda por g0/0 a R1.
+
+6. R1 consulta su tabla:
+   → "192.168.1.0/24 conectada a g0/1" (ruta C).
+   → La manda a PC-A. ¡Ping exitoso!
+</code></pre>
+<blockquote>
+<p><strong>El momento que resume TODO este manual:</strong> cada router decide <strong>independientemente</strong> con SU tabla. PC-A y PC-B nunca “saben” que existen routers entre ellos: los routers se pasan el paquete como una posta, y cada uno solo conoce su pedacito del camino. El ping funciona SOLO SI TODOS tienen su pedacito — ida Y vuelta.</p>
+</blockquote>
+<hr>
+<h2 id="11-aplicación-laboratorio-guiado-en-packet-tracer"><a class="header" href="#11-aplicación-laboratorio-guiado-en-packet-tracer">11. Aplicación: laboratorio guiado en Packet Tracer</a></h2>
+<blockquote>
+<p>Este laboratorio extiende el Lab 5 de rutas estáticas de la serie de Packet Tracer. Si no tenés Packet Tracer abierto, este es el momento perfecto: la teoría de las secciones 1-10 se entiende el doble viendo las tablas en vivo.</p>
+</blockquote>
+<h3 id="paso-1--armar-la-topología"><a class="header" href="#paso-1--armar-la-topología">Paso 1 — Armar la topología</a></h3>
+<ol>
+<li>Tres routers no hacen falta: usá <strong>2 routers (R1, R2)</strong> y <strong>2 PCs (PC-A, PC-B)</strong>, como la topología de la sección 10.</li>
+<li>Cables <strong>Copper Straight-Through</strong> entre PC→Router.</li>
+<li>Entre R1 y R2: cable directo también (en Packet Tracer los routers modernos usan GigabitEthernet, autonegociado).</li>
+</ol>
+<h3 id="paso-2--ips-de-las-interfaces"><a class="header" href="#paso-2--ips-de-las-interfaces">Paso 2 — IPs de las interfaces</a></h3>
+<pre><code class="language-cisco">! R1
+interface g0/0
+ ip address 10.0.12.1 255.255.255.252
+ no shutdown
+interface g0/1
+ ip address 192.168.1.254 255.255.255.0
+ no shutdown
+
+! R2
+interface g0/0
+ ip address 10.0.12.2 255.255.255.252
+ no shutdown
+interface g0/1
+ ip address 192.168.2.254 255.255.255.0
+ no shutdown
+</code></pre>
+<h3 id="paso-3--ips-de-las-pcs"><a class="header" href="#paso-3--ips-de-las-pcs">Paso 3 — IPs de las PCs</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>PC</th><th>IP</th><th>Máscara</th><th>Gateway</th></tr>
+</thead>
+<tbody>
+<tr><td>PC-A</td><td>192.168.1.10</td><td>255.255.255.0</td><td>192.168.1.254</td></tr>
+<tr><td>PC-B</td><td>192.168.2.10</td><td>255.255.255.0</td><td>192.168.2.254</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Ojo:</strong> el gateway de cada PC es el router de SU red. PC-B no “sabe” que existe R1: su gateway es R2, y punto.</p>
+</blockquote>
+<h3 id="paso-4--el-momento-de-la-verdad"><a class="header" href="#paso-4--el-momento-de-la-verdad">Paso 4 — El momento de la verdad</a></h3>
+<p>Sin configurar nada más, corré desde PC-A:</p>
+<pre><code class="language-text">ping 192.168.2.10
+</code></pre>
+<p><strong>Va a fallar</strong> (timeout). Esto NO es un bug: es la teoría funcionando. R1 no tiene ruta a la red de PC-B. Verificá:</p>
+<pre><code class="language-cisco">R1# show ip route
+</code></pre>
+<p>Fijate que NO aparece ninguna <code>S</code>. Ahora configurá las estáticas (ida y vuelta):</p>
+<pre><code class="language-cisco">! R1
+R1(config)# ip route 192.168.2.0 255.255.255.0 10.0.12.2
+
+! R2
+R2(config)# ip route 192.168.1.0 255.255.255.0 10.0.12.1
+</code></pre>
+<h3 id="paso-5--verificar"><a class="header" href="#paso-5--verificar">Paso 5 — Verificar</a></h3>
+<pre><code class="language-cisco">R1# show ip route
+</code></pre>
+<p>Vas a ver las dos <code>S</code> (la de 192.168.2.0 y quizás una default si la agregás). Y el ping:</p>
+<pre><code class="language-text">ping 192.168.2.10
+</code></pre>
+<p><strong>PRIMER REPLIES!</strong> (si no, revisá el Paso 3: gateway de PC-B o la ruta de vuelta en R2).</p>
+<h3 id="paso-6--el-experimento-que-mata-el-mito"><a class="header" href="#paso-6--el-experimento-que-mata-el-mito">Paso 6 — El experimento que mata el mito</a></h3>
+<p>Ahora borrá la estática de R2:</p>
+<pre><code class="language-cisco">R2(config)# no ip route 192.168.1.0 255.255.255.0 10.0.12.1
+</code></pre>
+<p>Y repetí el ping desde PC-A… <strong>falla de nuevo</strong>, aunque la ruta de IDA siga existiendo en R1. ¿Por qué? Porque la vuelta murió. Este experimento de 30 segundos te enseña más que diez capítulos de teoría: <strong>sin ruta de vuelta no hay ping</strong>. Dejá la ruta puesta de nuevo antes de terminar.</p>
+<blockquote>
+<p><strong>HACELO VOS:</strong> con la topología arriba y sin mirar las soluciones, escribí para cada router las rutas estáticas que hacen falta para que PC-A llegue a PC-B Y PC-B a PC-A. Después configurá y verificá con <code>show ip route</code> y un ping. Si algo no anda, seguí la regla de la sección 12.</p>
+</blockquote>
+<hr>
+<h2 id="12-errores-comunes-y-cómo-diagnosticarlos"><a class="header" href="#12-errores-comunes-y-cómo-diagnosticarlos">12. Errores comunes y cómo diagnosticarlos</a></h2>
+<h3 id="121-la-lista-de-los-clásicos"><a class="header" href="#121-la-lista-de-los-clásicos">12.1. La lista de los clásicos</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>#</th><th>Error</th><th>Síntoma</th><th>Diagnóstico y solución</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td><td>Falta la <strong>ruta de vuelta</strong></td><td>Ping de ida “anda” pero no responde</td><td>Revisá <code>show ip route</code> en el router de DESTINO: ¿tiene ruta para volver a tu red?</td></tr>
+<tr><td>2</td><td><strong>Interfaz apagada</strong></td><td>La ruta <code>C</code> no aparece en la tabla</td><td><code>show ip interface brief</code>: si dice <code>administratively down</code>, falta <code>no shutdown</code></td></tr>
+<tr><td>3</td><td><strong>Next-hop inalcanzable</strong></td><td>La estática no reenvía</td><td>El next-hop debe estar en una red conectada Y ser alcanzable. Ping al next-hop desde el router</td></tr>
+<tr><td>4</td><td><strong>Máscara o IP mal escrita</strong></td><td>Ruta existe pero nunca matchea</td><td>Revisá la red y la máscara contra el diagrama. Un dígito y la ruta apunta a otra parte</td></tr>
+<tr><td>5</td><td>Variante interfaz en Ethernet sin next-hop</td><td>Paquete sale por la interfaz pero no llega</td><td>Cambiá a next-hop explícito</td></tr>
+<tr><td>6</td><td><strong>Gateway mal puesto en la PC</strong></td><td>El PC habla con el switch pero “no sale”</td><td>Verificá que el gateway del PC sea la IP del router de SU red</td></tr>
+<tr><td>7</td><td>Confundir el ping que “no vuelve” con red caída</td><td>Mismo síntoma, causa distinta</td><td>Seguí la regla: primero ida, después vuelta, después el resto</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="122-la-metodología-en-5-pasos-para-no-llego-a-la-red-x"><a class="header" href="#122-la-metodología-en-5-pasos-para-no-llego-a-la-red-x">12.2. La metodología en 5 pasos para “no llego a la red X”</a></h3>
+<p>Cuando un destino es inalcanzable, esta es la secuencia profesional:</p>
+<pre><code class="language-text">1. ¿Las interfaces del camino están up/up?        → show ip interface brief (en cada router)
+2. ¿La tabla del router de mi red tiene la ruta?  → show ip route &lt;red_destino&gt;
+3. ¿El siguiente router también?                  → repetir en cada salto
+4. ¿El next-hop es alcanzable?                    → ping al next-hop desde el router
+5. ¿La vuelta existe en el destino?               → show ip route en el router del destino
+</code></pre>
+<p>Con <code>traceroute</code> (de la PC o el router) ves DÓNDE se corta la cadena: el salto que deja de responder es el router mal configurado.</p>
+<blockquote>
+<p><strong>Regla de oro final:</strong> el enrutamiento casi nunca falla por magia. Falló porque alguien le puso mal una IP, olvidó una ruta de vuelta o no encendió una interfaz. El 90% de los problemas de rutas están en esa lista de la sección 12.1.</p>
+</blockquote>
+<hr>
+<h2 id="13-comprobá-lo-que-aprendiste"><a class="header" href="#13-comprobá-lo-que-aprendiste">13. Comprobá lo que aprendiste</a></h2>
+<p>Respondé antes de mirar las respuestas, después destapá cada una con el detalle.</p>
+<p><strong>1. ¿Cuáles son los dos trabajos distintos de un router?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p><strong>Enrutamiento</strong> (decidir cuál es la mejor ruta para cada destino y guardarla en la tabla, pasa ante cambios de topología) y <strong>reenvío</strong> (mirar la tabla y mandar cada paquete al next-hop correspondiente, pasa millones de veces por segundo). Uno piensa, el otro ejecuta.</p>
+</details>
+<p><strong>2. Un router recibe un paquete hacia una red que no conoce. ¿Qué hace?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>El router <strong>descarta el paquete</strong> y (según configuración) manda un ICMP “destination unreachable” al origen. NO lo manda “a todos lados” ni lo guarda esperando aprender. Salvo que tenga una <strong>ruta por defecto</strong> (<code>0.0.0.0/0</code>), en cuyo caso lo envía por esa ruta.</p>
+</details>
+<p><strong>3. ¿Qué significa cada parte de <code>S 192.168.2.0/24 [1/0] via 10.0.12.2, g0/0</code>?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p><code>S</code> = ruta estática. <code>192.168.2.0/24</code> = red destino con su máscara. <code>[1/0]</code> = AD 1 (confiable, la escribió el administrador) y métrica 0. <code>via 10.0.12.2</code> = next-hop (a quién pasar el paquete). <code>g0/0</code> = interfaz de salida. Traducción: “para llegar a la red 192.168.2.0/24, pasale el paquete a 10.0.12.2 por mi g0/0”.</p>
+</details>
+<p><strong>4. ¿Por qué aparece una ruta <code>L</code> en la tabla de rutas?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>La ruta <code>L</code> (local) identifica la dirección IP propia de una interfaz del router. Es la “casa” del router: los paquetes dirigidos a esa IP están dirigidos al propio router (por ejemplo, un ping a 10.0.12.1 desde el vecino). Aparece sola, junto a la <code>C</code> (conectada).</p>
+</details>
+<p><strong>5. Configuraste la estática de ida y el ping no vuelve. ¿Qué revisás primero?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>La <strong>ruta de vuelta</strong>: en el router del DESTINO, <code>show ip route</code> — ¿tiene alguna ruta (estática, por defecto o dinámica) para volver a tu red? El enrutamiento es salto por salto e independiente: cada router decide con su tabla, y sin ruta de retorno la respuesta se descarta.</p>
+</details>
+<p><strong>6. ¿Qué es una floating static route y cuándo se activa?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Es una ruta estática de respaldo con <strong>AD alta</strong> (ej. 200) hacia el mismo destino que una principal (AD 1). Mientras la principal exista en la tabla, la de respaldo está dormida. Se activa automáticamente cuando la principal <strong>desaparece</strong> (el enlace o el next-hop se cayó). Es la forma manual de lograr redundancia.</p>
+</details>
+<p><strong>7. ¿Por qué la ruta por defecto se escribe <code>0.0.0.0 0.0.0.0</code>?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Porque esa combinación (todo ceros en red y en máscara) es la menos específica posible: matchea con CUALQUIER dirección destino. Es el “cajón de todo lo desconocido”: si ninguna otra ruta matchea, el paquete va por ahí. Por eso un router de borde usa una sola default route hacia el ISP en lugar de conocer “toda internet”.</p>
+</details>
+<hr>
+<h2 id="14-glosario"><a class="header" href="#14-glosario">14. Glosario</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Término</th><th>Qué es</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Enrutamiento (routing)</strong></td><td>La decisión de elegir la mejor ruta hacia cada destino y mantenerla en la tabla</td></tr>
+<tr><td><strong>Reenvío (forwarding)</strong></td><td>La acción mecánica de enviar cada paquete según la tabla (millones de veces por segundo)</td></tr>
+<tr><td><strong>Tabla de enrutamiento</strong></td><td>La lista en memoria del router: destinos, next-hops e interfaces de salida</td></tr>
+<tr><td><strong>Ruta conectada (C)</strong></td><td>Ruta que el router aprende solo porque la red está pegada a una de sus interfaces</td></tr>
+<tr><td><strong>Ruta local (L)</strong></td><td>La dirección IP propia de una interfaz del router</td></tr>
+<tr><td><strong>Ruta estática (S)</strong></td><td>Ruta configurada a mano por el administrador</td></tr>
+<tr><td><strong>Ruta por defecto</strong></td><td>Ruta a <code>0.0.0.0/0</code>: el plan B para todo destino desconocido</td></tr>
+<tr><td><strong>Next-hop</strong></td><td>La IP del próximo router al que hay que pasarle el paquete</td></tr>
+<tr><td><strong>Interfaz de salida</strong></td><td>Por qué interfaz del router sale el paquete</td></tr>
+<tr><td><strong>Administrative Distance (AD)</strong></td><td>Número que indica la confiabilidad de la fuente de la ruta (menor = más confiable)</td></tr>
+<tr><td><strong>Métrica</strong></td><td>Valor que compara rutas DENTRO de una misma fuente (menor = mejor)</td></tr>
+<tr><td><strong>Floating static route</strong></td><td>Ruta estática de respaldo con AD alta que se activa si la principal muere</td></tr>
+<tr><td><strong>Gateway of last resort</strong></td><td>La ruta por defecto: adónde va todo lo que no matchea otra ruta</td></tr>
+<tr><td><strong>Destination unreachable</strong></td><td>Mensaje ICMP de un router que no tiene ruta hacia el destino</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="15-resumen-en-10-puntos"><a class="header" href="#15-resumen-en-10-puntos">15. Resumen en 10 puntos</a></h2>
+<ol>
+<li><strong>El router no piensa: consulta.</strong> Para cada paquete mira la dirección IP destino y decide con SU tabla de enrutamiento.</li>
+<li><strong>Enrutar</strong> (armar la tabla) y <strong>reenviar</strong> (mandar paquetes) son trabajos distintos; el segundo es mecánico y rapidísimo.</li>
+<li><strong>Sin ruta, el paquete se descarta.</strong> Un router no reenvía “a ver qué pasa”: sin ruta ni default, tira el paquete.</li>
+<li><strong><code>show ip route</code> es el idioma del enrutamiento</strong>: <code>C</code> conectada, <code>L</code> local, <code>S</code> estática, y después <code>O</code>, <code>D</code>, <code>R</code>, <code>B</code> cuando lleguen los protocolos dinámicos.</li>
+<li><strong>Las conectadas y locales son gratis</strong>: aparecen solas cuando la interfaz está up/up (y desaparecen si se apaga).</li>
+<li><strong>La estática se escribe a mano</strong>: <code>ip route &lt;red&gt; &lt;máscara&gt; &lt;next-hop&gt;</code>. Predictible, sin consumo de banda, pero no se adapta sola.</li>
+<li><strong>La ruta de vuelta es sagrada</strong>: configurar la ida sin la vuelta es el error de principiante número uno.</li>
+<li><strong>En Ethernet siempre next-hop</strong>: la variante “solo interfaz” sirve para enlaces punto a punto.</li>
+<li><strong>La default route (<code>0.0.0.0/0</code>) es el plan B universal</strong>: una sola frase reemplaza “conocer todo lo desconocido”.</li>
+<li><strong>La floating static route (AD 200) es la primera idea de redundancia</strong>: duerme en la tabla y se despierta cuando la principal muere.</li>
+</ol>
+<hr>
+<blockquote>
+<p><strong>Fuente:</strong> Documentación propia basada en RFC 1812 (requirements for IPv4 routers), documentación oficial Cisco IOS (IP Routing: Static Configuration Guide), CCNA 200-301 Official Cert Guide (W. Odom) y material educativo de redes.</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../docs/15-comandos-packet-tracer.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../docs/35-seleccion-de-rutas.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../docs/15-comandos-packet-tracer.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../docs/35-seleccion-de-rutas.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-09f2665d.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-c22b7243.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../theme/dark-6e51c595.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

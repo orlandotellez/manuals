@@ -1,0 +1,808 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Enrutamiento Dinámico - Manuales</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-0392ca55.css">
+        <link rel="stylesheet" href="../css/chrome-fc474251.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/dark-cca273e4.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "dark";
+            window.path_to_searchindex_js = "../searchindex-f7857309.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-54fda1d6.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Manuales</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="36-enrutamiento-dinámico-vector-de-distancia-y-estado-de-enlace"><a class="header" href="#36-enrutamiento-dinámico-vector-de-distancia-y-estado-de-enlace">36. Enrutamiento Dinámico: Vector de Distancia y Estado de Enlace</a></h1>
+<p><strong>Cómo los routers aprenden solos, sin que nadie les escriba cada ruta a mano</strong></p>
+<hr>
+<h2 id="índice"><a class="header" href="#índice">Índice</a></h2>
+<ul>
+<li><a href="#1-el-problema-las-rutas-estáticas-no-escalan">El problema: las rutas estáticas no escalan</a></li>
+<li><a href="#2-qué-es-el-enrutamiento-dinámico">Qué es el enrutamiento dinámico</a></li>
+<li><a href="#3-los-dos-grandes-grupos-la-bifurcación-del-camino">Los dos grandes grupos: la bifurcación del camino</a></li>
+<li><a href="#4-distance-vector-aprender-por-rumores">Distance Vector: aprender por rumores</a></li>
+<li><a href="#5-los-tres-fantasmas-del-vector-de-distancia">Los tres fantasmas del vector de distancia</a></li>
+<li><a href="#6-rip-el-abuelo-que-todavía-se-estudia">RIP: el abuelo que todavía se estudia</a></li>
+<li><a href="#7-link-state-aprender-dibujando-el-mapa">Link-State: aprender dibujando el mapa</a></li>
+<li><a href="#8-el-algoritmo-spf-dijkstra-en-cristiano">El algoritmo SPF: Dijkstra en cristiano</a></li>
+<li><a href="#9-convergencia-el-reloj-de-la-red">Convergencia: el reloj de la red</a></li>
+<li><a href="#10-la-comparación-honesta-dv-vs-ls">La comparación honesta: DV vs LS</a></li>
+<li><a href="#11-aplicación-elegir-el-protocolo-correcto">Aplicación: elegir el protocolo correcto</a></li>
+<li><a href="#12-qué-viene-después-el-puente-hacia-ospf">Qué viene después: el puente hacia OSPF</a></li>
+<li><a href="#13-comprobá-lo-que-aprendiste">Comprobá lo que aprendiste</a></li>
+<li><a href="#14-glosario">Glosario</a></li>
+<li><a href="#15-resumen-en-10-puntos">Resumen en 10 puntos</a></li>
+</ul>
+<hr>
+<h2 id="1-el-problema-las-rutas-estáticas-no-escalan"><a class="header" href="#1-el-problema-las-rutas-estáticas-no-escalan">1. El problema: las rutas estáticas no escalan</a></h2>
+<h3 id="11-el-límite-del-manual-anterior"><a class="header" href="#11-el-límite-del-manual-anterior">1.1. El límite del manual anterior</a></h3>
+<p>Ya aprendiste a configurar rutas estáticas a mano. Son fantásticas en una red chica: predecibles, seguras, sin consumo de ancho de banda. Pero pongamos el caso real:</p>
+<blockquote>
+<p>Una empresa tiene <strong>50 routers</strong> con <strong>200 redes</strong>. Cada red tiene que llegar a todas las demás (o, al menos, a las que importan). Con rutas estáticas, un humano tiene que escribir <strong>miles de líneas</strong> de configuración, y en cada cambio de topología (un enlace nuevo, una red nueva, un router que se cae) hay que <strong>reescribir todo a mano</strong>.</p>
+</blockquote>
+<p>Y hay algo peor que el trabajo: la reacción. Si un enlace se cae a las 3 de la mañana, la estática <strong>no se entera</strong> (recordá: no tiene ojos ni oídos). El tráfico se corta hasta que un humano se despierta, diagnostica y reconfigura.</p>
+<blockquote>
+<p><strong>Analogía:</strong> las rutas estáticas son el <strong>recorrido fijo de un micro</strong> que pasa siempre por la misma calle. Si esa calle se corta por obras a las 3 AM, el micro se queda atascado hasta que alguien del taller modifica el recorrido en papel. Nadie le avisa al chofer que la calle se cortó.</p>
+</blockquote>
+<h3 id="12-la-idea-madre-de-este-manual"><a class="header" href="#12-la-idea-madre-de-este-manual">1.2. La idea madre de este manual</a></h3>
+<blockquote>
+<p><strong>El enrutamiento dinámico resuelve exactamente eso: los routers se AVISAN ENTRE SÍ cómo está la red.</strong> Cada router le cuenta a sus vecinos las redes que conoce, escucha lo que los otros le cuentan, y arma su tabla de rutas sin intervención humana. Cuando algo cambia (un enlace cae, una red aparece), los routers se enteran y <strong>recalculan solos</strong>.</p>
+</blockquote>
+<p>Ese “avisarse entre sí” tiene reglas: <strong>protocolos de enrutamiento dinámico</strong>. Y los protocolos se dividen en dos grandes familias con formas de pensar MUY distintas: <strong>vector de distancia</strong> y <strong>estado de enlace</strong>. Este manual te hace entender por qué existen las dos, cómo piensa cada una, y por qué OSPF (el tema estrella de los próximos manuales) eligió ser de una de ellas.</p>
+<hr>
+<h2 id="2-qué-es-el-enrutamiento-dinámico"><a class="header" href="#2-qué-es-el-enrutamiento-dinámico">2. Qué es el enrutamiento dinámico</a></h2>
+<h3 id="21-los-tres-ingredientes-de-todo-protocolo-dinámico"><a class="header" href="#21-los-tres-ingredientes-de-todo-protocolo-dinámico">2.1. Los tres ingredientes de todo protocolo dinámico</a></h3>
+<p>Cualquier protocolo de enrutamiento dinámico, sin importar su familia, hace estas tres cosas:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Ingrediente</th><th>Qué es</th><th>En cristiano</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Descubrimiento</strong></td><td>Los routers se encuentran y se reconocen</td><td>“Hola, soy R1, ¿quién sos vos?”</td></tr>
+<tr><td><strong>Intercambio</strong></td><td>Se pasan información sobre las redes</td><td>“Yo conozco la red X, la Y y la Z; ¿vos?”</td></tr>
+<tr><td><strong>Cálculo</strong></td><td>Cada uno actualiza su propia tabla</td><td>“Con lo que me contaron, actualizo mi mapa”</td></tr>
+</tbody>
+</table>
+</div>
+<p>Lo que CAMBIA entre protocolos no es la receta, sino la forma de hacer el paso 2 (qué se cuentan) y el paso 3 (cómo calculan). Ahí está toda la diferencia.</p>
+<h3 id="22-qué-le-pedimos-a-un-protocolo-dinámico"><a class="header" href="#22-qué-le-pedimos-a-un-protocolo-dinámico">2.2. Qué le pedimos a un protocolo dinámico</a></h3>
+<p>Antes de comparar familias, definamos qué hace a un protocolo “bueno”:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Característica</th><th>Qué significa</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Convergencia rápida</strong></td><td>¿Cuánto tarda toda la red en ponerse de acuerdo tras un cambio?</td></tr>
+<tr><td><strong>Escalabilidad</strong></td><td>¿Aguanta 10 routers? ¿1.000? ¿50.000?</td></tr>
+<tr><td><strong>Uso de recursos</strong></td><td>¿Cuánto ancho de banda y CPU consume “avisarse”?</td></tr>
+<tr><td><strong>Libertad de bucles</strong></td><td>¿Evita que los paquetes den vueltas en círculos?</td></tr>
+<tr><td><strong>Métrica sensible</strong></td><td>¿Elige según calidad real (ancho de banda, delay) o solo por un contador simple?</td></tr>
+<tr><td><strong>Clase / estándar</strong></td><td>¿Es abierto (cualquier fabricante) o propietario?</td></tr>
+</tbody>
+</table>
+</div>
+<p>Guardá esta tabla: la vas a usar para comparar DV y LS (y más adelante, OSPF vs EIGRP vs BGP).</p>
+<hr>
+<h2 id="3-los-dos-grandes-grupos-la-bifurcación-del-camino"><a class="header" href="#3-los-dos-grandes-grupos-la-bifurcación-del-camino">3. Los dos grandes grupos: la bifurcación del camino</a></h2>
+<p>Todo protocolo dinámico de enrutamiento pertenece a una de dos familias:</p>
+<pre><code class="language-text">                ENRUTAMIENTO DINÁMICO
+                        │
+        ┌───────────────┴───────────────┐
+        │                               │
+   VECTOR DE DISTANCIA             ESTADO DE ENLACE
+   (Distance Vector)               (Link-State)
+        │                               │
+   "Solo sé lo que               "Yo construyo un
+    me cuentan"                  mapa de toda la red"
+        │                               │
+   RIP (y su legado)              OSPF, IS-IS
+   EIGRP (híbrido,                (los grandes, y los
+   mejora la fórmula)             que vas a estudiar)
+</code></pre>
+<blockquote>
+<p><strong>La diferencia en una frase:</strong> el <strong>vector de distancia</strong> es el que <strong>le cuenta a su vecino qué redes conoce y a qué distancia</strong>, sin saber cómo es el recorrido más allá del vecino. El <strong>estado de enlace</strong> es el que <strong>publica “así es MI pedacito de red”</strong> para que todos armen el mapa completo y calculen SOLO el mejor camino.</p>
+</blockquote>
+<p>Usemos el sistema postal otra vez:</p>
+<blockquote>
+<p><strong>Vector de distancia = la cadena de rumores</strong>: cada oficina de correo le dice a la de al lado “yo sé llegar a Mendoza, te cuento y pasame esto a vos”. Nadie tiene el mapa completo; confían en lo que les contaron.</p>
+<p><strong>Estado de enlace = el mapa colaborativo</strong>: cada oficina publica “yo estoy conectado a estas tres rutas, con estos costos”. Con las publicaciones de todos, cada oficina dibuja el mapa COMPLETO del país y calcula la mejor ruta. Todos ven lo mismo.</p>
+</blockquote>
+<p>Ahora veamos cada familia en detalle, empezando por la más antigua (y la que explica por qué existe la otra).</p>
+<hr>
+<h2 id="4-distance-vector-aprender-por-rumores"><a class="header" href="#4-distance-vector-aprender-por-rumores">4. Distance Vector: aprender por rumores</a></h2>
+<h3 id="41-cómo-piensa-un-router-vector-de-distancia"><a class="header" href="#41-cómo-piensa-un-router-vector-de-distancia">4.1. Cómo piensa un router vector de distancia</a></h3>
+<p>Un router de esta familia NO sabe cómo es la red más allá de su vecino. Solo guarda dos datos por cada red que conoce:</p>
+<pre><code>VECTOR = (destino, DISTANCIA)
+         así se llama la familia: un "vector" (destino + distancia)
+         + el vecino por quien llegar
+</code></pre>
+<p>Su forma de aprender es primitiva y efectiva:</p>
+<pre><code class="language-text">1. R1 le dice a R2: "Yo conozco la red A a distancia 0 (es mía)."
+2. R2 escucha y piensa: "Si R1 conoce la A a 0, y R1 está a 1 salto de mí,
+   entonces yo la conozco a 0 + 1 = 1."
+3. R2 le dice a R3: "Yo conozco la red A a distancia 1."
+4. R3 piensa: "1 + 1 = 2." Y así sucesivamente.
+</code></pre>
+<p>Cada router recibe el rumor, le <strong>suma 1</strong> (el costo del propio salto) y lo guarda. El rumor <strong>avanza como una onda</strong> de router en router.</p>
+<blockquote>
+<p><strong>Analogía (la cadena de rumores):</strong> “¿Dónde queda la mejor panadería?” → “No sé, pero el vecino de al lado dijo que queda a dos cuadras de su casa.” Nadie caminó hasta la panadería: <strong>todos se fían del que les contó, y le suman el tramo que ellos conocen.</strong> El conocimiento es de segunda, tercera, cuarta mano…</p>
+</blockquote>
+<h3 id="42-el-solo-sé-lo-que-me-cuentan-el-problema-de-raíz"><a class="header" href="#42-el-solo-sé-lo-que-me-cuentan-el-problema-de-raíz">4.2. El “solo sé lo que me cuentan”: el problema de raíz</a></h3>
+<p>Esta forma de pensar tiene una consecuencia inevitable y profunda:</p>
+<blockquote>
+<p><strong>Un router vector de distancia NUNCA sabe la topología completa. No sabe si el “recorrido” que le contaron es directo o da diez vueltas. Solo sabe: “red X a distancia N, por el vecino Y”.</strong></p>
+</blockquote>
+<p>Por eso la métrica de estos protocolos es casi siempre un contador simple (saltos): es todo lo que el “rumor” puede transmitir con honestidad. No podés transmitir “ancho de banda de todo el camino” cuando nadie tiene el mapa.</p>
+<h3 id="43-el-intercambio-periodos-y-vecinos"><a class="header" href="#43-el-intercambio-periodos-y-vecinos">4.3. El intercambio: periodos y vecinos</a></h3>
+<p>Las actualizaciones <strong>periódicas</strong> y los <strong>vecinos directos</strong> definen el ritmo:</p>
+<ul>
+<li>Cada <code>X</code> segundos (en RIP, 30), el router le manda SU tabla completa a sus vecinos directos.</li>
+<li>Los vecinos solo son los conectados directamente (los que comparten un enlace). No hay “vecinos de vecinos”.</li>
+<li>El router escucha, compara, y <strong>reemplaza lo que sabe</strong> según lo que le cuenten (si el rumor tiene mejor métrica, lo acepta; si no, lo ignora).</li>
+</ul>
+<blockquote>
+<p><strong>Dato importante:</strong> cuando un protocolo DV manda “su tabla completa”, no es que el vecino “copie todo”: el vecino compara con lo que ya tiene y actualiza solo lo que mejora o lo que no conocía. La confianza es ciega: <strong>si un vecino dice “yo tengo esto”, el otro le cree</strong>… y de esa confianza ciega nacen los problemas de la sección 5.</p>
+</blockquote>
+<hr>
+<h2 id="5-los-tres-fantasmas-del-vector-de-distancia"><a class="header" href="#5-los-tres-fantasmas-del-vector-de-distancia">5. Los tres fantasmas del vector de distancia</a></h2>
+<p>Acá está el corazón de por qué existen los protocolos de estado de enlace: las enfermedades del vector de distancia. Cuando entendés estas tres, entendés TODA la historia del routing.</p>
+<h3 id="51-fantasma-1--count-to-infinity-contar-hasta-el-infinito"><a class="header" href="#51-fantasma-1--count-to-infinity-contar-hasta-el-infinito">5.1. Fantasma 1 — Count to Infinity (contar hasta el infinito)</a></h3>
+<p><strong>El escenario:</strong> R1 conoce la red A (distancia 0). R2 la conoce a 1, R3 a 2. <strong>El enlace de R1 se cae.</strong></p>
+<p><strong>Qué pasa en un DV naif:</strong></p>
+<pre><code class="language-text">1. R1 ya no tiene la red A... pero R2 LE CUENTA: "Yo tengo la A a distancia 1."
+2. R1 creé (confianza ciega) y piensa: "Entonces yo la tengo a 1 + 1 = 2, por R2."
+   → ¡R1 "recuperó" una red que se le cayó, por un rumor que vino de él mismo!
+   (R2 le había aprendido la A a R1, y ahora se la devuelve como si fuera propia)
+3. R2 recibe el rumor de R1: "la A a 2". Piensa: "Entonces yo a 2 + 1 = 3."
+4. R1 recibe: "la A a 3". → "Yo a 4." R2 a 5...
+</code></pre>
+<p><strong>El número crece de a 1 en cada ida y vuelta: la red “cuenta hasta el infinito”.</strong> Cada ronda, la distancia sube. Los paquetes a la red A quedan <strong>rebotando entre R1 y R2 en un bucle</strong>, y los routers no se dan cuenta de que la red murió.</p>
+<p>Para cortarlo se usa un límite: en RIP, <strong>16 = infinito</strong>: cuando la distancia llega a 16, la ruta se declara inalcanzable y se borra. Pero llegar a 16 <strong>tarda</strong> (16 rondas × 30 segundos = ¡8 minutos de bucle!). Esa es la “convergencia lenta” del DV.</p>
+<blockquote>
+<p><strong>Analogía:</strong> el vecino “amable” que devuelve un objeto que perdiste… sin saber que el objeto lo habías dejado en su casa. “¿Buscás la pelota? Yo la vi, está en tu casa.” → “Ah, si está en mi casa, gracias… espera, ¡yo la tenía!” El objeto (los datos) da vueltas entre las dos casas mientras discuten quién la tiene.</p>
+</blockquote>
+<h3 id="52-fantasma-2--split-horizon-horizonte-dividido"><a class="header" href="#52-fantasma-2--split-horizon-horizonte-dividido">5.2. Fantasma 2 — Split Horizon (horizonte dividido)</a></h3>
+<p><strong>El remedio número 1:</strong> regla simple que evita el caso más común del count to infinity.</p>
+<blockquote>
+<p><strong>Regla del split horizon: “Nunca le cuentes a un vecino lo que aprendiste DE ESE vecino.”</strong></p>
+</blockquote>
+<pre><code class="language-text">R2 aprendió la red A de R1 → R2 NO le cuenta la red A de vuelta a R1.
+</code></pre>
+<p>Así, cuando el enlace de R1 a A se cae, R2 ya no le devuelve el rumor: R1 queda sin la ruta (correcto) y no arranca el conteo. El bucle R1↔R2 se evita.</p>
+<blockquote>
+<p><strong>Analogía:</strong> “no le devuelvas la pelota a quien te la prestó”: si la pelota se la dieron a vos en custodia, no la “recomiendes” de vuelta a la misma persona como si fuera tuya.</p>
+</blockquote>
+<p>Andá a la configuración real en el laboratorio: RIP la aplica automáticamente.</p>
+<h3 id="53-fantasma-3--route-poisoning-y-hold-down-envenenar-y-aguantar"><a class="header" href="#53-fantasma-3--route-poisoning-y-hold-down-envenenar-y-aguantar">5.3. Fantasma 3 — Route Poisoning y Hold-Down (envenenar y aguantar)</a></h3>
+<p><strong>Route poisoning:</strong> cuando un router detecta que una red murió, en lugar de quedarse callado (o mentir), <strong>“envenena” la ruta: la anuncia con distancia 16 (infinita)</strong>. Es la forma de decir “ESTA RED ESTÁ MUERTA, no me la devuelvan”. Los vecinos, al ver 16, la marcan inalcanzable.</p>
+<p><strong>Hold-down (timer de espera):</strong> el vecino receptor no “dropea” la ruta al instante: la mantiene en estado “sospechosa” durante un tiempo (timer). Mientras el timer corre, <strong>ignora rumores de otros vecinos</strong> que digan que la ruta volvió a la vida con métrica peor que la anterior. Así se evita que un rumor “viento en popa” reintroduzca una red que recién se cayó (por si realmente está viva pero tambaleando, y que se estabilice).</p>
+<blockquote>
+<p><strong>La idea detrás:</strong> el routing de los 80 era un mundo de enlaces que se caían y volvían. El hold-down es “no cambiés de opinión cada 5 segundos”: esperá, aguantá, y recién después aceptá el nuevo estado. Equilibra estabilidad contra velocidad.</p>
+</blockquote>
+<h3 id="54-el-resumen-de-los-fantasmas"><a class="header" href="#54-el-resumen-de-los-fantasmas">5.4. El resumen de los fantasmas</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Fantasma</th><th>Problema</th><th>Remedio</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Count to infinity</strong></td><td>Ruta muerta “revive” por rumores propios y el número sube hasta el infinito</td><td>Límite de hop (en RIP, 16 = infinito)</td></tr>
+<tr><td><strong>Bucle de ida y vuelta</strong></td><td>R1↔R2 devolviéndose la misma ruta</td><td><strong>Split horizon</strong>: no devolver lo aprendido de ese vecino</td></tr>
+<tr><td><strong>Cambios bruscos indecisos</strong></td><td>Ruta que muere y “revive” por rumores nuevos</td><td><strong>Route poisoning</strong> (anunciar 16) + <strong>hold-down timer</strong></td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Mensaje clave:</strong> estos tres fantasmas NO son “bugs de RIP”: son las limitaciones lógicas de pensar “por rumores”. Cualquier protocolo de distancia va a chocar con ellos. La historia del routing es, literalmente, la historia de los ingenieros tratando de curar estas enfermedades… hasta que alguien propuso “y si en vez de rumores, dibujamos el mapa”. Ese “alguien” es el estado de enlace, sección 7.</p>
+</blockquote>
+<hr>
+<h2 id="6-rip-el-abuelo-que-todavía-se-estudia"><a class="header" href="#6-rip-el-abuelo-que-todavía-se-estudia">6. RIP: el abuelo que todavía se estudia</a></h2>
+<h3 id="61-la-ficha-técnica"><a class="header" href="#61-la-ficha-técnica">6.1. La ficha técnica</a></h3>
+<p><strong>RIP</strong> (<em>Routing Information Protocol</em>) es el protocolo dinámico más viejo que sigue vigente (RFC 1058, 1988; nacido en los 80). Es el ejemplo canónico de vector de distancia:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Característica</th><th>Valor</th></tr>
+</thead>
+<tbody>
+<tr><td>Familia</td><td>Vector de distancia puro</td></tr>
+<tr><td>Métrica</td><td><strong>Hop count</strong> (saltos)</td></tr>
+<tr><td>Límite</td><td><strong>15 saltos máx.</strong> (16 = infinito)</td></tr>
+<tr><td>Envío de updates</td><td>Cada <strong>30 segundos</strong>, tabla completa</td></tr>
+<tr><td>AD</td><td>120</td></tr>
+<tr><td>Puerto</td><td>UDP 520</td></tr>
+<tr><td>Entorno real</td><td>Redes chicas o legado; hoy casi no se usa en producción</td></tr>
+</tbody>
+</table>
+</div>
+<p>Su límite de 15 saltos no es un capricho: es la consecuencia de la sección 5 (el conteo al infinito necesita un tope alcanzable-pronto). Una red con más de 15 routers… RIP no la ve entera.</p>
+<h3 id="62-ripv1-vs-ripv2-la-historia-en-dos-versiones"><a class="header" href="#62-ripv1-vs-ripv2-la-historia-en-dos-versiones">6.2. RIPv1 vs RIPv2: la historia en dos versiones</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Característica</th><th>RIPv1</th><th>RIPv2</th></tr>
+</thead>
+<tbody>
+<tr><td>Año</td><td>1988</td><td>1994 (actualización)</td></tr>
+<tr><td>Clase completa / VLSM</td><td><strong>NO</strong>: no envía máscara (clases puras; no entiende subredes variable)</td><td><strong>SÍ</strong>: envía máscara (VLSM y CIDR)</td></tr>
+<tr><td>Envío</td><td>Broadcast</td><td><strong>Multicast</strong> (224.0.0.9)</td></tr>
+<tr><td>Autenticación</td><td>No</td><td>Sí (texto claro o MD5)</td></tr>
+<tr><td>Elegir para estudiar</td><td>Solo contexto histórico</td><td>Es el que verías configurado</td></tr>
+</tbody>
+</table>
+</div>
+<p>Configuración (por si la ves en un laboratorio):</p>
+<pre><code class="language-cisco">R1(config)# router rip
+R1(config-router)# version 2
+R1(config-router)# network 192.168.1.0
+R1(config-router)# network 10.0.0.0
+R1(config-router)# no auto-summary
+</code></pre>
+<blockquote>
+<p><strong>Ojo con <code>network</code> en RIP:</strong> a diferencia de OSPF, acá <code>network</code> identifica las redes que RIP va a ANUNCIAR (las redes conectadas), no “en qué área participar”. RIP asume que sabés cuáles son tus redes. Es un detalle que confunde a todos cuando migran de RIP a OSPF.</p>
+</blockquote>
+<h3 id="63-por-qué-se-estudia-rip-si-ya-no-se-usa"><a class="header" href="#63-por-qué-se-estudia-rip-si-ya-no-se-usa">6.3. Por qué se estudia RIP si “ya no se usa”</a></h3>
+<p>Respuesta honesta y corta: <strong>para entender los problemas que OSPF vino a resolver.</strong> Cada característica “rara” de RIP (15 saltos, conteo al infinito, split horizon, updates cada 30 s) es la razón de existir de algo en los protocolos modernos:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Límite de RIP</th><th>Lo que explica en el mundo moderno</th></tr>
+</thead>
+<tbody>
+<tr><td>15 saltos</td><td>Por qué las redes grandes necesitan protocolos que no cuenten saltos</td></tr>
+<tr><td>Updates cada 30 s</td><td>Por qué OSPF usa “incrementales” (solo avisás cuando algo cambia)</td></tr>
+<tr><td>Count to infinity</td><td>Por qué se inventó el estado de enlace (cada router calcula con el mapa)</td></tr>
+<tr><td>Hop count</td><td>Por qué OSPF/EIGRP usan métricas que consideran el ancho de banda</td></tr>
+</tbody>
+</table>
+</div>
+<p>No le dediques más de una tarde. Cuando veas OSPF, agradecé que no es RIP.</p>
+<hr>
+<h2 id="7-link-state-aprender-dibujando-el-mapa"><a class="header" href="#7-link-state-aprender-dibujando-el-mapa">7. Link-State: aprender dibujando el mapa</a></h2>
+<h3 id="71-la-idea-revolucionaria"><a class="header" href="#71-la-idea-revolucionaria">7.1. La idea revolucionaria</a></h3>
+<p>Los protocolos de <strong>estado de enlace</strong> (link-state) cambian el paradigma por completo. En vez de rumores (“yo conozco la red X a distancia N”), cada router publica <strong>la verdad sobre SU pedacito</strong> y todos arman el mapa completo:</p>
+<blockquote>
+<p><strong>La idea madre del link-state:</strong> cada router construye <strong>una base de datos idéntica a la de los demás</strong>: el mapa COMPLETO de la red. Sobre ese mapa, cada router calcula SOLO el mejor camino hacia cada destino. Nadie “le cree a un rumor”: todos ven el mismo dibujo.</p>
+</blockquote>
+<h3 id="72-las-piezas-del-link-state-memorizá-estas-cuatro"><a class="header" href="#72-las-piezas-del-link-state-memorizá-estas-cuatro">7.2. Las piezas del link-state (memorizá estas cuatro)</a></h3>
+<pre><code class="language-text">Router
+  │ 1. SALUDO: encuentra vecinos (Hello)
+  ▼
+LSA  ← "Link-State Advertisement": la "publicación" de cada router:
+        "Yo, R3, estoy conectado a R2 (costo 1) y a R4 (costo 5). Eso es todo."
+  │ 2. FLOODING: cada LSA se COPIA a todos (inundación controlada, hop a hop)
+  ▼
+LSDB  ← Link-State Database: la colección de TODOS los LSA = el MAPA COMPLETO
+        (idéntica en todos los routers del área)
+  │ 3. SPF: cada router calcula el árbol de caminos
+  ▼
+Tabla de enrutamiento
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Pieza</th><th>Qué es</th><th>Analogía</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Hello</strong></td><td>Paquete de saludo: descubrir vecinos y mantenerlos vivos</td><td>El “¿seguís ahí?” del protocolo</td></tr>
+<tr><td><strong>LSA</strong></td><td>La declaración de cada router: qué enlaces tiene y a qué costo</td><td>La ficha que cada oficina publica: “mis rutas y sus peajes”</td></tr>
+<tr><td><strong>LSDB</strong></td><td>La colección de todos los LSA = el mapa</td><td>El mapa nacional completo, armado con las fichas de todos</td></tr>
+<tr><td><strong>SPF</strong></td><td>El cálculo del mejor camino sobre el mapa</td><td>El GPS que calcula la ruta óptima mirando el mapa</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Analogía completa:</strong> cada ciudad publica un cartel: “Yo estoy conectada a Córdoba (ruta nacional 9) y a Rosario (autopista).” El estado publica todos los carteles en el boletín oficial. Con el boletín, cada intendente traza el mapa de TODO el país y calcula la mejor ruta a cualquier ciudad. <strong>Todos usan el mismo boletín → todos dibujan el mismo mapa → todos calculan bien.</strong></p>
+</blockquote>
+<h3 id="73-flooding-la-inundación-controlada"><a class="header" href="#73-flooding-la-inundación-controlada">7.3. Flooding: la inundación controlada</a></h3>
+<p>Cuando un router publica su LSA (porque encendió, o algo cambió), esa publicación tiene que llegar a TODOS los routers del área. El mecanismo es el <strong>flooding</strong>:</p>
+<pre><code class="language-text">R3 publica su LSA
+  → se lo manda a R2 y R4
+  → R2 se lo manda a R1 (y a los demás que conozca)
+  → R1 se lo manda a todo el mundo que aún no lo tenga
+  → cuando un router recibe un LSA que YA tiene, lo descarta (inundación finita)
+</code></pre>
+<p>Cada router, al recaerle el LSA, <strong>lo guarda en su LSDB, lo registra (lo marca como visto) y lo reenvía</strong> a todos menos al que se lo mandó. La inundación está <strong>controlada</strong> por dos cosas: cada LSA tiene un número de secuencia (si ya lo tenés, no lo copiás) y un timer de vida (expira y se borra).</p>
+<blockquote>
+<p><strong>La belleza del flooding:</strong> cuando R3 publica un cambio (un enlace se cayó), en <strong>segundos</strong> TODOS los routers tienen el cambio en su LSDB. Nadie necesita “contar hasta 16”. La red entera se entera a la vez. Eso es convergencia rápida.</p>
+</blockquote>
+<h3 id="74-por-qué-esto-cura-los-fantasmas-del-dv"><a class="header" href="#74-por-qué-esto-cura-los-fantasmas-del-dv">7.4. Por qué esto cura los fantasmas del DV</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Fantasma del DV</th><th>Por qué el link-state NO lo tiene</th></tr>
+</thead>
+<tbody>
+<tr><td>Count to infinity</td><td>No hay “rumores”: si el enlace de R1 se cae, R1 publica SU verdad (un LSA nuevo: “ya no tengo ese enlace”). Todos lo ven y recalculan</td></tr>
+<tr><td>Bucle de ida y vuelta</td><td>El SPF calcula sobre el mapa COMPLETO: nunca va a elegir “volver al que te contó” porque VE el circuito completo</td></tr>
+<tr><td>Confianza ciega</td><td>No hay confianza ciega: es TU LSA (el tuyo real) el que se propaga, no un rumor distorsionado por cada salto</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>El precio, porque todo tiene precio:</strong> el link-state consume más CPU (cada router corre SPF) y más memoria (guarda la LSDB entera). Y necesita que toda la red esté <strong>sincronizada</strong>: si dos routers tienen LSDB distintas, calculan caminos distintos y pueden armar bucles. Por eso divide las redes en <strong>áreas</strong> (lo vas a ver en OSPF multi-área): para que las LSDB no crezcan al infinito.</p>
+</blockquote>
+<hr>
+<h2 id="8-el-algoritmo-spf-dijkstra-en-cristiano"><a class="header" href="#8-el-algoritmo-spf-dijkstra-en-cristiano">8. El algoritmo SPF: Dijkstra en cristiano</a></h2>
+<h3 id="81-qué-es"><a class="header" href="#81-qué-es">8.1. Qué es</a></h3>
+<p>El <strong>SPF</strong> (<em>Shortest Path First</em>) es el algoritmo que cada router de estado de enlace corre sobre su LSDB para calcular el mejor camino a cada destino. Su nombre técnico es <strong>algoritmo de Dijkstra</strong> (Edsger Dijkstra, 1959).</p>
+<p>No hace falta programarlo: hace falta entender LA idea, porque es la misma que usás vos cuando elegís una ruta:</p>
+<blockquote>
+<p><strong>Dijkstra en cristiano: “desde donde estoy, mirá el vecino con el costo total más barato, marcá ese camino como resuelto, extendé la mirada, repetí.”</strong> Al final tenés el <strong>árbol de caminos más cortos</strong> desde TU router hacia todos los demás.</p>
+</blockquote>
+<h3 id="82-el-ejemplo-paso-a-paso"><a class="header" href="#82-el-ejemplo-paso-a-paso">8.2. El ejemplo paso a paso</a></h3>
+<p>Topología (los números son costos de enlace):</p>
+<pre><code class="language-text">         R2
+       1/  \2
+      /     \
+    R1       R4
+      \     /
+       3\  /1
+         R3
+</code></pre>
+<p>Querés los caminos más cortos desde R1:</p>
+<pre><code class="language-text">PASO 1: R1 mira sus vecinos directos:
+        → a R2 cuesta 1 ← el más barato hasta ahora
+        → a R3 cuesta 3
+        CAMINO RESUELTO: R1→R2 (costo 1)
+
+PASO 2: desde R2 (ya resuelto), extiende la mirada:
+        → R2→R4 cuesta 2  → R1→R4 total = 1 + 2 = 3
+        → a R3 seguía en 3 directo
+        Empate entre R1→R3 (3) y R1→R2→R4 (3): el SPF elige uno (desempata)
+        CAMINO RESUELTO: R1→R3 (3) o R1→R2→R4 (3)
+
+PASO 3: desde R3 o R4, se extiende y se verifica:
+        → R3→R4 cuesta 1: R1→R3→R4 = 3 + 1 = 4 → PEOR que R1→R2→R4 (3). Se descarta.
+        → R4→R3 cuesta 1: R1→R2→R4→R3 = 1+2+1 = 4 → PEOR que R1→R3 (3). Se descarta.
+</code></pre>
+<p><strong>Resultado final (el árbol SPF de R1):</strong></p>
+<pre><code class="language-text">R1 → R2 (costo 1)
+R1 → R3 (costo 3)
+R1 → R2 → R4 (costo 3)
+</code></pre>
+<p>Fijate lo importante: <strong>R1 calculó el camino a R4 a través de R2 aunque R3 “queda más cerca en el dibujo”</strong> — porque sumó los costos reales. El SPF no adivina: calcula con el mapa.</p>
+<blockquote>
+<p><strong>La garantía del SPF:</strong> sobre una LSDB correcta, el algoritmo SIEMPRE encuentra el camino de costo mínimo. No hay “tal vez”, no hay “fluke de rumor”: es matemática. Por eso el link-state puede afirmar “yo elijo la mejor ruta” y por eso OSPF (que usa SPF) tiene una métrica basada en el costo real de los enlaces.</p>
+</blockquote>
+<h3 id="83-costo-del-enlace-el-input-del-spf"><a class="header" href="#83-costo-del-enlace-el-input-del-spf">8.3. Costo del enlace: el input del SPF</a></h3>
+<p>El SPF necesita que cada enlace tenga un <strong>costo</strong>. Ese costo lo define cada protocolo:</p>
+<ul>
+<li>En <strong>OSPF</strong>: <code>100 Mbps ÷ ancho de banda</code> (el costo es menor en enlaces más rápidos). Lo ves a fondo con OSPF avanzado.</li>
+<li>En <strong>IS-IS</strong>: historically una métrica de 10 por defecto (también customizable).</li>
+<li>El administrador puede <strong>sobreescribir</strong> el costo a mano (<code>ip ospf cost X</code>) — esa es la base de la “ingeniería de tráfico” del tema de redistribución.</li>
+</ul>
+<hr>
+<h2 id="9-convergencia-el-reloj-de-la-red"><a class="header" href="#9-convergencia-el-reloj-de-la-red">9. Convergencia: el reloj de la red</a></h2>
+<h3 id="91-qué-es"><a class="header" href="#91-qué-es">9.1. Qué es</a></h3>
+<p>La <strong>convergencia</strong> es el tiempo (y el proceso) que tarda toda la red en <strong>ponerse de acuerdo</strong> sobre el estado actual después de un cambio (un enlace cae, una red nace, un router se apaga).</p>
+<pre><code class="language-text">  CAMBIO ──► routers se enteran ──► recalculan ──► TODOS de acuerdo (convergido)
+              │                         │                │
+              │                         │                └── tiempo de convergencia
+              │                         └── mientras tanto: rutas viejas, hay
+              │                             paquetes perdidos o bucles temporales
+              └── nadie se entera: la red sigue con rutas muertas
+                  (el problema de la estática y del RIP con 16)
+</code></pre>
+<blockquote>
+<p><strong>Analogía:</strong> es una asamblea de vecinos decidiendo qué hacer cuando se corta la calle principal. Convergencia = el tiempo entre “se cortó la calle” y “todos los vecinos usan el desvío”. Mientras no convergen, algunos autos siguen yendo a la calle cortada.</p>
+</blockquote>
+<h3 id="92-por-qué-la-converge-importa-tanto"><a class="header" href="#92-por-qué-la-converge-importa-tanto">9.2. Por qué la converge importa tanto</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Protocolo</th><th>Convergencia típica</th><th>Por qué</th></tr>
+</thead>
+<tbody>
+<tr><td>Estáticas</td><td><strong>No converge</strong>: nadie se entera hasta que un humano interviene</td><td>No hay aviso automático</td></tr>
+<tr><td>RIP</td><td>Segundos a <strong>minutos</strong> (y a veces “contando hasta 16”)</td><td>Updates cada 30 s + conteo al infinito</td></tr>
+<tr><td>EIGRP</td><td><strong>Muy rápida</strong> (subsegundos a segundos)</td><td>DUAL: cálculo local inmediato + aviso a vecinos</td></tr>
+<tr><td>OSPF</td><td>Rápida (segundos)</td><td>Flooding inmediato del LSA + SPF local</td></tr>
+</tbody>
+</table>
+</div>
+<p>La convergencia es <strong>el reloj de la red</strong>: todo el mundo la mide y la promete, porque una red que converge lento es una red donde los paquetes se pierden cada vez que algo cambia. Y en redes de verdad, algo cambia SIEMPRE.</p>
+<hr>
+<h2 id="10-la-comparación-honesta-dv-vs-ls"><a class="header" href="#10-la-comparación-honesta-dv-vs-ls">10. La comparación honesta: DV vs LS</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Criterio</th><th>Vector de Distancia (RIP)</th><th>Estado de Enlace (OSPF/IS-IS)</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Conocimiento</strong></td><td>Solo vecinos directos y “rumores”</td><td>Mapa completo (LSDB) de toda el área</td></tr>
+<tr><td><strong>Qué se transmite</strong></td><td>Tabla completa, periódicamente (rumores)</td><td>Solo cambios (LSA), solo cuando algo cambia</td></tr>
+<tr><td><strong>Métrica</strong></td><td>Simple (hop count)</td><td>Basada en costo/ancho de banda (más realista)</td></tr>
+<tr><td><strong>Convergencia</strong></td><td>Lenta (minutos, conteo al infinito)</td><td>Rápida (segundos)</td></tr>
+<tr><td><strong>Escalabilidad</strong></td><td>Muy baja (15 saltos)</td><td>Alta (áreas lo multiplican)</td></tr>
+<tr><td><strong>Consumo de recursos</strong></td><td>Poco CPU, pero MUCHO ancho de banda (tablas enteras cada 30 s)</td><td>Poco ancho de banda (incremental), más CPU/memoria (SPF + LSDB)</td></tr>
+<tr><td><strong>Riesgos típicos</strong></td><td>Bucles y rumores</td><td>LSDB desincronizadas (por eso las áreas)</td></tr>
+<tr><td><strong>Familia de uso actual</strong></td><td>Prácticamente legado (se estudia por historia)</td><td><strong>Los protocolos serios de hoy</strong> (y de la empresa)</td></tr>
+<tr><td><strong>Ejemplos</strong></td><td>RIP, RIPv2</td><td><strong>OSPF</strong>, <strong>IS-IS</strong></td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>La conclusión de los 90:</strong> cuando las redes crecieron, el vector de distancia (puro) no dio más. El estado de enlace es el estándar de facto de las redes internas modernas. Y ojo con un dato histórico-cómic: la respuesta de Cisco no fue “cambiemos a link-state” sino <strong>EIGRP: un híbrido</strong> (vector de distancia con “inteligencia” extra: guarda más estado, calcula rutas backup antes de que fallen). Causa de interminables debates. Lo vas a ver con EIGRP; por ahora, quedate con que la clasificación “DV vs LS” tiene un tercero con sombrero: el híbrido.</p>
+</blockquote>
+<hr>
+<h2 id="11-aplicación-elegir-el-protocolo-correcto"><a class="header" href="#11-aplicación-elegir-el-protocolo-correcto">11. Aplicación: elegir el protocolo correcto</a></h2>
+<h3 id="111-la-guía-de-decisión-honesta"><a class="header" href="#111-la-guía-de-decisión-honesta">11.1. La guía de decisión honesta</a></h3>
+<p>Cuando tengas que armar una red real, este árbol te ordena las opciones:</p>
+<pre><code class="language-text">¿Cuántos routers y cuán crítica es la red?
+
+  ≤ 5 routers, topología estable
+  │   → ESTÁTICAS (sencillas, predecibles, cero protocolo)
+  │
+  Empresa/media: decenas de routers, cambios frecuentes
+  │   → OSPF (estándar abierto, multi-fabricante, área 0)
+  │   → EIGRP si TODO el parque es Cisco (mejor convergencia, menos tuning)
+  │
+  Proveedor / ISP / red gigante
+  │   → IS-IS (diseñado para dominios enormes) + BGP hacia afuera
+  │
+  Borde hacia otro operador/empresa (rutas externas)
+  → BGP (el protocolo de la interconexión entre sistemas autónomos)
+</code></pre>
+<h3 id="112-reglas-de-oro-de-diseño"><a class="header" href="#112-reglas-de-oro-de-diseño">11.2. Reglas de oro de diseño</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Regla</th><th>Por qué</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Nunca mezcles protocolos sin plan</strong></td><td>Cada protocolo anuncia aparte; la redistribución es delicada y crea loops si no se domina</td></tr>
+<tr><td><strong>La estática no es un pecado</strong></td><td>La default route estática “hacia el ISP” existe hasta en redes gigantes: lo que no escala es cientos de estáticas internas</td></tr>
+<tr><td><strong>Preferí estándares abiertos</strong></td><td>OSPF funciona en cualquier fabricante; EIGRP te ata a Cisco</td></tr>
+<tr><td><strong>Diseñá las áreas ANTES de configurar</strong></td><td>La estructura OSPF se dibuja en papel primero: áreas mal pensadas = LSDB gigantes = SPF lento</td></tr>
+<tr><td><strong>Documentá la métrica</strong></td><td>“Costos OSPF: banda de referencia X” es un dato de mantenimiento que todos necesitan cuando algo anda raro</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Regla de oro:</strong> el protocolo correcto depende del TAMAÑO y del NEGOCIO, no de tu gusto. Una oficina de 4 routers con OSPF bien diseñado es sobre-ingeniería; un campus de 80 routers con RIP es una catástrofe lenta y anunciada. “Herramienta adecuada, no herramienta favorita.”</p>
+</blockquote>
+<hr>
+<h2 id="12-qué-viene-después-el-puente-hacia-ospf"><a class="header" href="#12-qué-viene-después-el-puente-hacia-ospf">12. Qué viene después: el puente hacia OSPF</a></h2>
+<p>Este manual te dio la FUNDACIÓN conceptual. El próximo paso de la serie es convertirla en el protocolo real que vas a configurar:</p>
+<pre><code class="language-text">Enrutamiento dinámico (este): DV vs LS, LSA, LSDB, SPF, convergencia
+      │
+      ▼
+OSPFv2 — vecinos, estados y configuración
+      │   (el link-state llevado a la práctica: Hello, RID, áreas)
+      ▼
+OSPFv2 avanzado — DR/BDR, LSA en serio, multi-área, sumarización
+      ▼
+OSPFv3 e IPv6
+      ▼
+EIGRP (el híbrido) · IS-IS (el otro link-state)
+      ▼
+BGP (el mundo exterior)
+</code></pre>
+<p>Cuando llegues a OSPF, ya vas a saber por qué existe cada pieza:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Término que vas a ver en OSPF</th><th>Tu conocimiento previo de ESTE manual</th></tr>
+</thead>
+<tbody>
+<tr><td>Hello / Dead timers</td><td>La pieza “descubrimiento de vecinos” del link-state</td></tr>
+<tr><td>LSA / LSDB</td><td>Las piezas “publicación” y “mapa” que acabás de aprender</td></tr>
+<tr><td>SPF / área 0</td><td>El algoritmo Dijkstra del link-state + la solución al problema de escalabilidad</td></tr>
+<tr><td>Convergencia</td><td>El porqué de TODO el diseño de OSPF</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Consejo de estudio:</strong> si te preguntan “¿qué es OSPF?” y podés responder “un protocolo de estado de enlace que usa la LSDB y el SPF de Dijkstra para converger rápido y elegir rutas por costo”, ya aprobaste el 50% de cualquier examen. Lo demás (configurar) es práctica.</p>
+</blockquote>
+<hr>
+<h2 id="13-comprobá-lo-que-aprendiste"><a class="header" href="#13-comprobá-lo-que-aprendiste">13. Comprobá lo que aprendiste</a></h2>
+<p><strong>1. ¿Cuáles son las dos grandes familias del enrutamiento dinámico y qué las diferencia?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p><strong>Vector de distancia</strong> (RIP, EIGRP como híbrido): los routers se pasan “rumores” (destino + distancia) de vecino a vecino; nadie tiene el mapa completo. <strong>Estado de enlace</strong> (OSPF, IS-IS): cada router publica su pedacito (LSA) y todos arman la misma LSDB (mapa completo), sobre la que cada uno calcula con SPF. Rumores vs mapa colaborativo.</p>
+</details>
+<p><strong>2. ¿Qué es el count to infinity y por qué existe?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Cuando una red muere, el rumor corre: los vecinos se devuelven la ruta que aprendieron del otro (“confianza ciega”), y la distancia crece de a 1 en cada ronda hasta “infinito”. Es consecuencia de que el DV no tiene mapa: no puede darse cuenta de que la ruta murió. Se corta con un límite (RIP: 16 = infinito), pero llegara a 16 tarda (convergencia lenta). El link-state lo elimina: el LSA del router afectado declara la verdad y todos recalculan.</p>
+</details>
+<p><strong>3. ¿Qué es el split horizon?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Regla: “no le devuelvas a un vecino lo que aprendiste de ese vecino”. Evita que R1 y R2 se devuelvan la misma ruta en bucle cuando se cae la red de R1. Es un remedio barato contra el caso más común de count to infinity.</p>
+</details>
+<p><strong>4. ¿Qué es un LSA y qué es la LSDB?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>El <strong>LSA</strong> (Link-State Advertisement) es la publicación de un router: “yo estoy conectado a estos enlaces, con estos costos”. La <strong>LSDB</strong> (Link-State Database) es la colección de TODOS los LSA: el mapa completo de la red, idéntico en todos los routers del área. Sobre la LSDB, cada router corre SPF para calcular sus mejores rutas.</p>
+</details>
+<p><strong>5. ¿Qué calcula el algoritmo de Dijkstra (SPF)?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>El árbol de caminos más cortos desde el router hacia todos los destinos, sumando los costos de los enlaces según la LSDB. “Mirá el vecino con el costo total menor, marcá ese camino, extendé la mirada, repetí.” Garantiza el costo mínimo SIEMPRE, si la LSDB es correcta.</p>
+</details>
+<p><strong>6. ¿Por qué el link-state converge más rápido que el DV?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Porque ante un cambio solo se propaga el <strong>LSA del router afectado</strong> (inundación controlada, segundos) y cada uno recalcula localmente con SPF. El DV, en cambio, depende de updates periódicos (cada 30 s en RIP) y de la lenta propagación de rumores (que además puede contar hasta el infinito).</p>
+</details>
+<p><strong>7. RIP usa hop count y OSPF usa costo basado en ancho de banda. ¿Qué implica esa diferencia?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>RIP elige por cantidad de saltos aunque el camino sea lentísimo (un enlace de 2 Mbps “vale” lo mismo que uno de 10 Gbps si tienen los mismos saltos). OSPF elige por <strong>calidad del camino</strong> (menos costo = más ancho de banda), porque el SPF necesita un costo real por enlace. Es la diferencia entre “cuento pasos” y “mido el camino”.</p>
+</details>
+<p><strong>8. ¿Cuándo conviene usar estáticas, OSPF, EIGRP o IS-IS?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Estáticas: redes chicas/estables o como default route de borde. OSPF: estándar abierto para redes de empresa, cualquier fabricante. EIGRP: parque 100% Cisco que quiera convergencia rapidísima. IS-IS: dominios enormes de proveedores. BGP queda para la interconexión con otros sistemas (lo ves con BGP). El protocolo se elige por tamaño y negocio, no por gusto.</p>
+</details>
+<hr>
+<h2 id="14-glosario"><a class="header" href="#14-glosario">14. Glosario</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Término</th><th>Qué es</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Enrutamiento dinámico</strong></td><td>Los routers aprenden rutas solos, intercambiando información entre sí</td></tr>
+<tr><td><strong>Vector de distancia (DV)</strong></td><td>Familia que transmite “destino + distancia” a vecinos; nadie tiene el mapa</td></tr>
+<tr><td><strong>Estado de enlace (LS)</strong></td><td>Familia que publica el pedacito de cada router (LSA) y arma el mapa común</td></tr>
+<tr><td><strong>Híbrido</strong></td><td>EIGRP: vector de distancia con características de link-state (estado extra, rutas backup)</td></tr>
+<tr><td><strong>Hop count</strong></td><td>Métrica de RIP: cantidad de saltos; máximo 15 (16 = infinito)</td></tr>
+<tr><td><strong>Count to infinity</strong></td><td>Bucle del DV donde la métrica crece hasta el límite tras una caída</td></tr>
+<tr><td><strong>Split horizon</strong></td><td>Regla: no devolver a un vecino rutas aprendidas de ese vecino</td></tr>
+<tr><td><strong>Route poisoning</strong></td><td>Anunciar una ruta muerta con métrica infinita para que nadie la reintroduzca</td></tr>
+<tr><td><strong>Hold-down timer</strong></td><td>Espera antes de aceptar nuevos rumores sobre una ruta que acaba de caer</td></tr>
+<tr><td><strong>LSA</strong></td><td>Publicación de un router: sus enlaces y costos</td></tr>
+<tr><td><strong>LSDB</strong></td><td>Base de datos de todos los LSA: el mapa completo, idéntico entre routers</td></tr>
+<tr><td><strong>Flooding</strong></td><td>Propagación de un LSA a todos los routers (controlada por secuencia y vida)</td></tr>
+<tr><td><strong>SPF / Dijkstra</strong></td><td>Algoritmo que calcula el árbol de caminos más cortos sobre la LSDB</td></tr>
+<tr><td><strong>Convergencia</strong></td><td>Tiempo en que toda la red se pone de acuerdo tras un cambio</td></tr>
+<tr><td><strong>RIP</strong></td><td>Protocolo DV histórico (RFC 1058/2453), hop count, límite 15, AD 120</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="15-resumen-en-10-puntos"><a class="header" href="#15-resumen-en-10-puntos">15. Resumen en 10 puntos</a></h2>
+<ol>
+<li><strong>La estática no escala</strong>: 50 routers × 200 redes = miles de líneas a mano y reacción nula ante caídas. El dinámico resuelve eso: los routers se avisan y recalculan solos.</li>
+<li><strong>Todo protocolo dinámico hace tres cosas</strong>: descubrir vecinos, intercambiar información, calcular rutas. Lo que cambia es cómo.</li>
+<li><strong>DV = rumores</strong>: “destino + distancia”, de vecino en vecino, sin mapa. <strong>LS = mapa</strong>: cada router publica su pedacito (LSA) y todos arman la LSDB completa.</li>
+<li><strong>Los fantasmas del DV</strong> (count to infinity, split horizon, poisoning/hold-down) no son bugs: son la enfermedad lógica de pensar sin mapa.</li>
+<li><strong>RIP es el ejemplo DV puro</strong>: hop count, 15 saltos, updates cada 30 s. Se estudia para entender POR QUÉ existen los protocolos modernos.</li>
+<li><strong>Link-state = LSA + flooding + LSDB + SPF</strong>: publicar, inundar, juntar el mapa, calcular con Dijkstra.</li>
+<li><strong>Dijkstra en cristiano</strong>: desde tu router, seguí extendiendo la mirada por el vecino más barato; al final tenés el árbol de costos mínimos.</li>
+<li><strong>El link-state converge rápido</strong> porque solo propaga el cambio (un LSA) y cada uno recalcula local.</li>
+<li><strong>DV vs LS es una batalla por de recursos</strong>: LS gana en escalabilidad, métrica y convergencia; paga con CPU y memoria. EIGRP es el híbrido que intentó lo mejor de ambos.</li>
+<li><strong>Elegí el protocolo por tamaño y negocio, no por gusto</strong>: estáticas en chica, OSPF en empresa, EIGRP en Cisco puro, IS-IS en proveedores, BGP afuera. Y la default estática al borde es buena práctica hasta en redes enormes.</li>
+</ol>
+<hr>
+<blockquote>
+<p><strong>Fuente:</strong> Documentación propia basada en RFC 1058 (RIPv1), RFC 2453 (RIPv2), RFC 2328 (OSPFv2), RFC 1142 (IS-IS), CCNA 200-301 Official Cert Guide (W. Odom) y material educativo de redes.</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../docs/35-seleccion-de-rutas.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../docs/37-ospf-conceptos.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../docs/35-seleccion-de-rutas.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../docs/37-ospf-conceptos.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-09f2665d.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-c22b7243.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../theme/dark-6e51c595.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

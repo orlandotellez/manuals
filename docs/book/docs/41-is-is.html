@@ -1,0 +1,632 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>IS-IS - Manuales</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-0392ca55.css">
+        <link rel="stylesheet" href="../css/chrome-fc474251.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/dark-cca273e4.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "dark";
+            window.path_to_searchindex_js = "../searchindex-f7857309.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-54fda1d6.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Manuales</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="41-is-is-el-estado-de-enlace-que-los-proveedores-aman"><a class="header" href="#41-is-is-el-estado-de-enlace-que-los-proveedores-aman">41. IS-IS: El Estado de Enlace que los Proveedores Aman</a></h1>
+<p><strong>El primo de OSPF que nació en la OSI, no en Internet — y que hoy es el caballito de batalla de los grandes ISP</strong></p>
+<hr>
+<h2 id="índice"><a class="header" href="#índice">Índice</a></h2>
+<ul>
+<li><a href="#1-el-gigante-silencioso">El gigante silencioso</a></li>
+<li><a href="#2-la-historia-que-lo-explica-todo-nació-en-la-osi">La historia que lo explica todo: nació en la OSI</a></li>
+<li><a href="#3-la-ficha-técnica">La ficha técnica</a></li>
+<li><a href="#4-el-vocabulario-nuevo-is-es-y-net">El vocabulario nuevo: IS, ES y NET</a></li>
+<li><a href="#5-nivel-1-y-nivel-2-el-área-que-no-se-llama-área">Nivel 1 y Nivel 2: el “área” que no se llama área</a></li>
+<li><a href="#6-lsp-flooding-y-spf-la-maquinaria-es-la-misma-pero-distinta">LSP, flooding y SPF: la maquinaria es la misma (pero distinta)</a></li>
+<li><a href="#7-la-métrica-del-10-fijo-a-la-wide-metric">La métrica: del 10 fijo a la wide metric</a></li>
+<li><a href="#8-configuración-is-is-en-10-minutos">Configuración: IS-IS en 10 minutos</a></li>
+<li><a href="#9-verificación-cómo-preguntarle-a-la-red">Verificación: cómo preguntarle a la red</a></li>
+<li><a href="#10-is-is-vs-ospf-la-comparación-que-siempre-preguntan">IS-IS vs OSPF: la comparación que siempre preguntan</a></li>
+<li><a href="#11-los-5-errores-más-comunes">Los 5 errores más comunes</a></li>
+<li><a href="#12-comprobá-lo-que-aprendiste">Comprobá lo que aprendiste</a></li>
+<li><a href="#13-glosario">Glosario</a></li>
+<li><a href="#14-resumen-en-10-puntos">Resumen en 10 puntos</a></li>
+</ul>
+<hr>
+<h2 id="1-el-gigante-silencioso"><a class="header" href="#1-el-gigante-silencioso">1. El gigante silencioso</a></h2>
+<p>OSPF domina los libros de CCNA. Pero en las redes de los <strong>proveedores de Internet (ISP)</strong> y en los <strong>backbones de las grandes telecomunicaciones</strong>, el protocolo que más se ve (junto a BGP) tiene otro nombre: <strong>IS-IS</strong>.</p>
+<blockquote>
+<p><strong>Analogía:</strong> OSPF es el auto que aprendés a manejar en la escuela de manejo (el CCNA). IS-IS es el camión pesado que usan los profesionales del transporte: mismo código de tránsito (ambos son estado de enlace, mismo Dijkstra), pero licencia, mecánica y operación distintas — y está pensado para rutas enormes.</p>
+</blockquote>
+<p>Dato que rompe mitos: <strong>IS-IS es anterior a OSPF</strong> (nacido en los 80) y, pese a la fama de OSPF en los cursos, IS-IS ganó la batalla de los ISP por una razón técnica de fondo que vas a entender en la sección 5 (el diseño L1/L2 y su escalabilidad brutal). “Ganó el protocolo menos famoso”, y saber por qué te pone un escalón por encima del promedio.</p>
+<hr>
+<h2 id="2-la-historia-que-lo-explica-todo-nació-en-la-osi"><a class="header" href="#2-la-historia-que-lo-explica-todo-nació-en-la-osi">2. La historia que lo explica todo: nació en la OSI</a></h2>
+<p>Para entender IS-IS hay que entender su origen:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Hito</th><th>Año</th><th>Qué pasó</th></tr>
+</thead>
+<tbody>
+<tr><td>Nace el modelo OSI</td><td>1977-1980</td><td>La ISO quería su propia pila de protocolos (no TCP/IP)</td></tr>
+<tr><td>Se define IS-IS</td><td>mediados de los 80</td><td>El protocolo de enrutamiento de la pila OSI (IS = router, ES = host)</td></tr>
+<tr><td>Llega a IP</td><td>1990</td><td>Se adapta para enrutar IPv4 (RFC 1195, “Integrated IS-IS”)</td></tr>
+<tr><td>Los ISP lo adoptan</td><td>década del 90</td><td>Juniper, luego Cisco para backbones grandes: gana por escalar sin áreas “duras”</td></tr>
+<tr><td>Hoy</td><td>actualidad</td><td>El estándar de facto de los backbones de ISP; también en MPLS</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>La herencia OSI explica las rarezas</strong>: las direcciones de red (NET), la terminología (IS/ES, L1/L2, PDU) y el hecho de que IS-IS <strong>no depende de IP para funcionar</strong>: se anuncia a sí mismo sobre el enlace directamente (no usa IP ni multicast IP — usa sus propias PDUs). Esto es VENTAJA en redes MPLS y en IPv6 (no hay OSPFv2/v3, la adaptación a v6 es natural: el protocolo ya es “agnóstico”).</p>
+<blockquote>
+<p><strong>La frase que resume el porqué:</strong> “OSPF depende de IP para hablar (multicast 224.0.0.5, protocol 89); IS-IS habla su propio idioma sobre el enlace (PDU multicast a todos los routers, sin depender de direcciones IP). Tuvo una década de ventaja para escalar, y los ISP la aprovecharon.”</p>
+</blockquote>
+<hr>
+<h2 id="3-la-ficha-técnica"><a class="header" href="#3-la-ficha-técnica">3. La ficha técnica</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Característica</th><th>Valor</th></tr>
+</thead>
+<tbody>
+<tr><td>Familia</td><td><strong>Estado de enlace</strong> (link-state puro)</td></tr>
+<tr><td>Algoritmo</td><td><strong>SPF (Dijkstra)</strong></td></tr>
+<tr><td>AD</td><td><strong>115</strong> (Cisco)</td></tr>
+<tr><td>Métrica</td><td><strong>Default 10 por enlace</strong> (narrow) o <strong>wide metric</strong> (hasta 16 millones)</td></tr>
+<tr><td>Transporte</td><td><em>PDU propias</em> (OSI), <strong>no usa IP</strong>: multicast de nivel OSI a todos los routers</td></tr>
+<tr><td>LSA-equivalente</td><td><strong>LSP</strong> (Link State PDU)</td></tr>
+<tr><td>Jerarquía</td><td><strong>Nivel 1 / Nivel 2</strong> (no “áreas” con área 0)</td></tr>
+<tr><td>Requiere IP para funcionar</td><td><strong>NO</strong> (diseño OSI)</td></tr>
+<tr><td>IPv4 / IPv6</td><td>Ambas, naturalmente (mismo proceso)</td></tr>
+<tr><td>Escenario típico</td><td><strong>Backbones de ISP</strong>, redes MPLS, grandes operadores</td></tr>
+</tbody>
+</table>
+</div>
+<p>Compará con OSPF (AD 110) y notá la diferencia <strong>115 vs 110</strong>: si un router aprende la misma ruta por OSPF y por IS-IS, gana OSPF por 5 puntos. Es un dato fino de examen, pero aparece.</p>
+<hr>
+<h2 id="4-el-vocabulario-nuevo-is-es-y-net"><a class="header" href="#4-el-vocabulario-nuevo-is-es-y-net">4. El vocabulario nuevo: IS, ES y NET</a></h2>
+<p>IS-IS usa el vocabulario OSI. Son pocas piezas, pero son MANDATORIAS:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Sigla</th><th>Nombre OSI</th><th>En cristiano</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>IS</strong></td><td>Intermediate System</td><td>Un <strong>router</strong> (intermediario que reenvía)</td></tr>
+<tr><td><strong>ES</strong></td><td>End System</td><td>Un <strong>host</strong> (final, no reenvía)</td></tr>
+<tr><td><strong>NET</strong></td><td>Network Entity Title</td><td>La “dirección” del router en el mundo OSI: su DNI de nivel 3</td></tr>
+<tr><td><strong>NSAP</strong></td><td>Network Service Access Point</td><td>La dirección completa OSI (el NET es el NSAP del propio router)</td></tr>
+<tr><td><strong>LSP</strong></td><td>Link State PDU</td><td>El “LSA” de IS-IS (lo que cada router publica)</td></tr>
+<tr><td><strong>SNPA</strong></td><td>Subnetwork Point of Attachment</td><td>La dirección de capa 2 (MAC, DLCI…) del enlace</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Analogía:</strong> NET es la <strong>matrícula del router en el mundo OSI</strong>. No es una IP: es “49.0001.0000.0000.0001.00”. Cada router del área comparte la parte de área (49.0001), y la parte de sistema lo identifica a él (0000.0000.0001). Con la matrícula, los routers se reconocen y arman el mapa. Sin NET configurado, IS-IS ni arranca.</p>
+</blockquote>
+<h3 id="41-el-net-en-detalle-la-pieza-más-rara-de-la-serie"><a class="header" href="#41-el-net-en-detalle-la-pieza-más-rara-de-la-serie">4.1. El NET en detalle (la pieza más rara de la serie)</a></h3>
+<pre><code class="language-text">NET =  49.0001 . 0000.0000.0001 . 00
+       └──┬──┘   └─────┬──────┘   └┬┘
+       ID de    System ID     NSEL
+       área     (6 bytes:     (selector
+       (1-13     el "nombre"   de servicio:
+        bytes)   del router)   siempre "00"
+                              para IS-IS)
+</code></pre>
+<p>Regla de oro del NET: <strong>el System ID debe ser único</strong> en todo el dominio IS-IS. Convención (la misma del RID de OSPF, ahora en 6 bytes): el System ID es la loopback en formato “raro”: <code>0000.0000.0001</code> para R1, <code>0000.0000.0002</code> para R2… Formato: 13 dígitos en total, agrupados 3-4-4-2 (autoridad de área - system - nsel). No es complicado: es INEXORABLE — si falla el NET, no hay protocolo.</p>
+<hr>
+<h2 id="5-nivel-1-y-nivel-2-el-área-que-no-se-llama-área"><a class="header" href="#5-nivel-1-y-nivel-2-el-área-que-no-se-llama-área">5. Nivel 1 y Nivel 2: el “área” que no se llama área</a></h2>
+<h3 id="51-la-diferencia-con-ospf-que-explica-todo"><a class="header" href="#51-la-diferencia-con-ospf-que-explica-todo">5.1. La diferencia con OSPF que explica TODO</a></h3>
+<p>OSPF divide con <strong>áreas</strong>, y el área 0 (backbone) es obligatoria: un ABR pertenece a dos áreas. IS-IS NO tiene “área 0”: tiene <strong>NIVELES</strong>, y un router puede ser:</p>
+<pre><code class="language-text">L1  (Level 1)        → enrutamiento DENTRO del área (como "interno de área")
+L2  (Level 2)        → enrutamiento ENTRE áreas (como el "backbone")
+L1/L2               → ambos (como el ABR de OSPF: un pie en cada nivel)
+</code></pre>
+<p>La diferencia clave de diseño:</p>
+<pre><code class="language-text">OSPF:  un router tiene interfaces en área 0 y área 1 → ABR
+       (la LSDB de cada área viaja por sus routers)
+
+IS-IS: un L1/L2 tiene un pie en su área (L1) y el otro en el BACKBONE L2
+       (el backbone L2 es CONTINUO: se forma entre L2 y L1/L2 en todas las áreas)
+</code></pre>
+<blockquote>
+<p><strong>El backbone de IS-IS no es un área: es un “nivel” distribuido.</strong> Cualquier router L2 con otro L2 forma segmento del backbone, estén donde estén. Estructura distinta, resultado parecido: el tráfico inter-área pasa por el backbone (L2).</p>
+</blockquote>
+<h3 id="52-los-tipos-de-routers-la-tabla-que-hay-que-saber"><a class="header" href="#52-los-tipos-de-routers-la-tabla-que-hay-que-saber">5.2. Los tipos de routers (la tabla que hay que saber)</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Tipo</th><th>Qué enruta</th><th>Equivalencia OSPF (mental)</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>L1</strong></td><td>Solo su área</td><td>Internal router</td></tr>
+<tr><td><strong>L2</strong></td><td>Solo el backbone (áreas enteras entre sí)</td><td>Backbone router (área 0 puro)</td></tr>
+<tr><td><strong>L1/L2</strong></td><td>Ambos niveles</td><td><strong>ABR</strong></td></tr>
+</tbody>
+</table>
+</div>
+<p>Regla de oro del L1 (el detalle determinante): un router <strong>L1 puro</strong> enruta hacia fuera del área mediante la <strong>ruta por defecto</strong> (default) que le inyecta el L1/L2. No conoce el detalle de otras áreas: solo “para afuera, por acá”. Ese es el ahorro de estado que hace a IS-IS tan escalable — y es idéntico en espíritu a un área stub de OSPF (que viste con OSPF avanzado).</p>
+<h3 id="53-y-el-área-0-obligatoria-de-is-is"><a class="header" href="#53-y-el-área-0-obligatoria-de-is-is">5.3. ¿Y el “área 0 obligatoria” de IS-IS?</a></h3>
+<p>IS-IS <strong>no tiene área 0</strong>: tiene la exigencia de que <strong>el backbone L2 sea contiguo</strong>. Los routers L1/L2 y L2 forman una malla L2 continua a través de las áreas. Si el backbone L2 se parte en dos, las áreas quedan desconectadas en L2 (con el mismo problema de diseño de “área sin backbone” de OSPF).</p>
+<blockquote>
+<p><strong>Dato de examen que enamora:</strong> en OSPF, “área 0 obligatoria”. En IS-IS: “backbone L2 contiguo obligatorio”. Misma necesidad lógica, dos implementaciones distintas. Si te preguntan “¿IS-IS tiene área 0?” la respuesta correcta es: <strong>no, no hay área 0: el backbone es el nivel 2, y debe ser contiguo.</strong></p>
+</blockquote>
+<hr>
+<h2 id="6-lsp-flooding-y-spf-la-maquinaria-es-la-misma-pero-distinta"><a class="header" href="#6-lsp-flooding-y-spf-la-maquinaria-es-la-misma-pero-distinta">6. LSP, flooding y SPF: la maquinaria es la misma (pero distinta)</a></h2>
+<h3 id="61-las-piezas-comparadas-con-ospf"><a class="header" href="#61-las-piezas-comparadas-con-ospf">6.1. Las piezas (comparadas con OSPF)</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Pieza OSPF</th><th>Pieza IS-IS</th><th>Diferencia</th></tr>
+</thead>
+<tbody>
+<tr><td>LSA</td><td><strong>LSP</strong></td><td>Misma idea: la publicación del router. Se floode por nivel (L1 o L2)</td></tr>
+<tr><td>LSDB</td><td><strong>LSDB per level</strong></td><td>Cada nivel tiene su propia base: los L1 no ven los L2</td></tr>
+<tr><td>SPF</td><td><strong>SPF per level</strong></td><td>Se corre un SPF para L1 y otro para L2 (dos árboles)</td></tr>
+<tr><td>DR/BDR (broadcast)</td><td><strong>DIS</strong> (Designated IS)</td><td>Same idea: elegir un representante en segmentos multiacceso</td></tr>
+<tr><td>Timers Hello</td><td><strong>Hello PDU</strong> cada 10 s (broadcast)</td><td>Misma idea, otros nombres</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="62-el-detalle-de-los-dos-spf-lo-que-separa-a-los-que-entienden"><a class="header" href="#62-el-detalle-de-los-dos-spf-lo-que-separa-a-los-que-entienden">6.2. El detalle de los dos SPF (lo que separa a los que entienden)</a></h3>
+<p>En un router L1/L2 corren <strong>DOS procesos SPF</strong>: uno sobre la LSDB de nivel 1 (su área) y otro sobre la de nivel 2 (el backbone). Esa separación es parte de por qué IS-IS escala: cada nivel aísla su “mapa” y su recálculo. Cuando algo cambia en el área 1, solo los L1 de esa área recalculan el SPF L1; el resto del mundo ni se entera (su SPF L2 no cambió).</p>
+<h3 id="63-el-dis-y-por-qué-no-hay-backup"><a class="header" href="#63-el-dis-y-por-qué-no-hay-backup">6.3. El DIS (y por qué NO hay backup)</a></h3>
+<p>En un segmento broadcast, IS-IS elige un <strong>DIS</strong> (Designated Intermediate System) — el equivalente del DR de OSPF. Diferencia clave:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>DR OSPF</th><th>DIS IS-IS</th></tr>
+</thead>
+<tbody>
+<tr><td>Elige DR <strong>y BDR</strong> (backup)</td><td><strong>NO hay BDR/disaster</strong>: si el DIS muere, se reelige y punto</td></tr>
+<tr><td>Elección por prioridad + RID</td><td>Elección por prioridad + <strong>MAC/sistema ID</strong> (desempate más “físico”)</td></tr>
+<tr><td>Reelección NO preemptiva</td><td>También NO preemptiva (misma regla que en OSPF avanzado)</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>El dato fino que muchos se llevan puestos:</strong> OSPF tiene BDR (DR/BDR). IS-IS <strong>no</strong>: solo DIS. La “seguridad” del segmento broadcast no está en un backup temporal sino en que el flood de LSP es más robusto (los LSP se reenvían por CSNP/PSNP — “listados de qué tengo” periódicos que permiten resincronizar sin depender del DIS). Es otra filosofía: no “respaldo al representante”, sino “resincronizar fácil”.</p>
+</blockquote>
+<hr>
+<h2 id="7-la-métrica-del-10-fijo-a-la-wide-metric"><a class="header" href="#7-la-métrica-del-10-fijo-a-la-wide-metric">7. La métrica: del 10 fijo a la wide metric</a></h2>
+<h3 id="71-narrow-vs-wide-la-evolución"><a class="header" href="#71-narrow-vs-wide-la-evolución">7.1. Narrow vs wide (la evolución)</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Métrica</th><th>Valor por enlace</th><th>Alcance total</th><th>Cuándo</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Narrow</strong> (vieja)</td><td><strong>10 fijo</strong> por defecto (todos los enlaces cuestan lo mismo)</td><td>máx 1023</td><td>IS-IS clásico, redes chicas</td></tr>
+<tr><td><strong>Wide</strong> (moderna)</td><td>customizable (hasta <strong>16.777.215</strong> por enlace)</td><td>máx 16 millones</td><td>Redes grandes, MPLS, TE</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>La confusión clásica:</strong> en IS-IS clásico, TODOS los enlaces cuestan <strong>10</strong> por defecto — no hay “ancho de banda en la métrica” como en OSPF. Elegir rutas solo por cantidad de saltos era el default histórico (de ahí que el CCNA no lo profundice: parece “menos inteligente” que OSPF). La <strong>wide metric</strong> llegó para permitir ingeniería de tráfico de verdad (con costos finos por enlace). Si ves <code>metric-style wide</code>, es red moderna.</p>
+</blockquote>
+<h3 id="72-el-comando"><a class="header" href="#72-el-comando">7.2. El comando</a></h3>
+<pre><code class="language-text">router isis
+ metric-style wide          ← en redes modernas: SIEMPRE wide (compatible con TE/MPLS)
+</code></pre>
+<blockquote>
+<p><strong>Regla de oro práctica:</strong> si monto IS-IS hoy, <code>metric-style wide</code> y costos fino por interfaz (<code>isis metric 1000</code> sobre el enlace que quiero “achicar”). El narrow era la década del 90; no lo copies en diseño nuevo.</p>
+</blockquote>
+<hr>
+<h2 id="8-configuración-is-is-en-10-minutos"><a class="header" href="#8-configuración-is-is-en-10-minutos">8. Configuración: IS-IS en 10 minutos</a></h2>
+<h3 id="81-la-topología"><a class="header" href="#81-la-topología">8.1. La topología</a></h3>
+<pre><code class="language-text">     ÁREA 49.0001            ÁREA 49.0002
+  R1 ────── L1/L2 ──────── R2 (L2) ─────── L1/L2 ────── R3
+  (L1)        │                │                (L1)
+          R4 (L1)         R5 (L2)              R6 (L1)
+</code></pre>
+<h3 id="82-la-configuración-los-4-pasos-de-oro"><a class="header" href="#82-la-configuración-los-4-pasos-de-oro">8.2. La configuración (los 4 pasos de oro)</a></h3>
+<pre><code class="language-cisco">! PASO 1: activar el proceso y darle el NET (obligatorio — sin NET no arranca)
+router isis
+ net 49.0001.0000.0000.0001.00     ! 49 + área 0001 + system-id + 00
+ metric-style wide                  ! red moderna
+ is-type level-1                    ! (R1 es L1; el L1/L2 usa "level-1-2" que es default)
+!
+! PASO 2: cada interfaz ENTRAR al proceso
+interface GigabitEthernet0/0
+ ip address 10.0.0.1 255.255.255.252
+ ip router isis                     ! ← así la interfaz participa (no hay "network ... area")
+!
+! PASO 3: para los L1/L2, el otro lado
+! (en el router que es L1/L2, las interfaces hacia el backbone L2 también llevan "ip router isis";
+!  el nivel de la interfaz se controla con "isis circuit-type level-1/level-2/level-1-2")
+</code></pre>
+<h3 id="83-la-sintaxis-explicada-los-3-misterios-resueltos"><a class="header" href="#83-la-sintaxis-explicada-los-3-misterios-resueltos">8.3. La sintaxis explicada (los 3 misterios resueltos)</a></h3>
+<pre><code class="language-text">net 49.0001.0000.0000.0001.00
+        └┬─┘ └────┬─────┘   └┬┘
+     ID de área   System ID  NSEL (00)
+     (define el    (único por   (siempre 00
+      área del      router)      para IS-IS)
+      router)
+
+is-type level-1          ← roles:
+is-type level-2             - L1 puro: solo su área (usa default hacia afuera)
+is-type level-1-2           - L2 puro: solo backbone
+                            - L1/L2: ambos (default; no hace falta configurarlo)
+
+ip router isis           ← la interfaz entra al proceso (NO hay network X area Y)
+</code></pre>
+<blockquote>
+<p><strong>La diferencia de config que rompe costumbres:</strong> en OSPF configurás <code>network ... area</code>; en IS-IS, <strong>cada interfaz se “engancha” al proceso</strong> con <code>ip router isis</code>. Y el NET define el área — no hay un comando “área” separado: el área del router ES su NET. Por eso “cambiar de área” = cambiar el NET (y reconfigurar el neighbor).</p>
+</blockquote>
+<hr>
+<h2 id="9-verificación-cómo-preguntarle-a-la-red"><a class="header" href="#9-verificación-cómo-preguntarle-a-la-red">9. Verificación: cómo preguntarle a la red</a></h2>
+<pre><code class="language-text">R1# show isis neighbors
+
+System Id      Type  Interface   IP Address      State  Holdtime  Circuit Id
+0000.0000.0002 L2    Gi0/0       10.0.1.2        Up     9         01
+                └─ el vecino      └─ nivel de la   └─ Up = vecindad viva
+                   (system-id!)      adyacencia
+</code></pre>
+<pre><code class="language-text">R1# show ip route isis
+I L1 10.0.2.0/30 [115/20] via 10.0.1.2, 00:10:00, GigabitEthernet0/0
+│                        └── AD 115
+└─ I = IS-IS    └─ L1: dentro del área (L2 = entre áreas)
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Comando</th><th>Qué te dice</th></tr>
+</thead>
+<tbody>
+<tr><td><code>show isis neighbors</code></td><td>Vecinos por system-id, nivel y estado</td></tr>
+<tr><td><code>show isis database</code></td><td>La LSDB (LSPs): quienes publican y los sequence numbers</td></tr>
+<tr><td><code>show isis topology</code></td><td>La visión de la red desde este router</td></tr>
+<tr><td><code>show ip route isis</code></td><td>Rutas IS-IS (I = IS-IS; I L1 = intra-área, I L2 = inter-área)</td></tr>
+<tr><td><code>show clns neighbors</code></td><td>Lo mismo pero en el mundo OSI (detalle fino)</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>El código de tabla que confunde a todos:</strong> en <code>show ip route</code>, IS-IS usa la letra <strong>I</strong>… y ¡EIGRP también usaba “D”, OSPF “O”, BGP “B”, RIP “R”! No hay choque: cada letra es única. Pero OJO: la “I” de IS-IS NO es “interface”. Aprendé las letras de la tabla de enrutamiento (las viste en selección de rutas) y leés la tabla sin pensar: D = EIGRP, O = OSPF, I = IS-IS, B = BGP.</p>
+</blockquote>
+<hr>
+<h2 id="10-is-is-vs-ospf-la-comparación-que-siempre-preguntan"><a class="header" href="#10-is-is-vs-ospf-la-comparación-que-siempre-preguntan">10. IS-IS vs OSPF: la comparación que siempre preguntan</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Criterio</th><th>OSPF</th><th>IS-IS</th></tr>
+</thead>
+<tbody>
+<tr><td>Familia</td><td>Estado de enlace</td><td>Estado de enlace</td></tr>
+<tr><td>Algoritmo</td><td>SPF</td><td>SPF</td></tr>
+<tr><td>AD</td><td>110</td><td>115</td></tr>
+<tr><td>Requiere IP</td><td>Sí (multicast, protocolo 89)</td><td><strong>No</strong> (PDU OSI, agnóstico del cómputo de direcciones)</td></tr>
+<tr><td>Jerarquía</td><td>Áreas + <strong>área 0 obligatoria</strong></td><td><strong>Niveles L1/L2</strong> + backbone L2 contiguo</td></tr>
+<tr><td>Rol frontera</td><td>ABR (interfaz en 2 áreas)</td><td>L1/L2 (un pie L1, un pie L2)</td></tr>
+<tr><td>Métrica</td><td>Costo = ref/BW</td><td>Default 10 (narrow) o wide</td></tr>
+<tr><td>Representante broadcast</td><td>DR <strong>+ BDR</strong></td><td><strong>DIS sin backup</strong></td></tr>
+<tr><td>IPv6</td><td>OSPFv3 (otro proceso/familia)</td><td>Mismo proceso, natural</td></tr>
+<tr><td>Escalabilidad</td><td>Muy alta (áreas)</td><td>Muy alta (L1/L2, pensado para ISP)</td></tr>
+<tr><td>¿Dónde brilla?</td><td>Empresa, CCNA, multi-fabricante</td><td>Backbones de ISP, MPLS, Juniper/Cisco</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>La conclusión profesional:</strong> no es “cuál es mejor”: es <strong>dónde juega cada uno</strong>. En la empresa (y en el CCNA), OSPF. En un backbone de ISP con cientos de routers y MPLS encima, IS-IS (su no-dependencia de IP y su diseño L2 lo hacen excepcional ahí). Saber decir eso — con la tabla de arriba como evidencia — es más valioso que memorizar “115”.</p>
+</blockquote>
+<hr>
+<h2 id="11-los-5-errores-más-comunes"><a class="header" href="#11-los-5-errores-más-comunes">11. Los 5 errores más comunes</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>#</th><th>Error</th><th>Síntoma</th><th>Fix</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td><td><strong>Falta el NET</strong> (o NET con system-id duplicado)</td><td>IS-IS no levanta / vecindades que se pisan</td><td>NET único por router: <code>net 49.0001.0000.0000.000X.00</code></td></tr>
+<tr><td>2</td><td><strong>Falta <code>ip router isis</code> en la interfaz</strong></td><td>Proceso corriendo pero sin vecinos</td><td>“enganchar” cada interfaz: <code>ip router isis</code> (no hay <code>network</code>)</td></tr>
+<tr><td>3</td><td><strong>Narrow vs wide desalineados</strong></td><td>Vecindad que no sube (los “TLV” no matchean)</td><td><code>metric-style wide</code> igual en todo el dominio</td></tr>
+<tr><td>4</td><td><strong>Circuit-type mal</strong> (L1 donde debería L2)</td><td>Rutas inter-área ausentes</td><td><code>isis circuit-type level-2</code> en la interfaz del backbone</td></tr>
+<tr><td>5</td><td><strong>System ID mal formateado</strong> (grupos de 4)</td><td>NET inválido: no arranca</td><td>Formato 3-4-4-2: <code>49.0001.0000.0000.0001.00</code> — 13 dígitos de autoridad+system</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>El error #1 es el “sin NET no hay IS-IS”:</strong> a diferencia de OSPF (que elige RID solo), IS-IS te exige el NET a mano. Y si dos routers tienen el MISMO system-id… los LSP se pisan como con RID duplicado en OSPF (mismo síntoma, mismo remedio: unicidad absoluta).</p>
+</blockquote>
+<hr>
+<h2 id="12-comprobá-lo-que-aprendiste"><a class="header" href="#12-comprobá-lo-que-aprendiste">12. Comprobá lo que aprendiste</a></h2>
+<p><strong>1. ¿Por qué IS-IS no depende de IP para funcionar?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Porque nació en la pila OSI: usa sus propias PDUs sobre el enlace (nivel 2 directo), no multicast IP ni protocolo IP (a diferencia de OSPF con 224.0.0.5 / protocolo 89). Eso lo hace agnóstico del tipo de dirección (IPv4/IPv6/CLNS) y muy robusto en backbones — y es la razón histórica de que los ISP lo eligieran.</p>
+</details>
+<p><strong>2. ¿Qué es un NET y por qué es obligatorio?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>NET = Network Entity Title: la dirección OSI del router, formato 49.área.system-id.00. Define el área (en la porción de autoridad+área) Y la identidad (system-id, único por router). Sin NET configurado IS-IS no arranca — es su “matrícula”.</p>
+</details>
+<p><strong>3. ¿Qué son L1, L2 y L1/L2?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>L1 = enrutamiento dentro del área (usa default hacia afuera). L2 = enrutamiento entre áreas (el backbone, que debe ser contiguo). L1/L2 = ambos niveles: el equivalente del ABR de OSPF, con un pie en su área y otro en el backbone L2.</p>
+</details>
+<p><strong>4. ¿IS-IS tiene “área 0”?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>No. No existe área 0 en IS-IS: la jerarquía es por niveles y el backbone es el nivel 2 (contiguo). La exigencia equivalente a “todo toca el área 0” es “el backbone L2 debe ser contiguo”.</p>
+</details>
+<p><strong>5. ¿Qué es el DIS y en qué se diferencia del DR de OSPF?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>DIS = Designated Intermediate System: el representante del segmento broadcast (como el DR). Diferencias: NO hay BDR/backup (si muere, se reelige), el desempate es prioridad + system-id/MAC, y la resincronización se apoya en CSNP/PSNP.</p>
+</details>
+<p><strong>6. ¿Qué significa <code>metric-style wide</code>?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Usar métrica amplia (ancho): costos por enlace hasta ~16 millones (vs narrow, default 10 fijo, máx 1023). Es lo correcto en redes modernas y requisito para ingeniería de tráfico/MPLS.</p>
+</details>
+<p><strong>7. ¿Cómo se configura el área en IS-IS?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>El área está DENTRO del NET (parte de autoridad+área del NET: 49.0001, 49.0002…). No existe un comando “area” separado; y las interfaces se enganchan al proceso con <code>ip router isis</code>, no con <code>network ... area</code>.</p>
+</details>
+<p><strong>8. ¿Qué letra usa IS-IS en la tabla de rutas y qué AD tiene?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p><strong>I</strong> (I L1 = intra-área, I L2 = inter-área) y AD <strong>115</strong>. Ojo: no confundir con OSPF (O, 110) ni con EIGRP (D, 90). Detalle fino: si un router aprende la misma ruta por OSPF y IS-IS, gana OSPF por 5 puntos de AD.</p>
+</details>
+<hr>
+<h2 id="13-glosario"><a class="header" href="#13-glosario">13. Glosario</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Término</th><th>Qué es</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>IS / ES</strong></td><td>Intermediate System (router) / End System (host) — vocabulario OSI</td></tr>
+<tr><td><strong>NET</strong></td><td>Network Entity Title: la dirección OSI del router (49.área.system-id.00)</td></tr>
+<tr><td><strong>System ID</strong></td><td>Identidad de 6 bytes del router dentro del dominio (única)</td></tr>
+<tr><td><strong>L1 / L2 / L1-L2</strong></td><td>Niveles de enrutamiento: dentro del área / entre áreas (backbone) / ambos</td></tr>
+<tr><td><strong>LSP</strong></td><td>Link State PDU: el “LSA” de IS-IS</td></tr>
+<tr><td><strong>DIS</strong></td><td>Designated IS: representante del segmento broadcast (sin BDR)</td></tr>
+<tr><td><strong>CSNP/PSNP</strong></td><td>PDUs de resincronización de la LSDB (completas/parciales)</td></tr>
+<tr><td><strong>SNPA</strong></td><td>Dirección de capa 2 del enlace (MAC, etc.)</td></tr>
+<tr><td><strong>Narrow / Wide metric</strong></td><td>Métrica vieja (10 fijo, máx 1023) vs moderna (hasta 16M, para TE)</td></tr>
+<tr><td><strong>AD 115</strong></td><td>Administrative Distance de IS-IS en Cisco (vs 110 OSPF)</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="14-resumen-en-10-puntos"><a class="header" href="#14-resumen-en-10-puntos">14. Resumen en 10 puntos</a></h2>
+<ol>
+<li><strong>IS-IS es el otro link-state</strong>: mismo SPF/Dijkstra que OSPF, pero nacido en la OSI — por eso los ISP lo aman (agnóstico de IP).</li>
+<li><strong>No depende de IP</strong>: habla con PDUs propias sobre el enlace; IPv4 e IPv6 en el mismo proceso, naturalmente.</li>
+<li><strong>El NET es la matrícula</strong>: 49.área.system-id.00 — obligatorio, con system-id único por router; el área vive DENTRO del NET.</li>
+<li><strong>Jerarquía por niveles, no por áreas</strong>: L1 (intra-área), L2 (entre áreas, backbone contiguo), L1/L2 (ambos — el “ABR”).</li>
+<li><strong>Sin área 0</strong>: la exigencia equivalente es “backbone L2 contiguo”. Todos los caminos inter-área pasan por L2.</li>
+<li><strong>Dos SPF por router L1/L2</strong>: uno por LSDB de nivel — el aislamiento por nivel es parte de la escalabilidad brutal.</li>
+<li><strong>El DIS no tiene BDR</strong>: el representante del segmento broadcast se reelige si muere; la robustez la dan los CSNP/PSNP.</li>
+<li><strong>Métrica</strong>: narrow (10 fijo) en el clásico; <strong>wide</strong> (hasta 16M) para redes modernas y MPLS — usá wide.</li>
+<li><strong>Config en 4 pasos</strong>: <code>router isis</code> + <code>net</code> + <code>metric-style wide</code> + <code>ip router isis</code> en cada interfaz (no hay <code>network area</code>).</li>
+<li><strong>AD 115, letra I en la tabla</strong>: y la decisión profesional es por escenario: OSPF en la empresa, IS-IS en el backbone del ISP.</li>
+</ol>
+<hr>
+<blockquote>
+<p><strong>Fuente:</strong> Documentación propia basada en RFC 1142 (IS-IS), RFC 1195 (Integrated IS-IS), CCNA 200-301 Official Cert Guide (W. Odom), Cisco IOS Configuration Guides y material educativo de redes.</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../docs/40-eigrp.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../docs/42-bgp.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../docs/40-eigrp.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../docs/42-bgp.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-09f2665d.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-c22b7243.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../theme/dark-6e51c595.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

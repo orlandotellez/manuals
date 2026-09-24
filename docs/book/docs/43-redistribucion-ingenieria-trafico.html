@@ -1,0 +1,597 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Redistribución e ingeniería de tráfico - Manuales</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-0392ca55.css">
+        <link rel="stylesheet" href="../css/chrome-fc474251.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/dark-cca273e4.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "dark";
+            window.path_to_searchindex_js = "../searchindex-f7857309.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-54fda1d6.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Manuales</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="43-redistribución-e-ingeniería-de-tráfico"><a class="header" href="#43-redistribución-e-ingeniería-de-tráfico">43. Redistribución e Ingeniería de Tráfico</a></h1>
+<p><strong>Interconectar protocolos sin romper una red — y hacer que el tráfico vaya por donde vos querés</strong></p>
+<hr>
+<h2 id="índice"><a class="header" href="#índice">Índice</a></h2>
+<ul>
+<li><a href="#1-el-problema-una-red-con-varios-protocolos">El problema: una red con varios protocolos</a></li>
+<li><a href="#2-redistribución-qué-es-y-por-qué-es-peligrosa">Redistribución: qué es y por qué es peligrosa</a></li>
+<li><a href="#3-seed-metric-la-confusión-número-uno">Seed Metric: la confusión número uno</a></li>
+<li><a href="#4-configuración-el-comando-redistribute">Configuración: el comando redistribute</a></li>
+<li><a href="#5-route-map-el-corazón-del-control">Route-Map: el corazón del control</a></li>
+<li><a href="#6-filtrado-de-rutas-distribute-list">Filtrado de rutas: distribute-list</a></li>
+<li><a href="#7-pbr-ingeniería-de-tráfico-de-verdad">PBR: ingeniería de tráfico de verdad</a></li>
+<li><a href="#8-caso-práctico-ospf--eigrp--bgp-sin-romper-nada">Caso práctico: OSPF + EIGRP + BGP sin romper nada</a></li>
+<li><a href="#9-los-6-errores-más-comunes-de-redistribución">Los 6 errores más comunes de redistribución</a></li>
+<li><a href="#10-comprobá-lo-que-aprendiste">Comprobá lo que aprendiste</a></li>
+<li><a href="#11-glosario">Glosario</a></li>
+<li><a href="#12-resumen-en-10-puntos">Resumen en 10 puntos</a></li>
+</ul>
+<hr>
+<h2 id="1-el-problema-una-red-con-varios-protocolos"><a class="header" href="#1-el-problema-una-red-con-varios-protocolos">1. El problema: una red con varios protocolos</a></h2>
+<p>Hasta ahora cada manual te mostró un protocolo en su “mundo ideal”: toda la red corriendo OSPF, o todo EIGRP, o todo RIP. En la vida real NO es así:</p>
+<ul>
+<li>Comprás una empresa que ya tenía OSPF y vos usás EIGRP.</li>
+<li>Dos empresas se fusionan y cada una tenía su protocolo.</li>
+<li>Un ISP te da BGP pero tu red interna sigue con OSPF.</li>
+<li>Un proveedor de voz usa RIP para una VLAN que nadie quiere tocar.</li>
+</ul>
+<blockquote>
+<p><strong>El problema: los protocolos NO se hablan entre sí.</strong> Una ruta aprendida por OSPF no aparece en la tabla de EIGRP automáticamente. Son idiomas distintos: cada uno tiene sus propias métricas, sus propios timers y sus propias reglas. Que un router corra dos protocolos no conecta las redes: solo significa que habla dos idiomas pero no TRADUCE entre ellos.</p>
+</blockquote>
+<p><strong>Analogía madre:</strong> pensá en contratar a dos traductores para un evento internacional. OSPF traduce del alemán; EIGRP del francés. Si no hay nadie parado entre los dos que pase las frases de uno al otro, los invitados alemanes no entienden nada de los franceses. Ese traductor es la <strong>redistribución</strong>.</p>
+<hr>
+<h2 id="2-redistribución-qué-es-y-por-qué-es-peligrosa"><a class="header" href="#2-redistribución-qué-es-y-por-qué-es-peligrosa">2. Redistribución: qué es y por qué es peligrosa</a></h2>
+<p><strong>Redistribuir</strong> es tomar las rutas aprendidas por un protocolo (o las estáticas, o las conectadas) y <strong>inyectarlas al otro protocolo</strong> como si fueran propias. El router de frontera traduce: “estas rutas que sé por OSPF, ahora las anuncio por EIGRP”.</p>
+<pre><code class="language-text">            AS interno (EIGRP)              AS interno (OSPF)
+     ┌──────────────────────────┐   ┌──────────────────────────┐
+     │  R1 ──── R2 ──── R3      │   │  R4 ──── R5 ──── R6      │
+     │       (EIGRP 90)         │   │       (OSPF 110)         │
+     └───────────┬──────────────┘   └───────────┬──────────────┘
+                 │ R2 = REDISTRIBUTOR           │ R4 = REDISTRIBUTOR
+                 └───────────────►◄─────────────┘
+                          (R2 y R4 son el mismo router
+                           físico en el mundo real)
+</code></pre>
+<p><strong>El riesgo: el bucle de redistribución (feedback loop).</strong></p>
+<pre><code class="language-text">[1] R2 aprende 10.0.0.0/8 por EIGRP        → lo redistribuye a OSPF
+[2] R2 vuelve a aprender 10.0.0.0/8 por OSPF (LEL! yo se la mandé)
+[3] R2 la vuelve a redistribuir a EIGRP... → ¡y así hasta el infinito!
+</code></pre>
+<p>Cada protocolo tiene su protección contra bucles (split horizon, SPF, AS-PATH) <strong>PERO SOLO DENTRO DE SÍ MISMO</strong>. La redistribución cruza las fronteras: EIGRP no sabe que esa ruta vino de OSPF que la recibió de EIGRP. El resultado es la <strong>inestabilidad</strong>: convergencias eternas, flapping, CPU al máximo y una red que “late” sin parar.</p>
+<blockquote>
+<p><strong>La regla de oro de la redistribución (memorizala):</strong> NUNCA redistribuyas en ambos sentidos sin filtros. La redistribución bidireccional SIN control es el bug más grave y más común de las redes reales. Todo protocolo redistribuido hacia afuera DEBE estar filtrado para que lo que sale jamás vuelva a entrar por la otra puerta.</p>
+</blockquote>
+<p><strong>La segunda regla</strong>: la métrica de “destino” le da igual al protocolo de “origen”. Por eso existe la <strong>seed metric</strong> (métrica semilla): la métrica con la que el protocolo receptor recibe la ruta redistribuida. Ahí está la confusión número uno del tema, y va en la próxima sección.</p>
+<hr>
+<h2 id="3-seed-metric-la-confusión-número-uno"><a class="header" href="#3-seed-metric-la-confusión-número-uno">3. Seed Metric: la confusión número uno</a></h2>
+<p>Cuando un protocolo recibe una ruta redistribuida, no tiene forma de calcular su métrica (¡esa ruta no la descubrió él!). Entonces usa un valor por defecto llamado <strong>seed metric</strong>. Y acá está la trampa clásica:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Protocolo receptor</th><th>Seed metric por defecto</th><th>Resultado de anunciarla “tal cual”</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>RIP</strong></td><td>infinito (16)</td><td>¡La ruta NO se anuncia (inalcanzable)!</td></tr>
+<tr><td><strong>OSPF</strong></td><td>20 (tipo E2)</td><td>Se anuncia con costo 20 fijo (no importa el enlace)</td></tr>
+<tr><td><strong>EIGRP</strong></td><td><strong>¡no tiene!</strong></td><td>Si no definís la métrica, <strong>no se redistribuye nada</strong> (silencioso)</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Podés apreciar el chiste:</strong> RIP por defecto redistribuye con 16 = inalcanzable <a href="./36-enrutamiento-dinamico.html">en el tema de enrutamiento dinámico</a>. OSPF la redistribuye con 20 sin mirar el enlace. Y EIGRP <strong>se queda mudo</strong> si no le das una métrica manual. Tres protocolos, tres comportamientos distintos, todos “correctos según su spec” — y todos rompen algo si no sabés qué esperabas.</p>
+</blockquote>
+<p><strong>La sintaxis que arregla cada uno:</strong></p>
+<pre><code class="language-text">! RIP — la seed metric se define al redistribuir
+router rip
+ redistribute ospf 1 metric 2          ! la recibe con métrica 2 (hops)
+
+! OSPF — seed metric 20 por defecto; la cambiás con metric o metric-type
+router ospf 1
+ redistribute eigrp 100 subnets         ! sin 'subnets' solo redistribuye classful
+ redistribute eigrp 100 metric 50      ! la recibe con costo 50
+ redistribute eigrp 100 metric-type 1  ! E1 (costo = seed + costo de tráfico)
+
+! EIGRP — OBLIGATORIO definir la métrica (los 5 componentes)
+router eigrp 100
+ redistribute ospf 1 metric 10000 100 255 1 1500
+ !                              BW   delay  reli  load MTU
+</code></pre>
+<blockquote>
+<p><strong>HACELO VOS (la regla mental):</strong> cuando redistribuís, preguntate SOLO UNA cosa: <strong>“¿con qué métrica va a entrar al protocolo receptor?”</strong>. Si no la definiste, OSPF le pone 20, RIP le pone 16 (¡muerta!) y EIGRP no redistribuye NADA. La seed metric es EL primer lugar donde mirar cuando “no aparece la ruta”.</p>
+</blockquote>
+<hr>
+<h2 id="4-configuración-el-comando-redistribute"><a class="header" href="#4-configuración-el-comando-redistribute">4. Configuración: el comando redistribute</a></h2>
+<h3 id="41-afuera-de-qué-podés-redistribuir"><a class="header" href="#41-afuera-de-qué-podés-redistribuir">4.1. Afuera de qué podés redistribuir</a></h3>
+<p>Dentro de cualquier protocolo (en modo configuración del proceso), el comando es:</p>
+<pre><code class="language-text">redistribute {ospf | eigrp | rip | static | connected | bgp} [opciones]
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Fuente</th><th>Qué trae</th><th>Ejemplo</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>static</strong></td><td>Tus rutas estáticas (vistas en <a href="./34-enrutamiento-ip-rutas-estaticas.html">enrutamiento IP</a>)</td><td><code>redistribute static</code></td></tr>
+<tr><td><strong>connected</strong></td><td>Las subredes conectadas directo al router</td><td><code>redistribute connected</code></td></tr>
+<tr><td><strong>ospf 1</strong></td><td>El proceso OSPF que corre en este router</td><td><code>redistribute ospf 1 subnets</code></td></tr>
+<tr><td><strong>eigrp 100</strong></td><td>El proceso EIGRP</td><td><code>redistribute eigrp 100</code></td></tr>
+<tr><td><strong>rip</strong></td><td>El proceso RIP</td><td><code>redistribute rip</code></td></tr>
+<tr><td><strong>bgp 65001</strong></td><td>El proceso BGP (cuidado: ¡arrastra todo el AS!)</td><td><code>redistribute bgp 65001</code></td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="42-los-parámetros-que-siempre-tenés-que-mirar"><a class="header" href="#42-los-parámetros-que-siempre-tenés-que-mirar">4.2. Los parámetros que siempre tenés que mirar</a></h3>
+<pre><code class="language-text">redistribute ospf 1 subnets            ← OSPF: sin 'subnets' solo redistribuye classful.
+                                          (Clásico: "redistribuí y solo aparecen las /8 o /16")
+redistribute ospf 1 metric 30          ← la seed metric con que entra
+redistribute ospf 1 metric-type 1      ← OSPF: E1 suma el costo de tráfico; E2 (default) no
+redistribute eigrp 100 metric 10000 100 255 1 1500  ← EIGRP: ¡obligatoria y completa!
+redistribute static route-map FILTRO   ← ¡Y la pieza que falta: el filtro! (sección 5)
+</code></pre>
+<blockquote>
+<p><strong>El reflejo profesional que tenés que entrenar:</strong> SIEMPRE que veas un <code>redistribute</code> sin <code>route-map</code> al lado, tu sexto sentido tiene que encenderse. Redistribuir sin filtrar es abrir la canilla de toda tu tabla al otro protocolo. A veces es lo que querés… y a veces es el feedback loop del que hablamos (sección 2).</p>
+</blockquote>
+<hr>
+<h2 id="5-route-map-el-corazón-del-control"><a class="header" href="#5-route-map-el-corazón-del-control">5. Route-Map: el corazón del control</a></h2>
+<h3 id="51-la-idea-un-semáforo-con-ficha"><a class="header" href="#51-la-idea-un-semáforo-con-ficha">5.1. La idea: un “semáforo con ficha”</a></h3>
+<p>Un <strong>route-map</strong> es una lista ordenada de reglas que decide <strong>qué rutas pasan, qué rutas se rechazan y qué atributos se les cambia</strong>. Trabaja con dos bloques:</p>
+<pre><code class="language-text">route-map NOMBRE permit|deny SECUENCIA
+ match &lt;condición&gt;        ← qué rutas tomamos en cuenta
+ set   &lt;modificación&gt;     ← qué les cambiamos si pasan
+
+El router evalúa las secuencias DE ARRIBA HACIA ABAJO:
+- Si una ruta MATCHEA una secuencia permit  → pasa (y puede tener 'set')
+- Si matchea una deny                        → queda afuera (no sigue evaluando)
+- Si no matchea ninguna                      → DENY implícito al final (¡se cae!)
+</code></pre>
+<blockquote>
+<p><strong>Analogía:</strong> el route-map es el boliche: el de la puerta (match) chequea la lista (IPs, next-hop, AS-PATH…). Si matchea, entra (permit) y le ponen un sello (set). Si matchea un deny, no entra. Y si la lista no lo menciona… tampoco entra: <strong>deny implícito</strong>. La trampa clásica: armar un route-map permit y olvidar que las rutas no listadas se caen.</p>
+</blockquote>
+<h3 id="52-el-ejemplo-de-oro-controlar-una-redistribución"><a class="header" href="#52-el-ejemplo-de-oro-controlar-una-redistribución">5.2. El ejemplo de oro: controlar una redistribución</a></h3>
+<pre><code class="language-text">! Solo dejo pasar las redes del bloque 10.x hacia OSPF
+access-list 1 permit 10.0.0.0 0.255.255.255   ! ACL de ORIGENES (wildcard, visto en selección de rutas)
+
+route-map ENTRADA-OSPF permit 10
+ match ip address 1                 ! solo rutas con origen 10.x
+ set metric-type type-1             ! y que entren como E1 (suma costo)
+
+route-map ENTRADA-OSPF deny 20      ! (opcional: explícito, para documentar)
+! (deny implícito al final: todo lo demás NO entra)
+
+router ospf 1
+ redistribute eigrp 100 subnets route-map ENTRADA-OSPF
+</code></pre>
+<blockquote>
+<p><strong>HACELO VOS:</strong> la ruta de pensamiento correcta: (1) ACL que define “cuáles me interesan”, (2) route-map que las deja pasar y/o les cambia atributos, (3) el <code>redistribute ... route-map</code>. El route-map SIN el ACL no matchea nada (vacío) y el ACL sin route-map no se aplica. Los dos van siempre juntos hacia el redistribute.</p>
+</blockquote>
+<hr>
+<h2 id="6-filtrado-de-rutas-distribute-list"><a class="header" href="#6-filtrado-de-rutas-distribute-list">6. Filtrado de rutas: distribute-list</a></h2>
+<p>El route-map controla la redistribución (lo que ENTRA a otro protocolo). Pero a veces querés algo más simple: <strong>que el protocolo simplemente no anuncie o no acepte ciertas rutas</strong>. Ahí van las <strong>distribute-list</strong>: una ACL que se aplica dentro del proceso:</p>
+<pre><code class="language-text">! No anunciar la 172.16.0.0/16 por EIGRP hacia vecinos
+access-list 5 deny   172.16.0.0 0.0.255.255
+access-list 5 permit any
+
+router eigrp 100
+ distribute-list 5 out              ! filtra lo que SALE por EIGRP
+ distribute-list 5 in               ! filtra lo que ENTRA del vecino EIGRP
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Dirección</th><th>Qué filtra</th></tr>
+</thead>
+<tbody>
+<tr><td><code>distribute-list X in</code></td><td>Las rutas que RECIBE el router por ese protocolo</td></tr>
+<tr><td><code>distribute-list X out</code></td><td>Las rutas que ANUNCIA (out en redistribución = filtra lo redistribuido)</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>No confundas:</strong> distribute-list filtra rutas (anuncios); route-map filtra Y modifica (set). Si solo querés cortar, ACL + distribute-list. Si querés controlar una redistribución o cambiar atributos, route-map. El 90% de las veces que redistribuís, el route-map es la herramienta — el distribute-list queda para recortes puntuales dentro de un solo protocolo.</p>
+</blockquote>
+<hr>
+<h2 id="7-pbr-ingeniería-de-tráfico-de-verdad"><a class="header" href="#7-pbr-ingeniería-de-tráfico-de-verdad">7. PBR: ingeniería de tráfico de verdad</a></h2>
+<h3 id="71-el-problema-que-pbr-resuelve"><a class="header" href="#71-el-problema-que-pbr-resuelve">7.1. El problema que PBR resuelve</a></h3>
+<p>TODO lo que viste hasta acá decide la ruta mirando el <strong>destino</strong>. El router dice: “para llegar a X, salgo por Y”. Pero la vida real pregunta cosas que el destino no responde:</p>
+<ul>
+<li>“El tráfico de la VPN de contabilidad va por la línea MPLS; el resto por Internet.”</li>
+<li>“El tráfico de voz viaja por el enlace dedicado, sin importar el destino.”</li>
+<li>“Desde la sucursal de Buenos Aires, todo sale por el enlace de 10 Gbps; desde Córdoba, por el otro.”</li>
+</ul>
+<p>Eso NO se puede con las tablas de rutas clásicas. Se puede con <strong>Policy-Based Routing (PBR)</strong> — enrutamiento basado en política: <strong>“según ESTE tráfico (origen, puerto, tamaño…), mandalo por AQUELLA salida”</strong>.</p>
+<h3 id="72-la-sintaxis-una-configuración-tres-partes"><a class="header" href="#72-la-sintaxis-una-configuración-tres-partes">7.2. La sintaxis (una configuración, tres partes)</a></h3>
+<pre><code class="language-text">! 1) route-map con match de TRÁFICO (no de rutas como en redistribución)
+access-list 101 permit tcp any any eq 8080    ! tráfico HTTP(s) — ¡ojo! ACL extendida
+
+route-map RUTEO-VOZ permit 10
+ match ip address 101                 ! el tráfico que matchea...
+ set ip next-hop 10.0.0.1             ! ...se mandaa este next-hop (¡fuerza el camino!)
+
+! 2) aplicar el route-map EN LA INTERFAZ (no en un proceso!)
+interface GigabitEthernet0/0
+ ip policy route-map RUTEO-VOZ
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Parte</th><th>Dónde</th><th>Qué hace</th></tr>
+</thead>
+<tbody>
+<tr><td>ACL extendida</td><td>global</td><td>Define QUÉ tráfico (origen, destino, puerto)</td></tr>
+<tr><td>route-map con <code>set ip next-hop</code></td><td>global</td><td>Define A DÓNDE mandarlo además de políticamente</td></tr>
+<tr><td><code>ip policy route-map</code></td><td><strong>interfaz</strong></td><td>Activa PBR en esa entrada: ¡el tráfico que ENTRA por ahí se evalúa contra la política!</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>HACELO VOS (la diferencia que todos confunden):</strong> <strong>redistribución = qué RUTAS entro a otro protocolo</strong>; <strong>PBR = qué TRÁFICO mando por otro camino</strong>. El route-map de redistribución matchea RUTAS (con <code>match ip address</code> sobre ACL estándar de distribución). El route-map de PBR matchea TRÁFICO (con ACL extendida, puertos incluidos) y se aplica EN LA INTERFAZ, no en un proceso. Dos usos del mismo comando, dos mundos distintos.</p>
+</blockquote>
+<hr>
+<h2 id="8-caso-práctico-ospf--eigrp--bgp-sin-romper-nada"><a class="header" href="#8-caso-práctico-ospf--eigrp--bgp-sin-romper-nada">8. Caso práctico: OSPF + EIGRP + BGP sin romper nada</a></h2>
+<h3 id="81-la-red"><a class="header" href="#81-la-red">8.1. La red</a></h3>
+<pre><code class="language-text">          AS 65001 (TU empresa)
+┌─────────┬─────────────────────────────┬─────────┐
+│  OSPF   │      EIGRP (núcleo)         │   OSPF  │
+│  área 0 │                            │  área 0 │
+│ R1 ─ R2 ── R3 (REDISTRIBUTOR) ── R4 ── R5      │
+│         (R3 redistribuye OSPF↔EIGRP)            │
+│   │                                           │
+│   └── R6 (BORDER) ── eBGP ── R7 (ISP)          │
+└────────────────────────────────────────────────┘
+</code></pre>
+<h3 id="82-configuración-segura-los-principios-en-acción"><a class="header" href="#82-configuración-segura-los-principios-en-acción">8.2. Configuración segura (los principios en acción)</a></h3>
+<pre><code class="language-text">! R3 — el redistributor central (la pieza delicada del sistema)
+
+! 1) SOLO un sentido de redistribución por protocolo (evita feedback):
+!    OSPF → EIGRP: todas (necesitamos que EIGRP conozca el área 0)
+router eigrp 100
+ redistribute ospf 1 metric 10000 100 255 1 1500   ! seed metric COMPLETA (obligación EIGRP)
+
+! 2) EIGRP → OSPF: SOLO el núcleo, filtrando para no reinyectar lo ya redistribuido
+access-list 10 permit 10.0.0.0 0.255.255.255      ! nuestras redes, nada más
+access-list 10 deny any                           ! (explicito, por documentación)
+route-map SOLO-NUCLEO permit 10
+ match ip address 10
+router ospf 1
+ redistribute eigrp 100 subnets route-map SOLO-NUCLEO metric 30 metric-type 1
+
+! 3) BGP solo en el borde: nada de redistribución masiva a BGP
+router bgp 65001
+ network 10.0.0.0 mask 255.0.0.0      ! (BGP: solo prefijos ya en la tabla)
+ neighbor 198.51.100.2 remote-as 65002
+</code></pre>
+<h3 id="83-la-verificación-del-caso"><a class="header" href="#83-la-verificación-del-caso">8.3. La verificación del caso</a></h3>
+<pre><code class="language-text">R3# show ip route | include ^D|^O|^B
+D     10.1.0.0/16 [90/768000] via 10.0.0.4        ← EIGRP (90) core
+O E1  10.2.0.0/16 [110/50] via 10.0.0.1           ← OSPF externa, E1 (costo suma)
+B     203.0.113.0/24 [20/0] via 198.51.100.2      ← eBGP del ISP
+</code></pre>
+<blockquote>
+<p><strong>Los tres principios del caso (los vas a ver en TODO diseño sano):</strong> (1) seed metric definida en cada salto [“cómo entra”], (2) route-map en cada redistribución [“qué entra”], (3) una sola dirección de flujo por par [“por qué no entra de vuelta”]. Si respetás esos tres, la redistribución no te muerde.</p>
+</blockquote>
+<hr>
+<h2 id="9-los-6-errores-más-comunes-de-redistribución"><a class="header" href="#9-los-6-errores-más-comunes-de-redistribución">9. Los 6 errores más comunes de redistribución</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>#</th><th>Error</th><th>Síntoma</th><th>Fix</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td><td><strong>EIGRP sin seed metric</strong></td><td>La ruta no aparece: EIGRP no redistribuye nada en silencio</td><td><code>redistribute ospf 1 metric BW delay reli load MTU</code></td></tr>
+<tr><td>2</td><td><strong>RIP redistribuye con seed 16</strong></td><td>La ruta aparece… como inalcanzable (¡la anuncia muerta!)</td><td><code>redistribute ospf 1 metric 2</code></td></tr>
+<tr><td>3</td><td><strong>OSPF sin <code>subnets</code></strong></td><td>Solo aparecen las redes classful (/8, /16, /24 “puras”)</td><td><code>redistribute eigrp 100 subnets</code></td></tr>
+<tr><td>4</td><td><strong>Redistribución bidireccional sin filtro</strong></td><td>Flapping, CPU al máximo, rutas que “respiran” (feedback loop, sección 2)</td><td>route-map o distribute-list cortando el retorno</td></tr>
+<tr><td>5</td><td><strong>Route-map sin ACL (o sin deny implícito en mente)</strong></td><td>Nada pasa o TODO pasa</td><td>Unir ACL + route-map; recordá el deny implícito final</td></tr>
+<tr><td>6</td><td><strong>PBR aplicado en la interfaz equivocada</strong></td><td>La política “no funciona” (se aplica al tráfico que ENTRA por esa interfaz)</td><td><code>ip policy route-map</code> en la interfaz de entrada correcta</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>El error #4 es el que muerde de verdad:</strong> una red “inestable” que nadie entiende por qué late. Mirá los dos sentidos de redistribución: si A→B y B→A están activos sin filtro, tenés el loop. El fix clásico: <strong>redistribuir A→B completo y B→A filtrado</strong> (solo rutas propias de B), nunca los dos completos.</p>
+</blockquote>
+<hr>
+<h2 id="10-comprobá-lo-que-aprendiste"><a class="header" href="#10-comprobá-lo-que-aprendiste">10. Comprobá lo que aprendiste</a></h2>
+<p><strong>1. ¿Qué es la redistribución y por qué es peligrosa?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Es tomar rutas aprendidas por un protocolo e inyectarlas a otro (traducción entre idiomas de routing). Es peligrosa porque cada protocolo protege SUS bucles pero no los ajenos: la redistribución bidireccional sin filtros crea el feedback loop (rutas que van y vuelven eternamente, flapping e inestabilidad).</p>
+</details>
+<p><strong>2. ¿Qué es la seed metric y cuál es el comportamiento por defecto de RIP, OSPF y EIGRP?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Es la métrica con la que el protocolo receptor recibe una ruta redistribuida (no la calculó él). RIP: 16 (¡inalcanzable!); OSPF: 20 (E2); EIGRP: no tiene — si no la definís, NO redistribuye (en silencio).</p>
+</details>
+<p><strong>3. ¿Qué hace el <code>subnets</code> en la redistribución a OSPF?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Sin <code>subnets</code>, OSPF solo redistribuye rutas classful (las “limpias” /8, /16, /24 por defecto). Con <code>subnets</code>, redistribuye cualquier prefijo con máscara (VLSM). Clásico: “redistribuí y solo aparecen algunas redes”.</p>
+</details>
+<p><strong>4. Route-map de redistribución vs route-map de PBR: ¿en qué se diferencian?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>El de redistribución matchea RUTAS (ACL estándar, origenes) y se aplica en <code>redistribute ... route-map</code>. El de PBR matchea TRÁFICO (ACL extendida con puertos) y se aplica en la INTERFAZ con <code>ip policy route-map</code>. Ambos usan match/set, pero el objeto (rutas vs tráfico) y el lugar de aplicación (proceso vs interfaz) cambian.</p>
+</details>
+<p><strong>5. ¿Por qué la redistribución bidireccional necesita filtros?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Porque la protección de bucle de cada protocolo no cruza fronteras: EIGRP no sabe que la ruta que recibe por OSPF salió de él. Sin filtro, la ruta entra por A, sale por B, vuelve a entrar por A… ciclo infinito (feedback loop). Se corta filtrando el retorno (solo rutas propias del otro lado).</p>
+</details>
+<p><strong>6. ¿Qué matchea un route-map y qué pasa si una ruta no matchea NINGUNA secuencia?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Matchea según las <code>match</code> de cada secuencia (origen de ACL, next-hop, tag, etc.). Si no matchea ninguna secuencia, cae en el <strong>deny implícito al final</strong>: NO pasa. Es la trampa clásica: armar solo secuencias permit y sorprenderse de que “algo no entra”.</p>
+</details>
+<p><strong>7. ¿Con qué seed metric entra una ruta redistribuida a RIP? ¿Y qué significa eso para tu red?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Con 16 = inalcanzable: RIP anuncia la ruta redistribuida como muerta. Hay que definirla con <code>metric</code> al redistribuir (<code>redistribute ospf 1 metric 2</code>, por ejemplo). Sin eso, la ruta “aparece” pero nadie la usa.</p>
+</details>
+<p><strong>8. ¿Dónde se aplica <code>ip policy route-map</code> y sobre qué tráfico actúa?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>En una INTERFAZ, y actúa sobre el tráfico que ENTRA por esa interfaz (no sobre el que sale). Se evalúa contra el route-map: si matchea, se fuerza el <code>set ip next-hop</code> u otras acciones. Si no matchea, se rutea normalmente.</p>
+</details>
+<hr>
+<h2 id="11-glosario"><a class="header" href="#11-glosario">11. Glosario</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Término</th><th>Qué es</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Redistribución</strong></td><td>Inyectar rutas de un protocolo (o estáticas/conectadas) a otro, traduciendo entre idiomas de routing</td></tr>
+<tr><td><strong>Seed metric</strong></td><td>La métrica con que el protocolo receptor recibe la ruta redistribuida (RIP 16, OSPF 20/E2, EIGRP sin valor)</td></tr>
+<tr><td><strong>Feedback loop</strong></td><td>Bucle de redistribución: la ruta entra por A, sale por B y vuelve a entrar — inestabilidad eterna</td></tr>
+<tr><td><strong>Route-map</strong></td><td>Secuencias match/set con permit/deny: filtra Y modifica rutas (redistribución) o tráfico (PBR)</td></tr>
+<tr><td><strong>Deny implícito</strong></td><td>Al final de todo route-map: lo que no matchea ninguna secuencia, NO pasa</td></tr>
+<tr><td><strong>Distribute-list</strong></td><td>Filtrar anuncios de rutas (in/out) con una ACL dentro de un proceso</td></tr>
+<tr><td><strong>PBR</strong></td><td>Policy-Based Routing: enrutar por política (qué tráfico va por dónde), no por destino</td></tr>
+<tr><td><strong><code>subnets</code></strong></td><td>Parámetro OSPF para redistribuir prefijos no classful (VLSM)</td></tr>
+<tr><td><strong>E1 / E2</strong></td><td>Métricas de rutas externas OSPF: E1 suma el costo de tráfico; E2 (default) no</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="12-resumen-en-10-puntos"><a class="header" href="#12-resumen-en-10-puntos">12. Resumen en 10 puntos</a></h2>
+<ol>
+<li><strong>Los protocolos no se hablan</strong>: OSPF, EIGRP, RIP y BGP tienen idiomas distintos (métricas, timers, reglas) — la redistribución es la traducción.</li>
+<li><strong>La seed metric decide cómo entra</strong>: RIP 16 (muerta), OSPF 20 (E2), EIGRP sin métrica = no redistribuye.</li>
+<li><strong>Redistribuir sin filtros es abrir la canilla</strong>: el feedback loop (rutas que vuelven) es el bug más grave de redes reales.</li>
+<li><strong>EIGRP exige la métrica completa</strong>: <code>redistribute ospf 1 metric BW delay reli load MTU</code> (5 componentes).</li>
+<li><strong>OSPF y el <code>subnets</code></strong>: sin él, solo redistribuye classful — la trampa de “faltan redes”.</li>
+<li><strong>Route-map = semáforo con ficha</strong>: match (condición) + set (modificación) + permit/deny, evaluados de arriba hacia abajo.</li>
+<li><strong>El deny implícito te espera al final</strong>: lo que no matchea ninguna secuencia, no pasa.</li>
+<li><strong>Distribute-list filtra anuncios</strong> (in/out dentro de un proceso); route-map filtra Y modifica.</li>
+<li><strong>PBR ≠ redistribución</strong>: la primera fuerza TRÁFICO por política (en la interfaz, ACL extendida); la segunda mueve RUTAS entre protocolos.</li>
+<li><strong>El diseño sano de redistribución</strong>: seed metric definida + route-map en cada salto + una sola dirección de flujo por par. Respetá los tres y la red no te muerde.</li>
+</ol>
+<hr>
+<blockquote>
+<p><strong>Fuente:</strong> Documentación propia basada en CCNA 200-301 Official Cert Guide (W. Odom), Cisco IOS Configuration Guides (redistributing routing protocols, route-maps, PBR), RFC 2453 (RIP-2), RFC 2328 (OSPFv2), RFC 4271 (BGP-4) y material educativo de redes.</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../docs/42-bgp.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../docs/44-troubleshooting-routing.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../docs/42-bgp.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../docs/44-troubleshooting-routing.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-09f2665d.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-c22b7243.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../theme/dark-6e51c595.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,561 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Troubleshooting de routing - Manuales</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-0392ca55.css">
+        <link rel="stylesheet" href="../css/chrome-fc474251.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/dark-cca273e4.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "dark";
+            window.path_to_searchindex_js = "../searchindex-f7857309.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-54fda1d6.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Manuales</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="44-troubleshooting-de-routing"><a class="header" href="#44-troubleshooting-de-routing">44. Troubleshooting de Routing</a></h1>
+<p><strong>La metodología que convierte el caos en un diagnóstico — cuando la red no responde, vos sí sabés qué mirar</strong></p>
+<hr>
+<h2 id="índice"><a class="header" href="#índice">Índice</a></h2>
+<ul>
+<li><a href="#1-el-problema-la-red-no-anda-y-nadie-sabe-por-qué">El problema: la red “no anda” y nadie sabe por qué</a></li>
+<li><a href="#2-la-metodología-síntoma--hipótesis--verificación">La metodología: síntoma → hipótesis → verificación</a></li>
+<li><a href="#3-el-árbol-de-diagnóstico-7-preguntas-en-orden">El árbol de diagnóstico: 7 preguntas en orden</a></li>
+<li><a href="#4-los-comandos-show-que-resuelven-todo">Los comandos show que resuelven TODO</a></li>
+<li><a href="#5-troubleshooting-por-protocolo">Troubleshooting por protocolo</a></li>
+<li><a href="#6-el-caso-real-resuelto-de-no-hay-internet-a-la-causa-raíz">El caso real resuelto: de “no hay internet” a la causa raíz</a></li>
+<li><a href="#7-los-10-síntomas-clásicos-y-su-causa">Los 10 síntomas clásicos y su causa</a></li>
+<li><a href="#8-herramientas-ping-traceroute-y-la-lectura-de-sus-misterios">Herramientas: ping, traceroute y la lectura de sus misterios</a></li>
+<li><a href="#9-comprobá-lo-que-aprendiste">Comprobá lo que aprendiste</a></li>
+<li><a href="#10-glosario">Glosario</a></li>
+<li><a href="#11-resumen-en-10-puntos">Resumen en 10 puntos</a></li>
+</ul>
+<hr>
+<h2 id="1-el-problema-la-red-no-anda-y-nadie-sabe-por-qué"><a class="header" href="#1-el-problema-la-red-no-anda-y-nadie-sabe-por-qué">1. El problema: la red “no anda” y nadie sabe por qué</a></h2>
+<p>Llegaste a este manual con toda la teoría de routing encima: estáticas, RIP, OSPF, EIGRP, IS-IS, BGP, redistribución. Ahora llega el día que a todos les toca: <strong>algo no funciona</strong>. El usuario dice “no tengo internet”, el jefe dice “la VPN no responde”, y vos tenés 20 comandos en la cabeza pero por dónde empezar.</p>
+<blockquote>
+<p><strong>El error número uno del troubleshooting</strong> no es técnico, es de método: <strong>tirar comandos al azar</strong> (“a ver si con <code>show run</code> aparece algo…”). Eso funciona una de cada diez veces, y pierde horas. El profesional no es el que conoce más comandos: es el que <strong>reduce el espacio de búsqueda con método</strong> hasta que la causa raíz queda expuesta.</p>
+</blockquote>
+<p><strong>La analogía del médico:</strong> el médico no te receta a ciegas. Te pregunta, te toca, te manda análisis PRIMERO (historia clínica), y recién después hipótesis y tratamiento. El troubleshooting es medicina de redes: anamnesia (¿qué cambió?), signos vitales (ping, show), análisis dirigido (show ip route/protocols), y el diagnóstico con evidencia.</p>
+<hr>
+<h2 id="2-la-metodología-síntoma--hipótesis--verificación"><a class="header" href="#2-la-metodología-síntoma--hipótesis--verificación">2. La metodología: síntoma → hipótesis → verificación</a></h2>
+<p>El método completo tiene 5 pasos — y son SIEMPRE los mismos, para cualquier falla:</p>
+<pre><code class="language-text">PASO 1 — REPRODUCIR Y ACOTAR
+   ¿Qué falla exactamente? ¿Desde cuándo? ¿A quién le afecta (uno o todos)?
+   ¿Qué cambió hace poco? (¡la pregunta de oro! 90% de las veces alguien tocó algo)
+
+PASO 2 — DIVIDIR LA RED EN CAPAS
+   Aplicación → Transporte → Red (routing) → Enlace → Física
+   ¿El problema es de ruteo o estoy buscando en el piso equivocado?
+   (Si no hay link, no hay ruteo que valga: primero el enlace.)
+
+PASO 3 — HIPÓTESIS (en orden de probabilidad)
+   La más probable primero. NUNCA "todas a la vez".
+
+PASO 4 — VERIFICAR CADA HIPÓTESIS CON EVIDENCIA
+   Un comando show, un ping, un traceroute. La hipótesis se confirma o se descarta
+   con DATOS, no con intuición.
+
+PASO 5 — ARREGLAR Y VERIFICAR
+   Aplicás el fix, comprobás que el síntoma desapareció y que NO rompiste otra cosa.
+</code></pre>
+<blockquote>
+<p><strong>HACELO VOS (la regla del diagnóstico profesional):</strong> antes de tocar CUALQUIER configuración, formulá en voz alta la hipótesis y el comando que la confirma. Si no podés decir “si pasa X, <code>show ip route</code> me va a mostrar Y”, todavía no diagnosticaste: estás adivinando. El diagnóstico termina cuando tenés la <strong>evidencia</strong> que conecta causa y efecto.</p>
+</blockquote>
+<hr>
+<h2 id="3-el-árbol-de-diagnóstico-7-preguntas-en-orden"><a class="header" href="#3-el-árbol-de-diagnóstico-7-preguntas-en-orden">3. El árbol de diagnóstico: 7 preguntas en orden</a></h2>
+<p>Cuando algo no rutea, hay exactamente 7 lugares donde puede estar el problema. Recorrelos EN ORDEN, sin saltearte:</p>
+<pre><code class="language-text">PREGUNTA                                COMANDO / PRUEBA
+─────────────────────────────────────────────────────────────────────
+1. ¿Está la interfaz prendida y con IP?  show ip interface brief
+2. ¿Tiene el enlace "up/up" y no errores? show interfaces
+3. ¿Tengo la ruta?                       show ip route &lt;destino&gt;
+4. ¿La ruta es la CORRECTA?              show ip route (AD/métrica, next-hop)
+5. ¿El next-hop es alcanzable?           ping &lt;next-hop&gt; ; show ip arp
+6. ¿El vecino/protocolo está sano?       show ip protocols / show ip ospf neighbor
+7. ¿Hay filtros/política interviniendo?  show ip access-lists / route-map / PBR
+</code></pre>
+<p>Regla de oro del árbol:</p>
+<blockquote>
+<p><strong>NUNCA saltees del 1 al 6.</strong> El error más común de todos los tiempos: sospechar del protocolo (¿estará caída la sesión OSPF?) cuando el problema era la interfaz apagada o una IP mal puesta. El enlace y la IP son la base: sin “up/up” y sin dirección, NO HAY protocolo que funcione.</p>
+</blockquote>
+<p><strong>La pregunta número 0 (la más importante de todas): ¿qué cambió?</strong>
+Si alguien tocó una config hace 40 minutos y el problema empezó hace 40 minutos… ahí está. El changelog mental (o el <code>show run</code> comparado con el backup) gana más troubleshooting que cualquier comando avanzado.</p>
+<hr>
+<h2 id="4-los-comandos-show-que-resuelven-todo"><a class="header" href="#4-los-comandos-show-que-resuelven-todo">4. Los comandos show que resuelven TODO</a></h2>
+<h3 id="41-la-tríada-base-para-cualquier-sospecha"><a class="header" href="#41-la-tríada-base-para-cualquier-sospecha">4.1. La tríada base (para cualquier sospecha)</a></h3>
+<pre><code class="language-text">show ip interface brief   ← ¿interfaces activas? ¿IPs? (¿algo está "administratively down"?)
+show ip route             ← ¿existe la ruta? ¿por qué protocolo? ¿con qué métrica?
+show running-config       ← ¿qué está configurado REALMENTE? (el que "se ve" en memoria)
+</code></pre>
+<h3 id="42-la-lectura-experta-de-show-ip-route-la-selección-de-rutas-aplicada"><a class="header" href="#42-la-lectura-experta-de-show-ip-route-la-selección-de-rutas-aplicada">4.2. La lectura experta de <code>show ip route</code> (la selección de rutas aplicada)</a></h3>
+<pre><code class="language-text">R1# show ip route 10.1.1.0
+Routing entry for 10.1.1.0/24
+  Known via "ospf 1", distance 110, metric 20   ← AD y métrica: ¿es la ruta que esperabas?
+  Last update from 10.0.0.2 on GigabitEthernet0/1
+  * 10.0.0.2, from 10.0.0.2, via GigabitEthernet0/1  ← next-hop y salida
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Campo</th><th>Qué te dice</th><th>Si es raro</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Known via</code></td><td>Protocolo que la instaló</td><td>¿EIGRP donde esperabas OSPF? Alguien redistribuyó</td></tr>
+<tr><td><code>distance</code></td><td>AD (selección de rutas)</td><td>AD 200 iBGP para una ruta interna = sospechoso</td></tr>
+<tr><td><code>metric</code></td><td>Costo/camino</td><td>¿Metric 20 fija en vez de la suma? Ruta redistribuida E2</td></tr>
+<tr><td><code>Last update</code></td><td>De dónde vino el anuncio</td><td>¿Un vecino que no esperabas?</td></tr>
+<tr><td><code>*</code></td><td>Ruta activa (usable)</td><td>Sin <code>*</code> = ruta presente pero NO en uso</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="5-troubleshooting-por-protocolo"><a class="header" href="#5-troubleshooting-por-protocolo">5. Troubleshooting por protocolo</a></h2>
+<h3 id="51-ospf-conceptos-y-avanzado"><a class="header" href="#51-ospf-conceptos-y-avanzado">5.1. OSPF (conceptos y avanzado)</a></h3>
+<pre><code class="language-text">show ip ospf neighbor     ← ¿el vecino está FULL/2WAY? (no FULL = problema)
+show ip ospf interface    ← ¿área correcta? ¿cost? ¿está en el proceso?
+show ip ospf database     ← ¿están llegando los LSA? (LSDB = la salud del área)
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Síntoma</th><th>Causa clásica</th><th>Fix</th></tr>
+</thead>
+<tbody>
+<tr><td>Vecino en EXSTART/EXCHANGE</td><td>MTU distinto entre vecinos</td><td>Igualar MTU (o eliminar el mismatch)</td></tr>
+<tr><td>Vecino pegado en estado “DOWN/ATTEMPT”</td><td>Hello/Dead timers distintos, o área distinta</td><td>Verificar <code>ip ospf hello-interval</code> / <code>area</code></td></tr>
+<tr><td>Vecino que aparece y desaparece (flapping)</td><td>Interfaz inestable o red de broadcast con máscaras distintas</td><td>Revisar física + wildcard/máscara</td></tr>
+<tr><td>Ruta con AD 110 pero “no se instala”</td><td>AD/métrica peor que la de otro protocolo (selección de rutas)</td><td>Verificar TODA la tabla, no solo OSPF</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="52-eigrp"><a class="header" href="#52-eigrp">5.2. EIGRP</a></h3>
+<pre><code class="language-text">show ip eigrp neighbors         ← ¿el vecino existe? (tabla de vecinos = tabla de salud)
+show ip eigrp topology          ← ¿hay sucesor? ¿feasible successor? ¿rutas en "passive"?
+show ip eigrp interfaces        ← ¿qué interfaces están DENTRO del proceso?
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Síntoma</th><th>Causa clásica</th><th>Fix</th></tr>
+</thead>
+<tbody>
+<tr><td>Sin vecinos</td><td>K-values distintos, o <code>passive-interface</code> mal puesta, o ASN distinto</td><td>Comparar <code>router eigrp N</code> y K-values en <code>show ip protocols</code></td></tr>
+<tr><td>Ruta en estado “Active” que no converge</td><td>Cambio de topología; DUAL esperando respuestas</td><td>Esperar (o revisar vecinos para saber quién no responde)</td></tr>
+<tr><td>Ruta EIGRP v6 sin instalar</td><td>¡El AF quedó en <code>shutdown</code>! (la trampa de EIGRPv6)</td><td><code>address-family ipv6 → no shutdown</code></td></tr>
+<tr><td>AD 90 cuando esperabas 110</td><td>Redistribución de OSPF a EIGRP (tema de redistribución)</td><td>Rastrear el redistribute con <code>show ip protocols</code></td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="53-bgp"><a class="header" href="#53-bgp">5.3. BGP</a></h3>
+<pre><code class="language-text">show ip bgp summary       ← ¿ESTABLISHED? ¿cuántos prefijos recibí? (2 columnas = TODO)
+show ip bgp neighbors X   ← ¿timer? ¿últimos errores? ¿capabilities?
+show ip bgp &lt;prefijo&gt;     ← ¿los atributos son los esperados? (LocalPref, AS-Path, MED)
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Síntoma</th><th>Causa clásica</th><th>Fix</th></tr>
+</thead>
+<tbody>
+<tr><td>Vecino en “Active” eterno</td><td>TCP 179 bloqueado, o ASN mal, o IP de sesión inalcanzable</td><td><code>show ip bgp neighbors</code> + ping al peer + revisar ACL/firewall</td></tr>
+<tr><td>ESTABLISHED con <strong>0 prefijos</strong></td><td><code>network ... mask</code> de un prefijo que NO está en la tabla (la regla de BGP)</td><td>Verificar que el prefijo exista en <code>show ip route</code></td></tr>
+<tr><td>iBGP sin rutas</td><td>Falta full mesh o <code>next-hop-self</code> (regla de BGP)</td><td>Configurar el next-hop-self en los bordes</td></tr>
+<tr><td>AS-Path raro en rutas recibidas</td><td>Redistribución masiva o filtros mal puestos (tema de redistribución)</td><td>Revisar route-maps <code>in</code>/<code>out</code> del vecino</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="6-el-caso-real-resuelto-de-no-hay-internet-a-la-causa-raíz"><a class="header" href="#6-el-caso-real-resuelto-de-no-hay-internet-a-la-causa-raíz">6. El caso real resuelto: de “no hay internet” a la causa raíz</a></h2>
+<h3 id="61-el-reporte"><a class="header" href="#61-el-reporte">6.1. El reporte</a></h3>
+<blockquote>
+<p>“Desde las 10:40, nadie en la oficina puede navegar. La red interna anda: los archivos compartidos abren, el ping al servidor de archivos funciona. Solo falla lo que sale a Internet.”</p>
+</blockquote>
+<h3 id="62-aplicando-la-metodología-miralo-conmigo-paso-a-paso"><a class="header" href="#62-aplicando-la-metodología-miralo-conmigo-paso-a-paso">6.2. Aplicando la metodología (miralo conmigo paso a paso)</a></h3>
+<pre><code class="language-text">PASO 1 — Acotar: 
+   "lo interno anda" → el problema está en la FRONTERA (o en la ruta por defecto, o en BGP).
+   ¿Qué cambió a las 10:40? → "Se tocó la config del router de borde esta mañana".
+
+PASO 2 — Capa: los usuarios internos funcionan entre sí → enlace e IP internos OK.
+   Subo a la capa de red y a la frontera.
+
+PASO 3 — Hipótesis (en orden):
+   H1: Se cayó la ruta por defecto (más probable: tocaron el borde).
+   H2: La sesión BGP con el ISP se cayó.
+   H3: Algún filtro/ACL nuevo corta la salida.
+
+PASO 4 — Verificación en orden:
+
+R-borde# show ip route 0.0.0.0
+% Network not in table                    ← ¡H1 CONFIRMADA! No hay default route.
+                  (la hipótesis 2 queda para revisar DESPUÉS: sin default,
+                   no importa si BGP está bien)
+
+[investigación de causa raíz — no arreglar el síntoma:]
+R-borde# show run | section router bgp
+router bgp 65001
+ neighbor 198.51.100.2 remote-as 65002
+R-borde# show run | include default
+                                 ← nada. ¿Dónde está la default route?
+
+[`show run` completo al borde muestra:]
+ip route 0.0.0.0 0.0.0.0 198.51.100.1
+            └── ¡el next-hop de la estática apunta a una IP que ya no existe!
+                El cambio de esta mañana: se reemplazó el router del ISP
+                y con él su direccionamiento. La estática quedó apuntando al vacío.
+
+PASO 5 — Fix y verificación:
+R-borde(config)# ip route 0.0.0.0 0.0.0.0 203.0.113.1   ← el nuevo peer del ISP
+R-borde# show ip route 0.0.0.0
+S*   0.0.0.0/0 [1/0] via 203.0.113.1      ← default OK
+R-borde# ping 8.8.8.8                     ← y el usuario ya navega.
+</code></pre>
+<blockquote>
+<p><strong>Las dos lecciones del caso:</strong> (1) el <code>show ip route</code> a la red sospechosa respondió ANTES de tocar nada — la hipótesis más barata primero; (2) el fix NO fue “recrear la estática a ciegas”: fue encontrar POR QUÉ quedó apuntando a una IP muerta (el cambio de esta mañana). Si hubieras recreado la estática con la misma IP vieja, el problema volvía a los 5 minutos. <strong>Causa raíz, no parche.</strong></p>
+</blockquote>
+<hr>
+<h2 id="7-los-10-síntomas-clásicos-y-su-causa"><a class="header" href="#7-los-10-síntomas-clásicos-y-su-causa">7. Los 10 síntomas clásicos y su causa</a></h2>
+<pre><code class="language-text">SÍNTOMA                                      CAUSA MÁS PROBABLE (en orden)
+────────────────────────────────────────────────────────────────────────
+1.  "No tengo internet"                       Ruta por defecto ausente/rota (caso 6)
+2.  "Una sola red no responde"                Falta ruta específica o enlace caído
+3.  "Va por caminos raros"                    AD/métrica con ruta rival (selección de rutas)
+4.  "La VPN no sube"                          TCP/UDP de la VPN bloqueado (o ruta de retorno)
+5.  "OSPF no levanta"                         Timers/área/MTU distinto (sección 5.1)
+6.  "EIGRP sin vecinos"                       K-values/passive-interface/ASN (sección 5.2)
+7.  "BGP Active eterno"                       TCP 179/ASN/IP de sesión (sección 5.3)
+8.  "Rutas que van y vienen"                  Feedback loop de redistribución (tema de redistribución)
+9.  "Funciona RARO": lentísimo pero ping ok   Métrica E2 fija, o enlace saturándose (o MTU)
+10. "Andaba y se rompió solo"                  Alguien tocó algo — encontrá QUIÉN (pregunta 0)
+</code></pre>
+<hr>
+<h2 id="8-herramientas-ping-traceroute-y-la-lectura-de-sus-misterios"><a class="header" href="#8-herramientas-ping-traceroute-y-la-lectura-de-sus-misterios">8. Herramientas: ping, traceroute y la lectura de sus misterios</a></h2>
+<h3 id="81-ping--la-lectura-fina-de-las-respuestas"><a class="header" href="#81-ping--la-lectura-fina-de-las-respuestas">8.1. ping — la lectura fina de las respuestas</a></h3>
+<pre><code class="language-text">Éxito RÁPIDO y estable  → ruta de ida y vuelta OK
+Éxito LENTO             → latencia alta: ¿enlace saturado? ¿MQ? ¿recorrido largo? (traceroute)
+!!!.!!!.!!!.            → paquetes que se PIERDEN intermitentemente (¿congestión? ¿duplex?)
+.UUUUU                  → destino inalcanzable en la RUTA (ruteo de ida o vuelta)
+U = destination unreachable — "alguien en el medio sabe que no hay camino"
+</code></pre>
+<h3 id="82-traceroute--la-escalera-hacia-el-problema"><a class="header" href="#82-traceroute--la-escalera-hacia-el-problema">8.2. traceroute — la escalera hacia el problema</a></h3>
+<pre><code class="language-text">R1# traceroute 8.8.8.8
+ 1  10.0.0.2       1 ms    1 ms    1 ms     ← salto 1 OK
+ 2  203.0.113.1    2 ms    1 ms    2 ms     ← salto 2 OK
+ 3  * * *                                    ← salto 3: no responde (o lo ICMP-cortan)
+ 4  8.8.8.8        5 ms    4 ms    5 ms     ← ¡no! siguió viajando OK
+
+▶ "¿Dónde se corta la escalera?": el salto donde * * * se vuelve permanente es
+  LA FRONTERA del problema:
+   - Si el propio destino sale con * * * pero es alcanzable → filtra ICMP (normal).
+   - Si se corta en un salto intermedio y NO hay más saltos → el problema está ahí
+     (o en el retorno de ese salto).
+   - Si responde con "!H" (host unreachable) en el salto 3 → el ROUTER 3 dice
+     "yo no sé llegar": problema de RUTEO en ese router... en el camino de IDA.
+</code></pre>
+<blockquote>
+<p><strong>HACELO VOS (la lectura final):</strong> <code>ping</code> te dice EL QUÉ (hay/no hay camino). <code>traceroute</code> te dice EL DÓNDE (en qué salto se corta). <code>show ip route</code> te dice EL POR QUÉ (qué regla manda el tráfico). Los tres juntos, en ese orden, convierten “no anda” en “el router X no tiene ruta de retorno hacia Y” — que ya es una causa, no un misterio.</p>
+</blockquote>
+<hr>
+<h2 id="9-comprobá-lo-que-aprendiste"><a class="header" href="#9-comprobá-lo-que-aprendiste">9. Comprobá lo que aprendiste</a></h2>
+<p><strong>1. ¿Cuál es el error número uno del troubleshooting?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Tirar comandos al azar sin método. El profesional reduce el espacio de búsqueda: reproduce, acota, formula hipótesis y las verifica con evidencia — nunca toca configuración antes de tener una hipótesis con comando de confirmación.</p>
+</details>
+<p><strong>2. ¿Cuál es la pregunta número 0 y por qué gana casi siempre?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>“¿Qué cambió?” La mayoría de los incidentes empiezan cuando alguien tocó algo (config, IP, router nuevo). Encontrar el cambio = encontrar el problema; el <code>show run</code> comparado con el backup lo expone.</p>
+</details>
+<p><strong>3. Ordená los 7 lugares donde puede estar un problema de routing.</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<ol>
+<li>Interfaz prendida + IP → 2) Enlace up/up sin errores → 3) ¿Tengo la ruta? → 4) ¿Es la ruta correcta (AD/métrica)? → 5) ¿El next-hop es alcanzable? → 6) ¿El protocolo/vecino está sano? → 7) ¿Hay filtros/política? Nunca saltearse los primeros.</li>
+</ol>
+</details>
+<p><strong>4. En <code>show ip route</code>, ¿qué indica una ruta SIN el asterisco (<code>*</code>)?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Que existe en la tabla pero NO está activa/en uso (otra ruta la está ganando por AD o métrica — tema de selección de rutas). Ver la ruta no alcanza: hay que ver cuál gana.</p>
+</details>
+<p><strong>5. BGP en “Active” eterno: ¿cuáles son las 3 causas más probables, en orden?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<ol>
+<li>TCP 179 bloqueado por ACL/firewall; 2) ASN mal en <code>remote-as</code> (no coincide con el del vecino); 3) IP de la sesión inalcanzable. Verificación: <code>show ip bgp neighbors</code> + ping al peer + revisar filtros.</li>
+</ol>
+</details>
+<p><strong>6. En el caso real del manual, ¿por qué recrear la default route a la IP vieja era el parche equivocado?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>Porque la causa raíz era el cambio del router del ISP (direccionamiento nuevo). Recrear la estática a la IP vieja arreglaba el síntoma 5 minutos… hasta darse cuenta de que esa IP ya no existe. Causa raíz, no parche.</p>
+</details>
+<p><strong>7. ¿Qué significan en ping <code>U</code>, <code>!</code> y <code>*</code>?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p><code>!</code> = respuesta (reached/time); <code>U</code> = destination unreachable (alguien en la ruta sabe que no hay camino — problema de ruteo en el medio); <code>*</code> = timeout (sin respuesta: se perdió o lo cortan). <code>U</code> persistente = ruteo; <code>*</code> persistente = firewall/filtro o enlace caído.</p>
+</details>
+<p><strong>8. ¿Por qué primero <code>ping</code> y después <code>show ip route</code>?</strong></p>
+<details>
+<summary>Ver respuesta</summary>
+<p>El <code>ping</code> te dice el QUÉ (¿hay camino o no?) en una prueba de caja negra; el <code>show ip route</code> te dice el POR QUÉ (qué regla rutea o no rutea al destino). Diagnóstico en capas: primero el hecho, después la causa.</p>
+</details>
+<hr>
+<h2 id="10-glosario"><a class="header" href="#10-glosario">10. Glosario</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Término</th><th>Qué es</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Troubleshooting</strong></td><td>Diagnóstico sistemático de fallas: reproducir, hipótesis, verificar con evidencia, arreglar y confirmar</td></tr>
+<tr><td><strong>Causa raíz</strong></td><td>El motivo ORIGINAL del fallo (no el síntoma): arreglarla evita que reaparezca</td></tr>
+<tr><td><strong>Síntoma</strong></td><td>Lo que el usuario percibe (“no hay internet”) — el diagnóstico lo conecta con causa y efecto</td></tr>
+<tr><td><strong>Show ip route</strong></td><td>La tabla de rutas: protocolo, AD, métrica, next-hop, activa (<code>*</code>)</td></tr>
+<tr><td><strong>Show ip protocols</strong></td><td>Qué protocolos corren, con qué proceso, K-values/áreas y qué interfaces</td></tr>
+<tr><td><strong>Pregunta 0</strong></td><td>“¿Qué cambió?” — la pregunta que gana la mayoría de los incidentes</td></tr>
+<tr><td><strong><code>U</code> / <code>!</code> / <code>*</code></strong></td><td>Unreachable (ruteo) / respuesta / timeout (filtro o pérdida)</td></tr>
+<tr><td><strong>Traceroute</strong></td><td>La escalera de saltos: localiza la frontera donde el camino se corta</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="11-resumen-en-10-puntos"><a class="header" href="#11-resumen-en-10-puntos">11. Resumen en 10 puntos</a></h2>
+<ol>
+<li><strong>Método antes que comandos</strong>: reproducir → acotar → capa → hipótesis → evidencia → fix → verificación.</li>
+<li><strong>La pregunta 0 manda</strong>: “¿qué cambió?” — 90% de los incidentes tienen dueño humano reciente.</li>
+<li><strong>El árbol de 7 preguntas en orden</strong>: interfaz → enlace → ruta existe → ruta correcta → next-hop → protocolo → filtros. Sin saltos.</li>
+<li><strong>La tríada base</strong>: <code>show ip interface brief</code>, <code>show ip route</code>, <code>show running-config</code>.</li>
+<li><strong><code>show ip route</code> se lee fino</strong>: AD y métrica explican el POR QUÉ; el <code>*</code> dice si está en uso.</li>
+<li><strong>OSPF</strong>: vecinos FULL, timers/área/MTU, LSDB — la salud está en <code>show ip ospf neighbor</code>.</li>
+<li><strong>EIGRP</strong>: vecinos, sucesor/FS, K-values, passive-interface — y el AF en shutdown (v6).</li>
+<li><strong>BGP</strong>: ESTABLISHED con prefijos; “ESTABLISHED con 0” = <code>network</code> del prefijo que no está en la tabla.</li>
+<li><strong>Las rutas que van y vienen</strong> = feedback loop de redistribución (tema de redistribución), siempre.</li>
+<li><strong>Causa raíz, no parche</strong>: si el fix no explica por qué se rompió, el problema va a volver. El diagnóstico termina con evidencia, no con esperanza.</li>
+</ol>
+<hr>
+<blockquote>
+<p><strong>Fuente:</strong> Documentación propia basada en CCNA 200-301 Official Cert Guide (W. Odom), Cisco IOS Troubleshooting Guide, RFC 792 (ICMP), RFC 2151 (ping/traceroute utilities) y material educativo de redes.</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../docs/43-redistribucion-ingenieria-trafico.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../docs/45-laboratorios-integradores-proyecto-final.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../docs/43-redistribucion-ingenieria-trafico.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../docs/45-laboratorios-integradores-proyecto-final.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-09f2665d.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-c22b7243.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../theme/dark-6e51c595.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

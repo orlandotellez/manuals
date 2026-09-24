@@ -59,6 +59,20 @@ Mis manuales de desarrollo
 - [MAC](./docs/22-mac-redes.md)
 - [Comandos Packet Tracer](./docs/15-comandos-packet-tracer.md)
 
+## Redes de Datos II
+- [Enrutamiento IP y Rutas Estáticas](./docs/34-enrutamiento-ip-rutas-estaticas.md)
+- [Selección de Rutas](./docs/35-seleccion-de-rutas.md)
+- [Enrutamiento Dinámico](./docs/36-enrutamiento-dinamico.md)
+- [OSPF: Conceptos y Configuración](./docs/37-ospf-conceptos.md)
+- [OSPF Avanzado: DR/BDR, LSA y Multi-Área](./docs/38-ospf-avanzado.md)
+- [OSPFv3 e IPv6](./docs/39-ospfv3-ipv6.md)
+- [EIGRP](./docs/40-eigrp.md)
+- [IS-IS](./docs/41-is-is.md)
+- [BGP](./docs/42-bgp.md)
+- [Redistribución e ingeniería de tráfico](./docs/43-redistribucion-ingenieria-trafico.md)
+- [Troubleshooting de routing](./docs/44-troubleshooting-routing.md)
+- [Laboratorios integradores y proyecto final](./docs/45-laboratorios-integradores-proyecto-final.md)
+
 ## Docker
 - [Docker Instalación](./docs/13-docker-installation.md)
 
