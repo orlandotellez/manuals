@@ -37,10 +37,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "dark";
-            window.path_to_searchindex_js = "searchindex-f7857309.js";
+            window.path_to_searchindex_js = "searchindex-2529fdaa.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-54fda1d6.js"></script>
+        <script src="toc-2ab2f46a.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -228,6 +228,10 @@
 <ul>
 <li><a href="#primeros-pasos---react-native">React Native Primeros Pasos</a></li>
 <li><a href="#manual-expo-react-native--dev-apk-debug-y-apk-release">React Native Generar Apk</a></li>
+</ul>
+<h2 id="flutter"><a class="header" href="#flutter">Flutter</a></h2>
+<ul>
+<li><a href="#flutter--neovim-instalación-y-primera-app">Flutter Generar Apk</a></li>
 </ul>
 <h2 id="matrix-synapse"><a class="header" href="#matrix-synapse">Matrix Synapse</a></h2>
 <ul>
@@ -77525,8 +77529,274 @@ pnpm expo start -c
 </li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="guía-completa-instalación-y-configuración-de-matrix-synapse-con-docker"><a class="header" href="#guía-completa-instalación-y-configuración-de-matrix-synapse-con-docker">Guía Completa: Instalación y Configuración de Matrix Synapse con Docker</a></h1>
+<h1 id="flutter--neovim-instalación-y-primera-app"><a class="header" href="#flutter--neovim-instalación-y-primera-app">Flutter + Neovim: instalación y primera app</a></h1>
+<p>Asumo Linux (o macOS/WSL). Si usás otro sistema, avisame.</p>
 <h2 id="índice-17"><a class="header" href="#índice-17">Índice</a></h2>
+<ul>
+<li><a href="#paso-1-dependencias-previas-linux">Paso 1: Dependencias previas (Linux)</a></li>
+<li><a href="#paso-2-instalar-flutter">Paso 2: Instalar Flutter</a></li>
+<li><a href="#paso-3-android-sdk-y-emulador">Paso 3: Android SDK y emulador</a></li>
+<li><a href="#paso-4-verificar">Paso 4: Verificar</a></li>
+<li><a href="#paso-5-crear-la-app-mínima">Paso 5: Crear la app mínima</a></li>
+<li><a href="#paso-6-ejecutar">Paso 6: Ejecutar</a></li>
+<li><a href="#paso-7-configurar-neovim">Paso 7: Configurar Neovim</a></li>
+<li><a href="#paso-8-compilar-la-app-para-release">Paso 8: Compilar la app para release</a>
+<ul>
+<li><a href="#camino-a-apk-para-probar-en-tu-celular">Camino A: APK para probar en tu celular</a></li>
+<li><a href="#camino-b-apk-y-aab-para-la-play-store-firma-release">Camino B: APK y AAB para la Play Store (firma release)</a></li>
+</ul>
+</li>
+<li><a href="#flujo-de-trabajo-diario">Flujo de trabajo diario</a></li>
+<li><a href="#notas">Notas</a></li>
+</ul>
+<hr>
+<h2 id="paso-1-dependencias-previas-linux"><a class="header" href="#paso-1-dependencias-previas-linux">Paso 1: Dependencias previas (Linux)</a></h2>
+<pre><code class="language-bash"># Debian/Ubuntu
+sudo apt install curl git unzip xz-utils zip libglu1-mesa clang cmake ninja-build pkg-config libgtk-3-dev
+</code></pre>
+<p>También necesitás el <strong>JDK 17 o 21</strong>. Si ya instalaste SDKMAN antes, ya lo tenés.</p>
+<h2 id="paso-2-instalar-flutter"><a class="header" href="#paso-2-instalar-flutter">Paso 2: Instalar Flutter</a></h2>
+<pre><code class="language-bash">git clone https://github.com/flutter/flutter.git -b stable ~/development/flutter
+</code></pre>
+<p>Agregalo al PATH (en <code>~/.bashrc</code> o <code>~/.zshrc</code>):</p>
+<pre><code class="language-bash">export PATH="$HOME/development/flutter/bin:$PATH"
+</code></pre>
+<pre><code class="language-bash">source ~/.bashrc
+flutter --version
+</code></pre>
+<p>El SDK de Flutter ya incluye <strong>Dart</strong> y su <strong>LSP</strong>, así que no instalás nada extra para el lenguaje.</p>
+<h2 id="paso-3-android-sdk-y-emulador"><a class="header" href="#paso-3-android-sdk-y-emulador">Paso 3: Android SDK y emulador</a></h2>
+<p>Flutter necesita el Android SDK para compilar a Android. La forma más fácil es instalar <strong>Android Studio</strong>, pero solo para que descargue el SDK y el emulador. Después editás todo en Neovim.</p>
+<ol>
+<li>Instalá Android Studio (developer.android.com/studio) y abrilo una vez.</li>
+<li>En el asistente, dejá que instale el <strong>Android SDK</strong>, las <strong>command-line tools</strong> y el <strong>emulador</strong>.</li>
+<li>En <strong>Device Manager</strong> creá un dispositivo virtual (por ejemplo un Pixel con una imagen reciente).</li>
+</ol>
+<p>Luego aceptá las licencias:</p>
+<pre><code class="language-bash">flutter doctor --android-licenses
+</code></pre>
+<p><strong>Alternativa sin emulador:</strong> conectá tu celular por USB con <strong>depuración USB</strong> activada (Ajustes → Opciones de desarrollador). Suele ser más rápido que el emulador.</p>
+<h2 id="paso-4-verificar"><a class="header" href="#paso-4-verificar">Paso 4: Verificar</a></h2>
+<pre><code class="language-bash">flutter doctor
+</code></pre>
+<p>Te muestra una checklist. Lo que necesitás en verde: <strong>Flutter</strong>, <strong>Android toolchain</strong> y un dispositivo conectado. Los avisos de Chrome, Linux desktop o Xcode podés ignorarlos si no los vas a usar. Si algo falla, el mismo comando te dice cómo arreglarlo.</p>
+<h2 id="paso-5-crear-la-app-mínima"><a class="header" href="#paso-5-crear-la-app-mínima">Paso 5: Crear la app mínima</a></h2>
+<pre><code class="language-bash">flutter create mi_app
+cd mi_app
+</code></pre>
+<p>Estructura que genera:</p>
+<pre><code>mi_app/
+├── lib/
+│   └── main.dart        ← tu código va acá
+├── android/
+├── ios/
+├── test/
+└── pubspec.yaml         ← dependencias (como package.json)
+</code></pre>
+<p>Para una plantilla más limpia que el contador de ejemplo, reemplazá <code>lib/main.dart</code> con esto:</p>
+<pre><code class="language-dart">import 'package:flutter/material.dart';
+
+void main() =&gt; runApp(const MiApp());
+
+class MiApp extends StatelessWidget {
+  const MiApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Delivery',
+      theme: ThemeData(colorSchemeSeed: Colors.red, useMaterial3: true),
+      home: const Inicio(),
+    );
+  }
+}
+
+class Inicio extends StatelessWidget {
+  const Inicio({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Restaurantes')),
+      body: ListView.builder(
+        itemCount: 20,
+        itemBuilder: (context, i) =&gt; ListTile(
+          leading: const Icon(Icons.restaurant),
+          title: Text('Restaurante ${i + 1}'),
+          subtitle: const Text('25-35 min'),
+        ),
+      ),
+    );
+  }
+}
+</code></pre>
+<h2 id="paso-6-ejecutar"><a class="header" href="#paso-6-ejecutar">Paso 6: Ejecutar</a></h2>
+<p>Con el emulador abierto o el celular conectado:</p>
+<pre><code class="language-bash">flutter devices     # lista los dispositivos disponibles
+flutter run
+</code></pre>
+<p>Para abrir el emulador desde terminal:</p>
+<pre><code class="language-bash">flutter emulators
+flutter emulators --launch &lt;id_del_emulador&gt;
+</code></pre>
+<p>Con <code>flutter run</code> corriendo, en esa misma terminal:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Tecla</th><th>Acción</th></tr>
+</thead>
+<tbody>
+<tr><td><code>r</code></td><td><strong>Hot reload</strong> (aplica cambios al instante)</td></tr>
+<tr><td><code>R</code></td><td>Hot restart (reinicia el estado)</td></tr>
+<tr><td><code>q</code></td><td>Salir</td></tr>
+</tbody>
+</table>
+</div>
+<p>Editás en Neovim, guardás, apretás <code>r</code> y ves el cambio al instante.</p>
+<h2 id="paso-7-configurar-neovim"><a class="header" href="#paso-7-configurar-neovim">Paso 7: Configurar Neovim</a></h2>
+<p>Usá el plugin <strong>flutter-tools.nvim</strong>, que integra el LSP de Dart, hot reload, selector de dispositivos y logs dentro de Neovim. Con <strong>lazy.nvim</strong>:</p>
+<pre><code class="language-lua">{
+  'nvim-flutter/flutter-tools.nvim',
+  lazy = false,
+  dependencies = {
+    'nvim-lua/plenary.nvim',
+    'stevearc/dressing.nvim', -- opcional, mejora los selectores
+  },
+  config = function()
+    require('flutter-tools').setup({
+      widget_guides = { enabled = true },
+      lsp = {
+        color = { enabled = true },
+        settings = {
+          showTodos = true,
+          completeFunctionCalls = true,
+        },
+      },
+    })
+  end,
+}
+</code></pre>
+<p>Además:</p>
+<pre><code class="language-vim">:TSInstall dart
+</code></pre>
+<p>Comandos útiles dentro de Neovim:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Comando</th><th>Qué hace</th></tr>
+</thead>
+<tbody>
+<tr><td><code>:FlutterRun</code></td><td>Ejecuta la app</td></tr>
+<tr><td><code>:FlutterDevices</code></td><td>Elige el dispositivo</td></tr>
+<tr><td><code>:FlutterEmulators</code></td><td>Lanza un emulador</td></tr>
+<tr><td><code>:FlutterReload</code></td><td>Hot reload</td></tr>
+<tr><td><code>:FlutterRestart</code></td><td>Hot restart</td></tr>
+<tr><td><code>:FlutterQuit</code></td><td>Cierra la app</td></tr>
+<tr><td><code>:FlutterLogToggle</code></td><td>Muestra/oculta los logs</td></tr>
+<tr><td><code>:FlutterOutlineToggle</code></td><td>Árbol de widgets del archivo</td></tr>
+</tbody>
+</table>
+</div>
+<p>Opcional: mapeá <code>:FlutterRun</code> y <code>:FlutterReload</code> a atajos que te resulten cómodos. No hace falta configurar el LSP aparte, el plugin lo inicia solo.</p>
+<h2 id="paso-8-compilar-la-app-para-release"><a class="header" href="#paso-8-compilar-la-app-para-release">Paso 8: Compilar la app para release</a></h2>
+<p>Cuando la app ya funciona, toca generar el build para instalarla en un celular real o publicarla. Hay dos caminos, y el que te conviene depende de para qué vayas a usar el artefacto:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Querés…</th><th>Usá</th></tr>
+</thead>
+<tbody>
+<tr><td>Probar la app en tu celular (o pasársela a alguien a mano)</td><td><strong>Camino A</strong>: APK de release, sin configuración extra</td></tr>
+<tr><td>Publicar en la Play Store</td><td><strong>Camino B</strong>: AAB firmado con tu propio keystore</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="camino-a-apk-para-probar-en-tu-celular"><a class="header" href="#camino-a-apk-para-probar-en-tu-celular">Camino A: APK para probar en tu celular</a></h3>
+<p>No requiere ninguna configuración extra. Compilás desde la raíz del proyecto (en este caso el proyecto Flutter vive en <code>frontend/</code>; ajustá la ruta si el tuyo está en otro lado):</p>
+<pre><code class="language-bash">cd frontend
+flutter build apk --release --split-per-abi
+</code></pre>
+<p>El APK queda en:</p>
+<pre><code>frontend/build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
+</code></pre>
+<p><strong>Por qué <code>--split-per-abi</code>:</strong> sin esa bandera, Flutter empaqueta todas las arquitecturas juntas en un solo APK y el archivo queda mucho más grande de lo necesario — más del doble. Con <code>--split-per-abi</code> generás un APK por arquitectura: <code>arm64-v8a</code> es la que usan casi todos los celulares actuales, así que ese es el que vas a repartir.</p>
+<h3 id="camino-b-apk-y-aab-para-la-play-store-firma-release"><a class="header" href="#camino-b-apk-y-aab-para-la-play-store-firma-release">Camino B: APK y AAB para la Play Store (firma release)</a></h3>
+<p>Acá sí hay que hacer los deberes: la Play Store <strong>no acepta builds firmados con la clave de debug</strong>. Son tres pasos, y el primero se hace una sola vez.</p>
+<h4 id="b1-generar-el-keystore-una-sola-vez"><a class="header" href="#b1-generar-el-keystore-una-sola-vez">B.1: Generar el keystore (una sola vez)</a></h4>
+<p>El keystore es tu firma digital. <strong>Guardalo como oro:</strong> si lo perdés, no vas a poder publicar actualizaciones de la app.</p>
+<pre><code class="language-bash">keytool -genkey -v -keystore ~/viviapp-release.jks \
+  -keyalg RSA -keysize 2048 -validity 10000 -alias viviapp
+</code></pre>
+<p><code>keytool</code> te va a pedir la contraseña del keystore y algunos datos de contacto (nombre, organización, ciudad, país — podés poner lo que quieras). Anotá la contraseña y el alias (<code>viviapp</code>): los necesitás en el paso siguiente.</p>
+<h4 id="b2-crear-androidkeyproperties"><a class="header" href="#b2-crear-androidkeyproperties">B.2: Crear <code>android/key.properties</code></a></h4>
+<p>Creá el archivo <code>android/key.properties</code> (dentro de la carpeta <code>android/</code>, no en la raíz) con este contenido:</p>
+<pre><code class="language-properties">storePassword=TU_PASSWORD
+keyPassword=TU_PASSWORD
+keyAlias=viviapp
+storeFile=/home/tu-usuario/viviapp-release.jks
+</code></pre>
+<p>Reemplazá <code>TU_PASSWORD</code> por la contraseña que elegiste en el paso anterior, y <code>tu-usuario</code> por tu usuario real.</p>
+<blockquote>
+<p><strong>No subas este archivo al repositorio.</strong> Junto con el <code>.jks</code>, es la llave de tu app: agregalos al <code>.gitignore</code>.</p>
+</blockquote>
+<h4 id="b3-conectar-el-keystore-en-buildgradlekts"><a class="header" href="#b3-conectar-el-keystore-en-buildgradlekts">B.3: Conectar el keystore en <code>build.gradle.kts</code></a></h4>
+<p>Acá está el detalle: este proyecto usa <strong>Kotlin DSL</strong> (<code>.kts</code>), no el <code>build.gradle</code> viejo que muestran la mayoría de los tutoriales, así que el código de carga del keystore es distinto.</p>
+<p>En <code>android/app/build.gradle.kts</code>, primero cargá el archivo de propiedades. Este bloque va <strong>fuera</strong> de <code>android { }</code>, arriba de todo:</p>
+<pre><code class="language-kotlin">import java.util.Properties
+
+val keystoreProperties = Properties()
+val keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(java.io.FileInputStream(keystorePropertiesFile))
+}
+</code></pre>
+<p><code>rootProject</code> es la carpeta <code>android/</code>, por eso <code>key.properties</code> se resuelve solo aunque el archivo esté ahí y no en la raíz del proyecto.</p>
+<p>Dentro de <code>android { }</code>, declará el signing config y usalo en <code>buildTypes</code>:</p>
+<pre><code class="language-kotlin">android {
+    // ...
+    signingConfigs {
+        create("release") {
+            keyAlias = keystoreProperties["keyAlias"] as String
+            keyPassword = keystoreProperties["keyPassword"] as String
+            storeFile = file(keystoreProperties["storeFile"] as String)
+            storePassword = keystoreProperties["storePassword"] as String
+        }
+    }
+
+    buildTypes {
+        release {
+            // Reemplazá la línea que viene por defecto en la plantilla:
+            //   signingConfig = signingConfigs.debug
+            signingConfig = signingConfigs.getByName("release")
+        }
+    }
+}
+</code></pre>
+<p>Si la plantilla no trae el bloque <code>signingConfigs</code>, agregalo tal cual. Si trae <code>signingConfig = signingConfigs.debug</code> en <code>release</code>, reemplazá esa línea por la de arriba.</p>
+<h4 id="compilar-el-aab-para-la-play-store"><a class="header" href="#compilar-el-aab-para-la-play-store">Compilar el AAB para la Play Store</a></h4>
+<p>Un detalle no menor: <strong>la Play Store, desde 2021, exige AAB y no APK</strong>. Con la firma ya conectada, compilás:</p>
+<pre><code class="language-bash">flutter build appbundle --release
+</code></pre>
+<p>El AAB queda en:</p>
+<pre><code>frontend/build/app/outputs/bundle/release/app-release.aab
+</code></pre>
+<p>Ese es el archivo que subís a la consola de Play Console.</p>
+<h2 id="flujo-de-trabajo-diario"><a class="header" href="#flujo-de-trabajo-diario">Flujo de trabajo diario</a></h2>
+<ol>
+<li>Abrís el emulador (o conectás el celular).</li>
+<li>En Neovim, dentro de <code>mi_app</code>: <code>:FlutterRun</code>.</li>
+<li>Editás <code>lib/main.dart</code>, guardás, y hot reload se aplica solo o con <code>:FlutterReload</code>.</li>
+<li>Los errores aparecen como diagnósticos del LSP, y los logs en <code>:FlutterLogToggle</code>.</li>
+</ol>
+<h2 id="notas"><a class="header" href="#notas">Notas</a></h2>
+<ul>
+<li><strong>iOS:</strong> necesitás una Mac con Xcode. En Linux solo vas a poder probar Android, y está bien para empezar.</li>
+<li><strong>Versiones:</strong> Flutter se actualiza seguido. Si algo de esta guía no coincide, mirá docs.flutter.dev/get-started/install, y para mantenerlo al día usá <code>flutter upgrade</code>.</li>
+<li><strong>Gestión de versiones:</strong> cuando trabajes en equipo, considerá <strong>FVM</strong> para fijar la misma versión de Flutter por proyecto.</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="guía-completa-instalación-y-configuración-de-matrix-synapse-con-docker"><a class="header" href="#guía-completa-instalación-y-configuración-de-matrix-synapse-con-docker">Guía Completa: Instalación y Configuración de Matrix Synapse con Docker</a></h1>
+<h2 id="índice-18"><a class="header" href="#índice-18">Índice</a></h2>
 <ol>
 <li><a href="#requisitos-previos">Requisitos previos</a></li>
 <li><a href="#instalación-de-docker-y-docker-compose">Instalación de Docker y Docker Compose</a></li>
@@ -77885,7 +78155,7 @@ http://example.com:8008/_synapse/admin/v1/whois/@user:example.com
 <h1 id="manual-de-matrix---implementación-custom"><a class="header" href="#manual-de-matrix---implementación-custom">MANUAL DE MATRIX - Implementación Custom</a></h1>
 <p>Este documento explica cómo funciona la integración con Matrix en esta app, sin usar el SDK oficial (matrix-js-sdk). Se usa la <strong>REST API</strong> directamente.</p>
 <hr>
-<h2 id="índice-18"><a class="header" href="#índice-18">Índice</a></h2>
+<h2 id="índice-19"><a class="header" href="#índice-19">Índice</a></h2>
 <ol>
 <li><a href="#arquitectura-general">ARQUITECTURA GENERAL</a></li>
 <li><a href="#tipos-de-datos-types">TIPOS DE DATOS (Types)</a></li>
@@ -79468,7 +79738,7 @@ Pero lo ignora porque sender === currentUserId
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="16-introducción-a-las-redes"><a class="header" href="#16-introducción-a-las-redes">16. Introducción a las Redes</a></h1>
 <hr>
-<h2 id="índice-19"><a class="header" href="#índice-19">Índice</a></h2>
+<h2 id="índice-20"><a class="header" href="#índice-20">Índice</a></h2>
 <ul>
 <li><a href="#cómo-usar-este-manual">Cómo usar este manual</a></li>
 <li><a href="#1-qué-es-una-red">¿Qué es una red?</a></li>
@@ -80535,7 +80805,7 @@ Pero lo ignora porque sender === currentUserId
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="18-modelos-de-red"><a class="header" href="#18-modelos-de-red">18. Modelos de Red</a></h1>
 <hr>
-<h2 id="índice-20"><a class="header" href="#índice-20">Índice</a></h2>
+<h2 id="índice-21"><a class="header" href="#índice-21">Índice</a></h2>
 <ul>
 <li><a href="#1-el-problema-que-resuelven-los-modelos">El problema que resuelven los modelos</a></li>
 <li><a href="#2-qué-es-un-modelo-de-capas">Qué es un modelo de capas</a></li>
@@ -81237,7 +81507,7 @@ El servidor recibe la trama, abre el sobre Ethernet, luego el IP, luego el TCP, 
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="09-direcciones-ip-y-subredes"><a class="header" href="#09-direcciones-ip-y-subredes">09. Direcciones IP y Subredes</a></h1>
 <hr>
-<h2 id="índice-21"><a class="header" href="#índice-21">Índice</a></h2>
+<h2 id="índice-22"><a class="header" href="#índice-22">Índice</a></h2>
 <ul>
 <li><a href="#1-el-problema-que-resuelven-las-direcciones-ip">El problema que resuelven las direcciones IP</a></li>
 <li><a href="#2-binario-y-hexadecimal-las-herramientas">Binario y hexadecimal: las herramientas</a></li>
@@ -81839,7 +82109,7 @@ DNS Servers . . . . . . . . . . . : 8.8.8.8
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="10-análisis-de-direcciones-ipv4-ejercicios-guiados"><a class="header" href="#10-análisis-de-direcciones-ipv4-ejercicios-guiados">10. Análisis de Direcciones IPv4 (Ejercicios Guiados)</a></h1>
 <hr>
-<h2 id="índice-22"><a class="header" href="#índice-22">Índice</a></h2>
+<h2 id="índice-23"><a class="header" href="#índice-23">Índice</a></h2>
 <ul>
 <li><a href="#1-qué-necesitás-tener-fresco">Qué necesitás tener fresco</a></li>
 <li><a href="#2-la-caja-de-herramientas-binario-rápido">La caja de herramientas: binario rápido</a></li>
@@ -82342,7 +82612,7 @@ Red = 192.168.28.32      →  Broadcast = 32 + 16 − 1 = 47 → 192.168.28.47
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="11-nat-el-traductor-de-la-red"><a class="header" href="#11-nat-el-traductor-de-la-red">11. NAT: el traductor de la red</a></h1>
 <hr>
-<h2 id="índice-23"><a class="header" href="#índice-23">Índice</a></h2>
+<h2 id="índice-24"><a class="header" href="#índice-24">Índice</a></h2>
 <ul>
 <li><a href="#1-el-problema-de-fondo-no-alcanzan-las-direcciones">El problema de fondo: no alcanzan las direcciones</a></li>
 <li><a href="#2-direcciones-públicas-y-privadas-quién-vive-en-qué-vecindario">Direcciones públicas y privadas: quién vive en qué vecindario</a></li>
@@ -82879,7 +83149,7 @@ UDP        192.168.1.30:1024    -&gt;   203.0.113.5:40514
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="22-direcciones-mac-y-switches"><a class="header" href="#22-direcciones-mac-y-switches">22. Direcciones MAC y Switches</a></h1>
 <hr>
-<h2 id="índice-24"><a class="header" href="#índice-24">Índice</a></h2>
+<h2 id="índice-25"><a class="header" href="#índice-25">Índice</a></h2>
 <ul>
 <li><a href="#1-el-punto-de-partida-el-chasis-y-la-patente">El punto de partida: el chasis y la patente</a></li>
 <li><a href="#2-qué-es-una-dirección-mac">¿Qué es una dirección MAC?</a></li>
@@ -83773,7 +84043,7 @@ Switch# show mac address-table
 <h1 id="15-cisco-packet-tracer-laboratorios-guiados"><a class="header" href="#15-cisco-packet-tracer-laboratorios-guiados">15. Cisco Packet Tracer: Laboratorios Guiados</a></h1>
 <p><strong>Router · Switch · DHCP · Rutas estáticas · VLANs</strong></p>
 <hr>
-<h2 id="índice-25"><a class="header" href="#índice-25">Índice</a></h2>
+<h2 id="índice-26"><a class="header" href="#índice-26">Índice</a></h2>
 <ul>
 <li><a href="#1-el-simulador-de-vuelo-del-técnico-de-redes">El simulador de vuelo del técnico de redes</a></li>
 <li><a href="#2-laboratorio-0-el-primer-plano">Laboratorio 0: el primer plano</a></li>
@@ -84500,7 +84770,7 @@ S1#  show vlan brief        ← puertos en sus VLANs
 <h1 id="34-enrutamiento-ip-y-rutas-estáticas"><a class="header" href="#34-enrutamiento-ip-y-rutas-estáticas">34. Enrutamiento IP y Rutas Estáticas</a></h1>
 <p><strong>Cómo un router decide hacia dónde mandar cada paquete</strong></p>
 <hr>
-<h2 id="índice-26"><a class="header" href="#índice-26">Índice</a></h2>
+<h2 id="índice-27"><a class="header" href="#índice-27">Índice</a></h2>
 <ul>
 <li><a href="#1-el-problema-que-resuelve-el-enrutamiento">El problema que resuelve el enrutamiento</a></li>
 <li><a href="#2-qué-hace-un-router-la-decisión-de-reenvío">¿Qué hace un router? La decisión de reenvío</a></li>
@@ -85091,7 +85361,7 @@ R2(config)# ip route 192.168.1.0 255.255.255.0 10.0.12.1
 <h1 id="35-selección-de-rutas-ad-métricas-y-longest-prefix-match"><a class="header" href="#35-selección-de-rutas-ad-métricas-y-longest-prefix-match">35. Selección de Rutas: AD, Métricas y Longest Prefix Match</a></h1>
 <p><strong>Cuando un router conoce varios caminos, ¿cuál elige?</strong></p>
 <hr>
-<h2 id="índice-27"><a class="header" href="#índice-27">Índice</a></h2>
+<h2 id="índice-28"><a class="header" href="#índice-28">Índice</a></h2>
 <ul>
 <li><a href="#1-el-problema-muchos-caminos-una-sola-decisión">El problema: muchos caminos, una sola decisión</a></li>
 <li><a href="#2-la-jerarquía-de-decisión-el-orden-exacto">La jerarquía de decisión: el orden exacto</a></li>
@@ -85612,7 +85882,7 @@ ip route 192.168.2.0 255.255.255.0 10.0.13.2 200
 <h1 id="36-enrutamiento-dinámico-vector-de-distancia-y-estado-de-enlace"><a class="header" href="#36-enrutamiento-dinámico-vector-de-distancia-y-estado-de-enlace">36. Enrutamiento Dinámico: Vector de Distancia y Estado de Enlace</a></h1>
 <p><strong>Cómo los routers aprenden solos, sin que nadie les escriba cada ruta a mano</strong></p>
 <hr>
-<h2 id="índice-28"><a class="header" href="#índice-28">Índice</a></h2>
+<h2 id="índice-29"><a class="header" href="#índice-29">Índice</a></h2>
 <ul>
 <li><a href="#1-el-problema-las-rutas-estáticas-no-escalan">El problema: las rutas estáticas no escalan</a></li>
 <li><a href="#2-qué-es-el-enrutamiento-dinámico">Qué es el enrutamiento dinámico</a></li>
@@ -86185,7 +86455,7 @@ BGP (el mundo exterior)
 <h1 id="37-ospf-el-protocolo-de-estado-de-enlace-en-acción"><a class="header" href="#37-ospf-el-protocolo-de-estado-de-enlace-en-acción">37. OSPF: El Protocolo de Estado de Enlace en Acción</a></h1>
 <p><strong>Cómo un protocolo de verdad convierte los LSA, la LSDB y el SPF en una red que converge sola</strong></p>
 <hr>
-<h2 id="índice-29"><a class="header" href="#índice-29">Índice</a></h2>
+<h2 id="índice-30"><a class="header" href="#índice-30">Índice</a></h2>
 <ul>
 <li><a href="#1-del-enrutamiento-dinámico-a-ospf-el-salto-a-la-práctica">Del enrutamiento dinámico a OSPF: el salto a la práctica</a></li>
 <li><a href="#2-la-ficha-técnica-de-ospf">La ficha técnica de OSPF</a></li>
@@ -86666,7 +86936,7 @@ Routing Protocol is "ospf 1"
 <h1 id="38-ospf-avanzado-drbdr-lsa-y-multi-área"><a class="header" href="#38-ospf-avanzado-drbdr-lsa-y-multi-área">38. OSPF Avanzado: DR/BDR, LSA y Multi-Área</a></h1>
 <p><strong>Las piezas que hacen que OSPF escale de 10 a 10.000 routers (y los tipos de LSA que examinan de verdad)</strong></p>
 <hr>
-<h2 id="índice-30"><a class="header" href="#índice-30">Índice</a></h2>
+<h2 id="índice-31"><a class="header" href="#índice-31">Índice</a></h2>
 <ul>
 <li><a href="#1-lo-que-viene-después-del-single-area-la-escalabilidad">Lo que viene después del single-area: la escalabilidad</a></li>
 <li><a href="#2-dr-y-bdr-el-representante-del-segmento">DR y BDR: el representante del segmento</a></li>
@@ -87154,7 +87424,7 @@ I 5.5.5.5 [2] via 10.0.1.2, ASBR, Area 0, SPF 3
 <h1 id="39-ospfv3-el-estado-de-enlace-para-ipv6"><a class="header" href="#39-ospfv3-el-estado-de-enlace-para-ipv6">39. OSPFv3: el Estado de Enlace para IPv6</a></h1>
 <p><strong>El mismo protocolo, rediseñado para un mundo de direcciones de 128 bits (y sin los amarres de IPv4)</strong></p>
 <hr>
-<h2 id="índice-31"><a class="header" href="#índice-31">Índice</a></h2>
+<h2 id="índice-32"><a class="header" href="#índice-32">Índice</a></h2>
 <ul>
 <li><a href="#1-el-futuro-que-ya-llegó-por-qué-ipv6-no-es-opcional">El futuro que ya llegó: por qué IPv6 no es opcional</a></li>
 <li><a href="#2-los-5-minutos-de-ipv6-que-necesitás-antes-de-ospfv3">Los 5 minutos de IPv6 que necesitás antes de OSPFv3</a></li>
@@ -87558,7 +87828,7 @@ show ospfv3 ipv4 route ospf
 <h1 id="40-eigrp-el-híbrido-que-piensa-antes-de-caerse"><a class="header" href="#40-eigrp-el-híbrido-que-piensa-antes-de-caerse">40. EIGRP: El Híbrido que Piensa Antes de Caerse</a></h1>
 <p><strong>El protocolo de Cisco que aprende por “rumores”… pero guarda los planos y tiene la salida de emergencia ya calculada</strong></p>
 <hr>
-<h2 id="índice-32"><a class="header" href="#índice-32">Índice</a></h2>
+<h2 id="índice-33"><a class="header" href="#índice-33">Índice</a></h2>
 <ul>
 <li><a href="#1-el-lugar-de-eigrp-en-la-familia">El lugar de EIGRP en la familia</a></li>
 <li><a href="#2-la-ficha-técnica-lo-que-hay-que-saber-de-entrada">La ficha técnica: lo que hay que saber de entrada</a></li>
@@ -88019,7 +88289,7 @@ D    10.0.1.0/30 [90/30720] via 10.0.0.2, 00:20:11, GigabitEthernet0/0
 <h1 id="41-is-is-el-estado-de-enlace-que-los-proveedores-aman"><a class="header" href="#41-is-is-el-estado-de-enlace-que-los-proveedores-aman">41. IS-IS: El Estado de Enlace que los Proveedores Aman</a></h1>
 <p><strong>El primo de OSPF que nació en la OSI, no en Internet — y que hoy es el caballito de batalla de los grandes ISP</strong></p>
 <hr>
-<h2 id="índice-33"><a class="header" href="#índice-33">Índice</a></h2>
+<h2 id="índice-34"><a class="header" href="#índice-34">Índice</a></h2>
 <ul>
 <li><a href="#1-el-gigante-silencioso">El gigante silencioso</a></li>
 <li><a href="#2-la-historia-que-lo-explica-todo-nació-en-la-osi">La historia que lo explica todo: nació en la OSI</a></li>
@@ -88416,7 +88686,7 @@ I L1 10.0.2.0/30 [115/20] via 10.0.1.2, 00:10:00, GigabitEthernet0/0
 <h1 id="42-bgp-el-pegamento-de-internet"><a class="header" href="#42-bgp-el-pegamento-de-internet">42. BGP: El Pegamento de Internet</a></h1>
 <p><strong>El protocolo que decide cómo viaja el tráfico entre sistemas autónomos — donde la política vale más que la velocidad</strong></p>
 <hr>
-<h2 id="índice-34"><a class="header" href="#índice-34">Índice</a></h2>
+<h2 id="índice-35"><a class="header" href="#índice-35">Índice</a></h2>
 <ul>
 <li><a href="#1-el-protocolo-que-no-vive-en-tu-red">El protocolo que no vive en tu red</a></li>
 <li><a href="#2-los-sistemas-autónomos-el-mapa-político-de-internet">Los sistemas autónomos: el mapa político de Internet</a></li>
@@ -88817,7 +89087,7 @@ BGP table version is 17...
 <h1 id="43-redistribución-e-ingeniería-de-tráfico"><a class="header" href="#43-redistribución-e-ingeniería-de-tráfico">43. Redistribución e Ingeniería de Tráfico</a></h1>
 <p><strong>Interconectar protocolos sin romper una red — y hacer que el tráfico vaya por donde vos querés</strong></p>
 <hr>
-<h2 id="índice-35"><a class="header" href="#índice-35">Índice</a></h2>
+<h2 id="índice-36"><a class="header" href="#índice-36">Índice</a></h2>
 <ul>
 <li><a href="#1-el-problema-una-red-con-varios-protocolos">El problema: una red con varios protocolos</a></li>
 <li><a href="#2-redistribución-qué-es-y-por-qué-es-peligrosa">Redistribución: qué es y por qué es peligrosa</a></li>
@@ -89179,7 +89449,7 @@ B     203.0.113.0/24 [20/0] via 198.51.100.2      ← eBGP del ISP
 <h1 id="44-troubleshooting-de-routing"><a class="header" href="#44-troubleshooting-de-routing">44. Troubleshooting de Routing</a></h1>
 <p><strong>La metodología que convierte el caos en un diagnóstico — cuando la red no responde, vos sí sabés qué mirar</strong></p>
 <hr>
-<h2 id="índice-36"><a class="header" href="#índice-36">Índice</a></h2>
+<h2 id="índice-37"><a class="header" href="#índice-37">Índice</a></h2>
 <ul>
 <li><a href="#1-el-problema-la-red-no-anda-y-nadie-sabe-por-qué">El problema: la red “no anda” y nadie sabe por qué</a></li>
 <li><a href="#2-la-metodología-síntoma--hipótesis--verificación">La metodología: síntoma → hipótesis → verificación</a></li>
@@ -89505,7 +89775,7 @@ U = destination unreachable — "alguien en el medio sabe que no hay camino"
 <h1 id="45-laboratorios-integradores-y-proyecto-final"><a class="header" href="#45-laboratorios-integradores-y-proyecto-final">45. Laboratorios Integradores y Proyecto Final</a></h1>
 <p><strong>Todo lo que aprendiste, en una red que funciona — el examen final de la serie es PRÁCTICO</strong></p>
 <hr>
-<h2 id="índice-37"><a class="header" href="#índice-37">Índice</a></h2>
+<h2 id="índice-38"><a class="header" href="#índice-38">Índice</a></h2>
 <ul>
 <li><a href="#1-la-meta-final-integrar-toda-la-serie">La meta final: integrar toda la serie</a></li>
 <li><a href="#2-reglas-del-laboratorio">Reglas del laboratorio</a></li>
@@ -89808,7 +90078,7 @@ router eigrp 100
 <h1 id="manual-de-docker-en-debian--instalación-desinstalación-y-reinstalación-completa"><a class="header" href="#manual-de-docker-en-debian--instalación-desinstalación-y-reinstalación-completa">Manual de Docker en Debian — Instalación, Desinstalación y Reinstalación Completa</a></h1>
 <p>Docker es una plataforma de contenedores que permite empaquetar, distribuir y ejecutar aplicaciones en entornos aislados. Este manual cubre la instalación completa usando el repositorio oficial, la desinstalación limpia sin residuos, y el procedimiento de reinstalación desde cero.</p>
 <hr>
-<h2 id="índice-38"><a class="header" href="#índice-38">Índice</a></h2>
+<h2 id="índice-39"><a class="header" href="#índice-39">Índice</a></h2>
 <ol>
 <li><a href="#1-requisitos-previos-5">Requisitos Previos</a></li>
 <li><a href="#2-desinstalación-completa-hacer-primero-si-ya-tienes-docker">Desinstalación Completa</a></li>

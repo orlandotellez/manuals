@@ -43,6 +43,9 @@
 - [React Native Primeros Pasos](./docs/05-react-native-primeros-pasos.md)
 - [React Native Generar Apk](./docs/31-react-native-apk-release.md)
 
+## Flutter
+- [Flutter Generar Apk](./docs/46-flutter-release.md)
+
 ## Matrix Synapse
 - [Matrix Synapse](./docs/07-matrix-synapse.md)
 - [Matrix TypeScript implementation](./docs/08-matrix-typescript-implementation.md)

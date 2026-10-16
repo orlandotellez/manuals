@@ -1,0 +1,501 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Flutter Generar Apk - Manuales</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-0392ca55.css">
+        <link rel="stylesheet" href="../css/chrome-fc474251.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/dark-02b384fc.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "dark";
+            window.path_to_searchindex_js = "../searchindex-2529fdaa.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-2ab2f46a.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Manuales</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="flutter--neovim-instalación-y-primera-app"><a class="header" href="#flutter--neovim-instalación-y-primera-app">Flutter + Neovim: instalación y primera app</a></h1>
+<p>Asumo Linux (o macOS/WSL). Si usás otro sistema, avisame.</p>
+<h2 id="índice"><a class="header" href="#índice">Índice</a></h2>
+<ul>
+<li><a href="#paso-1-dependencias-previas-linux">Paso 1: Dependencias previas (Linux)</a></li>
+<li><a href="#paso-2-instalar-flutter">Paso 2: Instalar Flutter</a></li>
+<li><a href="#paso-3-android-sdk-y-emulador">Paso 3: Android SDK y emulador</a></li>
+<li><a href="#paso-4-verificar">Paso 4: Verificar</a></li>
+<li><a href="#paso-5-crear-la-app-mínima">Paso 5: Crear la app mínima</a></li>
+<li><a href="#paso-6-ejecutar">Paso 6: Ejecutar</a></li>
+<li><a href="#paso-7-configurar-neovim">Paso 7: Configurar Neovim</a></li>
+<li><a href="#paso-8-compilar-la-app-para-release">Paso 8: Compilar la app para release</a>
+<ul>
+<li><a href="#camino-a-apk-para-probar-en-tu-celular">Camino A: APK para probar en tu celular</a></li>
+<li><a href="#camino-b-apk-y-aab-para-la-play-store-firma-release">Camino B: APK y AAB para la Play Store (firma release)</a></li>
+</ul>
+</li>
+<li><a href="#flujo-de-trabajo-diario">Flujo de trabajo diario</a></li>
+<li><a href="#notas">Notas</a></li>
+</ul>
+<hr>
+<h2 id="paso-1-dependencias-previas-linux"><a class="header" href="#paso-1-dependencias-previas-linux">Paso 1: Dependencias previas (Linux)</a></h2>
+<pre><code class="language-bash"># Debian/Ubuntu
+sudo apt install curl git unzip xz-utils zip libglu1-mesa clang cmake ninja-build pkg-config libgtk-3-dev
+</code></pre>
+<p>También necesitás el <strong>JDK 17 o 21</strong>. Si ya instalaste SDKMAN antes, ya lo tenés.</p>
+<h2 id="paso-2-instalar-flutter"><a class="header" href="#paso-2-instalar-flutter">Paso 2: Instalar Flutter</a></h2>
+<pre><code class="language-bash">git clone https://github.com/flutter/flutter.git -b stable ~/development/flutter
+</code></pre>
+<p>Agregalo al PATH (en <code>~/.bashrc</code> o <code>~/.zshrc</code>):</p>
+<pre><code class="language-bash">export PATH="$HOME/development/flutter/bin:$PATH"
+</code></pre>
+<pre><code class="language-bash">source ~/.bashrc
+flutter --version
+</code></pre>
+<p>El SDK de Flutter ya incluye <strong>Dart</strong> y su <strong>LSP</strong>, así que no instalás nada extra para el lenguaje.</p>
+<h2 id="paso-3-android-sdk-y-emulador"><a class="header" href="#paso-3-android-sdk-y-emulador">Paso 3: Android SDK y emulador</a></h2>
+<p>Flutter necesita el Android SDK para compilar a Android. La forma más fácil es instalar <strong>Android Studio</strong>, pero solo para que descargue el SDK y el emulador. Después editás todo en Neovim.</p>
+<ol>
+<li>Instalá Android Studio (developer.android.com/studio) y abrilo una vez.</li>
+<li>En el asistente, dejá que instale el <strong>Android SDK</strong>, las <strong>command-line tools</strong> y el <strong>emulador</strong>.</li>
+<li>En <strong>Device Manager</strong> creá un dispositivo virtual (por ejemplo un Pixel con una imagen reciente).</li>
+</ol>
+<p>Luego aceptá las licencias:</p>
+<pre><code class="language-bash">flutter doctor --android-licenses
+</code></pre>
+<p><strong>Alternativa sin emulador:</strong> conectá tu celular por USB con <strong>depuración USB</strong> activada (Ajustes → Opciones de desarrollador). Suele ser más rápido que el emulador.</p>
+<h2 id="paso-4-verificar"><a class="header" href="#paso-4-verificar">Paso 4: Verificar</a></h2>
+<pre><code class="language-bash">flutter doctor
+</code></pre>
+<p>Te muestra una checklist. Lo que necesitás en verde: <strong>Flutter</strong>, <strong>Android toolchain</strong> y un dispositivo conectado. Los avisos de Chrome, Linux desktop o Xcode podés ignorarlos si no los vas a usar. Si algo falla, el mismo comando te dice cómo arreglarlo.</p>
+<h2 id="paso-5-crear-la-app-mínima"><a class="header" href="#paso-5-crear-la-app-mínima">Paso 5: Crear la app mínima</a></h2>
+<pre><code class="language-bash">flutter create mi_app
+cd mi_app
+</code></pre>
+<p>Estructura que genera:</p>
+<pre><code>mi_app/
+├── lib/
+│   └── main.dart        ← tu código va acá
+├── android/
+├── ios/
+├── test/
+└── pubspec.yaml         ← dependencias (como package.json)
+</code></pre>
+<p>Para una plantilla más limpia que el contador de ejemplo, reemplazá <code>lib/main.dart</code> con esto:</p>
+<pre><code class="language-dart">import 'package:flutter/material.dart';
+
+void main() =&gt; runApp(const MiApp());
+
+class MiApp extends StatelessWidget {
+  const MiApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Delivery',
+      theme: ThemeData(colorSchemeSeed: Colors.red, useMaterial3: true),
+      home: const Inicio(),
+    );
+  }
+}
+
+class Inicio extends StatelessWidget {
+  const Inicio({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Restaurantes')),
+      body: ListView.builder(
+        itemCount: 20,
+        itemBuilder: (context, i) =&gt; ListTile(
+          leading: const Icon(Icons.restaurant),
+          title: Text('Restaurante ${i + 1}'),
+          subtitle: const Text('25-35 min'),
+        ),
+      ),
+    );
+  }
+}
+</code></pre>
+<h2 id="paso-6-ejecutar"><a class="header" href="#paso-6-ejecutar">Paso 6: Ejecutar</a></h2>
+<p>Con el emulador abierto o el celular conectado:</p>
+<pre><code class="language-bash">flutter devices     # lista los dispositivos disponibles
+flutter run
+</code></pre>
+<p>Para abrir el emulador desde terminal:</p>
+<pre><code class="language-bash">flutter emulators
+flutter emulators --launch &lt;id_del_emulador&gt;
+</code></pre>
+<p>Con <code>flutter run</code> corriendo, en esa misma terminal:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Tecla</th><th>Acción</th></tr>
+</thead>
+<tbody>
+<tr><td><code>r</code></td><td><strong>Hot reload</strong> (aplica cambios al instante)</td></tr>
+<tr><td><code>R</code></td><td>Hot restart (reinicia el estado)</td></tr>
+<tr><td><code>q</code></td><td>Salir</td></tr>
+</tbody>
+</table>
+</div>
+<p>Editás en Neovim, guardás, apretás <code>r</code> y ves el cambio al instante.</p>
+<h2 id="paso-7-configurar-neovim"><a class="header" href="#paso-7-configurar-neovim">Paso 7: Configurar Neovim</a></h2>
+<p>Usá el plugin <strong>flutter-tools.nvim</strong>, que integra el LSP de Dart, hot reload, selector de dispositivos y logs dentro de Neovim. Con <strong>lazy.nvim</strong>:</p>
+<pre><code class="language-lua">{
+  'nvim-flutter/flutter-tools.nvim',
+  lazy = false,
+  dependencies = {
+    'nvim-lua/plenary.nvim',
+    'stevearc/dressing.nvim', -- opcional, mejora los selectores
+  },
+  config = function()
+    require('flutter-tools').setup({
+      widget_guides = { enabled = true },
+      lsp = {
+        color = { enabled = true },
+        settings = {
+          showTodos = true,
+          completeFunctionCalls = true,
+        },
+      },
+    })
+  end,
+}
+</code></pre>
+<p>Además:</p>
+<pre><code class="language-vim">:TSInstall dart
+</code></pre>
+<p>Comandos útiles dentro de Neovim:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Comando</th><th>Qué hace</th></tr>
+</thead>
+<tbody>
+<tr><td><code>:FlutterRun</code></td><td>Ejecuta la app</td></tr>
+<tr><td><code>:FlutterDevices</code></td><td>Elige el dispositivo</td></tr>
+<tr><td><code>:FlutterEmulators</code></td><td>Lanza un emulador</td></tr>
+<tr><td><code>:FlutterReload</code></td><td>Hot reload</td></tr>
+<tr><td><code>:FlutterRestart</code></td><td>Hot restart</td></tr>
+<tr><td><code>:FlutterQuit</code></td><td>Cierra la app</td></tr>
+<tr><td><code>:FlutterLogToggle</code></td><td>Muestra/oculta los logs</td></tr>
+<tr><td><code>:FlutterOutlineToggle</code></td><td>Árbol de widgets del archivo</td></tr>
+</tbody>
+</table>
+</div>
+<p>Opcional: mapeá <code>:FlutterRun</code> y <code>:FlutterReload</code> a atajos que te resulten cómodos. No hace falta configurar el LSP aparte, el plugin lo inicia solo.</p>
+<h2 id="paso-8-compilar-la-app-para-release"><a class="header" href="#paso-8-compilar-la-app-para-release">Paso 8: Compilar la app para release</a></h2>
+<p>Cuando la app ya funciona, toca generar el build para instalarla en un celular real o publicarla. Hay dos caminos, y el que te conviene depende de para qué vayas a usar el artefacto:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Querés…</th><th>Usá</th></tr>
+</thead>
+<tbody>
+<tr><td>Probar la app en tu celular (o pasársela a alguien a mano)</td><td><strong>Camino A</strong>: APK de release, sin configuración extra</td></tr>
+<tr><td>Publicar en la Play Store</td><td><strong>Camino B</strong>: AAB firmado con tu propio keystore</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="camino-a-apk-para-probar-en-tu-celular"><a class="header" href="#camino-a-apk-para-probar-en-tu-celular">Camino A: APK para probar en tu celular</a></h3>
+<p>No requiere ninguna configuración extra. Compilás desde la raíz del proyecto (en este caso el proyecto Flutter vive en <code>frontend/</code>; ajustá la ruta si el tuyo está en otro lado):</p>
+<pre><code class="language-bash">cd frontend
+flutter build apk --release --split-per-abi
+</code></pre>
+<p>El APK queda en:</p>
+<pre><code>frontend/build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
+</code></pre>
+<p><strong>Por qué <code>--split-per-abi</code>:</strong> sin esa bandera, Flutter empaqueta todas las arquitecturas juntas en un solo APK y el archivo queda mucho más grande de lo necesario — más del doble. Con <code>--split-per-abi</code> generás un APK por arquitectura: <code>arm64-v8a</code> es la que usan casi todos los celulares actuales, así que ese es el que vas a repartir.</p>
+<h3 id="camino-b-apk-y-aab-para-la-play-store-firma-release"><a class="header" href="#camino-b-apk-y-aab-para-la-play-store-firma-release">Camino B: APK y AAB para la Play Store (firma release)</a></h3>
+<p>Acá sí hay que hacer los deberes: la Play Store <strong>no acepta builds firmados con la clave de debug</strong>. Son tres pasos, y el primero se hace una sola vez.</p>
+<h4 id="b1-generar-el-keystore-una-sola-vez"><a class="header" href="#b1-generar-el-keystore-una-sola-vez">B.1: Generar el keystore (una sola vez)</a></h4>
+<p>El keystore es tu firma digital. <strong>Guardalo como oro:</strong> si lo perdés, no vas a poder publicar actualizaciones de la app.</p>
+<pre><code class="language-bash">keytool -genkey -v -keystore ~/viviapp-release.jks \
+  -keyalg RSA -keysize 2048 -validity 10000 -alias viviapp
+</code></pre>
+<p><code>keytool</code> te va a pedir la contraseña del keystore y algunos datos de contacto (nombre, organización, ciudad, país — podés poner lo que quieras). Anotá la contraseña y el alias (<code>viviapp</code>): los necesitás en el paso siguiente.</p>
+<h4 id="b2-crear-androidkeyproperties"><a class="header" href="#b2-crear-androidkeyproperties">B.2: Crear <code>android/key.properties</code></a></h4>
+<p>Creá el archivo <code>android/key.properties</code> (dentro de la carpeta <code>android/</code>, no en la raíz) con este contenido:</p>
+<pre><code class="language-properties">storePassword=TU_PASSWORD
+keyPassword=TU_PASSWORD
+keyAlias=viviapp
+storeFile=/home/tu-usuario/viviapp-release.jks
+</code></pre>
+<p>Reemplazá <code>TU_PASSWORD</code> por la contraseña que elegiste en el paso anterior, y <code>tu-usuario</code> por tu usuario real.</p>
+<blockquote>
+<p><strong>No subas este archivo al repositorio.</strong> Junto con el <code>.jks</code>, es la llave de tu app: agregalos al <code>.gitignore</code>.</p>
+</blockquote>
+<h4 id="b3-conectar-el-keystore-en-buildgradlekts"><a class="header" href="#b3-conectar-el-keystore-en-buildgradlekts">B.3: Conectar el keystore en <code>build.gradle.kts</code></a></h4>
+<p>Acá está el detalle: este proyecto usa <strong>Kotlin DSL</strong> (<code>.kts</code>), no el <code>build.gradle</code> viejo que muestran la mayoría de los tutoriales, así que el código de carga del keystore es distinto.</p>
+<p>En <code>android/app/build.gradle.kts</code>, primero cargá el archivo de propiedades. Este bloque va <strong>fuera</strong> de <code>android { }</code>, arriba de todo:</p>
+<pre><code class="language-kotlin">import java.util.Properties
+
+val keystoreProperties = Properties()
+val keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(java.io.FileInputStream(keystorePropertiesFile))
+}
+</code></pre>
+<p><code>rootProject</code> es la carpeta <code>android/</code>, por eso <code>key.properties</code> se resuelve solo aunque el archivo esté ahí y no en la raíz del proyecto.</p>
+<p>Dentro de <code>android { }</code>, declará el signing config y usalo en <code>buildTypes</code>:</p>
+<pre><code class="language-kotlin">android {
+    // ...
+    signingConfigs {
+        create("release") {
+            keyAlias = keystoreProperties["keyAlias"] as String
+            keyPassword = keystoreProperties["keyPassword"] as String
+            storeFile = file(keystoreProperties["storeFile"] as String)
+            storePassword = keystoreProperties["storePassword"] as String
+        }
+    }
+
+    buildTypes {
+        release {
+            // Reemplazá la línea que viene por defecto en la plantilla:
+            //   signingConfig = signingConfigs.debug
+            signingConfig = signingConfigs.getByName("release")
+        }
+    }
+}
+</code></pre>
+<p>Si la plantilla no trae el bloque <code>signingConfigs</code>, agregalo tal cual. Si trae <code>signingConfig = signingConfigs.debug</code> en <code>release</code>, reemplazá esa línea por la de arriba.</p>
+<h4 id="compilar-el-aab-para-la-play-store"><a class="header" href="#compilar-el-aab-para-la-play-store">Compilar el AAB para la Play Store</a></h4>
+<p>Un detalle no menor: <strong>la Play Store, desde 2021, exige AAB y no APK</strong>. Con la firma ya conectada, compilás:</p>
+<pre><code class="language-bash">flutter build appbundle --release
+</code></pre>
+<p>El AAB queda en:</p>
+<pre><code>frontend/build/app/outputs/bundle/release/app-release.aab
+</code></pre>
+<p>Ese es el archivo que subís a la consola de Play Console.</p>
+<h2 id="flujo-de-trabajo-diario"><a class="header" href="#flujo-de-trabajo-diario">Flujo de trabajo diario</a></h2>
+<ol>
+<li>Abrís el emulador (o conectás el celular).</li>
+<li>En Neovim, dentro de <code>mi_app</code>: <code>:FlutterRun</code>.</li>
+<li>Editás <code>lib/main.dart</code>, guardás, y hot reload se aplica solo o con <code>:FlutterReload</code>.</li>
+<li>Los errores aparecen como diagnósticos del LSP, y los logs en <code>:FlutterLogToggle</code>.</li>
+</ol>
+<h2 id="notas"><a class="header" href="#notas">Notas</a></h2>
+<ul>
+<li><strong>iOS:</strong> necesitás una Mac con Xcode. En Linux solo vas a poder probar Android, y está bien para empezar.</li>
+<li><strong>Versiones:</strong> Flutter se actualiza seguido. Si algo de esta guía no coincide, mirá docs.flutter.dev/get-started/install, y para mantenerlo al día usá <code>flutter upgrade</code>.</li>
+<li><strong>Gestión de versiones:</strong> cuando trabajes en equipo, considerá <strong>FVM</strong> para fijar la misma versión de Flutter por proyecto.</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../docs/31-react-native-apk-release.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../docs/07-matrix-synapse.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../docs/31-react-native-apk-release.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../docs/07-matrix-synapse.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-09f2665d.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-c22b7243.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../theme/dark-6e51c595.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
