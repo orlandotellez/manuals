@@ -1,0 +1,700 @@
+/*
+ * Documentation shell: three-column grid, sidebar tree, in-page table of
+ * contents, prose baseline and the previous/next pager (S2).
+ *
+ * Values come from tokens only. The rail is on the left, the chapter in the
+ * middle and the sections of that chapter on the right, at the widths where
+ * there is room for all three; below that the shell folds to one column and the
+ * tree moves behind a disclosure at the top of the chapter.
+ */
+
+.docs {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  padding-inline: var(--gutter);
+}
+
+.docs__sidebar {
+  display: none;
+  min-inline-size: 0;
+}
+
+.docs__article {
+  /* Hug the rail instead of centring inside a wide track: on a wide screen a
+     centred column leaves half the free space on each side and reads as a gap. */
+  justify-self: start;
+  inline-size: 100%;
+  max-inline-size: var(--width-docs);
+  min-inline-size: 0;
+  padding-block: var(--space-md) var(--space-3xl);
+}
+
+.docs__toc {
+  display: none;
+}
+
+@media (min-width: 64rem) {
+  .docs {
+    grid-template-columns: var(--width-docs-nav) minmax(0, 1fr);
+  }
+
+  .docs__sidebar {
+    display: block;
+    position: sticky;
+    inset-block-start: var(--header-height);
+    align-self: start;
+    max-block-size: calc(100svh - var(--header-height));
+    overflow-y: auto;
+    padding-block: var(--space-lg) var(--space-xl);
+    padding-inline-end: var(--space-lg);
+    border-inline-end: var(--hairline) solid var(--line);
+    scrollbar-width: thin;
+    scrollbar-color: var(--line-strong) transparent;
+  }
+
+  .docs__article {
+    padding-inline: clamp(var(--space-lg), 3vw, var(--space-3xl));
+  }
+}
+
+@media (min-width: 72rem) {
+  .docs {
+    grid-template-columns: var(--width-docs-nav) minmax(0, 1fr) var(--width-docs-toc);
+  }
+
+  .docs__toc {
+    display: block;
+    position: sticky;
+    inset-block-start: var(--header-height);
+    align-self: start;
+    max-block-size: calc(100svh - var(--header-height));
+    overflow-y: auto;
+    padding-block: var(--space-lg) var(--space-xl);
+    padding-inline-start: var(--space-lg);
+    scrollbar-width: thin;
+    scrollbar-color: var(--line-strong) transparent;
+  }
+}
+
+/* Sidebar tree */
+.docs-nav {
+  padding-block-end: var(--space-lg);
+}
+
+.docs-nav__sections {
+  display: grid;
+  gap: var(--space-lg);
+  list-style: none;
+}
+
+.docs-nav__section-title {
+  margin-block-end: var(--space-xs);
+  color: var(--text-faint);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.docs-nav__pages {
+  display: grid;
+  gap: var(--space-3xs);
+  list-style: none;
+  border-inline-start: var(--hairline) solid var(--line);
+}
+
+.docs-nav__link {
+  display: block;
+  padding-block: var(--space-3xs);
+  padding-inline: var(--space-sm);
+  margin-inline-start: calc(var(--hairline) * -1);
+  border-inline-start: var(--hairline) solid transparent;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  line-height: 1.45;
+  text-decoration: none;
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+}
+
+.docs-nav__link:hover {
+  color: var(--text);
+  border-inline-start-color: var(--line-strong);
+}
+
+.docs-nav__link[aria-current='page'] {
+  border-inline-start-color: var(--brand);
+  color: var(--brand);
+  font-weight: 600;
+}
+
+/* Mobile tree: the same links, folded behind a disclosure so a phone can still
+   move between manuals without a horizontal drawer. */
+.docs-menu {
+  margin-block-end: var(--space-md);
+  border: var(--hairline) solid var(--line);
+  border-radius: var(--radius-md);
+  background-color: var(--surface-raised);
+}
+
+.docs-menu__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding-block: var(--space-sm);
+  padding-inline: var(--space-md);
+  color: var(--text);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.docs-menu__summary::-webkit-details-marker {
+  display: none;
+}
+
+.docs-menu__summary::after {
+  content: '\203A';
+  color: var(--text-faint);
+  font-size: 1.1rem;
+  line-height: 1;
+  transform: rotate(90deg);
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.docs-menu[open] .docs-menu__summary::after {
+  transform: rotate(-90deg);
+}
+
+.docs-menu__summary:focus-visible {
+  outline: 0.1875rem solid var(--focus);
+  outline-offset: 0.15rem;
+  border-radius: var(--radius-sm);
+}
+
+.docs-menu__body {
+  padding: var(--space-md);
+  border-block-start: var(--hairline) solid var(--line);
+}
+
+@media (min-width: 64rem) {
+  .docs-menu {
+    display: none;
+  }
+}
+
+/* The in-page index folds into the same disclosure pattern as the tree, so the
+   sections of a chapter are never missing on a laptop or a phone. */
+.docs-toc-menu {
+  margin-block-end: var(--space-md);
+}
+
+@media (min-width: 72rem) {
+  .docs-toc-menu {
+    display: none;
+  }
+}
+
+/* A long disclosure must not push the chapter off the screen: the list scrolls
+   inside its own box. */
+.docs-menu__body {
+  max-block-size: min(60svh, 30rem);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+/* Breadcrumbs */
+.breadcrumbs {
+  margin-block-end: var(--space-md);
+}
+
+.breadcrumbs__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2xs);
+  list-style: none;
+  font-size: var(--text-xs);
+}
+
+.breadcrumbs__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  color: var(--text-faint);
+}
+
+.breadcrumbs__item + .breadcrumbs__item::before {
+  content: '/';
+  color: var(--line-strong);
+}
+
+.breadcrumbs__link {
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.breadcrumbs__link:hover {
+  color: var(--brand);
+  text-decoration-line: underline;
+}
+
+.breadcrumbs__item--current {
+  color: var(--text);
+}
+
+/* Chapter header */
+.docs__header {
+  margin-block: var(--space-lg) var(--space-xl);
+  padding-block-end: var(--space-lg);
+  border-block-end: var(--hairline) solid var(--line);
+}
+
+.docs__eyebrow {
+  margin-block-end: var(--space-2xs);
+  color: var(--brand);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.docs__title {
+  font-size: var(--text-2xl);
+}
+
+.docs__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-block-start: var(--space-sm);
+}
+
+/* In-page table of contents */
+.toc {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-2xs);
+  min-inline-size: 0;
+}
+
+.toc__title {
+  margin-block-end: var(--space-xs);
+  color: var(--text-faint);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.toc__list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.15rem;
+  list-style: none;
+  border-inline-start: var(--hairline) solid var(--line);
+}
+
+.toc__link {
+  display: block;
+  overflow-wrap: anywhere;
+  padding-block: 0.1rem;
+  padding-inline-start: var(--space-sm);
+  margin-inline-start: calc(var(--hairline) * -1);
+  border-inline-start: var(--hairline) solid transparent;
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  line-height: 1.42;
+  text-decoration: none;
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+}
+
+.toc__link:hover {
+  color: var(--brand);
+  border-inline-start-color: color-mix(in srgb, var(--brand) 45%, var(--line));
+}
+
+.toc__link[aria-current='true'] {
+  border-inline-start-color: var(--brand);
+  color: var(--brand);
+  font-weight: 600;
+}
+
+.toc__list li[data-depth='3'] .toc__link {
+  padding-inline-start: var(--space-md);
+  color: var(--text-faint);
+  font-size: var(--text-2xs);
+}
+
+.toc__top {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  margin-block-start: var(--space-md);
+  padding-inline-start: var(--space-sm);
+  color: var(--text-faint);
+  font-size: var(--text-xs);
+  text-decoration: none;
+}
+
+.toc__top::before {
+  content: '\2191';
+}
+
+.toc__top:hover {
+  color: var(--brand);
+}
+
+/* Prose baseline for rendered Markdown. The manuals are long, so the rhythm is
+   generous: sections are separated by more air than paragraphs. */
+.prose {
+  max-inline-size: var(--width-prose);
+  font-size: var(--text-base);
+  overflow-wrap: break-word;
+}
+
+.prose > * + * {
+  margin-block-start: var(--space-md);
+}
+
+.prose h1,
+.prose h2 {
+  margin-block-start: var(--space-2xl);
+  font-size: var(--text-lg);
+  scroll-margin-block-start: calc(var(--header-height) + var(--space-md));
+}
+
+.prose h3 {
+  margin-block-start: var(--space-xl);
+  font-size: var(--text-lg);
+  scroll-margin-block-start: calc(var(--header-height) + var(--space-md));
+}
+
+.prose h4 {
+  margin-block-start: var(--space-lg);
+  font-size: var(--text-md);
+  scroll-margin-block-start: calc(var(--header-height) + var(--space-md));
+}
+
+.prose ul,
+.prose ol {
+  display: grid;
+  gap: var(--space-2xs);
+  padding-inline-start: var(--space-lg);
+}
+
+.prose li > ul,
+.prose li > ol {
+  margin-block-start: var(--space-2xs);
+}
+
+.prose li::marker {
+  color: var(--brand);
+}
+
+.prose strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.prose em {
+  color: var(--text);
+}
+
+.prose code {
+  padding-block: 0.1em;
+  padding-inline: 0.35em;
+  border: var(--hairline) solid var(--line);
+  border-radius: var(--radius-xs);
+  background-color: var(--surface-sunken);
+  font-size: 0.9em;
+}
+
+/* Inline code can be a long expression with no spaces, so it must be allowed to
+   break. Block code is excluded: a `pre` scrolls horizontally instead. */
+.prose :not(pre) > code {
+  overflow-wrap: anywhere;
+}
+
+.prose pre {
+  padding: var(--space-md);
+  overflow-x: auto;
+  border: var(--hairline) solid var(--line);
+  border-radius: var(--radius-md);
+  background-color: var(--surface-sunken);
+  font-size: var(--text-sm);
+  line-height: 1.55;
+}
+
+.prose pre code {
+  padding: 0;
+  border: 0;
+  background-color: transparent;
+  font-size: inherit;
+}
+
+/* The manuals use blockquotes as emphasis: an idea, an analogy, a rule of
+   thumb. They read as an aside, not as a citation. */
+.prose blockquote {
+  display: grid;
+  gap: var(--space-2xs);
+  padding: var(--space-sm) var(--space-md);
+  border: var(--hairline) solid var(--line);
+  border-inline-start: 0.1875rem solid var(--brand);
+  border-radius: var(--radius-md);
+  background-color: var(--surface-raised);
+  color: var(--text-muted);
+}
+
+.prose blockquote > *,
+.prose :is(ul, ol) > li {
+  /* Grid and list items get an automatic minimum size, so one unbreakable token
+     (a date-stamped filename inside a quote) pushed the whole page wider than a
+     phone. Zero lets the text break where the prose rules already allow it. */
+  min-inline-size: 0;
+}
+
+.prose blockquote > * {
+  margin-block-start: 0;
+}
+
+.prose blockquote strong {
+  color: var(--text);
+}
+
+/* The manuals separate major parts with a horizontal rule; it needs air, not a
+   full-bleed line touching the text. */
+.prose hr {
+  inline-size: 100%;
+  margin-block: var(--space-2xl);
+  border: 0;
+  border-block-start: var(--hairline) solid var(--line);
+}
+
+.prose img {
+  border: var(--hairline) solid var(--line);
+  border-radius: var(--radius-md);
+}
+
+.prose a {
+  overflow-wrap: break-word;
+}
+
+/* Code block chrome: language label and copy control live in the markup. */
+.code-block {
+  display: grid;
+  border: var(--hairline) solid var(--line);
+  border-radius: var(--radius-md);
+  background-color: var(--surface-sunken);
+  overflow: hidden;
+}
+
+.code-block__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding-block: var(--space-2xs);
+  padding-inline: var(--space-md);
+  border-block-end: var(--hairline) solid var(--line);
+  background-color: var(--surface-sunken);
+}
+
+.code-block__lang {
+  color: var(--text-faint);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.code-block__copy {
+  display: none;
+  padding-block: var(--space-3xs);
+  padding-inline: var(--space-xs);
+  border: var(--hairline) solid var(--line);
+  border-radius: var(--radius-full);
+  background-color: var(--surface-raised);
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+}
+
+.js .code-block__copy {
+  display: inline-flex;
+  align-items: center;
+}
+
+.code-block__copy:hover {
+  border-color: color-mix(in srgb, var(--brand) 45%, var(--line));
+  color: var(--brand);
+}
+
+.code-block__copy[data-copied='true'] {
+  border-color: color-mix(in srgb, var(--success) 45%, var(--line));
+  color: var(--success);
+}
+
+/* Inside the wrapper the block loses its own frame. */
+.code-block .astro-code {
+  border: 0;
+  border-radius: 0;
+}
+
+/* Tables: the wrapper scrolls, the table keeps a readable measure. */
+.table-wrap {
+  max-inline-size: 100%;
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+}
+
+/* A table wider than its column scrolls, and the reader has to be able to tell:
+   while content stays hidden to the right, that edge fades. The script sets the
+   attribute, so a table that fits is never touched. */
+.table-wrap[data-scrollable] {
+  -webkit-mask-image: linear-gradient(to right, var(--mask-solid) 88%, var(--mask-clear));
+  mask-image: linear-gradient(to right, var(--mask-solid) 88%, var(--mask-clear));
+}
+
+.table-wrap:focus-visible {
+  outline: var(--hairline) solid var(--brand);
+  outline-offset: 2px;
+}
+
+.prose table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  border: var(--hairline) solid var(--line);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+}
+
+.prose .table-wrap > table {
+  inline-size: max(100%, 34rem);
+}
+
+.prose thead {
+  background-color: var(--surface-sunken);
+}
+
+.prose th,
+.prose td {
+  padding: var(--space-xs) var(--space-sm);
+  border-block-end: var(--hairline) solid var(--line);
+  text-align: start;
+  vertical-align: top;
+}
+
+.prose th {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.prose tbody tr:last-child td {
+  border-block-end: 0;
+}
+
+/* Code blocks rendered by Shiki with dual themes: the renderer emits the palette
+   as CSS variables on each token, so one rule per theme decides which side wins
+   and the site's own theme attribute drives it, not the OS alone. */
+.astro-code {
+  display: block;
+  padding: var(--space-md);
+  overflow-x: auto;
+  border: var(--hairline) solid var(--line);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  line-height: 1.55;
+}
+
+/* Shiki separates line spans with a real newline inside `<pre>`, and that
+   newline is already a line break under `white-space: pre`. A block display here
+   adds a second break, so every line would get an empty line after it; the spans
+   stay inline and copy still brings the newlines, because they are text. */
+.astro-code .line {
+  display: inline;
+}
+
+.astro-code-themes {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+.astro-code.github-light-high-contrast {
+  background-color: var(--shiki-light-bg);
+}
+
+.astro-code.github-light-high-contrast span {
+  color: var(--shiki-light);
+}
+
+:root[data-theme='dark'] .astro-code.github-dark-high-contrast {
+  background-color: var(--shiki-dark-bg);
+}
+
+:root[data-theme='dark'] .astro-code.github-dark-high-contrast span {
+  color: var(--shiki-dark);
+}
+
+/* Pager */
+.pager {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-block-start: var(--space-3xl);
+  padding-block-start: var(--space-lg);
+  border-block-start: var(--hairline) solid var(--line);
+}
+
+.pager__link {
+  display: grid;
+  gap: var(--space-3xs);
+  flex: 1 1 12rem;
+  padding: var(--space-sm) var(--space-md);
+  border: var(--hairline) solid var(--line);
+  border-radius: var(--radius-md);
+  background-color: var(--surface-raised);
+  text-decoration: none;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+}
+
+.pager__link:hover {
+  border-color: color-mix(in srgb, var(--brand) 45%, var(--line));
+  background-color: var(--surface-sunken);
+}
+
+.pager__link--previous {
+  text-align: start;
+}
+
+.pager__link--next {
+  text-align: end;
+}
+
+.pager__direction {
+  color: var(--text-faint);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.pager__title {
+  color: var(--brand);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}

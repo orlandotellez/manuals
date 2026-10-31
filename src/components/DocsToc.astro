@@ -1,0 +1,110 @@
+---
+// In-page table of contents, built from the headings the renderer reports (S2).
+//
+// Only h2 and h3 are listed: deeper levels are detail, not structure. The
+// current section is marked while the reader scrolls, so the column answers
+// "where am I" and not only "what is in here".
+//
+// The layout renders two copies of this list — the sticky column on wide
+// screens and a disclosure on narrow ones — and only one of them is visible at a
+// time. The script drives both, so switching widths never loses the highlight.
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+  headings: MarkdownHeading[];
+  /** Inside a disclosure the summary already names the list. */
+  compact?: boolean;
+}
+
+const { headings, compact = false } = Astro.props;
+const items = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+---
+{
+  items.length > 0 && (
+    <nav class="toc" aria-label="En esta página" data-toc>
+      {!compact && <p class="toc__title">En esta página</p>}
+      <ol class="toc__list">
+        {items.map((heading) => (
+          <li data-depth={heading.depth}>
+            <a class="toc__link" href={`#${heading.slug}`} data-toc-link={heading.slug}>
+              {heading.text}
+            </a>
+          </li>
+        ))}
+      </ol>
+      <a class="toc__top" href="#main">
+        Volver arriba
+      </a>
+    </nav>
+  )
+}
+
+<script>
+  /*
+   * Scroll spy: the last heading whose top has passed the reading line is the
+   * section being read. A plain scroll listener keeps this independent from
+   * IntersectionObserver behaviour at the very top and the very bottom of a
+   * long chapter, and it is throttled to one write per animation frame.
+   */
+  const tocs = Array.from(document.querySelectorAll<HTMLElement>('[data-toc]'));
+
+  if (tocs.length > 0) {
+    const maps = tocs.map((toc) => {
+      const links = new Map<string, HTMLAnchorElement>();
+
+      toc.querySelectorAll<HTMLAnchorElement>('[data-toc-link]').forEach((link) => {
+        const slug = link.dataset.tocLink;
+        if (slug) links.set(slug, link);
+      });
+
+      return links;
+    });
+
+    const known = new Set(maps.flatMap((links) => [...links.keys()]));
+    const headings = Array.from(
+      document.querySelectorAll<HTMLElement>('.prose :is(h2, h3)[id]'),
+    ).filter((heading) => known.has(heading.id));
+
+    if (headings.length > 0) {
+      let frame = 0;
+      let current: string | null = null;
+
+      const paint = () => {
+        frame = 0;
+
+        const line = window.scrollY + window.innerHeight * 0.28;
+        let active = headings[0]?.id ?? null;
+
+        for (const heading of headings) {
+          if (heading.getBoundingClientRect().top + window.scrollY <= line) {
+            active = heading.id;
+          } else {
+            break;
+          }
+        }
+
+        if (active === current) return;
+        current = active;
+
+        for (const links of maps) {
+          links.forEach((link, slug) => {
+            if (slug === active) {
+              link.setAttribute('aria-current', 'true');
+            } else {
+              link.removeAttribute('aria-current');
+            }
+          });
+        }
+      };
+
+      const schedule = () => {
+        if (frame) return;
+        frame = window.requestAnimationFrame(paint);
+      };
+
+      window.addEventListener('scroll', schedule, { passive: true });
+      window.addEventListener('resize', schedule, { passive: true });
+      paint();
+    }
+  }
+</script>

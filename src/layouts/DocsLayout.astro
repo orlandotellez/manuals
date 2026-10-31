@@ -1,0 +1,176 @@
+---
+// Chapter shell (S2): sidebar tree, breadcrumbs, prose column, in-page table of
+// contents and previous/next pager.
+//
+// Everything is derived from the registry and the content collection, so the
+// layout never needs editing to add a manual. The three columns appear at the
+// widths where they fit; below that the tree folds into a disclosure at the top
+// of the chapter, because a phone without navigation is a dead end.
+import type { MarkdownHeading } from 'astro';
+import BaseLayout from './BaseLayout.astro';
+import DocsNav from '../components/DocsNav.astro';
+import DocsToc from '../components/DocsToc.astro';
+import {
+  chapterHref,
+  getChapters,
+  getNeighbours,
+  groupChapters,
+  type ChapterView,
+} from '../lib/manuals';
+import type { Section } from '../lib/manuals';
+import '../styles/docs.css';
+
+interface Props {
+  chapter: ChapterView;
+  section: Section;
+  headings: MarkdownHeading[];
+}
+
+const { chapter, section, headings } = Astro.props;
+
+const chapters = await getChapters();
+const groups = groupChapters(chapters);
+const { previous, next } = getNeighbours(chapters, chapter.id);
+const total = chapters.length;
+const sectionAnchor = `/docs/#${section.id}`;
+const description = `${chapter.title}: manual de ${section.title} en Manuales, ${total} manuales técnicos de desarrollo.`;
+---
+<BaseLayout title={`${chapter.title} · ${section.title} · Manuales`} description={description} wide>
+  <Fragment slot="head">
+    <meta data-pagefind-meta="section[content]" content={section.title} />
+  </Fragment>
+
+  <div class="docs">
+    <aside class="docs__sidebar">
+      <DocsNav groups={groups} currentId={chapter.id} />
+    </aside>
+
+    {
+      /*
+       * Search indexing: the article is the only part of the page that belongs
+       * in the index, so `data-pagefind-body` marks it and the chrome around
+       * the prose is ignored.
+       */
+    }
+    <article class="docs__article" data-pagefind-body>
+      <details class="docs-menu" data-pagefind-ignore>
+        <summary class="docs-menu__summary">Índice de manuales</summary>
+        <div class="docs-menu__body">
+          <DocsNav groups={groups} currentId={chapter.id} label="Índice de manuales (móvil)" />
+        </div>
+      </details>
+
+      {
+        headings.some((heading) => heading.depth === 2 || heading.depth === 3) && (
+          <details class="docs-menu docs-toc-menu" data-pagefind-ignore>
+            <summary class="docs-menu__summary">En esta página</summary>
+            <div class="docs-menu__body">
+              <DocsToc headings={headings} compact />
+            </div>
+          </details>
+        )
+      }
+
+      <nav class="breadcrumbs" aria-label="Ruta de navegación" data-pagefind-ignore>
+        <ol class="breadcrumbs__list">
+          <li class="breadcrumbs__item"><a class="breadcrumbs__link" href="/">Inicio</a></li>
+          <li class="breadcrumbs__item"><a class="breadcrumbs__link" href="/docs/">Manuales</a></li>
+          <li class="breadcrumbs__item">
+            <a class="breadcrumbs__link" href={sectionAnchor}>{section.title}</a>
+          </li>
+          <li class="breadcrumbs__item breadcrumbs__item--current" aria-current="page">
+            {chapter.title}
+          </li>
+        </ol>
+      </nav>
+
+      <header class="docs__header">
+        <p class="docs__eyebrow" data-pagefind-ignore>{section.title}</p>
+        <h1 class="docs__title" data-pagefind-meta="title">{chapter.title}</h1>
+        <div class="docs__meta" data-pagefind-ignore>
+          <span class="chip">Manual {chapter.position} de {total}</span>
+          <span class="chip">{section.title}</span>
+        </div>
+      </header>
+
+      <div class="prose">
+        <slot />
+      </div>
+
+      {
+        (previous || next) && (
+          <nav class="pager" aria-label="Manuales contiguos" data-pagefind-ignore>
+            {previous && (
+              <a class="pager__link pager__link--previous" href={chapterHref(previous.id)} rel="prev">
+                <span class="pager__direction">Anterior</span>
+                <span class="pager__title">{previous.title}</span>
+              </a>
+            )}
+            {next && (
+              <a class="pager__link pager__link--next" href={chapterHref(next.id)} rel="next">
+                <span class="pager__direction">Siguiente</span>
+                <span class="pager__title">{next.title}</span>
+              </a>
+            )}
+          </nav>
+        )
+      }
+    </article>
+
+    <aside class="docs__toc">
+      <DocsToc headings={headings} />
+    </aside>
+  </div>
+</BaseLayout>
+
+{
+  /*
+   * Copy control for code blocks. The block, its language label and the button
+   * are server-rendered; this only wires the click, so the chapter is complete
+   * and readable without it.
+   */
+}
+<script>
+  /*
+   * Wide tables scroll, and a table that scrolls silently looks like a table
+   * with a missing column. `data-scrollable` marks the ones that still have
+   * content hidden to the right; CSS fades that edge, and the mark goes away
+   * once the reader reaches the end.
+   */
+  const tables = Array.from(document.querySelectorAll<HTMLElement>('.table-wrap'));
+
+  const syncTables = () => {
+    for (const table of tables) {
+      const hidden = table.scrollWidth - table.scrollLeft - table.clientWidth;
+      table.toggleAttribute('data-scrollable', hidden > 2);
+    }
+  };
+
+  if (tables.length > 0) {
+    syncTables();
+    for (const table of tables) table.addEventListener('scroll', syncTables, { passive: true });
+    window.addEventListener('resize', syncTables, { passive: true });
+  }
+
+  const buttons = document.querySelectorAll<HTMLButtonElement>('.code-block__copy');
+
+  for (const button of buttons) {
+    button.addEventListener('click', async () => {
+      const code = button.closest('.code-block')?.querySelector('pre');
+      if (!code) return;
+
+      try {
+        await navigator.clipboard.writeText(code.textContent ?? '');
+        button.textContent = 'Copiado';
+        button.dataset.copied = 'true';
+      } catch {
+        button.textContent = 'No se pudo copiar';
+      }
+
+      window.setTimeout(() => {
+        button.textContent = 'Copiar';
+        delete button.dataset.copied;
+      }, 1800);
+    });
+  }
+</script>

@@ -1,0 +1,42 @@
+---
+// Sidebar tree for the docs layout: every section in reading order, with its
+// manuals underneath and the current one marked (S2).
+//
+// It only renders what exists; the build already refused to start when the
+// registry and the content folder disagreed, so a link here always resolves.
+import { chapterHref, type ChapterGroup } from '../lib/manuals';
+
+interface Props {
+  groups: ChapterGroup[];
+  /** Chapter id that owns the current page, for the active state. */
+  currentId?: string;
+  /** Announced to assistive technology; the mobile copy names the tree. */
+  label?: string;
+}
+
+const { groups, currentId, label = 'Índice de manuales' } = Astro.props;
+---
+<nav class="docs-nav" aria-label={label}>
+  <ul class="docs-nav__sections">
+    {
+      groups.map((group) => (
+        <li>
+          <p class="docs-nav__section-title">{group.section.title}</p>
+          <ul class="docs-nav__pages">
+            {group.chapters.map((chapter) => (
+              <li>
+                <a
+                  class="docs-nav__link"
+                  href={chapterHref(chapter.id)}
+                  aria-current={chapter.id === currentId ? 'page' : undefined}
+                >
+                  {chapter.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
