@@ -1,0 +1,24 @@
+---
+// Not-found page. It says what happened and offers the two routes that can
+// never be wrong; every link on it resolves.
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout
+  title="Esta página no existe · Manuales"
+  description="La dirección que buscas no está publicada. Vuelve al inicio o entra por el índice de manuales."
+>
+  <section class="not-found">
+    <div class="container">
+      <p class="not-found__eyebrow">Error 404</p>
+      <h1 class="not-found__title">Esta página no existe</h1>
+      <p class="not-found__text">
+        La dirección que pediste no está publicada. Puede que el manual se haya movido o que el
+        enlace tenga una errata: el índice general lista todos los manuales que existen.
+      </p>
+      <div class="not-found__actions">
+        <a class="btn btn--primary" href="/docs/">Ir al índice de manuales</a>
+        <a class="btn btn--ghost" href="/">Volver al inicio</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

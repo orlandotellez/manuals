@@ -1,0 +1,97 @@
+---
+// Light/dark switch. Both icons live in the DOM; CSS decides which one is
+// visible from the `data-theme` attribute on <html>, so there is no flash and
+// no icon file to load (S3).
+---
+<button
+  class="theme-toggle"
+  type="button"
+  data-theme-toggle
+  aria-pressed="false"
+  aria-label="Activar tema oscuro"
+>
+  <svg
+    class="theme-toggle__icon theme-toggle__icon--sun"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.7"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <circle cx="12" cy="12" r="4.2"></circle>
+    <path
+      d="M12 2.6v2.1M12 19.3v2.1M2.6 12h2.1M19.3 12h2.1M5.3 5.3l1.5 1.5M17.2 17.2l1.5 1.5M18.7 5.3l-1.5 1.5M6.8 17.2l-1.5 1.5"
+    ></path>
+  </svg>
+  <svg
+    class="theme-toggle__icon theme-toggle__icon--moon"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.7"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <path d="M20.4 14.6A8.6 8.6 0 0 1 9.4 3.6a8.6 8.6 0 1 0 11 11Z"></path>
+  </svg>
+</button>
+
+<script>
+  const STORAGE_KEY = 'manuals:theme';
+  const DARK_QUERY = '(prefers-color-scheme: dark)';
+  const root = document.documentElement;
+  const media = window.matchMedia(DARK_QUERY);
+
+  const readStored = () => {
+    try {
+      const value = window.localStorage.getItem(STORAGE_KEY);
+      return value === 'light' || value === 'dark' ? value : null;
+    } catch {
+      return null;
+    }
+  };
+
+  const writeStored = (theme) => {
+    try {
+      window.localStorage.setItem(STORAGE_KEY, theme);
+    } catch {
+      /* Private mode or blocked storage: the choice lives for this page only. */
+    }
+  };
+
+  const currentTheme = () => (root.dataset.theme === 'dark' ? 'dark' : 'light');
+
+  const syncButtons = () => {
+    const isDark = currentTheme() === 'dark';
+    document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((button) => {
+      button.setAttribute('aria-pressed', String(isDark));
+      button.setAttribute('aria-label', isDark ? 'Activar tema claro' : 'Activar tema oscuro');
+    });
+  };
+
+  const apply = (theme: 'light' | 'dark') => {
+    root.dataset.theme = theme;
+    syncButtons();
+  };
+
+  syncButtons();
+
+  document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const next = currentTheme() === 'dark' ? 'light' : 'dark';
+      writeStored(next);
+      apply(next);
+    });
+  });
+
+  /* While the visitor has not chosen explicitly, follow the system. */
+  media.addEventListener('change', (event) => {
+    if (readStored()) return;
+    apply(event.matches ? 'dark' : 'light');
+  });
+</script>

@@ -1,0 +1,132 @@
+/*
+ * Manuales design tokens.
+ *
+ * The only file in the project allowed to hold raw values. Every colour is
+ * declared once and resolved through light-dark(), so `color-scheme` decides
+ * which side of the pair wins and no component has to know about themes.
+ *
+ * Identity: an ink-blue accent over cool neutrals, the palette of a technical
+ * manual, deliberately not the warm coffee of the reference site (S7).
+ */
+:root {
+  color-scheme: light dark;
+
+  /* Brand: ink blue */
+  --brand: light-dark(#1f5ed6, #8ab4ff);
+  --brand-accent: light-dark(#16408f, #b9d0ff);
+  --brand-soft: light-dark(#e9f0fd, #101b2c);
+  --on-brand: light-dark(#ffffff, #071019);
+
+  /* Surfaces: three levels */
+  --surface: light-dark(#fbfcfd, #0d1116);
+  --surface-raised: light-dark(#ffffff, #151b22);
+  --surface-sunken: light-dark(#f1f5f9, #090c10);
+
+  /* Text: three levels */
+  --text: light-dark(#101519, #eef3f8);
+  --text-muted: light-dark(#485665, #a7b4c2);
+  --text-faint: light-dark(#5f6c7a, #8b98a6);
+
+  /* Semantic accents, used by code chrome and tables of contents */
+  --warn: light-dark(#8a5300, #f0b429);
+  --warn-soft: light-dark(#fdf4e4, #241a09);
+  --danger: light-dark(#b3261e, #ff8a80);
+  --danger-soft: light-dark(#fdecea, #2a1211);
+  --success: light-dark(#16624a, #6ee7a8);
+  --success-soft: light-dark(#e9f6f0, #0b211a);
+
+  /* Lines and focus */
+  --line: light-dark(#e2e8ee, #212a34);
+  --line-strong: light-dark(#c9d4e0, #35424f);
+  --focus: light-dark(#1f5ed6, #8ab4ff);
+
+  /* Type stacks */
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+
+  /* Fluid type scale */
+  --text-2xs: clamp(0.7rem, 0.68rem + 0.1vw, 0.76rem);
+  --text-xs: clamp(0.78rem, 0.75rem + 0.15vw, 0.85rem);
+  --text-sm: clamp(0.88rem, 0.84rem + 0.2vw, 0.95rem);
+  --text-base: clamp(1rem, 0.96rem + 0.2vw, 1.07rem);
+  --text-md: clamp(1.12rem, 1.05rem + 0.35vw, 1.3rem);
+  --text-lg: clamp(1.35rem, 1.2rem + 0.7vw, 1.75rem);
+  --text-xl: clamp(1.6rem, 1.35rem + 1.2vw, 2.3rem);
+  --text-2xl: clamp(1.95rem, 1.5rem + 2.2vw, 3.05rem);
+  --text-display: clamp(2.35rem, 1.55rem + 3.6vw, 4.25rem);
+
+  /* Spacing scale */
+  --space-3xs: 0.25rem;
+  --space-2xs: 0.375rem;
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+  --space-4xl: 5.5rem;
+
+  /* Radii */
+  --radius-xs: 0.375rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.875rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 1.75rem;
+  --radius-full: 999px;
+
+  /* Hairlines and controls */
+  --hairline: 1px;
+  --control-size: 2.5rem;
+  --icon-size: 1.125rem;
+
+  /* Elevation */
+  --shadow-color: light-dark(rgb(16 21 25 / 0.12), rgb(0 0 0 / 0.6));
+  --shadow-sm: 0 0.0625rem 0.125rem var(--shadow-color);
+  --shadow-md: 0 0.75rem 1.75rem -0.75rem var(--shadow-color);
+  --shadow-lg: 0 1.75rem 3.5rem -1.5rem var(--shadow-color);
+
+  /* Layout */
+  --width-container: 76rem;
+  --width-prose: 46rem;
+  --width-measure: 62ch;
+  --width-docs: 54rem;
+  --width-docs-nav: 18rem;
+  --width-docs-toc: 16rem;
+  --width-card: 22rem;
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+  --header-height: 3.75rem;
+
+  /* Layers */
+  --z-header: 100;
+  --z-overlay: 200;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 0.84, 0.44, 1);
+  --ease-enter: cubic-bezier(0.22, 0.75, 0.24, 1);
+  --duration-fast: 120ms;
+  --duration-base: 220ms;
+  --duration-slow: 420ms;
+  --duration-enter: 380ms;
+  --enter-distance: 0.875rem;
+  --stagger-enter: 55ms;
+
+  /* Decorative gradients read these instead of hard-coding a mask stop. */
+  --mask-solid: #000;
+  --mask-clear: #0000;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+}
+
+/* No-JS fallback: without an explicit choice the media query decides. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+  }
+}

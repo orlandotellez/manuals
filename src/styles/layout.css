@@ -1,0 +1,272 @@
+/* Layout: page shell, sticky header, brand, theme toggle and footer. */
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  inline-size: 100%;
+  max-inline-size: var(--width-container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* Documentation pages use the full viewport so the rail sits at the left edge
+   and the brand stays aligned with it instead of with a centred column. */
+.container--wide {
+  max-inline-size: none;
+}
+
+/* Header */
+.site-header {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--z-header);
+  border-block-end: var(--hairline) solid var(--line);
+  background-color: color-mix(in srgb, var(--surface) 82%, transparent);
+  -webkit-backdrop-filter: blur(0.75rem) saturate(150%);
+  backdrop-filter: blur(0.75rem) saturate(150%);
+}
+
+@supports not ((backdrop-filter: blur(0.75rem)) or (-webkit-backdrop-filter: blur(0.75rem))) {
+  .site-header {
+    background-color: var(--surface);
+  }
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  min-block-size: var(--header-height);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding-block: var(--space-3xs);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: var(--text-md);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  text-decoration: none;
+}
+
+.brand:hover {
+  color: var(--brand);
+  text-decoration: none;
+}
+
+/* The mark is drawn in CSS: two stacked pages, so the site needs no logo file
+   and the accent follows the theme. */
+.brand__mark {
+  position: relative;
+  display: block;
+  inline-size: 1.5rem;
+  block-size: 1.75rem;
+  border: 1.5px solid currentColor;
+  border-radius: 0.2rem;
+  color: var(--brand);
+}
+
+.brand__mark::before,
+.brand__mark::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0.25rem;
+  block-size: 1.5px;
+  background-color: currentColor;
+  border-radius: var(--radius-full);
+}
+
+.brand__mark::before {
+  inset-block-start: 0.45rem;
+  box-shadow: 0 0.4rem 0 currentColor;
+}
+
+.brand__mark::after {
+  inset-block-end: 0.3rem;
+  inline-size: 0.45rem;
+  inset-inline-end: auto;
+}
+
+.brand__name {
+  color: inherit;
+}
+
+.site-header__nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.site-header__link {
+  padding-block: var(--space-3xs);
+  padding-inline: var(--space-2xs);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.site-header__link:hover {
+  color: var(--brand);
+}
+
+.site-header__link[aria-current='page'] {
+  color: var(--text);
+}
+
+/* The documentation link is the only nav item a phone keeps. */
+@media (max-width: 30rem) {
+  .site-header__link--home {
+    display: none;
+  }
+}
+
+/* Theme toggle: icon visibility is pure CSS, keyed off [data-theme]. */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--control-size);
+  block-size: var(--control-size);
+  padding: 0;
+  border: var(--hairline) solid var(--line);
+  border-radius: var(--radius-full);
+  background-color: var(--surface-raised);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition:
+    color var(--duration-base) var(--ease-out),
+    border-color var(--duration-base) var(--ease-out),
+    background-color var(--duration-base) var(--ease-out);
+}
+
+.theme-toggle:hover {
+  border-color: color-mix(in srgb, var(--brand) 45%, var(--line));
+  color: var(--brand);
+}
+
+.theme-toggle__icon {
+  inline-size: var(--icon-size);
+  block-size: var(--icon-size);
+}
+
+.theme-toggle__icon--sun {
+  display: none;
+}
+
+.theme-toggle__icon--moon {
+  display: block;
+}
+
+:root[data-theme='dark'] .theme-toggle__icon--sun {
+  display: block;
+}
+
+:root[data-theme='dark'] .theme-toggle__icon--moon {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .theme-toggle__icon--sun {
+    display: block;
+  }
+
+  :root:not([data-theme]) .theme-toggle__icon--moon {
+    display: none;
+  }
+}
+
+/* Main + footer */
+.site-main {
+  flex: 1 1 auto;
+}
+
+.site-footer {
+  border-block-start: var(--hairline) solid var(--line);
+  padding-block: var(--space-md);
+}
+
+.site-footer__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm) var(--space-lg);
+}
+
+.site-footer__note,
+.site-footer__meta {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.site-footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.site-footer__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.site-footer__link:hover {
+  color: var(--brand);
+}
+
+.site-footer__link::after {
+  content: '\2197';
+  color: var(--text-faint);
+  font-size: 0.9em;
+}
+
+/* Not-found page */
+.not-found {
+  padding-block: var(--space-4xl);
+}
+
+.not-found__eyebrow {
+  color: var(--brand);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.not-found__title {
+  margin-block-start: var(--space-sm);
+  font-size: var(--text-2xl);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.not-found__text {
+  max-inline-size: var(--width-measure);
+  margin-block-start: var(--space-md);
+  color: var(--text-muted);
+  font-size: var(--text-md);
+  line-height: 1.7;
+}
+
+.not-found__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-block-start: var(--space-xl);
+}

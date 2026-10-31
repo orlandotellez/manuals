@@ -1,0 +1,109 @@
+---
+import '../styles/fonts.css';
+import '../styles/tokens.css';
+import '../styles/base.css';
+import '../styles/layout.css';
+import '../styles/search.css';
+import SiteHeader from '../components/SiteHeader.astro';
+import { getChapters } from '../lib/manuals';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Full-width shell for documentation pages (S2). */
+  wide?: boolean;
+}
+
+const { title, description, wide = false } = Astro.props;
+const count = (await getChapters()).length;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const website = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Manuales',
+  url: Astro.site!.href,
+  inLanguage: 'es',
+};
+---
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content="Manuales" />
+    <meta property="og:locale" content="es_ES" />
+    <meta name="twitter:card" content="summary" />
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify(website).replace(/</g, '\\u003c')}
+    />
+    <slot name="head" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
+
+    {
+      /*
+       * Pre-paint theme: resolve the stored choice (or the system preference)
+       * before anything renders, so there is no flash (S3). The `js` class lets
+       * CSS show enhancements that need a script behind them.
+       */
+    }
+    <script is:inline>
+      (function () {
+        var root = document.documentElement;
+        root.classList.add('js');
+        var stored = null;
+        try {
+          stored = window.localStorage.getItem('manuals:theme');
+        } catch (error) {
+          stored = null;
+        }
+        var theme =
+          stored === 'light' || stored === 'dark'
+            ? stored
+            : window.matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light';
+        root.dataset.theme = theme;
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Saltar al contenido</a>
+    <SiteHeader count={count} wide={wide} />
+    <main class="site-main" id="main">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class:list={['container', 'site-footer__inner', wide && 'container--wide']}>
+        <p class="site-footer__note">
+          Manuales · {count} manuales técnicos de desarrollo
+        </p>
+        <div class="site-footer__links">
+          <a
+            class="site-footer__link"
+            href="https://github.com/orlandotellez/manuals"
+            target="_blank"
+            rel="noopener noreferrer me"
+          >Repositorio<span class="sr-only"> (se abre en una pestaña nueva)</span></a
+          >
+          <a
+            class="site-footer__link"
+            href="https://landodev.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer me"
+          >Portafolio<span class="sr-only"> (se abre en una pestaña nueva)</span></a
+          >
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
