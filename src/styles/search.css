@@ -1,0 +1,225 @@
+/*
+ * Search: a command-palette style dialog over the built index (S4).
+ *
+ * The index is produced by Pagefind after `astro build`, so the interface works
+ * on the built site with no server and no API key. While the site is being
+ * developed the index does not exist yet; the dialog says so instead of
+ * pretending to search an empty corpus.
+ */
+
+.search-open {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  block-size: var(--control-size);
+  padding-inline: var(--space-sm) var(--space-xs);
+  border: var(--hairline) solid var(--line);
+  border-radius: var(--radius-full);
+  background-color: var(--surface-raised);
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition:
+    color var(--duration-base) var(--ease-out),
+    border-color var(--duration-base) var(--ease-out);
+}
+
+.search-open:hover {
+  border-color: color-mix(in srgb, var(--brand) 45%, var(--line));
+  color: var(--brand);
+}
+
+.search-open__icon {
+  inline-size: var(--icon-size);
+  block-size: var(--icon-size);
+  flex: 0 0 auto;
+}
+
+.search-open__label {
+  display: none;
+}
+
+.search-open__key {
+  display: none;
+  padding-block: 0.05rem;
+  padding-inline: 0.35rem;
+  border: var(--hairline) solid var(--line);
+  border-radius: var(--radius-xs);
+  background-color: var(--surface-sunken);
+  color: var(--text-faint);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  line-height: 1.5;
+}
+
+@media (min-width: 40rem) {
+  .search-open__label {
+    display: inline;
+  }
+
+  .search-open__key {
+    display: inline;
+  }
+}
+
+/* The dialog itself */
+.search-dialog {
+  inline-size: min(44rem, calc(100vw - 2rem));
+  max-inline-size: none;
+  max-block-size: min(36rem, calc(100svh - 4rem));
+  padding: 0;
+  border: var(--hairline) solid var(--line-strong);
+  border-radius: var(--radius-lg);
+  background-color: var(--surface-raised);
+  color: var(--text);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.search-dialog::backdrop {
+  background-color: color-mix(in srgb, var(--surface-sunken) 68%, transparent);
+  -webkit-backdrop-filter: blur(0.25rem);
+  backdrop-filter: blur(0.25rem);
+}
+
+.search-dialog__form {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border-block-end: var(--hairline) solid var(--line);
+}
+
+.search-dialog__input {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  padding-block: var(--space-2xs);
+  border: 0;
+  background-color: transparent;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+}
+
+.search-dialog__input:focus {
+  outline: none;
+}
+
+/* The dialog already offers Esc; the platform's own clear icon would be a
+   second, unthemed control in the same row. */
+.search-dialog__input::-webkit-search-cancel-button,
+.search-dialog__input::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.search-dialog__input::placeholder {
+  color: var(--text-faint);
+}
+
+.search-dialog__close {
+  flex: 0 0 auto;
+  padding-block: var(--space-3xs);
+  padding-inline: var(--space-xs);
+  border: var(--hairline) solid var(--line);
+  border-radius: var(--radius-xs);
+  background-color: var(--surface-sunken);
+  color: var(--text-faint);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  cursor: pointer;
+}
+
+.search-dialog__close:hover {
+  color: var(--text);
+}
+
+.search-dialog__body {
+  max-block-size: calc(36rem - 4.5rem);
+  padding: var(--space-xs);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+.search-dialog__status {
+  padding: var(--space-sm) var(--space-sm) var(--space-md);
+  color: var(--text-faint);
+  font-size: var(--text-sm);
+}
+
+.search-dialog__results {
+  display: grid;
+  gap: 0.15rem;
+  list-style: none;
+}
+
+.search-result {
+  display: grid;
+  gap: 0.15rem;
+  padding: var(--space-sm);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+}
+
+.search-result:hover,
+.search-result:focus-visible {
+  background-color: var(--surface-sunken);
+  text-decoration: none;
+}
+
+.search-result__head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+}
+
+.search-result__title {
+  color: var(--text);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.search-result:hover .search-result__title {
+  color: var(--brand);
+}
+
+.search-result__section {
+  color: var(--text-faint);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.search-result__excerpt {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  line-height: 1.5;
+}
+
+.search-result__excerpt mark {
+  background-color: color-mix(in srgb, var(--brand) 22%, transparent);
+  color: var(--text);
+  border-radius: 0.15em;
+}
+
+.search-hint {
+  padding: var(--space-xs) var(--space-sm);
+  color: var(--text-faint);
+  font-size: var(--text-2xs);
+}
+
+.search-hint kbd {
+  padding-block: 0.05em;
+  padding-inline: 0.3em;
+  border: var(--hairline) solid var(--line);
+  border-radius: var(--radius-xs);
+  background-color: var(--surface-sunken);
+  font-size: 0.95em;
+}

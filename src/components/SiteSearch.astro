@@ -1,0 +1,236 @@
+---
+// Search entry point and its dialog (S4).
+//
+// The index is built by Pagefind after `astro build`, so this component never
+// imports it at build time: the script loads `/pagefind/pagefind.js` on first
+// open. Without an index (during development) the dialog says the search is not
+// available yet instead of showing an empty result list.
+interface Props {
+  /** How many manuals the library holds, so the placeholder never lies. */
+  count: number;
+}
+
+const { count } = Astro.props;
+---
+<button class="search-open" type="button" data-search-open aria-haspopup="dialog">
+  <svg
+    class="search-open__icon"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.8"
+    stroke-linecap="round"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <circle cx="11" cy="11" r="6.5"></circle>
+    <path d="m16 16 4.5 4.5"></path>
+  </svg>
+  <span class="search-open__label">Buscar</span>
+  <span class="search-open__key" aria-hidden="true">Ctrl K</span>
+</button>
+
+<dialog class="search-dialog" data-search-dialog aria-label="Buscar en los manuales">
+  <form class="search-dialog__form" role="search" data-search-form>
+    <input
+      class="search-dialog__input"
+      type="search"
+      name="q"
+      placeholder={`Buscar en ${count} manuales`}
+      autocomplete="off"
+      spellcheck="false"
+      data-search-input
+    />
+    <button class="search-dialog__close" type="button" data-search-close>Esc</button>
+  </form>
+  <div class="search-dialog__body">
+    <p class="search-dialog__status" data-search-status role="status"></p>
+    <ul class="search-dialog__results" data-search-results></ul>
+    <p class="search-hint">
+      Escribe al menos dos letras. <kbd>↑</kbd> <kbd>↓</kbd> para moverte, <kbd>Enter</kbd> para
+      abrir.
+    </p>
+  </div>
+</dialog>
+
+<script>
+  type PagefindResult = {
+    data: () => Promise<{
+      url: string;
+      excerpt: string;
+      meta: Record<string, string>;
+    }>;
+  };
+
+  type Pagefind = {
+    options: (config: { excerptLength?: number }) => Promise<Pagefind>;
+    search: (term: string) => Promise<{ results: PagefindResult[] }>;
+  };
+
+  const dialog = document.querySelector<HTMLDialogElement>('[data-search-dialog]');
+  const input = document.querySelector<HTMLInputElement>('[data-search-input]');
+  const status = document.querySelector<HTMLElement>('[data-search-status]');
+  const list = document.querySelector<HTMLUListElement>('[data-search-results]');
+
+  let pagefind: Pagefind | null = null;
+  let pagefindFailed = false;
+  let timer = 0;
+  let request = 0;
+
+  const setStatus = (message: string) => {
+    if (status) status.textContent = message;
+  };
+
+  const clearResults = () => {
+    if (list) list.replaceChildren();
+  };
+
+  const loadPagefind = async (): Promise<Pagefind | null> => {
+    if (pagefind || pagefindFailed) return pagefind;
+
+    try {
+      const installed = (await import(
+        /* @vite-ignore */ `${window.location.origin}/pagefind/pagefind.js`
+      )) as Pagefind;
+
+      // Pagefind 1.5 resolves `options()` with undefined and keeps searching on
+      // the module it was called on, older releases return a configured copy.
+      // Both shapes are accepted, and the module is never replaced by undefined.
+      const configured = await installed.options({ excerptLength: 22 });
+      pagefind = configured ?? installed;
+      return pagefind;
+    } catch {
+      pagefindFailed = true;
+      return null;
+    }
+  };
+
+  const render = async (term: string) => {
+    const engine = await loadPagefind();
+
+    if (!engine) {
+      clearResults();
+      setStatus('La búsqueda se activa después de compilar el sitio: ejecuta `pnpm build`.');
+      return;
+    }
+
+    const current = ++request;
+    const { results } = await engine.search(term);
+
+    if (current !== request) return;
+
+    clearResults();
+
+    if (results.length === 0) {
+      setStatus(`Sin resultados para “${term}”.`);
+      return;
+    }
+
+    setStatus(`${results.length} resultado${results.length === 1 ? '' : 's'}.`);
+
+    const loaded = await Promise.all(results.slice(0, 12).map((result) => result.data()));
+
+    if (current !== request || !list) return;
+
+    for (const entry of loaded) {
+      const item = document.createElement('li');
+      const link = document.createElement('a');
+      const head = document.createElement('span');
+      const title = document.createElement('span');
+      const section = document.createElement('span');
+      const excerpt = document.createElement('span');
+
+      link.className = 'search-result';
+      link.href = entry.url;
+      head.className = 'search-result__head';
+      title.className = 'search-result__title';
+      section.className = 'search-result__section';
+      excerpt.className = 'search-result__excerpt';
+
+      title.textContent = entry.meta.title ?? entry.url;
+      section.textContent = entry.meta.section ?? '';
+      excerpt.innerHTML = entry.excerpt;
+
+      head.append(title, section);
+      link.append(head, excerpt);
+      item.append(link);
+      list.append(item);
+    }
+  };
+
+  const schedule = (term: string) => {
+    window.clearTimeout(timer);
+
+    if (term.trim().length < 2) {
+      clearResults();
+      setStatus('Escribe al menos dos letras para buscar.');
+      return;
+    }
+
+    timer = window.setTimeout(() => void render(term.trim()), 180);
+  };
+
+  const open = async () => {
+    if (!dialog) return;
+
+    if (!dialog.open) dialog.showModal();
+    input?.focus();
+    input?.select();
+
+    if (!input?.value.trim()) {
+      clearResults();
+      setStatus('Escribe al menos dos letras para buscar.');
+    }
+  };
+
+  document.querySelectorAll('[data-search-open]').forEach((button) => {
+    button.addEventListener('click', () => void open());
+  });
+
+  document.querySelector('[data-search-close]')?.addEventListener('click', () => dialog?.close());
+
+  /*
+   * Enter goes to the first result instead of submitting a form that does not
+   * exist: the dialog is a search, not a navigation form, and closing it on
+   * Enter would throw away the query the reader just typed.
+   */
+  document.querySelector('[data-search-form]')?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    list?.querySelector<HTMLAnchorElement>('a')?.click();
+  });
+
+  input?.addEventListener('input', () => schedule(input.value));
+
+  document.addEventListener('keydown', (event) => {
+    const typing = event.target instanceof HTMLElement && event.target.closest('input, textarea');
+
+    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+      event.preventDefault();
+      void open();
+      return;
+    }
+
+    if (event.key === '/' && !typing && !dialog?.open) {
+      event.preventDefault();
+      void open();
+    }
+  });
+
+  /* Arrow keys move through the results, Enter follows the focused one. */
+  dialog?.addEventListener('keydown', (event) => {
+    if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
+
+    const links = Array.from(list?.querySelectorAll<HTMLAnchorElement>('a') ?? []);
+    if (links.length === 0) return;
+
+    event.preventDefault();
+
+    const index = links.indexOf(document.activeElement as HTMLAnchorElement);
+    const next =
+      event.key === 'ArrowDown'
+        ? links[(index + 1 + links.length) % links.length]
+        : links[(index - 1 + links.length) % links.length];
+
+    next.focus();
+  });
+</script>
