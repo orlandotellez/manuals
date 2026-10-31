@@ -6,7 +6,7 @@
 // open. Without an index (during development) the dialog says the search is not
 // available yet instead of showing an empty result list.
 interface Props {
-  /** How many manuals the library holds, so the placeholder never lies. */
+  /** How many pages the index holds, so the placeholder never lies. */
   count: number;
 }
 
@@ -36,7 +36,7 @@ const { count } = Astro.props;
       class="search-dialog__input"
       type="search"
       name="q"
-      placeholder={`Buscar en ${count} manuales`}
+      placeholder={`Buscar en ${count} páginas`}
       autocomplete="off"
       spellcheck="false"
       data-search-input

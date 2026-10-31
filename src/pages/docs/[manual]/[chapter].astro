@@ -1,0 +1,42 @@
+---
+// One chapter: a page of a manual (S13).
+//
+// The route is `/docs/<manual>/<slug>/`, derived from the entry id, so the URL of
+// a chapter is stable and readable and never depends on a slug field.
+import type { GetStaticPaths } from 'astro';
+import { getEntry, render } from 'astro:content';
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+import { chapterHref, getManuals, type ManualView } from '../../../lib/manuals';
+
+export const getStaticPaths = (async () => {
+  const manuals = await getManuals();
+  const libraryTotal = manuals.length;
+
+  return manuals.flatMap((manual) =>
+    manual.chapters.map((chapter) => ({
+      params: { manual: manual.id, chapter: chapter.data.slug },
+      props: { manualId: manual.id, pageId: chapter.id, libraryTotal },
+    })),
+  );
+}) satisfies GetStaticPaths;
+
+interface Props {
+  manualId: string;
+  pageId: string;
+  libraryTotal: number;
+}
+
+const { manualId, pageId, libraryTotal } = Astro.props;
+
+const manual = (await getManuals()).find((item) => item.id === manualId) as ManualView;
+const page = await getEntry('manuals', pageId);
+
+if (!page) {
+  throw new Error(`El capítulo "${pageId}" no existe en el contenido.`);
+}
+
+const { Content, headings } = await render(page);
+---
+<DocsLayout manual={manual} page={page} headings={headings} libraryTotal={libraryTotal}>
+  <Content />
+</DocsLayout>

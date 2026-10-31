@@ -1,0 +1,61 @@
+---
+// The cover of a manual: what it is about, and the list of its chapters (S13).
+//
+// The preamble of the Markdown file is the prose; the chapter list is generated,
+// because the manual's own "Índice" section is exactly that list and is dropped
+// during the split.
+import type { GetStaticPaths } from 'astro';
+import { getEntry, render } from 'astro:content';
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+import { chapterHref, getManuals, type ManualView } from '../../../lib/manuals';
+
+export const getStaticPaths = (async () => {
+  const manuals = await getManuals();
+  const libraryTotal = manuals.length;
+
+  return manuals.map((manual) => ({
+    params: { manual: manual.id },
+    props: { manualId: manual.id, pageId: manual.cover.id, libraryTotal },
+  }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  manualId: string;
+  pageId: string;
+  libraryTotal: number;
+}
+
+const { manualId, pageId, libraryTotal } = Astro.props;
+
+const manual = (await getManuals()).find((item) => item.id === manualId) as ManualView;
+const page = await getEntry('manuals', pageId);
+
+if (!page) {
+  throw new Error(`La portada de "${manualId}" no existe en el contenido.`);
+}
+
+const { Content, headings } = await render(page);
+---
+<DocsLayout manual={manual} page={page} headings={headings} libraryTotal={libraryTotal}>
+  <Content />
+
+  <section class="chapters" slot="after">
+    <h2 class="chapters__title">Capítulos</h2>
+    <p class="chapters__note">
+      {manual.chapters.length} capítulos en este manual. Cada uno es una página: al final de cada
+      capítulo tenés el anterior y el siguiente.
+    </p>
+    <ol class="chapters__list">
+      {
+        manual.chapters.map((chapter) => (
+          <li>
+            <a class="chapters__link" href={chapterHref(manual.id, chapter.data.slug)}>
+              <span class="chapters__number">{String(chapter.data.order).padStart(2, '0')}</span>
+              <span class="chapters__name">{chapter.data.title}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+</DocsLayout>

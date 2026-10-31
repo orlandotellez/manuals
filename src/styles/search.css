@@ -206,7 +206,6 @@
 .search-result__excerpt mark {
   background-color: color-mix(in srgb, var(--brand) 22%, transparent);
   color: var(--text);
-  border-radius: 0.15em;
 }
 
 .search-hint {

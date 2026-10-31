@@ -5,16 +5,17 @@
 // Every number on this page is counted from the registry, never typed, so it
 // cannot drift from the content.
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { chapterHref, getChapters, getLibrarySize, groupChapters } from '../lib/manuals';
+import TechLogo from '../components/TechLogo.astro';
+import { getLibrarySize, getManuals, groupManuals, manualHref } from '../lib/manuals';
 import '../styles/landing.css';
 
-const chapters = await getChapters();
-const groups = groupChapters(chapters);
-const size = getLibrarySize(chapters);
+const manuals = await getManuals();
+const groups = groupManuals(manuals);
+const size = getLibrarySize(manuals);
 ---
 <BaseLayout
   title="Manuales · manuales técnicos de desarrollo"
-  description={`${size.chapters} manuales técnicos de desarrollo en ${size.sections} secciones: backend, bases de datos, aplicaciones móviles y redes.`}
+  description={`${size.manuals} manuales técnicos de desarrollo en ${size.sections} secciones, ${size.chapters} capítulos en total.`}
 >
   <section class="hero">
     <div class="container hero__inner">
@@ -22,11 +23,12 @@ const size = getLibrarySize(chapters);
       <h1 class="hero__title">Manuales técnicos de desarrollo</h1>
       <p class="hero__lead">
         Mis manuales de desarrollo: el backend, las bases de datos, las aplicaciones móviles y las
-        redes, cada tema en su propio manual completo. Los capítulos están a la izquierda, las
-        secciones del capítulo a la derecha y la documentación en el medio.
+        redes. Cada manual está partido en capítulos, uno por página: el índice del manual queda a
+        la izquierda, los títulos de la página a la derecha y al final de cada capítulo tenés el
+        anterior y el siguiente.
       </p>
       <div class="hero__actions">
-        <a class="btn btn--primary" href="#manuales">Ver los manuales</a>
+        <a class="btn btn--primary" href="#tecnologias">Ver las tecnologías</a>
         <a
           class="btn btn--ghost"
           href="https://github.com/orlandotellez/manuals"
@@ -37,54 +39,41 @@ const size = getLibrarySize(chapters);
       </div>
       <div class="hero__stats">
         <div class="hero__stat">
+          <span class="hero__stat-value">{size.manuals}</span>
+          <span class="hero__stat-label">manuales</span>
+        </div>
+        <div class="hero__stat">
           <span class="hero__stat-value">{size.chapters}</span>
-          <span class="hero__stat-label">manuales publicados</span>
+          <span class="hero__stat-label">capítulos</span>
         </div>
         <div class="hero__stat">
           <span class="hero__stat-value">{size.sections}</span>
           <span class="hero__stat-label">secciones temáticas</span>
         </div>
-        <div class="hero__stat">
-          <span class="hero__stat-value">Claro / oscuro</span>
-          <span class="hero__stat-label">según tu sistema o tu elección</span>
-        </div>
       </div>
     </div>
   </section>
 
-  <section class="library" id="manuales">
+  <section class="library" id="tecnologias">
     <div class="container">
       <header class="library__header">
-        <h2 class="library__title">Manuales</h2>
+        <h2 class="library__title">Tecnologías</h2>
         <p class="library__note">
-          Todos los manuales, agrupados por tema. Cada uno se lee como un documento completo, con su
-          índice de secciones y enlaces al anterior y al siguiente.
+          {size.sections} tecnologías, {size.manuals} manuales y {size.chapters} capítulos. Elegí una
+          para ver sus manuales en el índice completo.
         </p>
       </header>
 
-      <div class="library__grid">
+      <div class="tech-grid">
         {
           groups.map((group) => (
-            <section class="section-card" id={group.section.id}>
-              <header class="section-card__header">
-                <h3 class="section-card__title">{group.section.title}</h3>
-                <span class="chip">
-                  {group.chapters.length} {group.chapters.length === 1 ? 'manual' : 'manuales'}
-                </span>
-              </header>
-              <ol class="section-card__list">
-                {group.chapters.map((chapter) => (
-                  <li>
-                    <a class="section-card__link" href={chapterHref(chapter.id)}>
-                      <span class="section-card__number">
-                        {String(chapter.position).padStart(2, '0')}
-                      </span>
-                      <span>{chapter.title}</span>
-                    </a>
-                  </li>
-                ))}
-              </ol>
-            </section>
+            <a class="tech-card" href={`/docs/#${group.section.id}`}>
+              <TechLogo logo={group.section.logo} />
+              <span class="tech-card__title">{group.section.title}</span>
+              <span class="tech-card__count">
+                {group.manuals.length} {group.manuals.length === 1 ? 'manual' : 'manuales'}
+              </span>
+            </a>
           ))
         }
       </div>

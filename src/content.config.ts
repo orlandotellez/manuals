@@ -1,20 +1,33 @@
-import { defineCollection } from 'astro:content';
-import { glob } from 'astro/loaders';
+import { defineCollection, z } from 'astro:content';
+import { manualChaptersLoader } from './lib/manuals-loader.mjs';
 
 /**
- * The manuals, one Markdown file per chapter (S6).
+ * The manuals, cut into pages (S13).
  *
- * There is deliberately no schema here: a chapter is the document an author
- * wrote, and its title, section and reading position live in the registry
- * (`src/lib/manuals.mjs`), exactly where mdBook's `SUMMARY.md` kept them. A
- * chapter therefore needs no frontmatter, and the 46 published manuals did not
- * have to be edited to move from mdBook to Astro.
+ * One manual file produces one entry per page: its cover (`kind: 'overview'`)
+ * and one entry per chapter. The loader owns the split, so the collection only
+ * has to describe what a page is, and the schema is what stops a page from
+ * reaching a route without a title or a manual to belong to.
  *
- * The route of a chapter is its file name: `src/content/manuals/09-…md` reads
- * at `/docs/09-…/`, so the URL of a manual survives any change of tool.
+ * `id` is `<manual>` for a cover and `<manual>/<chapter-slug>` for a chapter; the
+ * route is derived from it, never from a slug field that could drift.
  */
 const manuals = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/manuals' }),
+  loader: manualChaptersLoader(),
+  schema: z
+    .object({
+      kind: z.enum(['overview', 'chapter']),
+      /** Manual this page belongs to: the file name in src/content/manuals. */
+      manual: z.string().min(1),
+      /** Section of the library, validated against library.mjs by the loader. */
+      section: z.string().min(1),
+      title: z.string().min(1),
+      /** Chapter slug; empty on the cover. */
+      slug: z.string(),
+      /** Reading position inside the manual; 0 on the cover. */
+      order: z.number().int().nonnegative(),
+    })
+    .strict(),
 });
 
 export const collections = { manuals };

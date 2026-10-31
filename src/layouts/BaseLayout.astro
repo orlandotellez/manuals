@@ -5,7 +5,7 @@ import '../styles/base.css';
 import '../styles/layout.css';
 import '../styles/search.css';
 import SiteHeader from '../components/SiteHeader.astro';
-import { getChapters } from '../lib/manuals';
+import { getLibrarySize, getManuals } from '../lib/manuals';
 
 interface Props {
   title: string;
@@ -15,7 +15,8 @@ interface Props {
 }
 
 const { title, description, wide = false } = Astro.props;
-const count = (await getChapters()).length;
+const size = getLibrarySize(await getManuals());
+const pages = size.manuals + size.chapters;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const website = {
   '@context': 'https://schema.org',
@@ -78,14 +79,14 @@ const website = {
   </head>
   <body>
     <a class="skip-link" href="#main">Saltar al contenido</a>
-    <SiteHeader count={count} wide={wide} />
+    <SiteHeader count={pages} wide={wide} />
     <main class="site-main" id="main">
       <slot />
     </main>
     <footer class="site-footer">
       <div class:list={['container', 'site-footer__inner', wide && 'container--wide']}>
         <p class="site-footer__note">
-          Manuales · {count} manuales técnicos de desarrollo
+          Manuales · {size.manuals} manuales, {size.chapters} capítulos
         </p>
         <div class="site-footer__links">
           <a

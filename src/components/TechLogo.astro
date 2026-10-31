@@ -1,0 +1,19 @@
+---
+// Technology mark for a section (S14).
+//
+// The SVG in public/logos is used as a mask over `currentColor`, so one file
+// serves light and dark without a second asset and without the mark fighting the
+// site's palette. It is decoration: the technology is always named next to it.
+interface Props {
+  /** File name in public/logos, without the extension. */
+  logo: string;
+  class?: string;
+}
+
+const { logo, class: className } = Astro.props;
+---
+<span
+  class:list={['tech-logo', className]}
+  style={`--tech-logo: url(/logos/${logo}.svg)`}
+  aria-hidden="true"
+></span>

@@ -7,6 +7,10 @@
  * title, section and reading position come from here, the way mdBook's
  * `SUMMARY.md` used to carry them (S6).
  *
+ * Each section carries the technology it is about: `logo` names a file in
+ * public/logos, used by the home and the catalog so a card shows the technology
+ * before its name.
+ *
  * Adding a chapter is one Markdown file plus one line in `chapters`. The build
  * fails when the two disagree, so navigation can never point at a route that
  * does not exist.
@@ -15,26 +19,26 @@
  * from both TypeScript and the Astro config without a loader flag.
  */
 
-/** @typedef {{ id: string, title: string }} Section */
+/** @typedef {{ id: string, logo: string, title: string }} Section */
 /** @typedef {{ id: string, title: string, section: string }} Chapter */
 
 /** @type {readonly Section[]} */
 export const sections = [
-  { id: 'rust', title: 'Rust' },
-  { id: 'tauri', title: 'Tauri' },
-  { id: 'fastify', title: 'Fastify' },
-  { id: 'express', title: 'Express' },
-  { id: 'nextjs', title: 'NextJs' },
-  { id: 'base-de-datos', title: 'Base de datos' },
-  { id: 'aspnet-core', title: 'ASPNET CORE(C#)' },
-  { id: 'react-native', title: 'React Native' },
-  { id: 'flutter', title: 'Flutter' },
-  { id: 'matrix-synapse', title: 'Matrix Synapse' },
-  { id: 'redes', title: 'Redes' },
-  { id: 'redes-de-datos-ii', title: 'Redes de Datos II' },
-  { id: 'docker', title: 'Docker' },
-  { id: 'git-y-github', title: 'Git y Github' },
-  { id: 'linux', title: 'Linux' },
+  { id: 'rust', logo: 'rust', title: 'Rust' },
+  { id: 'tauri', logo: 'tauri', title: 'Tauri' },
+  { id: 'fastify', logo: 'fastify', title: 'Fastify' },
+  { id: 'express', logo: 'express', title: 'Express' },
+  { id: 'nextjs', logo: 'nextdotjs', title: 'NextJs' },
+  { id: 'base-de-datos', logo: 'postgresql', title: 'Base de datos' },
+  { id: 'aspnet-core', logo: 'dotnet', title: 'ASPNET CORE(C#)' },
+  { id: 'react-native', logo: 'react', title: 'React Native' },
+  { id: 'flutter', logo: 'flutter', title: 'Flutter' },
+  { id: 'matrix-synapse', logo: 'matrix', title: 'Matrix Synapse' },
+  { id: 'redes', logo: 'cisco', title: 'Redes' },
+  { id: 'redes-de-datos-ii', logo: 'cisco', title: 'Redes de Datos II' },
+  { id: 'docker', logo: 'docker', title: 'Docker' },
+  { id: 'git-y-github', logo: 'git', title: 'Git y Github' },
+  { id: 'linux', logo: 'linux', title: 'Linux' },
 ];
 
 /** @type {readonly Chapter[]} */

@@ -1,42 +1,45 @@
 ---
-// Sidebar tree for the docs layout: every section in reading order, with its
-// manuals underneath and the current one marked (S2).
+// The left column of a manual: its chapters, one page each (S11, S13).
 //
-// It only renders what exists; the build already refused to start when the
-// registry and the content folder disagreed, so a link here always resolves.
-import { chapterHref, type ChapterGroup } from '../lib/manuals';
+// Entering a manual replaces the library tree with that manual's chapters, so the
+// column reads like the table of contents of a book instead of a menu of other
+// books. The way back to the library is one link at the top, the same one the
+// breadcrumbs offer.
+import { chapterHref, manualHref, type ManualView } from '../lib/manuals';
 
 interface Props {
-  groups: ChapterGroup[];
-  /** Chapter id that owns the current page, for the active state. */
-  currentId?: string;
-  /** Announced to assistive technology; the mobile copy names the tree. */
+  manual: ManualView;
+  /** Chapter being read; empty on the manual's cover. */
+  currentSlug?: string;
+  /** Announced to assistive technology; the mobile copy names itself. */
   label?: string;
 }
 
-const { groups, currentId, label = 'Índice de manuales' } = Astro.props;
+const { manual, currentSlug, label = 'Capítulos del manual' } = Astro.props;
 ---
 <nav class="docs-nav" aria-label={label}>
-  <ul class="docs-nav__sections">
+  <a class="docs-nav__back" href="/docs/">Todos los manuales</a>
+  <p class="docs-nav__section-title">{manual.section.title}</p>
+  <a
+    class="docs-nav__manual"
+    href={manualHref(manual.id)}
+    aria-current={currentSlug ? undefined : 'page'}
+  >
+    {manual.title}
+  </a>
+  <ol class="docs-nav__chapters">
     {
-      groups.map((group) => (
+      manual.chapters.map((chapter) => (
         <li>
-          <p class="docs-nav__section-title">{group.section.title}</p>
-          <ul class="docs-nav__pages">
-            {group.chapters.map((chapter) => (
-              <li>
-                <a
-                  class="docs-nav__link"
-                  href={chapterHref(chapter.id)}
-                  aria-current={chapter.id === currentId ? 'page' : undefined}
-                >
-                  {chapter.title}
-                </a>
-              </li>
-            ))}
-          </ul>
+          <a
+            class="docs-nav__chapter"
+            href={chapterHref(manual.id, chapter.data.slug)}
+            aria-current={chapter.data.slug === currentSlug ? 'page' : undefined}
+          >
+            {chapter.data.title}
+          </a>
         </li>
       ))
     }
-  </ul>
+  </ol>
 </nav>

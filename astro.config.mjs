@@ -1,7 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import { unified } from '@astrojs/markdown-remark';
-import { remarkChapterLinks } from './src/lib/remark-chapter-links';
 import { remarkLeadingHeading } from './src/lib/remark-leading-heading';
 import { rehypeCodeBlocks } from './src/lib/rehype-code-blocks';
 import { rehypeTableWrap } from './src/lib/rehype-table-wrap';
@@ -17,11 +16,11 @@ export default defineConfig({
     inlineStylesheets: 'auto',
   },
   markdown: {
-    // The manuals are Markdown only. Everything the reading experience needs
-    // beyond CommonMark is derived at build time from the source, so a chapter
-    // stays a plain file an author can edit without touching a component.
+    // The manuals are Markdown only. The split into chapters and the rewriting of
+    // links between them happen in the content loader; what is left for the
+    // renderer is the chrome: one h1 per page and the leading separator.
     processor: unified({
-      remarkPlugins: [remarkLeadingHeading, remarkChapterLinks],
+      remarkPlugins: [remarkLeadingHeading],
       rehypePlugins: [rehypeCodeBlocks, rehypeTableWrap],
     }),
     // Code keeps two palettes as CSS variables; the site's own theme attribute

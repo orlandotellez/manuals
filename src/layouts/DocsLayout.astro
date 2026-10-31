@@ -1,62 +1,72 @@
 ---
-// Chapter shell (S2): sidebar tree, breadcrumbs, prose column, in-page table of
-// contents and previous/next pager.
+// Manual shell (S2, S11, S13): the manual's chapters on the left, the page in the
+// middle, the titles of the page on the right.
 //
-// Everything is derived from the registry and the content collection, so the
-// layout never needs editing to add a manual. The three columns appear at the
-// widths where they fit; below that the tree folds into a disclosure at the top
-// of the chapter, because a phone without navigation is a dead end.
+// Inside a manual the left column belongs to that manual alone: its chapter list
+// replaces the library tree, and the only way out is the "Todos los manuales" link
+// and the breadcrumbs. The pager at the end of the page walks the chapters of this
+// manual, in order, exactly like a book.
 import type { MarkdownHeading } from 'astro';
 import BaseLayout from './BaseLayout.astro';
 import DocsNav from '../components/DocsNav.astro';
 import DocsToc from '../components/DocsToc.astro';
 import {
   chapterHref,
-  getChapters,
-  getNeighbours,
-  groupChapters,
-  type ChapterView,
+  getChapterNeighbours,
+  manualHref,
+  type ManualView,
+  type Page,
 } from '../lib/manuals';
-import type { Section } from '../lib/manuals';
 import '../styles/docs.css';
 
 interface Props {
-  chapter: ChapterView;
-  section: Section;
+  manual: ManualView;
+  page: Page;
   headings: MarkdownHeading[];
+  /** Manuals in the library, for the position chip. */
+  libraryTotal: number;
 }
 
-const { chapter, section, headings } = Astro.props;
+const { manual, page, headings, libraryTotal } = Astro.props;
 
-const chapters = await getChapters();
-const groups = groupChapters(chapters);
-const { previous, next } = getNeighbours(chapters, chapter.id);
-const total = chapters.length;
-const sectionAnchor = `/docs/#${section.id}`;
-const description = `${chapter.title}: manual de ${section.title} en Manuales, ${total} manuales técnicos de desarrollo.`;
+const isChapter = page.data.kind === 'chapter';
+const slug = page.data.slug;
+const { previous, next } = isChapter ? getChapterNeighbours(manual, slug) : { previous: undefined, next: undefined };
+
+const total = manual.chapters.length;
+const sectionAnchor = `/docs/#${manual.section.id}`;
+const coverHref = manualHref(manual.id);
+const description = isChapter
+  ? `${page.data.title} — capítulo de ${manual.title}, ${manual.section.title}.`
+  : `${manual.title}: ${total} capítulos de ${manual.section.title}.`;
 ---
-<BaseLayout title={`${chapter.title} · ${section.title} · Manuales`} description={description} wide>
+<BaseLayout title={`${page.data.title} · ${manual.title} · Manuales`} description={description} wide>
   <Fragment slot="head">
-    <meta data-pagefind-meta="section[content]" content={section.title} />
+    <meta data-pagefind-meta="section[content]" content={manual.section.title} />
+    <meta data-pagefind-meta="manual[content]" content={manual.title} />
   </Fragment>
 
   <div class="docs">
     <aside class="docs__sidebar">
-      <DocsNav groups={groups} currentId={chapter.id} />
+      <DocsNav manual={manual} currentSlug={isChapter ? slug : undefined} />
     </aside>
 
     {
       /*
-       * Search indexing: the article is the only part of the page that belongs
-       * in the index, so `data-pagefind-body` marks it and the chrome around
-       * the prose is ignored.
+       * Search indexing: the page body is the only part of the page that belongs
+       * in the index, so `data-pagefind-body` marks it and the chrome around the
+       * prose is ignored.
        */
     }
     <article class="docs__article" data-pagefind-body>
       <details class="docs-menu" data-pagefind-ignore>
-        <summary class="docs-menu__summary">Índice de manuales</summary>
+        <summary class="docs-menu__summary">Capítulos del manual</summary>
         <div class="docs-menu__body">
-          <DocsNav groups={groups} currentId={chapter.id} label="Índice de manuales (móvil)" />
+          <DocsNav
+            manual={manual}
+            currentSlug={isChapter ? slug : undefined}
+            label="Capítulos del manual (móvil)"
+          />
         </div>
       </details>
 
@@ -75,41 +85,54 @@ const description = `${chapter.title}: manual de ${section.title} en Manuales, $
         <ol class="breadcrumbs__list">
           <li class="breadcrumbs__item"><a class="breadcrumbs__link" href="/">Inicio</a></li>
           <li class="breadcrumbs__item"><a class="breadcrumbs__link" href="/docs/">Manuales</a></li>
-          <li class="breadcrumbs__item">
-            <a class="breadcrumbs__link" href={sectionAnchor}>{section.title}</a>
+          <li class="breadcrumbs__item breadcrumbs__item--context">
+            <a class="breadcrumbs__link" href={sectionAnchor}>{manual.section.title}</a>
           </li>
-          <li class="breadcrumbs__item breadcrumbs__item--current" aria-current="page">
-            {chapter.title}
+          <li class="breadcrumbs__item breadcrumbs__item--context">
+            <a class="breadcrumbs__link" href={coverHref} aria-current={isChapter ? undefined : 'page'}>
+              {manual.title}
+            </a>
           </li>
+          {isChapter && <li class="breadcrumbs__item breadcrumbs__item--current" aria-current="page">{page.data.title}</li>}
         </ol>
       </nav>
 
       <header class="docs__header">
-        <p class="docs__eyebrow" data-pagefind-ignore>{section.title}</p>
-        <h1 class="docs__title" data-pagefind-meta="title">{chapter.title}</h1>
+        <p class="docs__eyebrow" data-pagefind-ignore>{manual.section.title}</p>
+        <h1 class="docs__title" data-pagefind-meta="title">{page.data.title}</h1>
         <div class="docs__meta" data-pagefind-ignore>
-          <span class="chip">Manual {chapter.position} de {total}</span>
-          <span class="chip">{section.title}</span>
+          <span class="chip">Manual {manual.position} de {libraryTotal}</span>
+          <span class="chip">
+            {isChapter ? `Capítulo ${page.data.order} de ${total}` : `${total} capítulos`}
+          </span>
         </div>
       </header>
 
-      <div class="prose">
-        <slot />
-      </div>
+      {
+        /* A cover with no preamble would leave an empty column of nothing. */
+        (page.body ?? '').trim().length > 0 && (
+          <div class="prose">
+            <slot />
+          </div>
+        )
+      }
+
+      {/* Content of a page that is not part of the prose (the cover's chapter list). */}
+      <slot name="after" />
 
       {
-        (previous || next) && (
-          <nav class="pager" aria-label="Manuales contiguos" data-pagefind-ignore>
+        isChapter && (previous || next) && (
+          <nav class="pager" aria-label="Capítulos del manual" data-pagefind-ignore>
             {previous && (
-              <a class="pager__link pager__link--previous" href={chapterHref(previous.id)} rel="prev">
+              <a class="pager__link pager__link--previous" href={chapterHref(manual.id, previous.data.slug)} rel="prev">
                 <span class="pager__direction">Anterior</span>
-                <span class="pager__title">{previous.title}</span>
+                <span class="pager__title">{previous.data.title}</span>
               </a>
             )}
             {next && (
-              <a class="pager__link pager__link--next" href={chapterHref(next.id)} rel="next">
+              <a class="pager__link pager__link--next" href={chapterHref(manual.id, next.data.slug)} rel="next">
                 <span class="pager__direction">Siguiente</span>
-                <span class="pager__title">{next.title}</span>
+                <span class="pager__title">{next.data.title}</span>
               </a>
             )}
           </nav>
@@ -126,32 +149,11 @@ const description = `${chapter.title}: manual de ${section.title} en Manuales, $
 {
   /*
    * Copy control for code blocks. The block, its language label and the button
-   * are server-rendered; this only wires the click, so the chapter is complete
-   * and readable without it.
+   * are server-rendered; this only wires the click, so the page is complete and
+   * readable without it.
    */
 }
 <script>
-  /*
-   * Wide tables scroll, and a table that scrolls silently looks like a table
-   * with a missing column. `data-scrollable` marks the ones that still have
-   * content hidden to the right; CSS fades that edge, and the mark goes away
-   * once the reader reaches the end.
-   */
-  const tables = Array.from(document.querySelectorAll<HTMLElement>('.table-wrap'));
-
-  const syncTables = () => {
-    for (const table of tables) {
-      const hidden = table.scrollWidth - table.scrollLeft - table.clientWidth;
-      table.toggleAttribute('data-scrollable', hidden > 2);
-    }
-  };
-
-  if (tables.length > 0) {
-    syncTables();
-    for (const table of tables) table.addEventListener('scroll', syncTables, { passive: true });
-    window.addEventListener('resize', syncTables, { passive: true });
-  }
-
   const buttons = document.querySelectorAll<HTMLButtonElement>('.code-block__copy');
 
   for (const button of buttons) {

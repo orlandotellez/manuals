@@ -1,137 +1,131 @@
 /**
- * Chapter tree derived from the registry (S2, S6).
+ * Library tree derived from the registry and the content collection (S2, S13).
  *
- * Nothing in the navigation is authored twice: the sections, the chapters and
- * their order come from `library.mjs`, while the documents come from the
- * content collection. This module joins both and refuses to build when they
- * disagree, so a page can never link to a route that does not exist.
+ * The registry (`library.mjs`) says which manuals exist, in which section and in
+ * which order. The loader turns every manual into pages: a cover plus its
+ * chapters. This module joins both and refuses to build when they disagree, so a
+ * page can never link to a route that does not exist.
  */
 
 import { getCollection, type CollectionEntry } from 'astro:content';
-import { chapters, sections, type Chapter, type Section } from './library.mjs';
+import { chapters as registry, sections, type Section } from './library.mjs';
 
-export type { Chapter, Section };
+export type { Section };
 
-export type Manual = CollectionEntry<'manuals'>;
+export type Page = CollectionEntry<'manuals'>;
 
-/** A chapter of the registry with its rendered document attached. */
-export type ChapterView = {
+/** One manual: its cover, its chapters, and where it sits in the library. */
+export type ManualView = {
   id: string;
   title: string;
   section: Section;
-  /** Reading position across the whole library, 1 based. */
+  /** Reading position across the library, 1 based. */
   position: number;
-  doc: Manual;
+  cover: Page;
+  chapters: Page[];
 };
 
-export type ChapterGroup = {
-  section: Section;
-  chapters: ChapterView[];
-};
-
-/** Canonical URL of a chapter, derived from its file name. */
-export function chapterHref(id: string): string {
+/** URL of a manual's cover. */
+export function manualHref(id: string): string {
   return `/docs/${id}/`;
 }
 
+/** URL of one chapter. */
+export function chapterHref(manual: string, slug: string): string {
+  return `/docs/${manual}/${slug}/`;
+}
+
+/** URL of the page a reader lands on: the chapter, or the cover of a manual. */
+export function pageHref(manual: string, page: Page): string {
+  return page.data.kind === 'chapter' ? chapterHref(manual, page.data.slug) : manualHref(manual);
+}
+
 /**
- * Fail loudly when the registry and the content folder drift apart.
- *
- * Two rules, each with its own message so the failure names the exact line to
- * fix: a Markdown file without a registry entry is unreachable, and a registry
- * entry without a file is a link to nothing.
+ * Fail loudly when the registry and the content collection drift apart: a
+ * registered manual without pages is a broken link in the catalog, and a page
+ * whose manual is not registered cannot be placed in any section.
  */
-function assertRegistryMatchesFiles(entries: Manual[]): void {
-  const files = new Set(entries.map((entry) => entry.id));
-  const registered = new Set(chapters.map((chapter) => chapter.id));
+function assertPagesMatchRegistry(pages: Page[]): void {
+  const known = new Set(registry.map((manual) => manual.id));
+  const covers = new Set(
+    pages.filter((page) => page.data.kind === 'overview').map((page) => page.data.manual),
+  );
 
-  for (const chapter of chapters) {
-    if (!files.has(chapter.id)) {
+  for (const manual of registry) {
+    if (!covers.has(manual.id)) {
       throw new Error(
-        `Capítulo registrado sin archivo: "${chapter.id}" está en src/lib/library.mjs ` +
-          `pero no existe src/content/manuals/${chapter.id}.md. Crea el archivo o quita la línea.`,
+        `Manual sin portada: "${manual.id}" no produjo la página /docs/${manual.id}/. ` +
+          'Revisa que su archivo en src/content/manuals/ tenga contenido antes del primer capítulo.',
       );
     }
   }
 
-  for (const entry of entries) {
-    if (!registered.has(entry.id)) {
+  for (const page of pages) {
+    if (!known.has(page.data.manual)) {
       throw new Error(
-        `Manual sin registrar: "src/content/manuals/${entry.id}.md" no aparece en ` +
-          `src/lib/library.mjs, así que no tiene título, sección ni posición de lectura. ` +
-          `Agrégalo a \`chapters\` en la sección que le corresponda.`,
-      );
-    }
-  }
-
-  const known = new Set(sections.map((section) => section.id));
-
-  for (const chapter of chapters) {
-    if (!known.has(chapter.section)) {
-      throw new Error(
-        `Sección desconocida en el capítulo "${chapter.id}": "${chapter.section}" no está ` +
-          `en \`sections\`. Usa una de: ${sections.map((section) => section.id).join(', ')}.`,
+        `Página sin manual registrado: "${page.id}" viene de "${page.data.manual}", que no está ` +
+          'en src/lib/library.mjs. Agrégalo al registro antes de publicarlo.',
       );
     }
   }
 }
 
-/** Every chapter of the registry, in reading order, with its document. */
-export async function getChapters(): Promise<ChapterView[]> {
-  const entries = await getCollection('manuals');
-  assertRegistryMatchesFiles(entries);
+/** Every manual with its pages, in registry order. */
+export async function getManuals(): Promise<ManualView[]> {
+  const pages = await getCollection('manuals');
+  assertPagesMatchRegistry(pages);
 
-  const byId = new Map(entries.map((entry) => [entry.id, entry]));
-  const bySection = new Map(sections.map((section) => [section.id, section as Section]));
+  return registry.map((registered, index) => {
+    const own = pages.filter((page) => page.data.manual === registered.id);
 
-  return chapters.map((chapter, index) => ({
-    id: chapter.id,
-    title: chapter.title,
-    section: bySection.get(chapter.section) as Section,
-    position: index + 1,
-    doc: byId.get(chapter.id) as Manual,
-  }));
+    return {
+      id: registered.id,
+      title: registered.title,
+      section: sections.find((section) => section.id === registered.section) as Section,
+      position: index + 1,
+      cover: own.find((page) => page.data.kind === 'overview') as Page,
+      chapters: own
+        .filter((page) => page.data.kind === 'chapter')
+        .sort((a, b) => a.data.order - b.data.order),
+    };
+  });
 }
 
-/**
- * Chapters grouped by section, in registry order. Sections without chapters are
- * omitted, so an empty branch never reaches the navigation.
- */
-export function groupChapters(items: ChapterView[]): ChapterGroup[] {
+/** One manual by id, for a page that already knows which one it belongs to. */
+export async function getManual(id: string): Promise<ManualView | undefined> {
+  return (await getManuals()).find((manual) => manual.id === id);
+}
+
+export type ManualGroup = {
+  section: Section;
+  manuals: ManualView[];
+};
+
+/** Manuals grouped by section, in registry order. Empty sections are dropped. */
+export function groupManuals(manuals: ManualView[]): ManualGroup[] {
   return sections
     .map((section) => ({
       section,
-      chapters: items.filter((item) => item.section.id === section.id),
+      manuals: manuals.filter((manual) => manual.section.id === section.id),
     }))
-    .filter((group) => group.chapters.length > 0);
-}
-
-/** Section that owns a chapter, by section id. */
-export function findSection(id: string): Section | undefined {
-  return sections.find((section) => section.id === id);
-}
-
-export type Neighbours = {
-  previous?: ChapterView;
-  next?: ChapterView;
-};
-
-/** Previous and next chapters in reading order, for the pager. */
-export function getNeighbours(items: ChapterView[], id: string): Neighbours {
-  const index = items.findIndex((item) => item.id === id);
-
-  if (index === -1) return {};
-
-  return {
-    previous: index > 0 ? items[index - 1] : undefined,
-    next: index < items.length - 1 ? items[index + 1] : undefined,
-  };
+    .filter((group) => group.manuals.length > 0);
 }
 
 /** Totals shown on the home page and in the catalog header. */
-export function getLibrarySize(items: ChapterView[]) {
+export function getLibrarySize(manuals: ManualView[]) {
   return {
-    chapters: items.length,
-    sections: groupChapters(items).length,
+    manuals: manuals.length,
+    chapters: manuals.reduce((total, manual) => total + manual.chapters.length, 0),
+    sections: groupManuals(manuals).length,
+  };
+}
+
+/** Previous and next chapter of the same manual, for the pager. */
+export function getChapterNeighbours(manual: ManualView, slug: string) {
+  const index = manual.chapters.findIndex((chapter) => chapter.data.slug === slug);
+
+  return {
+    previous: index > 0 ? manual.chapters[index - 1] : undefined,
+    next: index >= 0 && index < manual.chapters.length - 1 ? manual.chapters[index + 1] : undefined,
   };
 }

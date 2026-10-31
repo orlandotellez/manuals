@@ -2,24 +2,26 @@
 // Documentation index at /docs/: the whole library, section by section, with a
 // jump list for the reader who knows the topic and not the manual (S4).
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { chapterHref, getChapters, getLibrarySize, groupChapters } from '../../lib/manuals';
+import TechLogo from '../../components/TechLogo.astro';
+import { getLibrarySize, getManuals, groupManuals, manualHref } from '../../lib/manuals';
 import '../../styles/landing.css';
 
-const chapters = await getChapters();
-const groups = groupChapters(chapters);
-const size = getLibrarySize(chapters);
+const manuals = await getManuals();
+const groups = groupManuals(manuals);
+const size = getLibrarySize(manuals);
 ---
 <BaseLayout
   title="Manuales · índice general"
-  description={`Los ${size.chapters} manuales, agrupados en ${size.sections} secciones: backend, bases de datos, aplicaciones móviles y redes.`}
+  description={`Los ${size.manuals} manuales, agrupados en ${size.sections} secciones y ${size.chapters} capítulos: backend, bases de datos, aplicaciones móviles y redes.`}
 >
   <div class="container catalog">
     <header class="catalog__header">
       <p class="catalog__eyebrow">Manuales</p>
       <h1 class="catalog__title">Índice general</h1>
       <p class="catalog__lead">
-        {size.chapters} manuales en {size.sections} secciones. Cada uno se lee completo, con su índice de
-        secciones en la columna derecha. Elige un tema o entra directo al manual que necesitas.
+        {size.manuals} manuales en {size.sections} secciones, {size.chapters} capítulos en total. Cada
+        manual tiene su portada con el índice de capítulos; cada capítulo es una página con sus
+        propios títulos a la derecha.
       </p>
     </header>
 
@@ -38,17 +40,19 @@ const size = getLibrarySize(chapters);
         groups.map((group) => (
           <section class="catalog__section" id={group.section.id}>
             <header class="catalog__section-header">
+              <TechLogo logo={group.section.logo} class="catalog__logo" />
               <h2 class="catalog__section-title">{group.section.title}</h2>
               <span class="chip">
-                {group.chapters.length} {group.chapters.length === 1 ? 'manual' : 'manuales'}
+                {group.manuals.length} {group.manuals.length === 1 ? 'manual' : 'manuales'}
               </span>
             </header>
             <ol class="catalog__chapters">
-              {group.chapters.map((chapter) => (
+              {group.manuals.map((manual) => (
                 <li>
-                  <a class="catalog__link" href={chapterHref(chapter.id)}>
-                    <span class="catalog__number">{String(chapter.position).padStart(2, '0')}</span>
-                    <span>{chapter.title}</span>
+                  <a class="catalog__link" href={manualHref(manual.id)}>
+                    <TechLogo logo={group.section.logo} class="catalog__item-logo" />
+                    <span class="catalog__number">{String(manual.position).padStart(2, '0')}</span>
+                    <span>{manual.title}</span>
                   </a>
                 </li>
               ))}

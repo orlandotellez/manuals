@@ -76,19 +76,35 @@
   }
 }
 
-/* Sidebar tree */
+/* The left column of a manual: the way out, the manual's name, the chapter
+   pager and the chapters themselves. Nothing else lives here, so the column
+   reads as the table of contents of the document being read. */
 .docs-nav {
   padding-block-end: var(--space-lg);
 }
 
-.docs-nav__sections {
-  display: grid;
-  gap: var(--space-lg);
-  list-style: none;
+.docs-nav__back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  margin-block-end: var(--space-md);
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.docs-nav__back::before {
+  content: '\2190';
+  color: var(--text-faint);
+}
+
+.docs-nav__back:hover {
+  color: var(--brand);
 }
 
 .docs-nav__section-title {
-  margin-block-end: var(--space-xs);
+  margin-block-end: var(--space-3xs);
   color: var(--text-faint);
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
@@ -96,19 +112,41 @@
   text-transform: uppercase;
 }
 
-.docs-nav__pages {
+.docs-nav__manual {
+  display: block;
+  margin-block-end: var(--space-md);
+  padding-block-end: var(--space-sm);
+  border-block-end: var(--hairline) solid var(--line);
+  color: var(--text);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  text-wrap: pretty;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.docs-nav__manual:hover,
+.docs-nav__manual[aria-current='page'] {
+  color: var(--brand);
+}
+
+/* The chapters: one flat list with a rail, the active one marked in place. */
+.docs-nav__chapters {
   display: grid;
   gap: var(--space-3xs);
   list-style: none;
   border-inline-start: var(--hairline) solid var(--line);
 }
 
-.docs-nav__link {
+.docs-nav__chapter {
   display: block;
   padding-block: var(--space-3xs);
   padding-inline: var(--space-sm);
   margin-inline-start: calc(var(--hairline) * -1);
   border-inline-start: var(--hairline) solid transparent;
+  overflow-wrap: anywhere;
   color: var(--text-muted);
   font-size: var(--text-sm);
   line-height: 1.45;
@@ -118,13 +156,18 @@
     border-color var(--duration-fast) var(--ease-out);
 }
 
-.docs-nav__link:hover {
-  color: var(--text);
+.docs-nav__chapter:hover {
   border-inline-start-color: var(--line-strong);
+  color: var(--text);
 }
 
-.docs-nav__link[aria-current='page'] {
-  border-inline-start-color: var(--brand);
+/* Where am I: the chapter being read is the only tinted row in the column, with
+   the accent on its rail and on its text. The `page` value is what the markup
+   carries; `true` is the value the in-page spy uses elsewhere. */
+.docs-nav__chapter[aria-current='page'],
+.docs-nav__chapter[aria-current='true'] {
+  border-inline-start: calc(var(--hairline) * 2) solid var(--brand);
+  background-color: var(--brand-soft);
   color: var(--brand);
   font-weight: 600;
 }
@@ -245,6 +288,15 @@
 
 .breadcrumbs__item--current {
   color: var(--text);
+}
+
+/* On a phone the two middle crumbs push the chapter title onto a line of its
+   own, where the separator ends up leading. The manual is named right below, in
+   the column, so the trail keeps the path and drops the duplication. */
+@media (max-width: 40rem) {
+  .breadcrumbs__item--context {
+    display: none;
+  }
 }
 
 /* Chapter header */
@@ -697,4 +749,58 @@
   color: var(--brand);
   font-size: var(--text-sm);
   font-weight: 600;
+}
+
+/* Cover of a manual: the generated chapter list. It replaces the "Índice" section
+   the author used to write by hand, which the split removes. */
+.chapters {
+  margin-block-start: var(--space-3xl);
+  padding-block-start: var(--space-lg);
+  border-block-start: var(--hairline) solid var(--line);
+}
+
+.chapters__title {
+  font-size: var(--text-lg);
+}
+
+.chapters__note {
+  max-inline-size: var(--width-measure);
+  margin-block-start: var(--space-2xs);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.chapters__list {
+  display: grid;
+  gap: var(--space-3xs);
+  margin-block-start: var(--space-md);
+  list-style: none;
+}
+
+.chapters__link {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+  padding-block: var(--space-2xs);
+  border-block-end: var(--hairline) solid var(--line);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.chapters__link:hover {
+  color: var(--brand);
+}
+
+.chapters__number {
+  min-inline-size: 1.75rem;
+  color: var(--text-faint);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.chapters__name {
+  color: inherit;
 }

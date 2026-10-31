@@ -15,6 +15,9 @@ importers:
       '@astrojs/markdown-remark':
         specifier: ^7.3.5
         version: 7.3.5
+      github-slugger:
+        specifier: ^2.0.0
+        version: 2.0.0
       pagefind:
         specifier: ^1.5.2
         version: 1.5.2
