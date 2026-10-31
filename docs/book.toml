@@ -1,9 +1,0 @@
-[book]
-title = "Manuales"
-authors = ["orlandotellez"]
-language = "en"
-
-[output.html]
-preferred-dark-theme = "dark"
-additional-css = ["theme/dark.css"]
-additional-js = ["theme/dark.js"]
