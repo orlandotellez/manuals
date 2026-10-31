@@ -1,0 +1,27 @@
+{
+  "name": "manuals",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Manuales técnicos de desarrollo, servidos con Astro",
+  "type": "module",
+  "packageManager": "pnpm@10.30.2",
+  "engines": {
+    "node": ">=22.22.2"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && pagefind --site dist --force-language es && node scripts/check-links.mjs && node --test tests/*.test.mjs",
+    "preview": "astro preview",
+    "search:index": "pagefind --site dist --force-language es",
+    "check:links": "node scripts/check-links.mjs",
+    "astro": "astro",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "dependencies": {
+    "astro": "^7.4.4"
+  },
+  "devDependencies": {
+    "@astrojs/markdown-remark": "^7.3.5",
+    "pagefind": "^1.5.2"
+  }
+}

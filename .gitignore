@@ -1,3 +1,8 @@
-/target
+# Astro output
+/dist
+/.astro
+/node_modules
+
+# ODD tooling state
 odd
 .atl
