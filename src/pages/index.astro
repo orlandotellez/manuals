@@ -1,0 +1,93 @@
+---
+// Home page (S4): what the library is, then the manuals section itself, grouped
+// by section and readable in one screen and a half.
+//
+// Every number on this page is counted from the registry, never typed, so it
+// cannot drift from the content.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { chapterHref, getChapters, getLibrarySize, groupChapters } from '../lib/manuals';
+import '../styles/landing.css';
+
+const chapters = await getChapters();
+const groups = groupChapters(chapters);
+const size = getLibrarySize(chapters);
+---
+<BaseLayout
+  title="Manuales · manuales técnicos de desarrollo"
+  description={`${size.chapters} manuales técnicos de desarrollo en ${size.sections} secciones: backend, bases de datos, aplicaciones móviles y redes.`}
+>
+  <section class="hero">
+    <div class="container hero__inner">
+      <p class="hero__eyebrow">Manuales</p>
+      <h1 class="hero__title">Manuales técnicos de desarrollo</h1>
+      <p class="hero__lead">
+        Mis manuales de desarrollo: el backend, las bases de datos, las aplicaciones móviles y las
+        redes, cada tema en su propio manual completo. Los capítulos están a la izquierda, las
+        secciones del capítulo a la derecha y la documentación en el medio.
+      </p>
+      <div class="hero__actions">
+        <a class="btn btn--primary" href="#manuales">Ver los manuales</a>
+        <a
+          class="btn btn--ghost"
+          href="https://github.com/orlandotellez/manuals"
+          target="_blank"
+          rel="noopener noreferrer me"
+        >Repositorio<span class="sr-only"> (se abre en una pestaña nueva)</span></a
+        >
+      </div>
+      <div class="hero__stats">
+        <div class="hero__stat">
+          <span class="hero__stat-value">{size.chapters}</span>
+          <span class="hero__stat-label">manuales publicados</span>
+        </div>
+        <div class="hero__stat">
+          <span class="hero__stat-value">{size.sections}</span>
+          <span class="hero__stat-label">secciones temáticas</span>
+        </div>
+        <div class="hero__stat">
+          <span class="hero__stat-value">Claro / oscuro</span>
+          <span class="hero__stat-label">según tu sistema o tu elección</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="library" id="manuales">
+    <div class="container">
+      <header class="library__header">
+        <h2 class="library__title">Manuales</h2>
+        <p class="library__note">
+          Todos los manuales, agrupados por tema. Cada uno se lee como un documento completo, con su
+          índice de secciones y enlaces al anterior y al siguiente.
+        </p>
+      </header>
+
+      <div class="library__grid">
+        {
+          groups.map((group) => (
+            <section class="section-card" id={group.section.id}>
+              <header class="section-card__header">
+                <h3 class="section-card__title">{group.section.title}</h3>
+                <span class="chip">
+                  {group.chapters.length} {group.chapters.length === 1 ? 'manual' : 'manuales'}
+                </span>
+              </header>
+              <ol class="section-card__list">
+                {group.chapters.map((chapter) => (
+                  <li>
+                    <a class="section-card__link" href={chapterHref(chapter.id)}>
+                      <span class="section-card__number">
+                        {String(chapter.position).padStart(2, '0')}
+                      </span>
+                      <span>{chapter.title}</span>
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>

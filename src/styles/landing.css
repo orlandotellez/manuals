@@ -1,0 +1,348 @@
+/*
+ * Home page and catalog chrome: the hero, the manuals section that groups every
+ * chapter by section, and the documentation index at /docs/ (S4).
+ *
+ * The home page answers one question — what can I read — so the catalog starts
+ * high on the page, and every chapter of the library is reachable in one click
+ * without opening a single manual.
+ */
+
+/* Hero */
+.hero {
+  position: relative;
+  padding-block: clamp(var(--space-2xl), 6vw, var(--space-4xl)) var(--space-2xl);
+  border-block-end: var(--hairline) solid var(--line);
+  overflow: hidden;
+}
+
+/* A soft ink wash behind the title, drawn with a token colour so it follows the
+   theme instead of washing out in dark mode. */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset-block-start: -12rem;
+  inset-inline-start: -8rem;
+  inline-size: 34rem;
+  block-size: 34rem;
+  background: radial-gradient(
+    circle at center,
+    color-mix(in srgb, var(--brand) 16%, transparent),
+    transparent 68%
+  );
+  pointer-events: none;
+}
+
+.hero__inner {
+  position: relative;
+  display: grid;
+  gap: var(--space-md);
+  justify-items: start;
+}
+
+.hero__eyebrow {
+  color: var(--brand);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.hero__title {
+  max-inline-size: 22ch;
+  font-size: var(--text-display);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+}
+
+.hero__lead {
+  max-inline-size: var(--width-measure);
+  color: var(--text-muted);
+  font-size: var(--text-md);
+  line-height: 1.65;
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-block-start: var(--space-xs);
+}
+
+.hero__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-lg);
+  margin: var(--space-lg) 0 0;
+  padding-block-start: var(--space-md);
+  border-block-start: var(--hairline) solid var(--line);
+  inline-size: 100%;
+}
+
+.hero__stat {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.hero__stat-value {
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: var(--text-lg);
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.hero__stat-label {
+  color: var(--text-faint);
+  font-size: var(--text-xs);
+  letter-spacing: 0.02em;
+}
+
+/* Entrance: the hero settles on load with a short stagger. It is a CSS
+   animation on purpose — no element ever waits for a scroll observer, so a
+   reader who jumps straight to the bottom still sees every section card. */
+@keyframes hero-enter {
+  from {
+    opacity: 0;
+    transform: translateY(var(--enter-distance));
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero__inner > * {
+    animation: hero-enter var(--duration-enter) var(--ease-enter) both;
+  }
+
+  .hero__inner > *:nth-child(2) {
+    animation-delay: 60ms;
+  }
+
+  .hero__inner > *:nth-child(3) {
+    animation-delay: 120ms;
+  }
+
+  .hero__inner > *:nth-child(4) {
+    animation-delay: 180ms;
+  }
+}
+
+/* Library: the manuals section */
+.library {
+  padding-block: var(--space-2xl) var(--space-4xl);
+}
+
+.library__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--space-sm) var(--space-lg);
+  margin-block-end: var(--space-xl);
+  padding-block-end: var(--space-md);
+  border-block-end: var(--hairline) solid var(--line);
+}
+
+.library__title {
+  font-size: var(--text-xl);
+}
+
+.library__note {
+  max-inline-size: var(--width-measure);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.library__grid {
+  columns: 3 19rem;
+  column-gap: var(--space-md);
+}
+
+/* One card per section: the title, how many manuals it holds and the manuals. */
+.section-card {
+  display: grid;
+  gap: var(--space-sm);
+  align-content: start;
+  break-inside: avoid;
+  margin-block-end: var(--space-md);
+  padding: var(--space-md) var(--space-md) var(--space-sm);
+  border: var(--hairline) solid var(--line);
+  border-radius: var(--radius-lg);
+  background-color: var(--surface-raised);
+  transition:
+    border-color var(--duration-base) var(--ease-out),
+    box-shadow var(--duration-base) var(--ease-out);
+}
+
+.section-card:hover {
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow-sm);
+}
+
+.section-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.section-card__title {
+  font-size: var(--text-md);
+  letter-spacing: -0.02em;
+}
+
+.section-card__list {
+  display: grid;
+  gap: 0.1rem;
+  list-style: none;
+}
+
+.section-card__link {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-xs);
+  padding-block: var(--space-2xs);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  line-height: 1.45;
+  text-decoration: none;
+  border-block-end: var(--hairline) solid transparent;
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+}
+
+.section-card__link:hover {
+  color: var(--brand);
+  border-block-end-color: color-mix(in srgb, var(--brand) 30%, var(--line));
+}
+
+.section-card__number {
+  color: var(--text-faint);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.section-card__link:hover .section-card__number {
+  color: var(--brand);
+}
+
+/* Documentation index at /docs/ */
+.catalog {
+  padding-block: var(--space-2xl) var(--space-3xl);
+}
+
+.catalog__header {
+  max-inline-size: var(--width-prose);
+  margin-block-end: var(--space-xl);
+}
+
+.catalog__eyebrow {
+  color: var(--brand);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.catalog__title {
+  font-size: var(--text-2xl);
+}
+
+.catalog__lead {
+  margin-block-start: var(--space-sm);
+  color: var(--text-muted);
+  font-size: var(--text-md);
+  line-height: 1.65;
+}
+
+/* Jump list: fifteen sections is more than a glance covers. */
+.catalog__jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-block-end: var(--space-2xl);
+  padding-block-end: var(--space-lg);
+  border-block-end: var(--hairline) solid var(--line);
+}
+
+.catalog__jump-link {
+  padding-block: var(--space-3xs);
+  padding-inline: var(--space-sm);
+  border: var(--hairline) solid var(--line);
+  border-radius: var(--radius-full);
+  background-color: var(--surface-raised);
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  text-decoration: none;
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+}
+
+.catalog__jump-link:hover {
+  border-color: color-mix(in srgb, var(--brand) 45%, var(--line));
+  color: var(--brand);
+}
+
+.catalog__grid {
+  columns: 2 22rem;
+  column-gap: var(--space-2xl);
+}
+
+.catalog__section {
+  break-inside: avoid;
+  margin-block-end: var(--space-xl);
+  scroll-margin-block-start: calc(var(--header-height) + var(--space-lg));
+}
+
+.catalog__section-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding-block-end: var(--space-xs);
+  border-block-end: var(--hairline) solid var(--line);
+}
+
+.catalog__section-title {
+  font-size: var(--text-md);
+}
+
+.catalog__chapters {
+  display: grid;
+  gap: 0.15rem;
+  margin-block-start: var(--space-sm);
+  list-style: none;
+}
+
+.catalog__link {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+  padding-block: var(--space-2xs);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  text-decoration: none;
+}
+
+.catalog__link:hover {
+  color: var(--brand);
+}
+
+.catalog__number {
+  min-inline-size: 1.75rem;
+  color: var(--text-faint);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.catalog__link:hover .catalog__number {
+  color: var(--brand);
+}

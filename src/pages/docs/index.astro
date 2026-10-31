@@ -1,0 +1,61 @@
+---
+// Documentation index at /docs/: the whole library, section by section, with a
+// jump list for the reader who knows the topic and not the manual (S4).
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { chapterHref, getChapters, getLibrarySize, groupChapters } from '../../lib/manuals';
+import '../../styles/landing.css';
+
+const chapters = await getChapters();
+const groups = groupChapters(chapters);
+const size = getLibrarySize(chapters);
+---
+<BaseLayout
+  title="Manuales · índice general"
+  description={`Los ${size.chapters} manuales, agrupados en ${size.sections} secciones: backend, bases de datos, aplicaciones móviles y redes.`}
+>
+  <div class="container catalog">
+    <header class="catalog__header">
+      <p class="catalog__eyebrow">Manuales</p>
+      <h1 class="catalog__title">Índice general</h1>
+      <p class="catalog__lead">
+        {size.chapters} manuales en {size.sections} secciones. Cada uno se lee completo, con su índice de
+        secciones en la columna derecha. Elige un tema o entra directo al manual que necesitas.
+      </p>
+    </header>
+
+    <nav class="catalog__jump" aria-label="Secciones">
+      {
+        groups.map((group) => (
+          <a class="catalog__jump-link" href={`#${group.section.id}`}>
+            {group.section.title}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="catalog__grid">
+      {
+        groups.map((group) => (
+          <section class="catalog__section" id={group.section.id}>
+            <header class="catalog__section-header">
+              <h2 class="catalog__section-title">{group.section.title}</h2>
+              <span class="chip">
+                {group.chapters.length} {group.chapters.length === 1 ? 'manual' : 'manuales'}
+              </span>
+            </header>
+            <ol class="catalog__chapters">
+              {group.chapters.map((chapter) => (
+                <li>
+                  <a class="catalog__link" href={chapterHref(chapter.id)}>
+                    <span class="catalog__number">{String(chapter.position).padStart(2, '0')}</span>
+                    <span>{chapter.title}</span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </section>
+        ))
+      }
+    </div>
+  </div>
+</BaseLayout>
