@@ -205,8 +205,8 @@ test('S14 the catalog shows the technology of every manual', () => {
   const catalog = read('dist/docs/index.html');
 
   assert.equal((catalog.match(/catalog__logo/g) ?? []).length, 15);
-  assert.equal((catalog.match(/catalog__item-logo/g) ?? []).length, 46);
-  assert.equal((catalog.match(/class="catalog__link"/g) ?? []).length, 46);
+  assert.equal((catalog.match(/catalog__item-logo/g) ?? []).length, 47);
+  assert.equal((catalog.match(/class="catalog__link"/g) ?? []).length, 47);
 });
 
 test('S15 the dark surface is the chosen navy', () => {

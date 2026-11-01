@@ -64,6 +64,7 @@ export const chapters = [
   { id: '25-aspnet-cursinet', title: 'ASPNET Cursinet', section: 'aspnet-core' },
   { id: '05-react-native-primeros-pasos', title: 'React Native Primeros Pasos', section: 'react-native' },
   { id: '31-react-native-apk-release', title: 'React Native Generar Apk', section: 'react-native' },
+  { id: '47-flutter-init', title: 'Flutter desde cero con example_app', section: 'flutter' },
   { id: '46-flutter-release', title: 'Flutter Generar Apk', section: 'flutter' },
   { id: '07-matrix-synapse', title: 'Matrix Synapse', section: 'matrix-synapse' },
   { id: '08-matrix-typescript-implementation', title: 'Matrix TypeScript implementation', section: 'matrix-synapse' },

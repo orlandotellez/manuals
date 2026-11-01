@@ -271,8 +271,9 @@
   color: var(--text-faint);
 }
 
-.breadcrumbs__item + .breadcrumbs__item::before {
+.breadcrumbs__item:not(:last-child)::after {
   content: '/';
+  margin-inline-start: var(--space-2xs);
   color: var(--line-strong);
 }
 
